@@ -14,4 +14,25 @@ class SimpleDict(models.Model):
         abstract = True
 
 class Region(SimpleDict):
-    pass
+    class Meta:
+        verbose_name = _('region')
+        verbose_name_plural = _('regions')
+
+class Locality(SimpleDict):
+    region = models.ForeignKey(Region,blank=True,null=True,verbose_name=_('Region'),)
+    class Meta:
+        verbose_name = _('locality')
+        verbose_name_plural = _('localities')    
+
+class Microdistrict(SimpleDict):
+    locality = models.ForeignKey(Locality,verbose_name=_('Locality'),)
+    class Meta:
+        verbose_name = _('microdistrict')
+        verbose_name_plural = _('microdistricts')
+
+class Street(SimpleDict):
+    locality = models.ForeignKey(Locality,verbose_name=_('Locality'),)
+    class Meta:
+        verbose_name = _('street')
+        verbose_name_plural = _('streets')
+        
