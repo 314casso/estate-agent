@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-23 13:24+0400\n"
+"POT-Creation-Date: 2012-04-24 14:12+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,46 +18,78 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: .\models.py:9
+#: .\models.py:7
 msgid "Name"
 msgstr "Название"
 
-#: .\models.py:18
+#: .\models.py:16
 msgid "region"
 msgstr "район"
 
-#: .\models.py:19
+#: .\models.py:17
 msgid "regions"
 msgstr "районы"
 
-#: .\models.py:22
+#: .\models.py:20
 msgid "Region"
 msgstr "Район"
 
-#: .\models.py:24
+#: .\models.py:22
 msgid "locality"
 msgstr "населенный пункт"
 
-#: .\models.py:25
+#: .\models.py:23
 msgid "localities"
 msgstr "населенные пункты"
 
-#: .\models.py:28 .\models.py:34
+#: .\models.py:26 .\models.py:32
 msgid "Locality"
 msgstr "Населенный пункт"
 
-#: .\models.py:30
+#: .\models.py:28
 msgid "microdistrict"
 msgstr "микрорайон"
 
-#: .\models.py:31
+#: .\models.py:29
 msgid "microdistricts"
 msgstr "микрорайоны"
 
-#: .\models.py:36
+#: .\models.py:34
 msgid "street"
 msgstr "улица"
 
-#: .\models.py:37
+#: .\models.py:35
 msgid "streets"
 msgstr "улицы"
+
+#: .\models.py:39
+msgid "estate type category"
+msgstr "категория недвижимости"
+
+#: .\models.py:40
+msgid "estate type categories"
+msgstr "категории недвижимости"
+
+#: .\models.py:43
+msgid "EstateTypeCategory"
+msgstr "Категория недвижимости"
+
+#: .\models.py:44
+msgid "ContentType"
+msgstr "Тип содержимого"
+
+#: .\models.py:46
+msgid "estate type"
+msgstr "вид недвижимости"
+
+#: .\models.py:47
+msgid "estate types"
+msgstr "виды недвижимости"
+
+#: .\models.py:50
+msgid "EstateType"
+msgstr "Вид недвижимости"
+
+#: .\models.py:52 .\models.py:53
+msgid "estate"
+msgstr "Недвижимость"
