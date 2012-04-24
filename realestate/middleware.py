@@ -1,15 +1,13 @@
 from django import http
 
 class FilterPersistMiddleware(object):
-
     def process_request(self, request):
-
-        if '/admin/' not in request.path:
-            return None
         
+        if '/admin/' not in request.path:
+            return None        
         if not request.META.has_key('HTTP_REFERER'):
             return None
-        
+                
         popup = 'pop=1' in request.META['QUERY_STRING']
         path = request.path
         query_string = request.META['QUERY_STRING']
