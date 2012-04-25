@@ -87,6 +87,11 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+from django.conf import global_settings
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    'django.core.context_processors.request',    
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -114,6 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'estatebase',
+    'sitetree',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
