@@ -3,24 +3,20 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>{{ title }}</title>
-		<!-- <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css"/>
+		<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css"/>
+		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script> -->
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"></script>
 	</head>
 	<body>
-		<ul>
-			{% for estate_category in estate_categories %}
-			<li>
-				{{ estate_category.name }}
-				<ul>
-					{% for estate_type in estate_category.estatetype_set.all %}
-					<li>
-						{{ estate_type.name }}
-					</li>
-					{% endfor %}
-				</ul>
-			</li>
-			{% endfor %}
-		</ul>
+		<div id="wrapper">
+			<div id="header"></div>
+			<div id="content">
+				<div id="left">{% block left %}{% endblock %}</div>
+				<div id="right"></div>
+			</div>
+			<div id="footer"></div>
+		</div>
 	</body>
 </html>

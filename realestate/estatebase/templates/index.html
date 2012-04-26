@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block left %}
+<div id="estate_nav">
+	{% for estate_category in estate_categories %}
+	<h3><a href="#">{{ estate_category.name }}</a></h3>
+	<div>
+		<ul>
+			{% for estate_type in estate_category.estatetype_set.all %}
+			<li>
+				<a href="#">{{ estate_type.name }}</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

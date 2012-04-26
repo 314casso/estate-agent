@@ -1,0 +1,17 @@
+body {
+	font-size: 11px;
+	font-family: sans-serif;
+}
+
+#estate_nav {
+	max-width: 300px;
+}
+
+#estate_nav ul {
+	padding-left : 0.5em;	
+	margin: 0;
+}
+
+#estate_nav ul li{
+	padding: 0.2em 0.3em;
+} 
