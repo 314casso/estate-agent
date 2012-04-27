@@ -1,0 +1,517 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.1.3
+-- Dumped by pg_dump version 9.1.2
+-- Started on 2012-04-27 15:27:15
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 2154 (class 0 OID 0)
+-- Dependencies: 165
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- TOC entry 2155 (class 0 OID 0)
+-- Dependencies: 163
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- TOC entry 2156 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: auth_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_message_id_seq', 1, false);
+
+
+--
+-- TOC entry 2157 (class 0 OID 0)
+-- Dependencies: 161
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 54, true);
+
+
+--
+-- TOC entry 2158 (class 0 OID 0)
+-- Dependencies: 169
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- TOC entry 2159 (class 0 OID 0)
+-- Dependencies: 171
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 1, true);
+
+
+--
+-- TOC entry 2160 (class 0 OID 0)
+-- Dependencies: 167
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- TOC entry 2161 (class 0 OID 0)
+-- Dependencies: 180
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 27, true);
+
+
+--
+-- TOC entry 2162 (class 0 OID 0)
+-- Dependencies: 175
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 18, true);
+
+
+--
+-- TOC entry 2163 (class 0 OID 0)
+-- Dependencies: 178
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('django_site_id_seq', 1, true);
+
+
+--
+-- TOC entry 2164 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: estatebase_estate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_estate_id_seq', 1, false);
+
+
+--
+-- TOC entry 2165 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: estatebase_estatetype_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_estatetype_id_seq', 15, true);
+
+
+--
+-- TOC entry 2166 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: estatebase_estatetypecategory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_estatetypecategory_id_seq', 3, true);
+
+
+--
+-- TOC entry 2167 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: estatebase_locality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_locality_id_seq', 1, false);
+
+
+--
+-- TOC entry 2168 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: estatebase_microdistrict_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_microdistrict_id_seq', 1, false);
+
+
+--
+-- TOC entry 2169 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: estatebase_region_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_region_id_seq', 1, false);
+
+
+--
+-- TOC entry 2170 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: estatebase_street_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('estatebase_street_id_seq', 1, false);
+
+
+--
+-- TOC entry 2171 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: sitetree_tree_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('sitetree_tree_id_seq', 1, false);
+
+
+--
+-- TOC entry 2172 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: sitetree_treeitem_access_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('sitetree_treeitem_access_permissions_id_seq', 1, false);
+
+
+--
+-- TOC entry 2173 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: sitetree_treeitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('sitetree_treeitem_id_seq', 1, false);
+
+
+--
+-- TOC entry 2174 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('south_migrationhistory_id_seq', 12, true);
+
+
+--
+-- TOC entry 2132 (class 0 OID 16421)
+-- Dependencies: 166
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2137 (class 0 OID 16502)
+-- Dependencies: 176
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (1, 'permission', 'auth', 'permission');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (2, 'group', 'auth', 'group');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (3, 'user', 'auth', 'user');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (4, 'message', 'auth', 'message');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (5, 'content type', 'contenttypes', 'contenttype');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (6, 'session', 'sessions', 'session');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (7, 'site', 'sites', 'site');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (8, 'log entry', 'admin', 'logentry');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (9, 'migration history', 'south', 'migrationhistory');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (10, 'region', 'estatebase', 'region');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (11, 'locality', 'estatebase', 'locality');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (12, 'microdistrict', 'estatebase', 'microdistrict');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (13, 'street', 'estatebase', 'street');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (14, 'estate type category', 'estatebase', 'estatetypecategory');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (15, 'estate type', 'estatebase', 'estatetype');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (16, 'estate', 'estatebase', 'estate');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (17, 'Site Tree', 'sitetree', 'tree');
+INSERT INTO django_content_type (id, name, app_label, model) VALUES (18, 'Site Tree Item', 'sitetree', 'treeitem');
+
+
+--
+-- TOC entry 2130 (class 0 OID 16396)
+-- Dependencies: 162 2137
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (1, 'Can add permission', 1, 'add_permission');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (2, 'Can change permission', 1, 'change_permission');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (3, 'Can delete permission', 1, 'delete_permission');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (4, 'Can add group', 2, 'add_group');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (5, 'Can change group', 2, 'change_group');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (6, 'Can delete group', 2, 'delete_group');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (7, 'Can add user', 3, 'add_user');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (8, 'Can change user', 3, 'change_user');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (9, 'Can delete user', 3, 'delete_user');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (10, 'Can add message', 4, 'add_message');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (11, 'Can change message', 4, 'change_message');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (12, 'Can delete message', 4, 'delete_message');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (13, 'Can add content type', 5, 'add_contenttype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (14, 'Can change content type', 5, 'change_contenttype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (15, 'Can delete content type', 5, 'delete_contenttype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (16, 'Can add session', 6, 'add_session');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (17, 'Can change session', 6, 'change_session');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (18, 'Can delete session', 6, 'delete_session');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (19, 'Can add site', 7, 'add_site');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (20, 'Can change site', 7, 'change_site');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (21, 'Can delete site', 7, 'delete_site');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (22, 'Can add log entry', 8, 'add_logentry');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (23, 'Can change log entry', 8, 'change_logentry');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (24, 'Can delete log entry', 8, 'delete_logentry');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (25, 'Can add migration history', 9, 'add_migrationhistory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (26, 'Can change migration history', 9, 'change_migrationhistory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (27, 'Can delete migration history', 9, 'delete_migrationhistory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (28, 'Can add region', 10, 'add_region');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (29, 'Can change region', 10, 'change_region');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (30, 'Can delete region', 10, 'delete_region');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (31, 'Can add locality', 11, 'add_locality');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (32, 'Can change locality', 11, 'change_locality');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (33, 'Can delete locality', 11, 'delete_locality');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (34, 'Can add microdistrict', 12, 'add_microdistrict');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (35, 'Can change microdistrict', 12, 'change_microdistrict');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (36, 'Can delete microdistrict', 12, 'delete_microdistrict');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (37, 'Can add street', 13, 'add_street');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (38, 'Can change street', 13, 'change_street');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (39, 'Can delete street', 13, 'delete_street');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (40, 'Can add estate type category', 14, 'add_estatetypecategory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (41, 'Can change estate type category', 14, 'change_estatetypecategory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (42, 'Can delete estate type category', 14, 'delete_estatetypecategory');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (43, 'Can add estate type', 15, 'add_estatetype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (44, 'Can change estate type', 15, 'change_estatetype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (45, 'Can delete estate type', 15, 'delete_estatetype');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (46, 'Can add estate', 16, 'add_estate');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (47, 'Can change estate', 16, 'change_estate');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (48, 'Can delete estate', 16, 'delete_estate');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (49, 'Can add Site Tree', 17, 'add_tree');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (50, 'Can change Site Tree', 17, 'change_tree');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (51, 'Can delete Site Tree', 17, 'delete_tree');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (52, 'Can add Site Tree Item', 18, 'add_treeitem');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (53, 'Can change Site Tree Item', 18, 'change_treeitem');
+INSERT INTO auth_permission (id, name, content_type_id, codename) VALUES (54, 'Can delete Site Tree Item', 18, 'delete_treeitem');
+
+
+--
+-- TOC entry 2131 (class 0 OID 16406)
+-- Dependencies: 164 2130 2132
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2135 (class 0 OID 16466)
+-- Dependencies: 172
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO auth_user (id, username, first_name, last_name, email, password, is_staff, is_active, is_superuser, last_login, date_joined) VALUES (1, 'picasso', '', '', 'picasso75@yandex.ru', 'sha1$d60cd$8c1544de038aa09ad44da8a3d8346ddd4ae2eb14', true, true, true, '2012-04-27 10:03:01.641+04', '2012-04-27 10:02:41.144+04');
+
+
+--
+-- TOC entry 2136 (class 0 OID 16486)
+-- Dependencies: 174 2135
+-- Data for Name: auth_message; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2134 (class 0 OID 16451)
+-- Dependencies: 170 2132 2135
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2133 (class 0 OID 16436)
+-- Dependencies: 168 2130 2135
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2140 (class 0 OID 16533)
+-- Dependencies: 181 2135 2137
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (1, '2012-04-27 10:04:05.901+04', 1, 14, '1', 'Земельный участок', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (2, '2012-04-27 10:04:21.359+04', 1, 14, '2', 'Гараж', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (3, '2012-04-27 10:04:32.259+04', 1, 14, '3', 'Квартира', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (4, '2012-04-27 10:04:45.82+04', 1, 14, '4', 'Комната', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (5, '2012-04-27 10:05:01.096+04', 1, 14, '5', 'Коммерческая недвижимость', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (6, '2012-04-27 10:13:31.368+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Дачный участок". Добавлен вид недвижимости "Сельскохозяйственный участок".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (7, '2012-04-27 10:14:29.252+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Коммерческий участок".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (8, '2012-04-27 10:16:41.611+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Дом". Добавлен вид недвижимости "Участок с квартирой".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (9, '2012-04-27 10:17:30.98+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Дача".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (10, '2012-04-27 10:18:03.049+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Участок с фундаментом". Добавлен вид недвижимости "Участок с недостроем". Добавлен вид недвижимости "Участок с ветхим домом".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (11, '2012-04-27 10:22:38.204+04', 1, 14, '2', 'Гараж', 2, 'Добавлен вид недвижимости "Гараж".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (12, '2012-04-27 10:25:07.881+04', 1, 14, '3', 'Квартира', 2, 'Добавлен вид недвижимости "Новостройка". Добавлен вид недвижимости "Малосемейка". Добавлен вид недвижимости "Вторичка".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (13, '2012-04-27 13:20:22.516+04', 1, 14, '1', 'EstateTypeCategory object', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (14, '2012-04-27 13:20:38.894+04', 1, 14, '2', 'EstateTypeCategory object', 1, '');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (15, '2012-04-27 14:45:05.812+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Дачный участок".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (16, '2012-04-27 14:45:34.66+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Сельскохозяйственный участок".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (17, '2012-04-27 14:46:00.092+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "Коммерческий участок".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (18, '2012-04-27 15:10:56.075+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (19, '2012-04-27 15:11:30.277+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (20, '2012-04-27 15:12:48.435+04', 1, 14, '1', 'Земельный участок', 2, 'Изменены order для вид недвижимости "EstateType object". Изменены order для вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (21, '2012-04-27 15:13:03.497+04', 1, 14, '1', 'Земельный участок', 2, 'Изменены order для вид недвижимости "EstateType object". Изменены order для вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (22, '2012-04-27 15:18:59.423+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object". Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (23, '2012-04-27 15:19:35.2+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object". Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (24, '2012-04-27 15:19:45.47+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (25, '2012-04-27 15:19:57.679+04', 1, 14, '1', 'Земельный участок', 2, 'Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (26, '2012-04-27 15:20:18.998+04', 1, 14, '2', 'Гараж', 2, 'Добавлен вид недвижимости "EstateType object".');
+INSERT INTO django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) VALUES (27, '2012-04-27 15:22:03.493+04', 1, 14, '3', 'Квартира', 1, '');
+
+
+--
+-- TOC entry 2138 (class 0 OID 16515)
+-- Dependencies: 177
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO django_session (session_key, session_data, expire_date) VALUES ('07cdf27aef9c86dc16070cb6b09bf6c5', 'NzA2MzBmZGI0YjViNzQxOWI2OGQwMTMxNWU2YzdlMTliMmVhNDQ1YTqAAn1xAShVDV9hdXRoX3Vz
+ZXJfaWRLAVUSX2F1dGhfdXNlcl9iYWNrZW5kVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRz
+Lk1vZGVsQmFja2VuZFggAAAAa2V5X2FkbWluX2VzdGF0ZWJhc2VfZXN0YXRldHlwZV9VIWVzdGF0
+ZV90eXBlX2NhdGVnb3J5X19pZF9fZXhhY3Q9MXUu
+', '2012-05-11 15:17:39.653+04');
+
+
+--
+-- TOC entry 2139 (class 0 OID 16525)
+-- Dependencies: 179
+-- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO django_site (id, domain, name) VALUES (1, 'example.com', 'example.com');
+
+
+--
+-- TOC entry 2149 (class 0 OID 17185)
+-- Dependencies: 199
+-- Data for Name: estatebase_estatetypecategory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO estatebase_estatetypecategory (id, "order", name) VALUES (2, 3, 'Гараж');
+INSERT INTO estatebase_estatetypecategory (id, "order", name) VALUES (3, 1, 'Квартира');
+INSERT INTO estatebase_estatetypecategory (id, "order", name) VALUES (1, 2, 'Земельный участок');
+
+
+--
+-- TOC entry 2150 (class 0 OID 17196)
+-- Dependencies: 201 2149 2137
+-- Data for Name: estatebase_estatetype; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (5, 'Сельскохозяйственный участок', 1, NULL, 'Земельный участок для сельскохозяйственного производства', 1);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (4, 'Дачный участок', 1, NULL, 'Земельный участок для садоводства и огородничества', 2);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (6, 'Коммерческий участок', 1, NULL, 'Земельный участок для коммерческого использования', 3);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (7, 'Участок с квартирой', 1, NULL, 'Квартира с участком и таунхаус', 4);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (8, 'Дача', 1, NULL, 'Участок с дачей', 5);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (9, 'Участок с фундаментом', 1, NULL, '', 6);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (10, 'Участок с недостроем', 1, NULL, '', 7);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (11, 'Участок с ветхим домом', 1, NULL, '', 8);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (12, 'Гараж', 2, NULL, '', 9);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (13, 'Новостройка', 3, NULL, '', 10);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (14, 'Малосемейка', 3, NULL, '', 11);
+INSERT INTO estatebase_estatetype (id, name, estate_type_category_id, content_type_id, note, "order") VALUES (15, 'Вторичка', 3, NULL, '', 12);
+
+
+--
+-- TOC entry 2151 (class 0 OID 17207)
+-- Dependencies: 203 2150
+-- Data for Name: estatebase_estate; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2142 (class 0 OID 16944)
+-- Dependencies: 185
+-- Data for Name: estatebase_region; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2143 (class 0 OID 16952)
+-- Dependencies: 187 2142
+-- Data for Name: estatebase_locality; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2144 (class 0 OID 16960)
+-- Dependencies: 189 2143
+-- Data for Name: estatebase_microdistrict; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2145 (class 0 OID 16968)
+-- Dependencies: 191 2143
+-- Data for Name: estatebase_street; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2146 (class 0 OID 17038)
+-- Dependencies: 193
+-- Data for Name: sitetree_tree; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2147 (class 0 OID 17048)
+-- Dependencies: 195 2146
+-- Data for Name: sitetree_treeitem; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2148 (class 0 OID 17133)
+-- Dependencies: 197 2147 2130
+-- Data for Name: sitetree_treeitem_access_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2141 (class 0 OID 16555)
+-- Dependencies: 183
+-- Data for Name: south_migrationhistory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (4, 'estatebase', '0001_initial', '2012-04-27 08:49:05.381+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (5, 'sitetree', '0001_initial', '2012-04-27 08:50:31.204+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (6, 'sitetree', '0002_auto__add_field_treeitem_access_restricted__add_field_treeitem_access_', '2012-04-27 08:50:31.472+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (7, 'sitetree', '0003_auto__add_field_treeitem_access_loggedin', '2012-04-27 08:50:31.603+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (8, 'estatebase', '0002_auto__del_field_estatetypecategory_name', '2012-04-27 08:56:31.985+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (9, 'estatebase', '0003_auto__add_field_estatetypecategory_name', '2012-04-27 08:59:21.047+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (10, 'estatebase', '0004_auto__del_estatetypecategory__del_estatetype__del_estate', '2012-04-27 09:00:23.14+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (11, 'estatebase', '0005_auto__add_estatetypecategory__add_estatetype__add_estate', '2012-04-27 09:00:54.301+04');
+INSERT INTO south_migrationhistory (id, app_name, migration, applied) VALUES (12, 'estatebase', '0006_auto__add_field_estatetype_order__chg_field_estatetype_name', '2012-04-27 10:55:01.185+04');
+
+
+-- Completed on 2012-04-27 15:27:15
+
+--
+-- PostgreSQL database dump complete
+--
+
