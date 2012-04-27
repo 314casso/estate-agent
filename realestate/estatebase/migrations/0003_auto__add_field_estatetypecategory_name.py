@@ -8,14 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'EstateType.note'
-        db.add_column('estatebase_estatetype', 'note', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
+        # Adding field 'EstateTypeCategory.name'
+        db.add_column('estatebase_estatetypecategory', 'name', self.gf('django.db.models.fields.CharField')(default=0, max_length=100), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting field 'EstateType.note'
-        db.delete_column('estatebase_estatetype', 'note')
+        # Deleting field 'EstateTypeCategory.name'
+        db.delete_column('estatebase_estatetypecategory', 'name')
 
 
     models = {
@@ -32,7 +32,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'estatebase.estatetype': {
-            'Meta': {'object_name': 'EstateType'},
+            'Meta': {'ordering': "['name']", 'object_name': 'EstateType'},
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             'estate_type_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateTypeCategory']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -40,29 +40,30 @@ class Migration(SchemaMigration):
             'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
         'estatebase.estatetypecategory': {
-            'Meta': {'object_name': 'EstateTypeCategory'},
+            'Meta': {'ordering': "['order']", 'object_name': 'EstateTypeCategory'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'})
         },
         'estatebase.locality': {
-            'Meta': {'object_name': 'Locality'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Locality'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Region']", 'null': 'True', 'blank': 'True'})
         },
         'estatebase.microdistrict': {
-            'Meta': {'object_name': 'Microdistrict'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Microdistrict'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'locality': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Locality']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         'estatebase.region': {
-            'Meta': {'object_name': 'Region'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Region'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         'estatebase.street': {
-            'Meta': {'object_name': 'Street'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Street'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'locality': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Locality']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})

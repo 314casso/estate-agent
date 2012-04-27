@@ -8,42 +8,11 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'Region'
-        db.create_table('estatebase_region', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal('estatebase', ['Region'])
-
-        # Adding model 'Locality'
-        db.create_table('estatebase_locality', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('region', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Region'], null=True, blank=True)),
-        ))
-        db.send_create_signal('estatebase', ['Locality'])
-
-        # Adding model 'Microdistrict'
-        db.create_table('estatebase_microdistrict', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('locality', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Locality'])),
-        ))
-        db.send_create_signal('estatebase', ['Microdistrict'])
-
-        # Adding model 'Street'
-        db.create_table('estatebase_street', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('locality', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Locality'])),
-        ))
-        db.send_create_signal('estatebase', ['Street'])
-
         # Adding model 'EstateTypeCategory'
         db.create_table('estatebase_estatetypecategory', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('order', self.gf('django.db.models.fields.PositiveIntegerField')(unique=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
         ))
         db.send_create_signal('estatebase', ['EstateTypeCategory'])
 
@@ -67,18 +36,6 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         
-        # Deleting model 'Region'
-        db.delete_table('estatebase_region')
-
-        # Deleting model 'Locality'
-        db.delete_table('estatebase_locality')
-
-        # Deleting model 'Microdistrict'
-        db.delete_table('estatebase_microdistrict')
-
-        # Deleting model 'Street'
-        db.delete_table('estatebase_street')
-
         # Deleting model 'EstateTypeCategory'
         db.delete_table('estatebase_estatetypecategory')
 
@@ -111,9 +68,9 @@ class Migration(SchemaMigration):
             'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
         'estatebase.estatetypecategory': {
-            'Meta': {'ordering': "['name']", 'object_name': 'EstateTypeCategory'},
+            'Meta': {'ordering': "['order']", 'object_name': 'EstateTypeCategory'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'})
         },
         'estatebase.locality': {
