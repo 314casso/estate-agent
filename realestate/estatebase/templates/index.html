@@ -7,7 +7,7 @@
 		<ul>
 			{% for estate_type in estate_category.estatetype_set.all %}
 			<li>
-				<a href="#">{{ estate_type.name }}</a>
+				<a href="#">{{ estate_type.name }}</a><a href="{% url estate_create estate_type.pk %}">ADD</a>
 			</li>
 			{% endfor %}
 		</ul>

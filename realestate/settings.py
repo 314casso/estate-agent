@@ -98,7 +98,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'middleware.FilterPersistMiddleware'
+    'middleware.FilterPersistMiddleware',
+    #'middleware.SQLLogMiddleware',
 )
 
 ROOT_URLCONF = 'realestate.urls'
@@ -121,6 +122,7 @@ INSTALLED_APPS = (
     'estatebase',
     'sitetree',
     'orderedmodel',
+    'selectable',
     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
