@@ -1,10 +1,13 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView
-from realestate.estatebase.forms import EstateForm
-from realestate.estatebase.models import EstateType
+from estatebase.forms import EstateForm
+from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
-from realestate.estatebase.models import Estate
+from estatebase.models import Estate
+from estatebase.tables import EstateTable
+from django.shortcuts import render
+from django_tables2.config import RequestConfig
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'    
@@ -36,3 +39,9 @@ class EstateCreateView(EstateMixin, CreateView):
             'estate_type_name': EstateType.objects.get(pk=self.kwargs['estate_type']),            
         })
         return context
+
+#TODO: Convert to ClassBased
+def estate_list_view(request):
+    table = EstateTable(Estate.objects.all())
+    RequestConfig(request, paginate={"per_page": 5}).configure(table)
+    return render(request, 'estate_list.html', {'table': table})

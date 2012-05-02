@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from realestate.estatebase.lookups import StreetLookup
+from estatebase.lookups import StreetLookup
 from django.forms import ModelForm
-from realestate.estatebase.models import Estate, EstateType
+from estatebase.models import Estate, EstateType
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget

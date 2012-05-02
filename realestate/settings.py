@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'sitetree',
     'orderedmodel',
     'selectable',
+    'django_tables2',
     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

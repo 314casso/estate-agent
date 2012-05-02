@@ -1,7 +1,7 @@
 from django.contrib import admin
 from models import Region, Locality, Microdistrict, Street, Estate, EstateType, EstateTypeCategory
 from django.contrib.contenttypes.models import ContentType
-from realestate.orderedmodel.admin import OrderedModelAdmin
+from orderedmodel.admin import OrderedModelAdmin
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)

@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from realestate.orderedmodel.models import OrderedModel
+from orderedmodel.models import OrderedModel
 
 class SimpleDict(models.Model):
     name = models.CharField(_('Name'), max_length=255)

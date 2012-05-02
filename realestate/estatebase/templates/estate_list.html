@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block head %}
+{{ form.media.css }}
+{{ form.media.js }}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+{% endblock %}
+{% block left %}
+{{ estate_type_name }}
+{% load render_table from django_tables2 %}
+{% render_table table %}
+{% endblock %}
