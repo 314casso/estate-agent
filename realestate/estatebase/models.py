@@ -48,6 +48,8 @@ class EstateType(OrderedModel):
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
     content_type = models.ForeignKey(ContentType, blank=True, null=True, verbose_name=_('ContentType'), limit_choices_to={'id__in': [3, 11]})
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)    
+    def __unicode__(self):
+        return u'%s' % self.name
     class Meta(OrderedModel.Meta):
         verbose_name = _('estate type')
         verbose_name_plural = _('estate types')     
