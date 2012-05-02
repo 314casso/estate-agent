@@ -42,6 +42,10 @@ class EstateCreateView(EstateMixin, CreateView):
 
 #TODO: Convert to ClassBased
 def estate_list_view(request):
-    table = EstateTable(Estate.objects.all())
+    table = EstateTable(Estate.objects.all().select_related())
     RequestConfig(request, paginate={"per_page": 5}).configure(table)
-    return render(request, 'estate_list.html', {'table': table})
+    context = {
+            'table': table,
+            'title': 'list'
+        }
+    return render(request, 'estate_list.html', context)

@@ -3,9 +3,32 @@
 {{ form.media.css }}
 {{ form.media.js }}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<style>
+	.ui-selecting {
+		background: #FECA40 !important;
+	}
+	.ui-selected {
+		background: #F39814 !important;
+		color: white;
+	}
+
+</style>
+<script>
+	$(function() {
+		$(".paleblue tbody").selectable({
+			stop : function() {
+				$(".ui-selected", this).each(function() {
+					$('#info').html($(this).find('.id').text());
+				});
+			}
+		});
+	});
+	
+</script>
 {% endblock %}
 {% block left %}
 {{ estate_type_name }}
 {% load render_table from django_tables2 %}
 {% render_table table %}
+<div id='info'></div>
 {% endblock %}
