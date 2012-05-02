@@ -2,8 +2,9 @@ from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView
 from realestate.estatebase.forms import EstateForm
-from realestate.estatebase.models import Estate, EstateType
+from realestate.estatebase.models import EstateType
 from django.core.urlresolvers import reverse
+from realestate.estatebase.models import Estate
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'    
