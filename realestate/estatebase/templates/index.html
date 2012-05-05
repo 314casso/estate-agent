@@ -12,39 +12,52 @@
 	}
 
 </style>
+
 <script type="text/javascript">
 	$(function() {
-		$('a.ajax').click(function() {
+		$('a.ajax').parent().addClass('ui-state-default ui-corner-all');
+		$('a.ajax').addClass('ui-icon ui-icon-plus');
+		$('a.ajax').live('click', function() {
 			var url = this.href;
-			// show a spinner or something via css
-			var dialog = $('<div style="display:none" class="loading"></div>').appendTo('body');
-			// open the dialog
-			dialog.dialog({
-				// add a close listener to prevent adding multiple divs to the document
-				close : function(event, ui) {
-					// remove div with all data and events
-					dialog.remove();
-				},
-				modal : true
-			});
+			var dialog = $("#dialog");
+			if($("#dialog").length == 0) {
+				dialog = $('<div id="dialog" style="display:hidden"></div>').appendTo('body');
+			}
 			// load remote content
-			dialog.load(url, // omit this param object to issue a GET request instead a POST request, otherwise you may provide post parameters within the object
-			function(responseText, textStatus, XMLHttpRequest) {
-				// remove the loading class
-				dialog.removeClass('loading');
+			dialog.load(url, function(responseText, textStatus, XMLHttpRequest) {
+				dialog.dialog({
+					modal : true,
+					buttons : {
+						OK : function() {
+							$.post(url, $('#dialog form').serialize(), function(data) {
+								if(data.result != 'success') {
+									$('#dialog form').html(data.form);
+									// Re-bind selectables
+									bindSelectables();
+									// Re-bind extra parametrs
+									bindParam();
+								} else {
+									dialog.dialog("close");
+								}
+							}, 'json')
+
+						},
+						Cancel : function() {
+							dialog.dialog("close");
+						}
+					}
+
+				});
 			});
 			//prevent the browser to follow the link
 			return false;
 		});
-	}); 
+	});
 </script>
 
 {% endblock %}
 
 {% block left %}
-<a class="ajax" href="http://www.rbc.ru">
-      Open as dialog
-    </a>
 
 <div id="estate_nav">
 	{% for estate_category in estate_categories %}
@@ -53,7 +66,9 @@
 		<ul>
 			{% for estate_type in estate_category.estatetype_set.all %}
 			<li>
-				<a href="#">{{ estate_type.name }}</a><a class="ajax" href="{% url estate_create estate_type.pk %}">ADD</a>
+				<table>
+					<td><a href="#">{{ estate_type.name }} </a></td><td><div><a class="ajax" href="{% url estate_create estate_type.pk %}"></a></div></td>
+				</table>
 			</li>
 			{% endfor %}
 		</ul>

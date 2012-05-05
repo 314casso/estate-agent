@@ -1,20 +1,24 @@
-{% extends "base.html" %}
 {% block head %}
 {{ form.media.css }}
 {{ form.media.js }}
 <script type="text/javascript">
-	$(document).ready(function() {
-		function newParameters(query) {
-			query.locality = $('#id_locality').val();
-		}
+	function newParameters(query) {
+		query.locality = $('#id_locality').val();
+	}
+
+	function bindParam() {
 		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);
+	}
+
+
+	$(document).ready(function() {
+		bindParam();
 	}); 
 </script>
 {% endblock %}
 {% block left %}
 {{ estate_type_name }}
 <form action="" method="POST">
-	{{ form }}{% csrf_token %}
-	<input type="submit" value="Go" />
+	{{ form.as_p }}{% csrf_token %}
 </form>
 {% endblock %}

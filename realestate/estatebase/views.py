@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, ModelFormMixin
 from estatebase.forms import EstateForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
@@ -8,20 +8,47 @@ from estatebase.models import Estate
 from estatebase.tables import EstateTable
 from django.shortcuts import render
 from django_tables2.config import RequestConfig
+from django.utils import simplejson as json
+from django.http import HttpResponse
+
+class AjaxMixin(ModelFormMixin):
+    def serializer_json(self, data):
+        """Returns json format"""
+        return json.dumps(data), 'application/json'    
+
+    def no_ajax_response(self):
+        return HttpResponse('Waiting for ajax reqiest!')
+
+    def response_alternative(self, form, success=True):
+        if success:        
+            return HttpResponse(json.dumps({'result': 'success'}))
+        else:
+            return HttpResponse(json.dumps({'form': form.as_p().replace('\n', ''), 'result': 'error'}))
+
+    def form_valid(self, form):        
+        self.object = form.save();
+        if not self.request.is_ajax():
+            return self.no_ajax_response()
+        return self.response_alternative(form)
+
+    def form_invalid(self, form):        
+        if not self.request.is_ajax():
+            return self.no_ajax_response()
+        return self.response_alternative(form,False)
 
 class EstateTypeView(TemplateView):    
-    template_name = 'index.html'    
+    template_name = 'index.html'        
     def get_context_data(self, **kwargs):
-        context = super(EstateTypeView, self).get_context_data(**kwargs)
-        #estate_categories = EstateTypeCategory.objects.all().order_by('name')        
+        context = super(EstateTypeView, self).get_context_data(**kwargs)                
         estate_categories = EstateTypeCategory.objects.all()
         context.update({
             'title': 'base',
             'estate_categories': estate_categories
         })
         return context 
+
     
-class EstateMixin(object):
+class EstateMixin(AjaxMixin):
     model = Estate
     form_class = EstateForm
     def get_success_url(self):
