@@ -2,6 +2,8 @@ $(document).ready(function() {
 	$("#estate_nav").accordion({
 		autoHeight : false
 	});
+	$('a.inline-button').parent().addClass('ui-state-default ui-corner-all');
+	$('a.icon-plus').addClass('ui-icon ui-icon-plus');	
 });
 
 $(document).ajaxSend(function(event, xhr, settings) {
@@ -41,4 +43,4 @@ $(document).ajaxSend(function(event, xhr, settings) {
 	if(!safeMethod(settings.type) && sameOrigin(settings.url)) {
 		xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 	}
-}); 
+});

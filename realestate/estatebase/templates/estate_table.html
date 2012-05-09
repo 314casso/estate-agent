@@ -11,24 +11,27 @@
 		background: #F39814 !important;
 		color: white;
 	}
-
+
 </style>
 <script>
 	$(function() {
 		$(".paleblue tbody").selectable({
+			cancel : 'a',
 			stop : function() {
 				$(".ui-selected", this).each(function() {
-					$('#info').html($(this).find('.id').text());
+					$('#info').html($(this).find('.pk').text());
 				});
 			}
 		});
 	});
-	
+
 </script>
 {% endblock %}
 {% block left %}
 {{ estate_type_name }}
-{% load render_table from django_tables2 %}
-{% render_table table %}
+<div id="estate_list">
+	{% load render_table from django_tables2 %}
+	{% render_table table %}
+</div>
 <div id='info'></div>
 {% endblock %}

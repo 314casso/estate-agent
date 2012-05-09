@@ -1,4 +1,3 @@
-{% block head %}
 {{ form.media.css }}
 {{ form.media.js }}
 <script type="text/javascript">
@@ -6,19 +5,24 @@
 		query.locality = $('#id_locality').val();
 	}
 
-	function bindParam() {
+	function bindParameters() {
 		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);
+	}
+
+	function rebindDialog() {
+		bindSelectables();
+		bindParameters();
+	}
+
+	function setDialogTitle(dialog) {
+		dialog.dialog('option', 'title', '{{ estate_type_name }}');
 	}
 
 
 	$(document).ready(function() {
-		bindParam();
+		bindParameters();
 	}); 
 </script>
-{% endblock %}
-{% block left %}
-{{ estate_type_name }}
-<form action="" method="POST">
-	{{ form.as_p }}{% csrf_token %}
+<form action="" method="POST">	
+		{{ form.as_p }}{% csrf_token %}	
 </form>
-{% endblock %}

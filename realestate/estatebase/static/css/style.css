@@ -8,10 +8,19 @@ body {
 }
 
 #estate_nav ul {
-	padding-left : 0.5em;	
+	padding-left: 0.5em;
 	margin: 0;
+	list-style: none;
 }
 
-#estate_nav ul li{
-	padding: 0.2em 0.3em;
-} 
+#estate_nav ul li {
+	padding: 0 0.3em;
+}
+
+.ui-selecting {
+	background: #FECA40 !important;
+}
+.ui-selected {
+	background: #F39814 !important;
+	color: white;
+}

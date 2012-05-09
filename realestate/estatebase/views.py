@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
-from django.views.generic.edit import CreateView, ModelFormMixin
+from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView
 from estatebase.forms import EstateForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
@@ -26,14 +26,14 @@ class AjaxMixin(ModelFormMixin):
             return HttpResponse(json.dumps({'form': form.as_p().replace('\n', ''), 'result': 'error'}))
 
     def form_valid(self, form):        
-        self.object = form.save();
         if not self.request.is_ajax():
-            return self.no_ajax_response()
+            return super(AjaxMixin, self).form_valid(form)
+        self.object = form.save();
         return self.response_alternative(form)
 
     def form_invalid(self, form):        
         if not self.request.is_ajax():
-            return self.no_ajax_response()
+            return super(AjaxMixin, self).form_invalid(form)
         return self.response_alternative(form,False)
 
 class EstateTypeView(TemplateView):    
@@ -44,17 +44,17 @@ class EstateTypeView(TemplateView):
         context.update({
             'title': 'base',
             'estate_categories': estate_categories
-        })
+        })        
         return context 
 
     
-class EstateMixin(AjaxMixin):
+class EstateMixin(object):
     model = Estate
     form_class = EstateForm
     def get_success_url(self):
         return reverse('estate_list')        
 
-class EstateCreateView(EstateMixin, CreateView):
+class EstateCreateView(AjaxMixin, EstateMixin, CreateView):
     def get_initial(self):        
         initial = super(EstateCreateView, self).get_initial()        
         initial = initial.copy()        
@@ -64,15 +64,21 @@ class EstateCreateView(EstateMixin, CreateView):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
         context.update({
             'estate_type_name': EstateType.objects.get(pk=self.kwargs['estate_type']),            
-        })
+        })        
         return context
+
+class EstateUpdateView(AjaxMixin, EstateMixin, UpdateView):
+    pass
 
 #TODO: Convert to ClassBased
 def estate_list_view(request):
     table = EstateTable(Estate.objects.all().select_related())
-    RequestConfig(request, paginate={"per_page": 5}).configure(table)
+    RequestConfig(request, paginate={"per_page": 20}).configure(table)
     context = {
             'table': table,
             'title': 'list'
         }
-    return render(request, 'estate_list.html', context)
+    template_name = 'estate_table.html'
+    if request.is_ajax():
+        template_name = 'ajax_%s' %template_name
+    return render(request, template_name, context)
