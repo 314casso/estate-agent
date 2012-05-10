@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse
+from django_tables2 import SingleTableView
+
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -70,15 +72,13 @@ class EstateCreateView(AjaxMixin, EstateMixin, CreateView):
 class EstateUpdateView(AjaxMixin, EstateMixin, UpdateView):
     pass
 
-#TODO: Convert to ClassBased
-def estate_list_view(request):
-    table = EstateTable(Estate.objects.all().select_related())
-    RequestConfig(request, paginate={"per_page": 20}).configure(table)
-    context = {
+class EstateListView(TemplateView):    
+    template_name = 'estate_table.html'    
+    def get_context_data(self, **kwargs):
+        table = EstateTable(Estate.objects.all().select_related())
+        RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
+        context = {
             'table': table,
             'title': 'list'
-        }
-    template_name = 'estate_table.html'
-    if request.is_ajax():
-        template_name = 'ajax_%s' %template_name
-    return render(request, template_name, context)
+        }        
+        return context

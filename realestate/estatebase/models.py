@@ -66,4 +66,54 @@ class Estate(models.Model):
 #    class Meta:
 #        verbose_name = _('bidg')
 #        verbose_name_plural = _('bidgs')
-            
+
+
+# Client Object Model
+class ClientType(SimpleDict):
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('client type')
+        verbose_name_plural = _('client types')
+
+class Client(models.Model):
+    client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
+    class Meta:
+        verbose_name = _('client')
+        verbose_name_plural = _('clients')    
+
+class ContactType(SimpleDict):
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('contact type')
+        verbose_name_plural = _('contact types')
+
+class Origin(SimpleDict):
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('origin')
+        verbose_name_plural = _('origins')
+
+class Contact(models.Model):
+    client =  models.ForeignKey(Client, verbose_name=_('Client'),)
+    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
+    contact = models.CharField(_('Contact'), max_length=255)    
+    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True ) # Source where this contact was found
+    address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)    
+    def __unicode__(self):
+        return u'%s: %s' % (self.contact_type.name, self.contact)
+    class Meta:
+        verbose_name = _('contact')
+        verbose_name_plural = _('contacts')   
+
+class ContactState(SimpleDict):
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('contact state')
+        verbose_name_plural = _('contact states')
+
+class ContactHistory(models.Model):
+    event_date = models.DateTimeField(_('Event Date'))
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
+    def __unicode__(self):
+        return u'%s: %s' % (self.event_date, self.contact_state.name)
+    class Meta:
+        verbose_name = _('contact history')
+        verbose_name_plural = _('contact history') 
+    
