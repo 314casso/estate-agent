@@ -74,8 +74,19 @@ class ClientType(SimpleDict):
         verbose_name = _('client type')
         verbose_name_plural = _('client types')
 
+class Origin(SimpleDict):
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('origin')
+        verbose_name_plural = _('origins')
+
 class Client(models.Model):
+    name = models.CharField(_('Name'), max_length=255)
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
+    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) # Source where this contact was found
+    address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    def __unicode__(self):
+        return u'%s %s' % (self.name, self.address)
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')    
@@ -85,18 +96,10 @@ class ContactType(SimpleDict):
         verbose_name = _('contact type')
         verbose_name_plural = _('contact types')
 
-class Origin(SimpleDict):
-    class Meta(SimpleDict.Meta):
-        verbose_name = _('origin')
-        verbose_name_plural = _('origins')
-
 class Contact(models.Model):
-    client =  models.ForeignKey(Client, verbose_name=_('Client'),)
+    client = models.ForeignKey(Client, verbose_name=_('Client'),)
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
-    contact = models.CharField(_('Contact'), max_length=255)    
-    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True ) # Source where this contact was found
-    address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)    
+    contact = models.CharField(_('Contact'), max_length=255)        
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
     class Meta:

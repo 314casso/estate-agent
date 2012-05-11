@@ -4,14 +4,11 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView
 from estatebase.forms import EstateForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
-from estatebase.models import Estate
-from estatebase.tables import EstateTable
-from django.shortcuts import render
+from estatebase.models import Estate, Client
+from estatebase.tables import EstateTable, ClientTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse
-from django_tables2 import SingleTableView
-
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -36,7 +33,7 @@ class AjaxMixin(ModelFormMixin):
     def form_invalid(self, form):        
         if not self.request.is_ajax():
             return super(AjaxMixin, self).form_invalid(form)
-        return self.response_alternative(form,False)
+        return self.response_alternative(form, False)
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'        
@@ -65,7 +62,7 @@ class EstateCreateView(AjaxMixin, EstateMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
         context.update({
-            'estate_type_name': EstateType.objects.get(pk=self.kwargs['estate_type']),            
+            'estate_type_name': EstateType.objects.get(pk=self.kwargs['estate_type']),
         })        
         return context
 
@@ -77,6 +74,17 @@ class EstateListView(TemplateView):
     def get_context_data(self, **kwargs):
         table = EstateTable(Estate.objects.all().select_related())
         RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
+        context = {
+            'table': table,
+            'title': 'list'
+        }        
+        return context
+    
+class ClientListView(TemplateView):
+    template_name = 'client_table.html'
+    def get_context_data(self, **kwargs):
+        table = ClientTable(Client.objects.all().select_related())
+        RequestConfig(self.request, paginate={"per_page": 25}).configure(table)
         context = {
             'table': table,
             'title': 'list'

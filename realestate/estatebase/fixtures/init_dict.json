@@ -43,5 +43,23 @@
 		"fields": {
 			"name": "Веб-сайт"
 		}
+	}, {
+		"pk": 1,
+		"model": "estatebase.clienttype",
+		"fields": {
+			"name": "Риелтор"
+		}
+	}, {
+		"pk": 2,
+		"model": "estatebase.clienttype",
+		"fields": {
+			"name": "Агенство"
+		}
+	}, {
+		"pk": 3,
+		"model": "estatebase.clienttype",
+		"fields": {
+			"name": "Частное лицо"
+		}
 	}
 ]
