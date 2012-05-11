@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView
-from estatebase.forms import EstateForm
+from estatebase.forms import EstateForm, ClientForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -9,6 +9,7 @@ from estatebase.tables import EstateTable, ClientTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse
+ 
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -87,6 +88,16 @@ class ClientListView(TemplateView):
         RequestConfig(self.request, paginate={"per_page": 25}).configure(table)
         context = {
             'table': table,
-            'title': 'list'
+            'title': 'list',
+            'next_url': self.request.get_full_path(),
         }        
         return context
+
+class ClientMixin(object):
+    model = Client
+    form_class = ClientForm
+    def get_success_url(self):
+        return reverse('client_table')      
+
+class ClientCreateView(ClientMixin, CreateView):
+    pass

@@ -2,10 +2,12 @@
 
 from estatebase.lookups import StreetLookup
 from django.forms import ModelForm
-from estatebase.models import Estate, EstateType
+from estatebase.models import Estate, EstateType, Client
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
+
+
 
 class EstateForm(ModelForm):
     estate_type=forms.ModelChoiceField(queryset=EstateType.objects.all(),widget=forms.HiddenInput())         
@@ -15,4 +17,6 @@ class EstateForm(ModelForm):
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
 
-    
+class ClientForm(ModelForm):             
+    class Meta:
+        model = Client            
