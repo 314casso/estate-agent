@@ -6,6 +6,7 @@ from estatebase.models import Estate, EstateType, Client
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
+from django.forms.widgets import Textarea
 
 
 
@@ -19,4 +20,7 @@ class EstateForm(ModelForm):
 
 class ClientForm(ModelForm):             
     class Meta:
-        model = Client            
+        model = Client
+        widgets = {
+            'note': Textarea()
+        }            

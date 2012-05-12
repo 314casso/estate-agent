@@ -1,4 +1,21 @@
-<form action="" method="POST">	
-		{{ form.as_p }}{% csrf_token %}	
-		<p><input type="submit" /></p>
+{% extends "base.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block left %}
+<form action="" method="POST" class="button table_form">	
+		<table class="ui-widget ui-widget-content ui-corner-all">
+			{{ form.as_table }}{% csrf_token %}
+			<tfoot>
+				<tr>
+					<td colspan="2">
+					<input type="submit" />
+					</td>
+				</tr>
+			</tfoot>
+		</table>	
 </form>
+{% endblock %}
+

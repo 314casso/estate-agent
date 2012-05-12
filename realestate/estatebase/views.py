@@ -100,4 +100,8 @@ class ClientMixin(object):
         return reverse('client_table')      
 
 class ClientCreateView(ClientMixin, CreateView):
-    pass
+    def get_success_url(self):        
+        next_url = self.request.GET.get('next', '')
+        if next:             
+            return next_url
+        return super(ClientCreateView, self).get_success_url()      
