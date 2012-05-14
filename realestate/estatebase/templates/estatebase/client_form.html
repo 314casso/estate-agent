@@ -20,13 +20,14 @@
 		<tr>
 			<td colspan="2"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">	
-			{% for contact in contact_formset %}					
+			{% for contact in contact_formset %}
+			{{ contact.id }}					
 					<tr>
 						<td>{{ contact.contact_type.label_tag }}</td>
 						<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
 						<td>{{ contact.contact.label_tag }}</td>
 						<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
-						<td>{% if contact.instance.pk %}{{ form.DELETE }} {% endif %}</td>
+						<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>
 					</tr>
 				
 			{% endfor %}

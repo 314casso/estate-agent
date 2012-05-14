@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateCreateView, EstateListView, EstateUpdateView,\
-    ClientListView, ClientCreateView
+    ClientListView, ClientCreateView, ClientUpdateView
+
 
 
 admin.autodiscover()
@@ -19,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_table'),
     url (r'^createclient/$', view=ClientCreateView.as_view(), name='client_create'),
+    url (r'^updateclient/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
 )
 
 

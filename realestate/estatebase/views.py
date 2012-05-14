@@ -8,8 +8,7 @@ from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable, ClientTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
-from django.http import HttpResponse
- 
+from django.http import HttpResponse, QueryDict
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -85,19 +84,34 @@ class ClientListView(TemplateView):
     template_name = 'client_table.html'
     def get_context_data(self, **kwargs):
         table = ClientTable(Client.objects.all().select_related())
-        RequestConfig(self.request, paginate={"per_page": 25}).configure(table)
+        RequestConfig(self.request, paginate={"per_page": 5}).configure(table)
+        q = QueryDict('', mutable=True)
+        q['next'] = self.request.get_full_path()
         context = {
             'table': table,
             'title': 'list',
-            'next_url': self.request.get_full_path(),
+            'next_url': q.urlencode(safe='/'),
         }        
         return context
 
-class ClientMixin(object):
+class ClientMixin(ModelFormMixin):
     model = Client
-    form_class = ClientForm
-    def get_success_url(self):
-        return reverse('client_table')      
+    form_class = ClientForm          
+    def form_valid(self, form):
+        context = self.get_context_data()
+        contact_form = context['contact_formset']
+        if contact_form.is_valid():
+            self.object = form.save()
+            contact_form.instance = self.object
+            contact_form.save()
+            return super(ClientMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+    def get_success_url(self):        
+        next_url = self.request.REQUEST.get('next', '')
+        if next:             
+            return next_url
+        return super(ClientMixin, self).get_success_url()      
 
 class ClientCreateView(ClientMixin, CreateView):
     def get_context_data(self, **kwargs):
@@ -106,20 +120,13 @@ class ClientCreateView(ClientMixin, CreateView):
             context['contact_formset'] = ContactFormSet(self.request.POST)            
         else:
             context['contact_formset'] = ContactFormSet()
-        return context      
-    def form_valid(self, form):
-        context = self.get_context_data()
-        contact_form = context['contact_formset']
-        if contact_form.is_valid():
-            self.object = form.save()
-            contact_form.instance = self.object
-            contact_form.save()
-            return super(ClientCreateView, self).form_valid(form)
+        return context
+      
+class ClientUpdateView(ClientMixin, UpdateView):
+    def get_context_data(self, **kwargs):
+        context = super(ClientUpdateView, self).get_context_data(**kwargs)        
+        if self.request.POST:
+            context['contact_formset'] = ContactFormSet(self.request.POST,instance=self.object)            
         else:
-            return self.render_to_response(self.get_context_data(form=form))
-  
-    def get_success_url(self):        
-        next_url = self.request.GET.get('next', '')
-        if next:             
-            return next_url
-        return super(ClientCreateView, self).get_success_url()      
+            context['contact_formset'] = ContactFormSet(instance=self.object)
+        return context
