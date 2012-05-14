@@ -25,16 +25,34 @@ body {
 	color: white;
 }
 
-.table_form table th{
+.table-form table th{
 	text-align: left;
 	padding-left : 10px;
 }
 
-.table_form table tfoot {
+.table-form table tfoot {
 	text-align: right;
 }
 
-.table_form table td{
-	padding: 5px;
+.table-form table td{
+	padding: 2px;
 }
 
+.big-text-input, .table-form textarea {
+	width: 98%;
+}
+
+.inline-formset {
+	padding : 4px;
+}
+
+.inline-formset ul {
+ 	padding : 0 2px; 	
+}
+
+.errorlist {
+	color: #CD0A0A;
+	padding : 2px;
+	list-style-type : none;
+	margin: 0 0 2px;	
+}

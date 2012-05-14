@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView
-from estatebase.forms import EstateForm, ClientForm
+from estatebase.forms import EstateForm, ClientForm, ContactFormSet
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -100,6 +100,24 @@ class ClientMixin(object):
         return reverse('client_table')      
 
 class ClientCreateView(ClientMixin, CreateView):
+    def get_context_data(self, **kwargs):
+        context = super(ClientCreateView, self).get_context_data(**kwargs)        
+        if self.request.POST:
+            context['contact_formset'] = ContactFormSet(self.request.POST)            
+        else:
+            context['contact_formset'] = ContactFormSet()
+        return context      
+    def form_valid(self, form):
+        context = self.get_context_data()
+        contact_form = context['contact_formset']
+        if contact_form.is_valid():
+            self.object = form.save()
+            contact_form.instance = self.object
+            contact_form.save()
+            return super(ClientCreateView, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+  
     def get_success_url(self):        
         next_url = self.request.GET.get('next', '')
         if next:             

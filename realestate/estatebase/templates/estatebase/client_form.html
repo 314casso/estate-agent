@@ -1,21 +1,48 @@
 {% extends "base.html" %}
 
 {% block head %}
-
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#client-contacts tr').formset({
+			prefix : '{{ contact_formset.prefix }}',
+			addText : 'Добавить контакт',
+			deleteText: 'Удалить'
+		});
+	})
+</script>
 {% endblock %}
 
 {% block left %}
-<form action="" method="POST" class="button table_form">	
-		<table class="ui-widget ui-widget-content ui-corner-all">
-			{{ form.as_table }}{% csrf_token %}
-			<tfoot>
-				<tr>
-					<td colspan="2">
-					<input type="submit" />
-					</td>
-				</tr>
-			</tfoot>
-		</table>	
+<form action="" method="POST" class="button table-form">
+	<table class="ui-widget ui-widget-content ui-corner-all">
+		{{ form.as_table }}{% csrf_token %}
+		<tr>
+			<td colspan="2"> {{ contact_formset.management_form }}
+			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">	
+			{% for contact in contact_formset %}					
+					<tr>
+						<td>{{ contact.contact_type.label_tag }}</td>
+						<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
+						<td>{{ contact.contact.label_tag }}</td>
+						<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
+						<td>{% if contact.instance.pk %}{{ form.DELETE }} {% endif %}</td>
+					</tr>
+				
+			{% endfor %}
+			</table> 
+			</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+				<input type="submit" />
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+
 </form>
+
 {% endblock %}
 
