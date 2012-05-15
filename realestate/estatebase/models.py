@@ -89,7 +89,8 @@ class Client(models.Model):
         return u'%s %s' % (self.name, self.address)
     class Meta:
         verbose_name = _('client')
-        verbose_name_plural = _('clients')    
+        verbose_name_plural = _('clients')
+        ordering = ['id']    
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):

@@ -11,6 +11,7 @@ from estatebase.tables import EstateTable, ClientTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
+from django.views.generic.list import ListView
 
 
 class AjaxMixin(ModelFormMixin):
@@ -83,17 +84,24 @@ class EstateListView(TemplateView):
         }        
         return context
     
-class ClientListView(TemplateView):
+class ClientListView(ListView):
     template_name = 'client_list.html'
-    def get_context_data(self, **kwargs):
-        clients = Client.objects.all().select_related()        
+    context_object_name = "clients"
+    paginate_by = 5    
+    def get_queryset(self):
+        #q = Client.objects.all()
+        order_by = self.request.GET.get('order_by','')
+        if order_by:
+            return Client.objects.order_by(order_by)
+        return Client.objects.all()
+    def get_context_data(self, **kwargs): 
+        context = super(ClientListView, self).get_context_data(**kwargs)       
         q = QueryDict('', mutable=True)
         q['next'] = self.request.get_full_path()
-        context = {
-            'clients': clients,
+        context.update ({        
             'title': 'list',
             'next_url': q.urlencode(safe='/'),
-        }        
+        })        
         return context
 
 class ClientMixin(ModelFormMixin):

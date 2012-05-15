@@ -3,19 +3,49 @@
 
 {% endblock %}
 {% block left %}
-{{ estate_type_name }}
-<div id="client_menu" class="button">
-	<a href="{% url client_create %}?{{ next_url }}">Add</a>
-</div>
+
 <div id="client_list">
-	<table>
-		{% for client in clients %}
-		<tr>
-			<td>{{ client.name }}</td>
-			<td> {% for contact in client.contact_set.all %} <span class="contact-inline"><label>{{ contact.contact_type }}:</label> {{ contact.contact }}</span> {% endfor %} </td>
-		</tr>
-		{% endfor %}
+	<table class="base-table-list ui-widget ui-widget-content">
+		<thead>
+			<th>Name</th>
+			<th>Address</th>
+			<th>
+				<div  class="button">
+					<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
+				</div>				
+			</th>
+		</thead>
+		<tbody>
+			{% for client in clients %}
+			<tr>
+				<td><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+				<td> {% for contact in client.contact_set.all %} <span class="contact-inline"><label>{{ contact.contact_type }}:</label> {{ contact.contact }}</span> {% endfor %} </td>
+				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">	
+				{% if is_paginated %}
+				<div class="pagination" style="float: right">
+					<span class="page-links"> 
+						{% if page_obj.has_previous %} 
+							<a href="{% url client_list %}?page={{ page_obj.previous_page_number }}">previous</a> 
+						{% endif %} <span class="page-current"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. </span> 
+						{% if page_obj.has_next %} 
+							<a href="{% url client_list %}?page={{ page_obj.next_page_number }}">next</a> 
+						{% endif %} 
+					</span>
+				</div> 
+				{% endif %} 
+				</div>
+				</td>
+			</tr>
+		</tfoot>
 	</table>
 </div>
+
 <div id='info'></div>
 {% endblock %}

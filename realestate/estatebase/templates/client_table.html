@@ -7,7 +7,7 @@
 {% block left %}
 {{ estate_type_name }}
 <div id="client_menu" class="button">
-	<a href="{% url client_create %}?{{ next_url }}">Add</a>
+	<a href="{% url client_create %}?{{ next_url }}">Добавить клиента</a>
 </div>	
 <div id="client_list">
 	{% load render_table from django_tables2 %}
