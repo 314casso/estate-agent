@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateCreateView, EstateListView, EstateUpdateView,\
-    ClientListView, ClientCreateView, ClientUpdateView
+    ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView
 
 
 
@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^clients/$',ClientListView.as_view(), name='client_table'),
     url (r'^createclient/$', view=ClientCreateView.as_view(), name='client_create'),
     url (r'^updateclient/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
+    url (r'^deleteclient/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),
 )
 
 

@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
-from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView
+from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView,\
+    DeleteView
 from estatebase.forms import EstateForm, ClientForm, ContactFormSet
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
@@ -9,6 +11,7 @@ from estatebase.tables import EstateTable, ClientTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
+
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -81,14 +84,13 @@ class EstateListView(TemplateView):
         return context
     
 class ClientListView(TemplateView):
-    template_name = 'client_table.html'
+    template_name = 'client_list.html'
     def get_context_data(self, **kwargs):
-        table = ClientTable(Client.objects.all().select_related())
-        RequestConfig(self.request, paginate={"per_page": 5}).configure(table)
+        clients = Client.objects.all().select_related()        
         q = QueryDict('', mutable=True)
         q['next'] = self.request.get_full_path()
         context = {
-            'table': table,
+            'clients': clients,
             'title': 'list',
             'next_url': q.urlencode(safe='/'),
         }        
@@ -130,3 +132,13 @@ class ClientUpdateView(ClientMixin, UpdateView):
         else:
             context['contact_formset'] = ContactFormSet(instance=self.object)
         return context
+
+class ClientDeleteView(ClientMixin, DeleteView):
+    template_name = 'estatebase/confirm_delete.html'
+    def get_context_data(self, **kwargs):
+        context = super(ClientDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление клиента...',
+            'dialig_body'  : u'Подтвердите уделение клиента: %s' %  self.object    
+        })
+        return context    

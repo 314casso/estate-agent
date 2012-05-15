@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block left %}
+<form method="POST" action="" class="button table-form">
+	<div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
+		<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
+			{{ dialig_title }}
+		</div>
+		<div class="confirm-dialog-content">
+			<p>
+				{{ dialig_body }}
+			</p>
+			{% csrf_token %}
+			<table>
+				<tr>
+					<td valign="top">
+					<input type="submit" value="Yes" />
+					</td>
+					<td valign="top"><a href="{{ request.GET.next }}">No</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>
+{% endblock %}

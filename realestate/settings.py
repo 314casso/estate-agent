@@ -99,7 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.FilterPersistMiddleware',
-    #'middleware.SQLLogMiddleware',
+    'middleware.SQLLogMiddleware',
 )
 
 ROOT_URLCONF = 'realestate.urls'

@@ -104,7 +104,8 @@ class Contact(models.Model):
         return u'%s: %s' % (self.contact_type.name, self.contact)
     class Meta:
         verbose_name = _('contact')
-        verbose_name_plural = _('contacts')   
+        verbose_name_plural = _('contacts') 
+        ordering = ['contact_type__pk']  
 
 class ContactState(SimpleDict):
     class Meta(SimpleDict.Meta):

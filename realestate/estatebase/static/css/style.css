@@ -56,3 +56,31 @@ body {
 	list-style-type : none;
 	margin: 0 0 2px;	
 }
+
+span.contact-inline {
+	border: 1px solid #DDDDDD;
+	padding : 1px 3px;
+	margin-right : 5px;
+	background-color: #fffdec;
+}
+
+span.contact-inline label {
+	color : #5B80B2;	
+}
+
+.confirm-dialog {
+	width: 350px;	
+	padding: 1px;
+}
+
+.confirm-dialog table {
+	margin-left: auto;	
+}
+
+.confirm-dialog-content {
+	padding: 4px;
+}
+
+.confirm-dialog-title {
+	padding: 5px;	
+}
