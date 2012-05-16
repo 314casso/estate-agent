@@ -99,7 +99,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.FilterPersistMiddleware',
-    #'middleware.SQLLogMiddleware',
+    'django_sorting.middleware.SortingMiddleware',
+    'middleware.SQLLogMiddleware',
 )
 
 ROOT_URLCONF = 'realestate.urls'
@@ -122,8 +123,8 @@ INSTALLED_APPS = (
     'estatebase',
     'sitetree',
     'orderedmodel',
-    'selectable',
-    'django_tables2',
+    'selectable',    
+    'django_sorting',
     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

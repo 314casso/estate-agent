@@ -119,8 +119,9 @@ span.contact-inline label {
 	background-color: #fff;
 }
 
-.base-table-list tr:last-child td {
+.base-table-list tfoot td {
 	border: 0;
+	padding: 2px;
 }
 
 .base-table-list tfoot td {
@@ -129,5 +130,9 @@ span.contact-inline label {
 
 .base-table-list .ui-button-text {
 	padding: 0.1em 1em;
+}
+
+.inline-button a span{
+	font-size: 0.9em;
 }
 

@@ -12,6 +12,7 @@ from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
 from django.views.generic.list import ListView
+from django_sorting.sorting import queryset_sort #@UnresolvedImport
 
 
 class AjaxMixin(ModelFormMixin):
@@ -87,13 +88,12 @@ class EstateListView(TemplateView):
 class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
-    paginate_by = 5    
+    paginate_by = 10    
     def get_queryset(self):
-        #q = Client.objects.all()
-        order_by = self.request.GET.get('order_by','')
-        if order_by:
-            return Client.objects.order_by(order_by)
-        return Client.objects.all()
+        q = Client.objects.all().select_related()        
+        order_by = self.request.fields 
+        #FIXME: Не верно       
+        return q.order_by(order_by[0])
     def get_context_data(self, **kwargs): 
         context = super(ClientListView, self).get_context_data(**kwargs)       
         q = QueryDict('', mutable=True)

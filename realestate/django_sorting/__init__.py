@@ -1,0 +1,1 @@
+from django_sorting.sorting import queryset_sort
