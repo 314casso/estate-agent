@@ -7,13 +7,11 @@ from estatebase.forms import EstateForm, ClientForm, ContactFormSet
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
-from estatebase.tables import EstateTable, ClientTable
+from estatebase.tables import EstateTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
 from django.views.generic.list import ListView
-from django_sorting.sorting import queryset_sort #@UnresolvedImport
-
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -92,8 +90,10 @@ class ClientListView(ListView):
     def get_queryset(self):
         q = Client.objects.all().select_related()        
         order_by = self.request.fields 
-        #FIXME: Не верно       
-        return q.order_by(order_by[0])
+        if order_by:      
+            return q.order_by(','.join(order_by))
+        return q
+     
     def get_context_data(self, **kwargs): 
         context = super(ClientListView, self).get_context_data(**kwargs)       
         q = QueryDict('', mutable=True)

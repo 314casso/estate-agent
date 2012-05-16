@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>{{ title }}</title>
-		<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css"/>
+		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css"/>
 		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"></script>
 		<script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"></script>
 		{% block head %}{% endblock %}
