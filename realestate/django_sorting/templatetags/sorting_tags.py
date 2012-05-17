@@ -1,9 +1,6 @@
 from django import template
 from django.conf import settings
-from django.http import Http404
 from django.utils.translation import ugettext as _
-
-from django_sorting import queryset_sort #@UnresolvedImport
 
 register = template.Library()
 
@@ -106,55 +103,4 @@ class SortAnchorNode(template.Node):
         return '<a href="%s" title="%s">%s</a>' % (url, self.title, title)
 
 
-def autosort(parser, token):
-    bits = [b.strip('"\'') for b in token.split_contents()]
-    help_msg = u'autosort tag synopsis: {%% autosort queryset [as '\
-        u'context_variable] %%}'
-    context_var = None
-
-    # Check if has not required "as new_context_var" part
-    if len(bits) == 4 and bits[2] == 'as':
-        context_var = bits[3]
-        del bits[2:]
-
-    if len(bits) != 2:
-        raise template.TemplateSyntaxError(help_msg)
-
-    return SortedDataNode(bits[1], context_var=context_var)
-
-
-class SortedDataNode(template.Node):
-    """
-    Automatically sort a queryset with {% autosort queryset %}
-    """
-    def __init__(self, queryset_var, context_var=None):
-        self.queryset_var = template.Variable(queryset_var)
-        self.context_var = context_var
-
-    def render(self, context):
-        if self.context_var is not None:
-            key = self.context_var
-        else:
-            key = self.queryset_var.var
-
-        queryset = self.queryset_var.resolve(context)
-        order_by = context['request'].fields
-        
-        if not order_by:
-            context[key] = queryset
-            return u''
-
-        try:
-            queryset = queryset_sort(queryset, order_by)
-        except AttributeError:
-            if INVALID_FIELD_RAISES_404:
-                raise Http404(MESSAGE_404)
-            context[key] = queryset
-
-            
-        context[key] = queryset
-        return u''
-
-
 anchor = register.tag(anchor)
-autosort = register.tag(autosort)

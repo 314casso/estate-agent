@@ -87,6 +87,9 @@ class Client(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
+    @property
+    def contacts(self):
+        return self.contact_set.all().select_related('contact_type')
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')

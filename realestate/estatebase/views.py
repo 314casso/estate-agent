@@ -88,12 +88,14 @@ class ClientListView(ListView):
     context_object_name = "clients"
     paginate_by = 10    
     def get_queryset(self):
-        q = Client.objects.all().select_related()        
+        q = Client.objects.all().select_related()
+        client_type = self.request.GET.get('client_type')                     
+        if client_type:
+            q = q.filter(client_type__id__exact=client_type)        
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
-        return q
-     
+        return q     
     def get_context_data(self, **kwargs): 
         context = super(ClientListView, self).get_context_data(**kwargs)       
         q = QueryDict('', mutable=True)
@@ -101,6 +103,7 @@ class ClientListView(ListView):
         context.update ({        
             'title': 'list',
             'next_url': q.urlencode(safe='/'),
+            'client_filter_form' : ClientForm(self.request.GET),
         })        
         return context
 
@@ -121,11 +124,14 @@ class ClientMixin(ModelFormMixin):
         next_url = self.request.REQUEST.get('next', '')
         if next:             
             return next_url
-        return super(ClientMixin, self).get_success_url()      
+        return super(ClientMixin, self).get_success_url()                  
 
 class ClientCreateView(ClientMixin, CreateView):
     def get_context_data(self, **kwargs):
-        context = super(ClientCreateView, self).get_context_data(**kwargs)        
+        context = super(ClientCreateView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : 'Добавление нового клиента'
+        })            
         if self.request.POST:
             context['contact_formset'] = ContactFormSet(self.request.POST)            
         else:
@@ -134,7 +140,10 @@ class ClientCreateView(ClientMixin, CreateView):
       
 class ClientUpdateView(ClientMixin, UpdateView):
     def get_context_data(self, **kwargs):
-        context = super(ClientUpdateView, self).get_context_data(**kwargs)        
+        context = super(ClientUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : 'Редактирование клиента «%s»' % self.object 
+        })        
         if self.request.POST:
             context['contact_formset'] = ContactFormSet(self.request.POST,instance=self.object)            
         else:

@@ -7,7 +7,7 @@
 		$('#client-contacts tr').formset({
 			prefix : '{{ contact_formset.prefix }}',
 			addText : 'Добавить контакт',
-			deleteText: 'Удалить'
+			deleteText : 'Удалить'
 		});
 	})
 </script>
@@ -16,23 +16,30 @@
 {% block left %}
 <form action="" method="POST" class="button table-form">
 	<table class="ui-widget ui-widget-content ui-corner-all">
+		<thead>
+			<tr>
+				<td colspan="2">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{{ dialig_title }}
+				</div></td>
+			</tr>
+		</thead>
 		{{ form.as_table }}{% csrf_token %}
 		<tr>
 			<td colspan="2"> {{ contact_formset.management_form }}
-			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">	
-			{% for contact in contact_formset %}
-			{{ contact.id }}					
-					<tr>
-						<td>{{ contact.contact_type.label_tag }}</td>
-						<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
-						<td>{{ contact.contact.label_tag }}</td>
-						<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
-						<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>
-					</tr>
-				
-			{% endfor %}
-			</table> 
-			</td>
+			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
+				{% for contact in contact_formset %}
+				{{ contact.id }}
+				<tr>
+					<td>{{ contact.contact_type.label_tag }}</td>
+					<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
+					<td>{{ contact.contact.label_tag }}</td>
+					<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
+					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>
+				</tr>
+
+				{% endfor %}
+			</table></td>
 		</tr>
 		<tfoot>
 			<tr>

@@ -86,6 +86,10 @@ span.contact-inline label {
 	padding: 5px;
 }
 
+.dialog-title {
+	padding: 0 0 0 8px;
+} 
+
 .base-table-list {
 	border: 1px solid #DFDFDF;
 	/*background-color: #F9F9F9;*/
