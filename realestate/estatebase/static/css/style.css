@@ -3,6 +3,15 @@ body {
 	font-family: sans-serif;
 }
 
+#left {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+#right {
+	/*	float: right;*/	
+}
+
 #estate_nav {
 	max-width: 300px;
 }
@@ -38,7 +47,7 @@ body {
 	padding: 2px;
 }
 
-.big-text-input, .table-form textarea {
+.table-form .big-text-input, .table-form textarea {
 	width: 98%;
 }
 
@@ -88,7 +97,7 @@ span.contact-inline label {
 
 .dialog-title {
 	padding: 0 0 0 8px;
-} 
+}
 
 .base-table-list {
 	border: 1px solid #DFDFDF;
@@ -97,8 +106,8 @@ span.contact-inline label {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	color: #333;
-	border-spacing : 0;
-	/*border-collapse:collapse;*/	
+	border-spacing: 0;
+	/*border-collapse:collapse;*/
 }
 .base-table-list td, .base-table-list th {
 	border-top-color: white;
@@ -111,7 +120,7 @@ span.contact-inline label {
 	padding: 3px 7px 1px;
 	background-color: #e1e9ec;
 }
-.base-table-list td {	
+.base-table-list td {
 	padding: 4px 7px 4px;
 	vertical-align: top;
 }
@@ -129,14 +138,17 @@ span.contact-inline label {
 }
 
 .base-table-list tfoot td {
-	background-color: white;	
+	background-color: white;
 }
 
 .base-table-list .ui-button-text {
 	padding: 0.1em 1em;
 }
 
-.inline-button a span{
+.inline-button a span {
 	font-size: 0.9em;
 }
 
+#client_list {
+	width: 700px;
+}

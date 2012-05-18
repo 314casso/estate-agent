@@ -12,20 +12,21 @@
 			<th>{% anchor name 'Имя' %}</th>
 			<th>{% anchor client_type 'Тип' %}</th>
 			<th>Источник</th>
-			<th>Контакты</th>			
+			<th>Место жительства</th>
+			<th>Контакты</th>
 			<th>
-				<div  class="button">
-					<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
-				</div>				
-			</th>			
+			<div  class="button">
+				<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
+			</div></th>
 		</thead>
-		<tbody>			
+		<tbody>
 			{% for client in clients %}
 			<tr>
 				<td>{{ client.pk }}</td>
 				<td><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
 				<td>{{ client.client_type }}</td>
 				<td>{{ client.origin|default_if_none:"----" }}</td>
+				<td>{{ client.address }}</td>
 				<td> {% for contact in client.contacts %} <span class="contact-inline"><label>{{ contact.contact_type }}:</label> {{ contact.contact }}</span> {% endfor %} </td>
 				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a></td>
 			</tr>
@@ -33,31 +34,34 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="6">
-				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">	
-				{% if is_paginated %}
-				<div class="pagination" style="float: right">
-					<span class="page-links"> 
-						{% if page_obj.has_previous %} 
-							<a href="{% url client_list %}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> 
-						{% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> 
-						{% if page_obj.has_next %} 
-							<a href="{% url client_list %}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> 
-						{% endif %} 
-					</span>
-				</div> 
-				{% endif %} 
-				</div>
-				</td>
+				<td colspan="7">
+				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">
+					{% if is_paginated %}
+					<div class="pagination" style="float: right">
+						<span class="page-links"> {% if page_obj.has_previous %} <a href="{% url client_list %}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> {% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> {% if page_obj.has_next %} <a href="{% url client_list %}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> {% endif %} </span>
+					</div>
+					{% endif %}
+				</div></td>
 			</tr>
 		</tfoot>
 	</table>
 </div>
 
-<div id='info'>
+{% endblock %}
+{% block right %}
+<div class="button table-form">
 	<form method="GET">
-	{{ client_filter_form.as_p }}
-	<button type="submit">Go</button>
+		<table class="ui-widget ui-widget-content ui-corner-all">
+			{{ client_filter_form.as_table }}
+			<tfoot>
+			<tr>
+				<td colspan=2>
+				<input type="submit" value="Применить фильтр"/>					
+				</td>
+			</tr>
+			</tfoot>
+		</table>
 	</form>
 </div>
 {% endblock %}
+

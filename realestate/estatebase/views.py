@@ -3,7 +3,8 @@ from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView,\
     DeleteView
-from estatebase.forms import EstateForm, ClientForm, ContactFormSet
+from estatebase.forms import EstateForm, ClientForm, ContactFormSet,\
+    ClientFilterForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -88,10 +89,11 @@ class ClientListView(ListView):
     context_object_name = "clients"
     paginate_by = 10    
     def get_queryset(self):
+        search_form = ClientFilterForm(self.request.GET)                
         q = Client.objects.all().select_related()
-        client_type = self.request.GET.get('client_type')                     
-        if client_type:
-            q = q.filter(client_type__id__exact=client_type)        
+        filter_dict = search_form.get_filter()
+        if len(filter_dict):
+            q = q.filter(**filter_dict)        
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
@@ -103,7 +105,7 @@ class ClientListView(ListView):
         context.update ({        
             'title': 'list',
             'next_url': q.urlencode(safe='/'),
-            'client_filter_form' : ClientForm(self.request.GET),
+            'client_filter_form' : ClientFilterForm(self.request.GET),
         })        
         return context
 
