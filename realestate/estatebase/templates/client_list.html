@@ -39,7 +39,7 @@
 				<td colspan="7">
 				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">					
 					<div  class="button" style="float: right">
-					<a href="">Добавить</a>
+					<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
 				</div>
 					{% if is_paginated %}
 					<div class="pagination" style="float: left; padding-top:6px">
