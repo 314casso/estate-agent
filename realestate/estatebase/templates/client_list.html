@@ -8,16 +8,18 @@
 <div id="client_list">
 	<table class="base-table-list ui-widget ui-widget-content">
 		<thead>
-			<th>{% anchor id 'Код' %}</th>
-			<th>{% anchor name 'Имя' %}</th>
-			<th>{% anchor client_type 'Тип' %}</th>
-			<th>Источник</th>
-			<th>Место жительства</th>
-			<th>Контакты</th>
-			<th>
-			<div  class="button">
-				<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
-			</div></th>
+			<tr class="ui-dialog-titlebar ui-widget-header ui-corner-all dialog-title">
+				<th>{% anchor id 'Код' %}</th>
+				<th>{% anchor name 'Имя' %}</th>
+				<th>{% anchor client_type 'Тип' %}</th>
+				<th>Источник</th>
+				<th>Место жительства</th>
+				<th>Контакты</th>
+				<th>
+				<div  class="button">
+					<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
+				</div></th>
+			</tr>
 		</thead>
 		<tbody>
 			{% for client in clients %}
@@ -35,9 +37,12 @@
 		<tfoot>
 			<tr>
 				<td colspan="7">
-				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">
+				<div style="overflow: hidden; padding: 5px" class="ui-widget ui-widget-content ui-corner-all">					
+					<div  class="button" style="float: right">
+					<a href="">Добавить</a>
+				</div>
 					{% if is_paginated %}
-					<div class="pagination" style="float: right">
+					<div class="pagination" style="float: left; padding-top:6px">
 						<span class="page-links"> {% if page_obj.has_previous %} <a href="{% url client_list %}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> {% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> {% if page_obj.has_next %} <a href="{% url client_list %}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> {% endif %} </span>
 					</div>
 					{% endif %}
@@ -52,13 +57,21 @@
 <div class="button table-form">
 	<form method="GET">
 		<table class="ui-widget ui-widget-content ui-corner-all">
+			<thead>
+				<tr>
+					<td colspan="2">
+					<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+						Фильтр
+					</div></td>
+				</tr>
+			</thead>
 			{{ client_filter_form.as_table }}
 			<tfoot>
-			<tr>
-				<td colspan=2>
-				<input type="submit" value="Применить фильтр"/>					
-				</td>
-			</tr>
+				<tr>
+					<td colspan=2>
+					<input type="submit" value="Применить фильтр"/>
+					</td>
+				</tr>
 			</tfoot>
 		</table>
 	</form>

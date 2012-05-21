@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
-from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView,\
+from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
-from estatebase.forms import EstateForm, ClientForm, ContactFormSet,\
+from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
     ClientFilterForm
 from estatebase.models import EstateType
 from django.core.urlresolvers import reverse
@@ -13,6 +13,7 @@ from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
 from django.views.generic.list import ListView
+
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -147,7 +148,7 @@ class ClientUpdateView(ClientMixin, UpdateView):
             'dialig_title' : 'Редактирование клиента «%s»' % self.object 
         })        
         if self.request.POST:
-            context['contact_formset'] = ContactFormSet(self.request.POST,instance=self.object)            
+            context['contact_formset'] = ContactFormSet(self.request.POST, instance=self.object)            
         else:
             context['contact_formset'] = ContactFormSet(instance=self.object)
         return context
@@ -158,6 +159,6 @@ class ClientDeleteView(ClientMixin, DeleteView):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Удаление клиента...',
-            'dialig_body'  : u'Подтвердите уделение клиента: %s' %  self.object    
+            'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object    
         })
-        return context    
+        return context
