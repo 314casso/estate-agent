@@ -20,7 +20,7 @@
 {{ history_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
 				{% for history in history_formset %}
-				{{ contact.id }}
+				{{ history.id }}
 				<tr>
 					<td>{{ history.event_date.label_tag }}</td>
 					<td>{{ history.event_date.errors }}{{ history.event_date }}</td>					
