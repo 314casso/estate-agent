@@ -119,6 +119,7 @@ class ContactState(SimpleDict):
 class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'))
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
+    contact = models.ForeignKey(Contact, verbose_name=_('Contact'),)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
     class Meta:

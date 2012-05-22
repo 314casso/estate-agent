@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block head %}
+
+{% endblock %}
+{% block left %}
+{% load query_string %}
+
+<table>
+	<tr>
+		<th>Клиент:</th><td>{{ contact.client.name }}</td>
+	</tr>
+	<tr>
+		<th>Вид:</th><td>{{ contact.client.client_type }}</td>
+	</tr>
+	<tr class="contrast">
+		<th>Контакт:</th><td>{{ contact }}</td>
+	</tr>	
+</table>	
+
+{{ history_formset.management_form }}
+			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
+				{% for history in history_formset %}
+				{{ contact.id }}
+				<tr>
+					<td>{{ history.event_date.label_tag }}</td>
+					<td>{{ history.event_date.errors }}{{ history.event_date }}</td>					
+					
+					<td>{% if history.instance.pk %}{{ history.DELETE }} {% endif %}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+
+
+{% endblock %}

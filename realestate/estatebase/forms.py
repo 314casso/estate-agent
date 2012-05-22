@@ -3,7 +3,7 @@
 from estatebase.lookups import StreetLookup
 from django.forms import ModelForm
 from estatebase.models import Estate, EstateType, Client, Contact, ClientType, \
-    Origin
+    Origin, ContactHistory
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -56,4 +56,4 @@ class ClientFilterForm(Form):
         
         
 ContactFormSet = inlineformset_factory(Client, Contact, extra=1)
-                    
+ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1)

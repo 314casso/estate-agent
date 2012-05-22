@@ -4,8 +4,8 @@ from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
-    ClientFilterForm
-from estatebase.models import EstateType
+    ClientFilterForm, ContactHistoryFormSet
+from estatebase.models import EstateType, ContactHistory, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable
@@ -13,6 +13,8 @@ from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
 from django.views.generic.list import ListView
+from django.shortcuts import get_object_or_404
+from django.views.generic.detail import DetailView
 
 
 class AjaxMixin(ModelFormMixin):
@@ -50,7 +52,6 @@ class EstateTypeView(TemplateView):
             'estate_categories': estate_categories
         })        
         return context 
-
     
 class EstateMixin(object):
     model = Estate
@@ -162,3 +163,21 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object    
         })
         return context
+    
+class ContactHistoryListView(DetailView):
+    context_object_name = "contact"
+    template_name = 'contact_history_list.html' 
+    model = Contact            
+    def get_context_data(self, **kwargs): 
+        context = super(ContactHistoryListView, self).get_context_data(**kwargs)       
+        q = QueryDict('', mutable=True)
+        q['next'] = self.request.get_full_path()
+        if self.request.POST:
+            context['history_formset'] = ContactHistoryFormSet(self.request.POST, instance=self.object)            
+        else:
+            context['history_formset'] = ContactHistoryFormSet(instance=self.object)                
+        context.update ({        
+            'title': 'История контакта %s' % self.object,
+            'next_url': q.urlencode(safe='/'),                        
+        })        
+        return context    
