@@ -7,7 +7,7 @@ from estatebase.models import Estate, EstateType, Client, Contact, ClientType, \
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
-from django.forms.widgets import Textarea, TextInput
+from django.forms.widgets import Textarea, TextInput, DateInput, DateTimeInput
 from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
@@ -53,7 +53,13 @@ class ClientFilterForm(Form):
         return f
             
         
-        
+class ContactHistoryForm(ModelForm):
+    class Meta:        
+        model = ContactHistory
+        widgets = {
+            'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
+        }
+            
         
 ContactFormSet = inlineformset_factory(Client, Contact, extra=1)
-ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1)
+ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)

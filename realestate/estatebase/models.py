@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from orderedmodel.models import OrderedModel
+import datetime
 
 class SimpleDict(models.Model):
     name = models.CharField(_('Name'), max_length=255)
@@ -116,8 +117,9 @@ class ContactState(SimpleDict):
         verbose_name = _('contact state')
         verbose_name_plural = _('contact states')
 
+
 class ContactHistory(models.Model):
-    event_date = models.DateTimeField(_('Event Date'))
+    event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now() )
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
     contact = models.ForeignKey(Contact, verbose_name=_('Contact'),)
     def __unicode__(self):

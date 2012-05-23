@@ -2,10 +2,10 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView
+    DeleteView, ProcessFormView, BaseUpdateView
 from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet
-from estatebase.models import EstateType, ContactHistory, Contact
+from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable
@@ -13,8 +13,11 @@ from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
+
+
+
 
 
 class AjaxMixin(ModelFormMixin):
@@ -163,13 +166,24 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object    
         })
         return context
+ 
     
-class ContactHistoryListView(DetailView):
-    context_object_name = "contact"
+class ContactHistoryListView(UpdateView):    
     template_name = 'contact_history_list.html' 
-    model = Contact            
+    model = Contact         
+    def form_valid(self, form):
+        context = self.get_context_data()
+        history_form = context['history_formset']
+        self.object = form.save()
+        if history_form.is_valid():                      
+            history_form.instance = self.object
+            history_form.save()
+            return super(ContactHistoryListView, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+    
     def get_context_data(self, **kwargs): 
-        context = super(ContactHistoryListView, self).get_context_data(**kwargs)       
+        context = super(ContactHistoryListView, self).get_context_data(**kwargs)             
         q = QueryDict('', mutable=True)
         q['next'] = self.request.get_full_path()
         if self.request.POST:
@@ -180,4 +194,10 @@ class ContactHistoryListView(DetailView):
             'title': 'История контакта %s' % self.object,
             'next_url': q.urlencode(safe='/'),                        
         })        
-        return context    
+        return context
+    
+    def get_success_url(self):        
+        next_url = self.request.REQUEST.get('next', '')
+        if next:             
+            return next_url
+        return super(ContactHistoryListView, self).get_success_url()      
