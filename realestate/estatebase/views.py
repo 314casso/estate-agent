@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView, ProcessFormView, BaseUpdateView
+    DeleteView
 from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet
 from estatebase.models import EstateType, Contact
@@ -11,14 +11,9 @@ from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.views.generic.list import ListView
-from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
-
-
-
-
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -165,23 +160,20 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_title' : u'Удаление клиента...',
             'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object    
         })
-        return context
- 
+        return context 
     
-class ContactHistoryListView(UpdateView):    
+class ContactHistoryListView(DetailView):    
     template_name = 'contact_history_list.html' 
-    model = Contact         
-    def form_valid(self, form):
-        context = self.get_context_data()
-        history_form = context['history_formset']
-        self.object = form.save()
-        if history_form.is_valid():                      
-            history_form.instance = self.object
-            history_form.save()
-            return super(ContactHistoryListView, self).form_valid(form)
+    model = Contact    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        formset = ContactHistoryFormSet(self.request.POST, instance=self.object)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(self.get_success_url())
         else:
-            return self.render_to_response(self.get_context_data(form=form))
-    
+            return self.render_to_response(self.get_context_data())
+        
     def get_context_data(self, **kwargs): 
         context = super(ContactHistoryListView, self).get_context_data(**kwargs)             
         q = QueryDict('', mutable=True)

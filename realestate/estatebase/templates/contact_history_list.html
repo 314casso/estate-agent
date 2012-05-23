@@ -17,8 +17,7 @@
 	</tr>
 </table>
 
-<form action="" method="POST" class="button table-form">
-	{{ form }}
+<form action="" method="POST" class="button table-form">	
 	{% csrf_token %}
 	{{ history_formset.management_form }}
 	<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">

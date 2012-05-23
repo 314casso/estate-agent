@@ -29,7 +29,14 @@
 				<td>{{ client.client_type }}</td>
 				<td>{{ client.origin|default_if_none:"----" }}</td>
 				<td>{{ client.address }}</td>
-				<td> {% for contact in client.contacts %} <span class="contact-inline"><label>{{ contact.contact_type }}:</label> {{ contact.contact }}</span> {% endfor %} </td>
+				<td> 
+					{% for contact in client.contacts %} 
+					<span class="contact-inline">
+						<label>{{ contact.contact_type }}:</label> 
+						<a href="{% url contact_history contact.pk %}?{{ next_url }}">{{ contact.contact }}</a>
+					</span> 
+					{% endfor %} 
+				</td>
 				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a></td>
 			</tr>
 			{% endfor %}
