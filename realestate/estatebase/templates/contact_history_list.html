@@ -1,40 +1,68 @@
 {% extends "base.html" %}
-{% block head %}
+{% load i18n %}
 
-{% endblock %}
 {% block left %}
 {% load query_string %}
+{% load include %}
 
-<table>
-	<tr>
-		<th>Клиент:</th><td>{{ contact.client.name }}</td>
-	</tr>
-	<tr>
-		<th>Вид:</th><td>{{ contact.client.client_type }}</td>
-	</tr>
-	<tr class="contrast">
-		<th>Контакт:</th><td>{{ contact }}</td>
-	</tr>
-</table>
+<form action="" method="POST" class="table-form">
+	<table class="ui-widget ui-widget-content ui-corner-all">
+		<thead>
+			<tr>
+				<td colspan="100%">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{{ contact }}
+					{% close_btn back_link %}
+				</div></td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="100%">
+				<table>
+					<tr>
+						<th>Клиент:</th><td><a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a></td>
+					</tr>
+					<tr>
+						<th>Вид:</th><td>{{ contact.client.client_type }}</td>
+					</tr>
+					<tr>
+						<th>Место жительства:</th><td>{{ contact.client.address }}</td>
+					</tr>
+				</table></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="100%"> {% csrf_token %}
+				{{ history_formset.management_form }}
+				<table id="contact-history" class="inline-formset ui-widget ui-widget-content ui-corner-all">
+					<tbody>
+						{% for history in history_formset %}
+						{{ history.id }}
+						<tr>
+							<td>{{ history.event_date.label_tag }}</td>
+							<td>{{ history.event_date.errors }}{{ history.event_date }}</td>
 
-<form action="" method="POST" class="button table-form">	
-	{% csrf_token %}
-	{{ history_formset.management_form }}
-	<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
-		{% for history in history_formset %}
-		{{ history.id }}
-		<tr>
-			<td>{{ history.event_date.label_tag }}</td>
-			<td>{{ history.event_date.errors }}{{ history.event_date }}</td>
-
-			<td>{{ history.contact_state.label_tag }}</td>
-			<td>{{ history.contact_state.errors }}{{ history.contact_state }}</td>
-
-			<td>{% if history.instance.pk %}{{ history.DELETE }} {% endif %}</td>
-		</tr>
-		{% endfor %}
+							<td>{{ history.contact_state.label_tag }}</td>
+							<td>{{ history.contact_state.errors }}{{ history.contact_state }}</td>
+							<td>Удалить</td>
+							<td>{% if history.instance.pk %}{{ history.DELETE }} {% endif %}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table></td>
+			</tr>
+		</tbody>
+		<tfoot class="button">
+			<tr>
+				<td colspan="100%">
+				<input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
+				</td>
+			</tr>
+		</tfoot>
 	</table>
-	<input type="submit" />
 </form>
 
 {% endblock %}

@@ -18,7 +18,7 @@
 	<table class="ui-widget ui-widget-content ui-corner-all">
 		<thead>
 			<tr>
-				<td colspan="2">
+				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
 					{{ dialig_title }}
 				</div></td>
@@ -26,7 +26,7 @@
 		</thead>
 		{{ form.as_table }}{% csrf_token %}
 		<tr>
-			<td colspan="2"> {{ contact_formset.management_form }}
+			<td colspan="100%"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
 				{% for contact in contact_formset %}
 				{{ contact.id }}
@@ -43,7 +43,7 @@
 		</tr>
 		<tfoot>
 			<tr>
-				<td colspan="2">
+				<td colspan="100%">
 				<input type="submit" />
 				</td>
 			</tr>

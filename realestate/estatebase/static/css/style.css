@@ -67,6 +67,10 @@ body {
 	padding: 0 2px;
 }
 
+.inline-formset tfoot td{
+	padding-top: 20px; 
+}
+
 .errorlist {
 	color: #CD0A0A;
 	padding: 2px;
@@ -155,4 +159,9 @@ span.contact-inline label {
 
 #client_list {
 	/*width: 700px;*/
+}
+
+.ui-dialog-titlebar-close {
+	float: right;	
+	margin-right: 5px;
 }

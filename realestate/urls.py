@@ -26,6 +26,6 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('',
-    url (r'^contacthistory/(?P<pk>\d+)/$', ContactHistoryListView.as_view(), name='contact_history' ),
+    url (r'^contacthistory/(?P<pk>\d+)/$', ContactHistoryListView.as_view(), name='contact_history' ),        
 )
        
