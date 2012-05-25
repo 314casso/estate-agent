@@ -1,7 +1,4 @@
-$(document).ready(function() {
-	$("#estate_nav").accordion({
-		autoHeight : false
-	});
+$(document).ready(function() {	
 	$('a.inline-button').parent().addClass('ui-state-default ui-corner-all');
 	$('a.icon-plus').addClass('ui-icon ui-icon-plus');
 	$('input:submit, a, button' , '.button').button();	

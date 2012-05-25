@@ -90,7 +90,7 @@ class Client(models.Model):
         return u'%s %s' % (self.name, self.address)
     @property
     def contacts(self):
-        return self.contact_set.all().select_related('contact_type')
+        return self.contactlist.all().select_related('contact_type')
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
@@ -102,9 +102,9 @@ class ContactType(SimpleDict):
         verbose_name_plural = _('contact types')
 
 class Contact(models.Model):
-    client = models.ForeignKey(Client, verbose_name=_('Client'),)
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contactlist')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
-    contact = models.CharField(_('Contact'), max_length=255)        
+    contact = models.CharField(_('Contact'), max_length=255, db_index=True)        
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
     class Meta:
