@@ -185,8 +185,7 @@ class ContactHistoryListView(DetailView):
             context['history_formset'] = ContactHistoryFormSet(instance=self.object)                
         context.update ({        
             'title': 'История контакта %s' % self.object,
-            'next_url': q.urlencode(safe='/'),
-            'back_link': self.request.REQUEST.get('next', ''),                        
+            'next_url': q.urlencode(safe='/'),                                    
         })        
         return context
     

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load include %}
 {% block head %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
 <script type="text/javascript">
@@ -14,13 +14,14 @@
 {% endblock %}
 
 {% block left %}
-<form action="" method="POST" class="button table-form">
+<form action="" method="POST" class="table-form">
 	<table class="ui-widget ui-widget-content ui-corner-all">
 		<thead>
 			<tr>
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
 					{{ dialig_title }}
+					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
 		</thead>
@@ -41,7 +42,7 @@
 				{% endfor %}
 			</table></td>
 		</tr>
-		<tfoot>
+		<tfoot class="button">
 			<tr>
 				<td colspan="100%">
 				<input type="submit" />
