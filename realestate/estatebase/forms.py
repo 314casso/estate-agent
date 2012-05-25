@@ -32,12 +32,14 @@ class ClientForm(ModelForm):
 
 
 class ClientFilterForm(Form):
+    contact = forms.CharField(required=False, label=_('Contact'))
     name = forms.CharField(required=False, label=_('Name'))
     client_type = forms.ModelChoiceField(ClientType.objects.all(), required=False, label=_('ClientType'))
     origin = forms.ModelChoiceField(Origin.objects.all(), required=False, label=_('Origin'))
     address = forms.CharField(required=False, label=_('Address'))
     note = forms.CharField(required=False, label=_('Note'))
     filters = {
+            'contact' : 'contact__contact__icontains',   
             'client_type' : 'client_type__id__exact',
             'name' : 'name__icontains',
             'origin' : 'origin__id__exact',
