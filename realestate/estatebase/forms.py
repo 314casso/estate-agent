@@ -7,12 +7,10 @@ from estatebase.models import Estate, EstateType, Client, Contact, ClientType, \
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
-from django.forms.widgets import Textarea, TextInput, DateInput, DateTimeInput
+from django.forms.widgets import Textarea, TextInput, DateTimeInput
 from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
-
-
 
 class EstateForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -22,7 +20,7 @@ class EstateForm(ModelForm):
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
 
-class ClientForm(ModelForm):         
+class ClientForm(ModelForm):             
     class Meta:        
         model = Client
         widgets = {
@@ -30,8 +28,8 @@ class ClientForm(ModelForm):
             'address' : TextInput(attrs={'class': 'big-text-input'}),
         }
 
-
 class ClientFilterForm(Form):
+    pk = forms.CharField(required=False, label=_('Id'))
     contact = forms.CharField(required=False, label=_('Contact'))
     name = forms.CharField(required=False, label=_('Name'))
     client_type = forms.ModelChoiceField(ClientType.objects.all(), required=False, label=_('ClientType'))
@@ -39,7 +37,8 @@ class ClientFilterForm(Form):
     address = forms.CharField(required=False, label=_('Address'))
     note = forms.CharField(required=False, label=_('Note'))
     filters = {
-            'contact' : 'contact__contact__icontains',   
+            'pk' : 'id__exact',   
+            'contact' : 'contactlist__contact__icontains',   
             'client_type' : 'client_type__id__exact',
             'name' : 'name__icontains',
             'origin' : 'origin__id__exact',
@@ -52,16 +51,14 @@ class ClientFilterForm(Form):
             value = self[field].value()
             if value and self.filters.has_key(field):                
                 f[self.filters[field]] = value      
-        return f
-            
+        return f            
         
 class ContactHistoryForm(ModelForm):
     class Meta:        
         model = ContactHistory
         widgets = {
             'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
-        }
-            
+        }            
         
 ContactFormSet = inlineformset_factory(Client, Contact, extra=1)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)

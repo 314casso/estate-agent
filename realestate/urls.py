@@ -3,6 +3,7 @@ from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateCreateView, EstateListView, EstateUpdateView,\
     ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
     ContactHistoryListView
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -20,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_table'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
-    url (r'^createclient/$', view=ClientCreateView.as_view(), name='client_create'),
+    url (r'^createclient/$', view=login_required(ClientCreateView.as_view()), name='client_create'),
     url (r'^updateclient/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
     url (r'^deleteclient/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),    
 )

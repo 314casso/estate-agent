@@ -3,7 +3,5 @@ from django import template
 register = template.Library()
 
 @register.inclusion_tag('close_btn.html')
-def close_btn(url):    
-    if not url:
-        url = ''    
-    return {'url': url}
+def close_btn(url):        
+    return {'url': url or ''}

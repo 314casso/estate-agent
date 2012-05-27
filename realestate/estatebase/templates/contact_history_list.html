@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block head %}
+<script>
+	$(function() {
+		$(".table-grid tbody").find('#contact-list-{{ contact.pk }}').addClass('ui-state-highlight')
+	});
+</script>
+{% endblock %}
+
 {% block left %}
 {% load query_string %}
 {% load include %}
@@ -64,5 +72,27 @@
 		</tfoot>
 	</table>
 </form>
+{% endblock %}
 
+{% block right %}
+
+<table class="ui-widget ui-widget-content ui-corner-all table-grid">
+	<thead>
+		<tr>
+			<td>
+			<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+				Контакты
+			</div></td>
+		</tr>
+	</thead>
+	<tbody>
+	{% for item in contact.client.contacts %}
+	<tr>
+		<td id="contact-list-{{ item.pk }}">
+			<a href="{% url contact_history item.pk %}?next={{ request.GET.next }}">{{ item }}</a>
+		</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load include %}
 {% block head %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
@@ -36,16 +37,21 @@
 					<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
 					<td>{{ contact.contact.label_tag }}</td>
 					<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
-					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>
+					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>					
+				</tr>
+				<tr>
+					<td colspan="100%">{{ contact.non_field_errors }}</td>
 				</tr>
 
 				{% endfor %}
+				
 			</table></td>
 		</tr>
 		<tfoot class="button">
 			<tr>
 				<td colspan="100%">
-				<input type="submit" />
+				<input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
 				</td>
 			</tr>
 		</tfoot>

@@ -4,6 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from orderedmodel.models import OrderedModel
 import datetime
+from django.contrib.auth.models import User
+
+class ExUser(User):
+    def __unicode__(self):
+        return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
+    class Meta:
+        proxy = True    
 
 class SimpleDict(models.Model):
     name = models.CharField(_('Name'), max_length=255)
@@ -86,11 +93,17 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) # Source where this contact was found
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    user = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True)
+    created = models.DateTimeField(_('Created'), blank=True, null=True)
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
     def contacts(self):
         return self.contactlist.all().select_related('contact_type')
+    def save(self, *args, **kwargs):           
+        if not self.id:
+            self.created = datetime.datetime.now()                     
+        super(Client, self).save(*args, **kwargs)    
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
@@ -107,6 +120,22 @@ class Contact(models.Model):
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)        
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
+    def clean(self):
+#        from django.core.exceptions import ValidationError
+        from django.core.validators import validate_email
+        from django.core.validators import URLValidator
+        from django.core.validators import RegexValidator        
+        
+        validate_url = URLValidator(verify_exists=False)
+        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')
+        
+        if self.contact_type.id == 1:
+            validate_phone(self.contact)
+        elif self.contact_type.id == 2:
+            validate_email(self.contact)
+        elif self.contact_type.id == 3:
+            validate_url(self.contact)
+                             
     class Meta:
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 
@@ -116,7 +145,6 @@ class ContactState(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('contact state')
         verbose_name_plural = _('contact states')
-
 
 class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now() )

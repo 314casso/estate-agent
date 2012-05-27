@@ -14,7 +14,7 @@ from django.utils import simplejson as json
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.shortcuts import redirect
+from estatebase.models import ExUser
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -89,6 +89,10 @@ class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
     paginate_by = 10    
+    def get_next_url(self):
+        q = QueryDict('', mutable=True)
+        q['next'] = self.request.get_full_path()
+        return q.urlencode(safe='/')
     def get_queryset(self):
         search_form = ClientFilterForm(self.request.GET)                
         q = Client.objects.all().select_related()
@@ -101,11 +105,10 @@ class ClientListView(ListView):
         return q     
     def get_context_data(self, **kwargs): 
         context = super(ClientListView, self).get_context_data(**kwargs)       
-        q = QueryDict('', mutable=True)
-        q['next'] = self.request.get_full_path()
+        
         context.update ({        
             'title': 'list',
-            'next_url': q.urlencode(safe='/'),
+            'next_url': self.get_next_url,
             'client_filter_form' : ClientFilterForm(self.request.GET),
         })        
         return context
@@ -117,17 +120,22 @@ class ClientMixin(ModelFormMixin):
         context = self.get_context_data()
         contact_form = context['contact_formset']
         if contact_form.is_valid():
-            self.object = form.save()
+            self.object = form.save(commit=False) 
+            if not self.object.id:                 
+                self.object.user = ExUser.objects.get(pk=self.request.user.pk)
+            self.object.save()             
             contact_form.instance = self.object
             contact_form.save()
             return super(ClientMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
-    def get_success_url(self):        
-        next_url = self.request.REQUEST.get('next', '')
-        if next_url:             
-            return next_url
-        return super(ClientMixin, self).get_success_url()                  
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:     
+            q = QueryDict('', mutable=True)
+            q['next'] = next_url      
+            return '%s?%s' % (reverse('client_update',args=[self.object.id]),q.urlencode(safe='/')) 
+        return next_url                
 
 class ClientCreateView(ClientMixin, CreateView):
     def get_context_data(self, **kwargs):
@@ -139,7 +147,7 @@ class ClientCreateView(ClientMixin, CreateView):
             context['contact_formset'] = ContactFormSet(self.request.POST)            
         else:
             context['contact_formset'] = ContactFormSet()
-        return context
+        return context    
       
 class ClientUpdateView(ClientMixin, UpdateView):
     def get_context_data(self, **kwargs):
@@ -162,6 +170,8 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object,                
         })
         return context 
+    def get_success_url(self):
+        return reverse('client_list')        
     
 class ContactHistoryListView(DetailView):    
     template_name = 'contact_history_list.html' 
@@ -191,7 +201,5 @@ class ContactHistoryListView(DetailView):
     
     def get_success_url(self):   
         if '_save' in self.request.POST:     
-            next_url = self.request.REQUEST.get('next', '')
-            if next_url:             
-                return next_url
+            return self.request.REQUEST.get('next', '')
         return ''
