@@ -95,14 +95,17 @@ class Client(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     user = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True)
     created = models.DateTimeField(_('Created'), blank=True, null=True)
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
     def contacts(self):
         return self.contactlist.all().select_related('contact_type')
-    def save(self, *args, **kwargs):           
+    def save(self, *args, **kwargs):                   
         if not self.id:
-            self.created = datetime.datetime.now()                     
+            self.created = datetime.datetime.now()
+        else:    
+            self.updated = datetime.datetime.now()                                      
         super(Client, self).save(*args, **kwargs)    
     class Meta:
         verbose_name = _('client')
@@ -114,33 +117,6 @@ class ContactType(SimpleDict):
         verbose_name = _('contact type')
         verbose_name_plural = _('contact types')
 
-class Contact(models.Model):
-    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contactlist')
-    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
-    contact = models.CharField(_('Contact'), max_length=255, db_index=True)        
-    def __unicode__(self):
-        return u'%s: %s' % (self.contact_type.name, self.contact)
-    def clean(self):
-#        from django.core.exceptions import ValidationError
-        from django.core.validators import validate_email
-        from django.core.validators import URLValidator
-        from django.core.validators import RegexValidator        
-        
-        validate_url = URLValidator(verify_exists=False)
-        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')
-        
-        if self.contact_type.id == 1:
-            validate_phone(self.contact)
-        elif self.contact_type.id == 2:
-            validate_email(self.contact)
-        elif self.contact_type.id == 3:
-            validate_url(self.contact)
-                             
-    class Meta:
-        verbose_name = _('contact')
-        verbose_name_plural = _('contacts') 
-        ordering = ['contact_type__pk']  
-
 class ContactState(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('contact state')
@@ -149,10 +125,52 @@ class ContactState(SimpleDict):
 class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now() )
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
-    contact = models.ForeignKey(Contact, verbose_name=_('Contact'),)
+    contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
     class Meta:
         verbose_name = _('contact history')
         verbose_name_plural = _('contact history') 
+
+class Contact(models.Model):
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contactlist')
+    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
+    contact = models.CharField(_('Contact'), max_length=255, db_index=True)
+    updated = models.DateTimeField(_('Created'), blank=True, null=True)   
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)     
+    def __unicode__(self):
+        return u'%s: %s' % (self.contact_type.name, self.contact)
+    @property
+    def state_css(self):
+        css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
+        return self.contact_state.pk in css and css[self.contact_state.pk] or ''
+                
+    def clean(self):
+#        from django.core.exceptions import ValidationError
+        from django.core.validators import validate_email
+        from django.core.validators import URLValidator
+        from django.core.validators import RegexValidator          
+        validate_url = URLValidator(verify_exists=False)
+        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')        
+        if self.contact_type.id == 1:
+            validate_phone(self.contact)
+        elif self.contact_type.id == 2:
+            validate_email(self.contact)
+        elif self.contact_type.id == 3:
+            validate_url(self.contact)
+    def save(self, *args, **kwargs):
+        self.updated = datetime.datetime.now()     
+        super(Contact, self).save(*args, **kwargs)        
+        latest_contact_history = ContactHistory.objects.latest('event_date')
+        if latest_contact_history:                        
+            if (latest_contact_history.contact_state == self.contact_state) and (latest_contact_history.event_date > self.updated - datetime.timedelta(minutes=20)):
+                return
+        contact_history = ContactHistory(event_date = self.updated, contact_state = self.contact_state, contact=self)
+        contact_history.save()                                     
+    class Meta:
+        verbose_name = _('contact')
+        verbose_name_plural = _('contacts') 
+        ordering = ['contact_type__pk']  
+
+
     

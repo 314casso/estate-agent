@@ -122,11 +122,11 @@ class ClientMixin(ModelFormMixin):
         if contact_form.is_valid():
             self.object = form.save(commit=False) 
             if not self.object.id:                 
-                self.object.user = ExUser.objects.get(pk=self.request.user.pk)
+                self.object.user = ExUser.objects.get(pk=self.request.user.pk)                 
             self.object.save()             
             contact_form.instance = self.object
             contact_form.save()
-            return super(ClientMixin, self).form_valid(form)
+            return super(ModelFormMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
     def get_success_url(self):   

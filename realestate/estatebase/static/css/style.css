@@ -178,3 +178,22 @@ span.contact-inline label {
 .no-margin-list li {
 	list-style: none;
 }
+
+.available-state {
+	background: #e3fdd5 !important;
+}
+
+.non-available-state {
+	background: #dfdfdf !important;
+}
+
+.ban-state {
+	background: #ffd9ee !important;
+}
+.not-responded-state {
+	background: #fdfadf !important;
+}
+
+.not-checked-state {
+	background: white !important;
+}

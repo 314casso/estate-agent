@@ -25,8 +25,11 @@
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
-		</thead>
-		{{ form.as_table }}{% csrf_token %}
+		</thead>		
+		{{ form.as_table }}{% csrf_token %}		
+		<tr><th>Создано</th><td>{{ client.created }}</td></tr>
+		<tr><th>Обновлено</th><td>{{ client.updated|default_if_none:'Нет' }}</td></tr>
+		<tr><th>Кем добавленo</th><td>{{ client.user }}</td></tr>
 		<tr>
 			<td colspan="100%"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
@@ -37,6 +40,7 @@
 					<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
 					<td>{{ contact.contact.label_tag }}</td>
 					<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
+					<td>{{ contact.contact_state.errors }}{{ contact.contact_state }}</td>
 					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>					
 				</tr>
 				<tr>

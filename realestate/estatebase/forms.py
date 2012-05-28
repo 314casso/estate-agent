@@ -20,16 +20,18 @@ class EstateForm(ModelForm):
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
 
-class ClientForm(ModelForm):             
+class ClientForm(ModelForm):              
     class Meta:        
+        exclude = ('user','updated','created',)
         model = Client
         widgets = {
             'note': Textarea(attrs={'rows':'5'}),
             'address' : TextInput(attrs={'class': 'big-text-input'}),
+            'created' : DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),                        
         }
 
 class ClientFilterForm(Form):
-    pk = forms.CharField(required=False, label=_('Id'))
+    pk = forms.CharField(required=False, label=_('ID'))
     contact = forms.CharField(required=False, label=_('Contact'))
     name = forms.CharField(required=False, label=_('Name'))
     client_type = forms.ModelChoiceField(ClientType.objects.all(), required=False, label=_('ClientType'))
