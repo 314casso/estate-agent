@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
 from orderedmodel.models import OrderedModel
 import datetime
 from django.contrib.auth.models import User
@@ -51,11 +50,24 @@ class EstateTypeCategory(OrderedModel):
         verbose_name = _('estate type category')
         verbose_name_plural = _('estate type categories')        
 
+OBJECT_TYPE_CHOICES = (
+    ('BIDG', 'Строение'),
+    ('STEAD', 'Участок'),
+)
+
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
-    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
-    content_type = models.ForeignKey(ContentType, blank=True, null=True, verbose_name=_('ContentType'), limit_choices_to={'id__in': [3, 11]})
+    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)    
+    object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    @property
+    def reverse_link(self):
+        reverse_links = {
+                         'BIDG':'estate_create',
+                         'STEAD':'estate_create',
+                         }
+        return reverse_links[self.object_type]
+
     def __unicode__(self):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
@@ -70,14 +82,13 @@ class Estate(models.Model):
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
 
-#class Bidg(Estate):    
-#    class Meta:
-#        verbose_name = _('bidg')
-#        verbose_name_plural = _('bidgs')
+class Bidg(Estate):    
+    room_number = models.CharField(_('Room number'), max_length=10)
+    class Meta:
+        verbose_name = _('bidg')
+        verbose_name_plural = _('bidgs')
 
-
-# Client Object Model
-class ClientType(SimpleDict):
+class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
         verbose_name = _('client type')
         verbose_name_plural = _('client types')
@@ -88,6 +99,9 @@ class Origin(SimpleDict):
         verbose_name_plural = _('origins')
 
 class Client(models.Model):
+    """
+    An client entity      
+    """
     name = models.CharField(_('Name'), max_length=255)
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) # Source where this contact was found
@@ -132,7 +146,7 @@ class ContactHistory(models.Model):
         verbose_name = _('contact history')
         verbose_name_plural = _('contact history') 
 
-class Contact(models.Model):
+class Contact(models.Model):    
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contactlist')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)

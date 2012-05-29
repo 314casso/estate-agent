@@ -27,7 +27,7 @@ $(document).ready(function() {
 				<table>
 					<td><a href="#">{{ estate_type.name }} </a></td><td>
 					<div>
-						<a class="inline-button icon-plus ajax-dialog" href="{% reverse_link 'estate_create' estate_type.pk  %}"></a>
+						<a class="inline-button icon-plus ajax-dialog" href="{% reverse_link estate_type.reverse_link estate_type.pk  %}"></a>
 					</div></td>
 				</table>
 			</li>

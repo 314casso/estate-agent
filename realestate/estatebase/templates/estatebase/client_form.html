@@ -27,9 +27,9 @@
 			</tr>
 		</thead>		
 		{{ form.as_table }}{% csrf_token %}		
-		<tr><th>Создано</th><td>{{ client.created }}</td></tr>
-		<tr><th>Обновлено</th><td>{{ client.updated|default_if_none:'Нет' }}</td></tr>
-		<tr><th>Кем добавленo</th><td>{{ client.user }}</td></tr>
+		<tr><th>Создано:</th><td>{{ client.created }}</td></tr>
+		<tr><th>Обновлено:</th><td>{{ client.updated|default_if_none:'Нет' }}</td></tr>
+		<tr><th>Кем добавленo:</th><td>{{ client.user }}</td></tr>
 		<tr>
 			<td colspan="100%"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">

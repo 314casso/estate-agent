@@ -89,23 +89,22 @@ class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
     paginate_by = 10    
-    def get_next_url(self):
+    def get_next_url(self):        
         q = QueryDict('', mutable=True)
         q['next'] = self.request.get_full_path()
         return q.urlencode(safe='/')
-    def get_queryset(self):
-        search_form = ClientFilterForm(self.request.GET)                
+    def get_queryset(self):                        
         q = Client.objects.all().select_related()
+        search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if len(filter_dict):
             q = q.filter(**filter_dict)        
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
-        return q     
+        return q    
     def get_context_data(self, **kwargs): 
-        context = super(ClientListView, self).get_context_data(**kwargs)       
-        
+        context = super(ClientListView, self).get_context_data(**kwargs)          
         context.update ({        
             'title': 'list',
             'next_url': self.get_next_url,

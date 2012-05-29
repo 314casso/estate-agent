@@ -31,7 +31,7 @@ class ClientForm(ModelForm):
         }
 
 class ClientFilterForm(Form):
-    pk = forms.CharField(required=False, label=_('ID'))
+    pk = forms.IntegerField(required=False, label=_('ID'))
     contact = forms.CharField(required=False, label=_('Contact'))
     name = forms.CharField(required=False, label=_('Name'))
     client_type = forms.ModelChoiceField(ClientType.objects.all(), required=False, label=_('ClientType'))

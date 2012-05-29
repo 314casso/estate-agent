@@ -3,13 +3,12 @@ from models import Region, Locality, Microdistrict, Street, Estate, EstateType, 
 from django.contrib.contenttypes.models import ContentType
 from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
-    ContactState, ContactHistory
+    ContactState, ContactHistory, Bidg
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
     raw_id_admin = ('locality',)
     search_fields = ['name',]
-
 
 class EstateTypeline(admin.TabularInline):
     model = EstateType
@@ -41,3 +40,4 @@ admin.site.register(Origin)
 admin.site.register(Contact)
 admin.site.register(ContactState)
 admin.site.register(ContactHistory)
+admin.site.register(Bidg)
