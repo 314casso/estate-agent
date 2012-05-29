@@ -174,8 +174,11 @@ class Contact(models.Model):
             validate_url(self.contact)
     def save(self, *args, **kwargs):
         self.updated = datetime.datetime.now()     
-        super(Contact, self).save(*args, **kwargs)        
-        latest_contact_history = ContactHistory.objects.latest('event_date')
+        super(Contact, self).save(*args, **kwargs)       
+        try: 
+            latest_contact_history = ContactHistory.objects.latest('event_date')
+        except ContactHistory.DoesNotExist:
+            latest_contact_history = None    
         if latest_contact_history:                        
             if (latest_contact_history.contact_state == self.contact_state) and (latest_contact_history.event_date > self.updated - datetime.timedelta(minutes=20)):
                 return

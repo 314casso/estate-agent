@@ -22,7 +22,8 @@
 		"model": "estatebase.contactstate",
 		"fields": {
 			"name": "Нет ответа"
-		}, {
+		}
+	}, {
 		"pk": 5,
 		"model": "estatebase.contactstate",
 		"fields": {

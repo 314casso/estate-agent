@@ -1,8 +1,6 @@
 eclipse.preferences.version=1
 encoding//realestate/estatebase/forms.py=utf-8
-encoding//realestate/estatebase/migrations/0002_auto__del_field_estatetypecategory_name.py=utf-8
-encoding//realestate/estatebase/migrations/0006_auto__add_field_estatetype_order__chg_field_estatetype_name.py=utf-8
-encoding//realestate/estatebase/migrations/0020_auto__chg_field_client_created__chg_field_client_user.py=utf-8
+encoding//realestate/estatebase/migrations/0001_initial.py=utf-8
 encoding//realestate/estatebase/models.py=utf-8
 encoding//realestate/estatebase/views.py=utf-8
 encoding//realestate/orderedmodel/admin.py=utf-8
