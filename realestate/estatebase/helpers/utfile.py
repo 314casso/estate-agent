@@ -11,7 +11,8 @@ FIXTURE_ROOT = os.path.join(settings.SITE_ROOT, 'estatebase', 'fixtures')
 
 '''
 
-manage.py dumpdata estatebase.estatetypecategory estatebase.estatetype > estatebase/fixtures/temp.json
+./manage.py dumpdata estatebase.estatetypecategory estatebase.estatetype > estatebase/fixtures/temp.json
+./manage.py loaddata init_dict.json
 
 '''
 

@@ -11,10 +11,11 @@ from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
-from django.http import HttpResponse, QueryDict, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser
+from helpers.functions import safe_next_link
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -89,10 +90,6 @@ class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
     paginate_by = 10    
-    def get_next_url(self):        
-        q = QueryDict('', mutable=True)
-        q['next'] = self.request.get_full_path()
-        return q.urlencode(safe='/')
     def get_queryset(self):                        
         q = Client.objects.all().select_related()
         search_form = ClientFilterForm(self.request.GET)
@@ -107,7 +104,7 @@ class ClientListView(ListView):
         context = super(ClientListView, self).get_context_data(**kwargs)          
         context.update ({        
             'title': 'list',
-            'next_url': self.get_next_url,
+            'next_url': safe_next_link(self.request.get_full_path()),
             'client_filter_form' : ClientFilterForm(self.request.GET),
         })        
         return context
@@ -119,9 +116,12 @@ class ClientMixin(ModelFormMixin):
         context = self.get_context_data()
         contact_form = context['contact_formset']
         if contact_form.is_valid():
-            self.object = form.save(commit=False) 
+            self.object = form.save(commit=False)
+            user = ExUser.objects.get(pk=self.request.user.pk) 
             if not self.object.id:                 
-                self.object.user = ExUser.objects.get(pk=self.request.user.pk)                 
+                self.object.created_by = user
+            else:
+                self.object.updated_by = user                                       
             self.object.save()             
             contact_form.instance = self.object
             contact_form.save()
@@ -130,10 +130,8 @@ class ClientMixin(ModelFormMixin):
             return self.render_to_response(self.get_context_data(form=form))
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
-        if '_continue' in self.request.POST:     
-            q = QueryDict('', mutable=True)
-            q['next'] = next_url      
-            return '%s?%s' % (reverse('client_update',args=[self.object.id]),q.urlencode(safe='/')) 
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('client_update',args=[self.object.id]), safe_next_link(next_url)) 
         return next_url                
 
 class ClientCreateView(ClientMixin, CreateView):
@@ -185,16 +183,14 @@ class ContactHistoryListView(DetailView):
             return self.render_to_response(self.get_context_data())
         
     def get_context_data(self, **kwargs): 
-        context = super(ContactHistoryListView, self).get_context_data(**kwargs)             
-        q = QueryDict('', mutable=True)        
-        q['next'] = self.request.get_full_path()
+        context = super(ContactHistoryListView, self).get_context_data(**kwargs)        
         if self.request.POST:
             context['history_formset'] = ContactHistoryFormSet(self.request.POST, instance=self.object)            
         else:
             context['history_formset'] = ContactHistoryFormSet(instance=self.object)                
         context.update ({        
             'title': 'История контакта %s' % self.object,
-            'next_url': q.urlencode(safe='/'),                                    
+            'next_url': safe_next_link(self.request.get_full_path()),                                    
         })        
         return context
     
@@ -202,3 +198,19 @@ class ContactHistoryListView(DetailView):
         if '_save' in self.request.POST:     
             return self.request.REQUEST.get('next', '')
         return ''
+    
+class ContactUpdateView(UpdateView):
+    model = Contact
+    template_name = 'contact_update.html' 
+   # form_class = ContactForm
+    def get_context_data(self, **kwargs): 
+        context = super(ContactUpdateView, self).get_context_data(**kwargs)                        
+        context.update ({        
+            'title': 'Редактирование контакта %s' % self.object,                                                
+        })        
+        return context
+    def get_success_url(self):   
+        if '_save' in self.request.POST:     
+            return self.request.REQUEST.get('next', '')
+        return ''
+        

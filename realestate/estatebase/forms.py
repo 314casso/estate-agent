@@ -22,7 +22,7 @@ class EstateForm(ModelForm):
 
 class ClientForm(ModelForm):              
     class Meta:        
-        exclude = ('user','updated','created',)
+        exclude = ('created_by','updated','created', 'updated_by')
         model = Client
         widgets = {
             'note': Textarea(attrs={'rows':'5'}),
@@ -62,5 +62,17 @@ class ContactHistoryForm(ModelForm):
             'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
         }            
         
-ContactFormSet = inlineformset_factory(Client, Contact, extra=1)
+class ContactInlineForm(ModelForm):
+    class Meta:
+        model = Contact        
+        
+ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)
+
+class ContactForm(ModelForm):
+    class Meta:        
+        model = Contact
+        widgets = {
+            'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
+        }   
+    

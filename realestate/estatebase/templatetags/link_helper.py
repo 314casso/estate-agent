@@ -7,3 +7,6 @@ register = template.Library()
 def reverse_link(name, *args):
     return reverse(name, args=args)
 
+@register.inclusion_tag('close_btn.html')
+def close_btn(url):        
+    return {'url': url or ''}

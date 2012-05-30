@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load link_helper %}
 
 {% block head %}
 <script>
@@ -11,7 +12,7 @@
 
 {% block left %}
 {% load query_string %}
-{% load include %}
+
 
 <form action="" method="POST" class="table-form">
 	<table class="ui-widget ui-widget-content ui-corner-all">

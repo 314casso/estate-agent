@@ -104,17 +104,21 @@ class Client(models.Model):
     """
     name = models.CharField(_('Name'), max_length=255)
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
-    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) # Source where this contact was found
+    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    user = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True)
+    created_by = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True, related_name='creators')
     created = models.DateTimeField(_('Created'), blank=True, null=True)
-    updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True)
+    updated_by = models.ForeignKey(ExUser,verbose_name=_('Updated by'),blank=True, null=True, related_name='updaters')  
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
     def contacts(self):
         return self.contactlist.all().select_related('contact_type')
+    @property
+    def user(self):
+        return self.updated_by or self.created_by 
     def save(self, *args, **kwargs):                   
         if not self.id:
             self.created = datetime.datetime.now()
@@ -138,6 +142,7 @@ class ContactState(SimpleDict):
 
 class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now() )
+    user = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
     def __unicode__(self):
@@ -176,13 +181,13 @@ class Contact(models.Model):
         self.updated = datetime.datetime.now()     
         super(Contact, self).save(*args, **kwargs)       
         try: 
-            latest_contact_history = ContactHistory.objects.latest('event_date')
+            latest_contact_history = self.contacthistory_set.latest('event_date')
         except ContactHistory.DoesNotExist:
             latest_contact_history = None    
         if latest_contact_history:                        
             if (latest_contact_history.contact_state == self.contact_state) and (latest_contact_history.event_date > self.updated - datetime.timedelta(minutes=20)):
-                return
-        contact_history = ContactHistory(event_date = self.updated, contact_state = self.contact_state, contact=self)
+                return              
+        contact_history = ContactHistory(event_date = self.updated, contact_state = self.contact_state, contact=self, user=self.client.user)
         contact_history.save()                                     
     class Meta:
         verbose_name = _('contact')
