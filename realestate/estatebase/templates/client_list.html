@@ -35,7 +35,7 @@
 					<li>					 
 					<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})">
 						<label>{{ contact.contact_type }}:</label> 
-						<a href="{% url contact_history contact.pk %}?{{ next_url }}">{{ contact.contact }}</a>
+						<a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a>
 					</span>
 					</li>					 
 					{% endfor %}

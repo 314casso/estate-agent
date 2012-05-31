@@ -4,7 +4,7 @@ from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
-    ClientFilterForm, ContactHistoryFormSet
+    ClientFilterForm, ContactHistoryFormSet, ContactForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -15,7 +15,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser
-from helpers.functions import safe_next_link
+from estatebase.helpers.functions import safe_next_link #@UnresolvedImport
+
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -116,13 +117,8 @@ class ClientMixin(ModelFormMixin):
         context = self.get_context_data()
         contact_form = context['contact_formset']
         if contact_form.is_valid():
-            self.object = form.save(commit=False)
-            user = ExUser.objects.get(pk=self.request.user.pk) 
-            if not self.object.id:                 
-                self.object.created_by = user
-            else:
-                self.object.updated_by = user                                       
-            self.object.save()             
+            self.object = form.save(commit=False)                         
+            self.object.save(user=ExUser.objects.get(pk=self.request.user.pk))             
             contact_form.instance = self.object
             contact_form.save()
             return super(ModelFormMixin, self).form_valid(form)
@@ -202,11 +198,12 @@ class ContactHistoryListView(DetailView):
 class ContactUpdateView(UpdateView):
     model = Contact
     template_name = 'contact_update.html' 
-   # form_class = ContactForm
+    form_class = ContactForm
     def get_context_data(self, **kwargs): 
         context = super(ContactUpdateView, self).get_context_data(**kwargs)                        
         context.update ({        
-            'title': 'Редактирование контакта %s' % self.object,                                                
+            'title': 'Редактирование контакта %s' % self.object,
+            'next_url': safe_next_link(self.request.get_full_path()),                                                          
         })        
         return context
     def get_success_url(self):   

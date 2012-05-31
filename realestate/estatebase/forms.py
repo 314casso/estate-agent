@@ -69,10 +69,7 @@ class ContactInlineForm(ModelForm):
 ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)
 
-class ContactForm(ModelForm):
+class ContactForm(ModelForm):     
     class Meta:        
-        model = Contact
-        widgets = {
-            'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
-        }   
-    
+        fields = ('contact', 'contact_state')
+        model = Contact    

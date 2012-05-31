@@ -71,6 +71,10 @@ body {
 	padding-top: 20px; 
 }
 
+.inline-formset tbody td{
+	vertical-align: bottom;
+}
+
 .errorlist {
 	color: #CD0A0A;
 	padding: 2px;
@@ -196,4 +200,18 @@ span.contact-inline label {
 
 .not-checked-state {
 	background: white !important;
+}
+
+.zebra-list {
+	list-style: none;
+}
+
+.zebra-list li {
+	padding : 2px 5px 2px 5px;	
+}
+
+.zebra-list li:nth-child(odd){	 
+ 	background-color:#FFF; 	
+ 	border-top: 1px solid #ccc;
+ 	border-bottom: 1px solid #ccc;
 }

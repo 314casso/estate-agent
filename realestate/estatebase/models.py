@@ -107,10 +107,10 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    created_by = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True, related_name='creators')
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True, related_name='creators')
     created = models.DateTimeField(_('Created'), blank=True, null=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser,verbose_name=_('Updated by'),blank=True, null=True, related_name='updaters')  
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updaters')     
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
@@ -119,11 +119,14 @@ class Client(models.Model):
     @property
     def user(self):
         return self.updated_by or self.created_by 
-    def save(self, *args, **kwargs):                   
+    def save(self, *args, **kwargs):
+        user = kwargs.pop('user', None)                                           
         if not self.id:
             self.created = datetime.datetime.now()
+            self.created_by = user
         else:    
-            self.updated = datetime.datetime.now()                                      
+            self.updated = datetime.datetime.now()
+            self.updated_by = user                                     
         super(Client, self).save(*args, **kwargs)    
     class Meta:
         verbose_name = _('client')
@@ -141,8 +144,8 @@ class ContactState(SimpleDict):
         verbose_name_plural = _('contact states')
 
 class ContactHistory(models.Model):
-    event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now() )
-    user = models.ForeignKey(ExUser,verbose_name=_('User'),blank=True, null=True)
+    event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now())
+    user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
     def __unicode__(self):
@@ -162,10 +165,8 @@ class Contact(models.Model):
     @property
     def state_css(self):
         css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
-        return self.contact_state.pk in css and css[self.contact_state.pk] or ''
-                
+        return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
     def clean(self):
-#        from django.core.exceptions import ValidationError
         from django.core.validators import validate_email
         from django.core.validators import URLValidator
         from django.core.validators import RegexValidator          
@@ -178,17 +179,22 @@ class Contact(models.Model):
         elif self.contact_type.id == 3:
             validate_url(self.contact)
     def save(self, *args, **kwargs):
+        '''
+        TODO:Нужно продумать логику обновления клиента
+        '''
         self.updated = datetime.datetime.now()     
-        super(Contact, self).save(*args, **kwargs)       
+        super(Contact, self).save(*args, **kwargs)                      
         try: 
-            latest_contact_history = self.contacthistory_set.latest('event_date')
+            latest = self.contacthistory_set.latest('event_date')
         except ContactHistory.DoesNotExist:
-            latest_contact_history = None    
-        if latest_contact_history:                        
-            if (latest_contact_history.contact_state == self.contact_state) and (latest_contact_history.event_date > self.updated - datetime.timedelta(minutes=20)):
-                return              
-        contact_history = ContactHistory(event_date = self.updated, contact_state = self.contact_state, contact=self, user=self.client.user)
-        contact_history.save()                                     
+            latest = None    
+        if latest:                        
+            if (latest.contact_state == self.contact_state) and (latest.event_date > self.updated - datetime.timedelta(minutes=20)):
+                return             
+        contact_history = ContactHistory(event_date=self.updated, 
+                                         contact_state=self.contact_state, contact=self, 
+                                         user_id=Client.objects.get(pk=self.client_id).user.pk)
+        contact_history.save()                                            
     class Meta:
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 

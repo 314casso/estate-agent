@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateCreateView, EstateListView, EstateUpdateView,\
     ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
-    ContactHistoryListView
+    ContactHistoryListView, ContactUpdateView
 from django.contrib.auth.decorators import login_required
 
 
@@ -28,5 +28,6 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('',
     url (r'^contacthistory/(?P<pk>\d+)/$', ContactHistoryListView.as_view(), name='contact_history' ),        
+    url (r'^contactupdate/(?P<pk>\d+)/$', ContactUpdateView.as_view(), name='contact_update' ),
 )
        
