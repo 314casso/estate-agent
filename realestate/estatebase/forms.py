@@ -20,6 +20,10 @@ class EstateForm(ModelForm):
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
 
+class EstateCreateForm(EstateForm):
+    class Meta:
+        pass    
+
 class ClientForm(ModelForm):              
     class Meta:        
         exclude = ('created_by','updated','created', 'updated_by')

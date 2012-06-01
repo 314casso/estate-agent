@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
-from estatebase.forms import EstateForm, ClientForm, ContactFormSet, \
-    ClientFilterForm, ContactHistoryFormSet, ContactForm
+from estatebase.forms import ClientForm, ContactFormSet, \
+    ClientFilterForm, ContactHistoryFormSet, ContactForm, EstateCreateForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -17,6 +17,11 @@ from django.views.generic.detail import DetailView
 from estatebase.models import ExUser
 from estatebase.helpers.functions import safe_next_link #@UnresolvedImport
 
+class BaseMixin():
+    def get_success_url(self):   
+        if '_save' in self.request.POST:     
+            return self.request.REQUEST.get('next', '')
+        return ''
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -55,15 +60,15 @@ class EstateTypeView(TemplateView):
         return context 
     
 class EstateMixin(object):
-    model = Estate
-    form_class = EstateForm
+    model = Estate    
     def get_success_url(self):
         return reverse('estate_list')        
 
-class EstateCreateView(AjaxMixin, EstateMixin, CreateView):
+class EstateCreateView(EstateMixin, CreateView):
+    template_name = 'estate_create.html'
+    form_class = EstateCreateForm    
     def get_initial(self):        
-        initial = super(EstateCreateView, self).get_initial()        
-        initial = initial.copy()        
+        initial = super(EstateCreateView, self).get_initial()                
         initial['estate_type'] = self.kwargs['estate_type']
         return initial
     def get_context_data(self, **kwargs):
@@ -111,6 +116,7 @@ class ClientListView(ListView):
         return context
 
 class ClientMixin(ModelFormMixin):
+    template_name = 'client_create.html'
     model = Client
     form_class = ClientForm          
     def form_valid(self, form):
@@ -128,18 +134,21 @@ class ClientMixin(ModelFormMixin):
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse('client_update',args=[self.object.id]), safe_next_link(next_url)) 
-        return next_url                
+        return next_url
+    def get_context_data(self, **kwargs):
+        context = super(ClientMixin, self).get_context_data(**kwargs)                
+        if self.request.POST:
+            context['contact_formset'] = ContactFormSet(self.request.POST, instance=self.object)            
+        else:
+            context['contact_formset'] = ContactFormSet(instance=self.object)
+        return context                        
 
 class ClientCreateView(ClientMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ClientCreateView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : 'Добавление нового клиента'
-        })            
-        if self.request.POST:
-            context['contact_formset'] = ContactFormSet(self.request.POST)            
-        else:
-            context['contact_formset'] = ContactFormSet()
+        })        
         return context    
       
 class ClientUpdateView(ClientMixin, UpdateView):
@@ -148,10 +157,6 @@ class ClientUpdateView(ClientMixin, UpdateView):
         context.update({
             'dialig_title' : 'Редактирование клиента «%s»' % self.object 
         })        
-        if self.request.POST:
-            context['contact_formset'] = ContactFormSet(self.request.POST, instance=self.object)            
-        else:
-            context['contact_formset'] = ContactFormSet(instance=self.object)
         return context
 
 class ClientDeleteView(ClientMixin, DeleteView):
@@ -166,9 +171,14 @@ class ClientDeleteView(ClientMixin, DeleteView):
     def get_success_url(self):
         return reverse('client_list')        
     
-class ContactHistoryListView(DetailView):    
-    template_name = 'contact_history_list.html' 
+class ContactMixin(BaseMixin):
     model = Contact    
+    
+class ContactHistoryListView(ContactMixin, DetailView):
+    '''  
+    Пока не используется    
+    '''    
+    template_name = 'contact_history_list.html'        
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         formset = ContactHistoryFormSet(self.request.POST, instance=self.object)
@@ -189,14 +199,8 @@ class ContactHistoryListView(DetailView):
             'next_url': safe_next_link(self.request.get_full_path()),                                    
         })        
         return context
-    
-    def get_success_url(self):   
-        if '_save' in self.request.POST:     
-            return self.request.REQUEST.get('next', '')
-        return ''
-    
-class ContactUpdateView(UpdateView):
-    model = Contact
+      
+class ContactUpdateView(ContactMixin, UpdateView):    
     template_name = 'contact_update.html' 
     form_class = ContactForm
     def get_context_data(self, **kwargs): 
@@ -206,8 +210,3 @@ class ContactUpdateView(UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),                                                          
         })        
         return context
-    def get_success_url(self):   
-        if '_save' in self.request.POST:     
-            return self.request.REQUEST.get('next', '')
-        return ''
-        

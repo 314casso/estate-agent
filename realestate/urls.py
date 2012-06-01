@@ -16,14 +16,14 @@ urlpatterns = patterns('',
     
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),
-    url (r'^create/(?P<estate_type>\d+)$', view=EstateCreateView.as_view(), name='estate_create'),
+    url (r'^estatecreate/(?P<estate_type>\d+)$', view=EstateCreateView.as_view(), name='estate_create'),
     url (r'^update/(?P<pk>\d+)$', view=EstateUpdateView.as_view(), name='estate_update'),
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_table'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
-    url (r'^createclient/$', view=login_required(ClientCreateView.as_view()), name='client_create'),
-    url (r'^updateclient/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
-    url (r'^deleteclient/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),    
+    url (r'^clientcreate/$', view=login_required(ClientCreateView.as_view()), name='client_create'),
+    url (r'^clientupdate/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
+    url (r'^clientdelete/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),    
 )
 
 urlpatterns += patterns('',
