@@ -74,7 +74,8 @@ class EstateCreateView(EstateMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
         context.update({
-            'estate_type_name': EstateType.objects.get(pk=self.kwargs['estate_type']),
+            'estate_type': EstateType.objects.get(pk=self.kwargs['estate_type']),
+            'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context
 
@@ -116,7 +117,7 @@ class ClientListView(ListView):
         return context
 
 class ClientMixin(ModelFormMixin):
-    template_name = 'client_create.html'
+    template_name = 'client_form.html'
     model = Client
     form_class = ClientForm          
     def form_valid(self, form):

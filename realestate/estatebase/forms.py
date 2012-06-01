@@ -21,7 +21,7 @@ class EstateForm(ModelForm):
         }
 
 class EstateCreateForm(EstateForm):
-    class Meta:
+    class Meta(EstateForm.Meta):
         pass    
 
 class ClientForm(ModelForm):              

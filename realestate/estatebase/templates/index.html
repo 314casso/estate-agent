@@ -2,9 +2,9 @@
 
 {% load link_helper %}
 {% block head %}
-<script src="{{ STATIC_URL }}js/ajax_dialog.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"> </script>
 
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
 	$("#estate_nav").accordion({
 		autoHeight : false,
@@ -27,7 +27,7 @@ $(document).ready(function() {
 				<table>
 					<td><a href="#">{{ estate_type.name }} </a></td><td>
 					<div>
-						<a class="inline-button icon-plus ajax-dialog" href="{% reverse_link estate_type.reverse_link estate_type.pk  %}">Add</a>
+						<a class="inline-button icon-plus" href="{% reverse_link estate_type.reverse_link estate_type.pk  %}?{{ next_url }}">Add</a>
 					</div></td>
 				</table>
 			</li>
