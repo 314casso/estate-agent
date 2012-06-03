@@ -4,7 +4,7 @@ from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import ClientForm, ContactFormSet, \
-    ClientFilterForm, ContactHistoryFormSet, ContactForm, EstateCreateForm
+    ClientFilterForm, ContactHistoryFormSet, ContactForm, BidgForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -14,8 +14,9 @@ from django.utils import simplejson as json
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from estatebase.models import ExUser
+from estatebase.models import ExUser, Bidg
 from estatebase.helpers.functions import safe_next_link #@UnresolvedImport
+ 
 
 class BaseMixin():
     def get_success_url(self):   
@@ -55,18 +56,12 @@ class EstateTypeView(TemplateView):
         estate_categories = EstateTypeCategory.objects.all()
         context.update({
             'title': 'base',
-            'estate_categories': estate_categories
+            'estate_categories': estate_categories,
+            'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context 
-    
-class EstateMixin(object):
-    model = Estate    
-    def get_success_url(self):
-        return reverse('estate_list')        
 
-class EstateCreateView(EstateMixin, CreateView):
-    template_name = 'estate_create.html'
-    form_class = EstateCreateForm    
+class EstateCreateView(CreateView):        
     def get_initial(self):        
         initial = super(EstateCreateView, self).get_initial()                
         initial['estate_type'] = self.kwargs['estate_type']
@@ -79,8 +74,15 @@ class EstateCreateView(EstateMixin, CreateView):
         })        
         return context
 
-class EstateUpdateView(AjaxMixin, EstateMixin, UpdateView):
-    pass
+class BidgMixin(object):
+    model = Bidg    
+    def get_success_url(self):
+        return reverse('estate_list')
+
+class BidgCreateView(BidgMixin, EstateCreateView):
+    template_name = 'estate_create.html'    
+    model = Bidg
+    form_class = BidgForm
 
 class EstateListView(TemplateView):    
     template_name = 'estate_table.html'    

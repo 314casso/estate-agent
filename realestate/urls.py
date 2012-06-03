@@ -1,9 +1,10 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
-from estatebase.views import EstateTypeView, EstateCreateView, EstateListView, EstateUpdateView,\
+from estatebase.views import EstateTypeView, EstateListView, BidgCreateView,\
     ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
     ContactHistoryListView, ContactUpdateView
 from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -16,8 +17,7 @@ urlpatterns = patterns('',
     
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),
-    url (r'^estatecreate/(?P<estate_type>\d+)$', view=EstateCreateView.as_view(), name='estate_create'),
-    url (r'^update/(?P<pk>\d+)$', view=EstateUpdateView.as_view(), name='estate_update'),
+    url (r'^bidgcreate/(?P<estate_type>\d+)$', view=BidgCreateView.as_view(), name='bidg_create'),    
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_table'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),

@@ -2,10 +2,18 @@
 {% load i18n %}
 {% load link_helper %}
 {% block head %}
-
+{{ form.media.css }}
+{{ form.media.js }}
 <script type="text/javascript">
-
+	function newParameters(query) {
+		query.locality = $('#id_locality').val();
+	}	
+	$(document).ready(function() {
+		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);					
+	});	
+	
 </script>
+
 {% endblock %}
 
 {% block left %}
@@ -19,8 +27,8 @@
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
-		</thead>		
-		{{ form.as_table }}{% csrf_token %}		
+		</thead>
+		{{ form.as_table }}{% csrf_token %}
 		<tfoot class="button">
 			<tr>
 				<td colspan="100%">

@@ -63,8 +63,8 @@ class EstateType(OrderedModel):
     @property
     def reverse_link(self):
         reverse_links = {
-                         'BIDG':'estate_create',
-                         'STEAD':'estate_create',
+                         'BIDG':'bidg_create',
+                         'STEAD':'bidg_create',
                          }
         return reverse_links[self.object_type]
 

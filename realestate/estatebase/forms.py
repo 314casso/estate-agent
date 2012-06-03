@@ -2,8 +2,8 @@
 
 from estatebase.lookups import StreetLookup
 from django.forms import ModelForm
-from estatebase.models import Estate, EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory
+from estatebase.models import  EstateType, Client, Contact, ClientType, \
+    Origin, ContactHistory, Bidg
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -12,17 +12,13 @@ from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 
-class EstateForm(ModelForm):
+class BidgForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:
-        model = Estate
+        model = Bidg
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
-
-class EstateCreateForm(EstateForm):
-    class Meta(EstateForm.Meta):
-        pass    
 
 class ClientForm(ModelForm):              
     class Meta:        
