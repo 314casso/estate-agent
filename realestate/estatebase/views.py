@@ -76,13 +76,27 @@ class EstateCreateView(CreateView):
 
 class BidgMixin(object):
     model = Bidg    
-    def get_success_url(self):
-        return reverse('estate_list')
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('bidg_update',args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url
 
 class BidgCreateView(BidgMixin, EstateCreateView):
     template_name = 'estate_create.html'    
     model = Bidg
     form_class = BidgForm
+
+class BidgUpdateView(BidgMixin, UpdateView):
+    template_name = 'estate_update.html'    
+    model = Bidg
+    form_class = BidgForm
+    def get_context_data(self, **kwargs):
+        context = super(BidgUpdateView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context
 
 class EstateListView(TemplateView):    
     template_name = 'estate_table.html'    
@@ -114,9 +128,20 @@ class ClientListView(ListView):
         context.update ({        
             'title': 'list',
             'next_url': safe_next_link(self.request.get_full_path()),
-            'client_filter_form' : ClientFilterForm(self.request.GET),
+            'client_filter_form' : ClientFilterForm(self.request.GET),       
         })        
         return context
+
+class ClientSelectView(ClientListView):
+    def get_estate(self):
+        estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
+            
+    def get_context_data(self, **kwargs): 
+        context = super(ClientSelectView, self).get_context_data(**kwargs)          
+        context.update ({            
+            'estate' : self.kwargs['estate_pk'],
+        })        
+        return context    
 
 class ClientMixin(ModelFormMixin):
     template_name = 'client_form.html'

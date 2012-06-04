@@ -41,7 +41,9 @@
 					{% endfor %}
 					</ul> 
 				</td>
-				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a></td>
+				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>
+					{% if estate_pk %}{{ estate_pk }} {% endif %}
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -66,7 +68,7 @@
 {% endblock %}
 {% block right %}
 <div class="button table-form">
-	<form method="GET">
+	<form method="get">
 		<table class="ui-widget ui-widget-content ui-corner-all">
 			<thead>
 				<tr>

@@ -7,23 +7,29 @@
 <script type="text/javascript">
 	function newParameters(query) {
 		query.locality = $('#id_locality').val();
-	}	
+	}
+
+
 	$(document).ready(function() {
-		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);					
-	});	
-	
+		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);
+	});
+
 </script>
 
 {% endblock %}
 
 {% block left %}
+
 <form action="" method="post" class="table-form">
+	{% block general_info %}
 	<table class="ui-widget ui-widget-content ui-corner-all">
 		<thead>
 			<tr>
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{% block dialog_title %}
 					{{ estate_type }}
+					{% endblock %}
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
@@ -38,6 +44,10 @@
 			</tr>
 		</tfoot>
 	</table>
+	{% endblock %}
+
+	{% block contacts %}
+	{% endblock %}
 
 </form>
 
