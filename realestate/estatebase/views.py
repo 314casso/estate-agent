@@ -75,6 +75,7 @@ class EstateCreateView(CreateView):
         return context
 
 class BidgMixin(object):
+    context_object_name = 'estate'
     model = Bidg    
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -87,7 +88,7 @@ class BidgCreateView(BidgMixin, EstateCreateView):
     model = Bidg
     form_class = BidgForm
 
-class BidgUpdateView(BidgMixin, UpdateView):
+class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    
     model = Bidg
     form_class = BidgForm
@@ -135,11 +136,11 @@ class ClientListView(ListView):
 class ClientSelectView(ClientListView):
     def get_estate(self):
         estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
-            
+        return estate            
     def get_context_data(self, **kwargs): 
         context = super(ClientSelectView, self).get_context_data(**kwargs)          
         context.update ({            
-            'estate' : self.kwargs['estate_pk'],
+            'estate' : self.get_estate(),
         })        
         return context    
 
@@ -188,7 +189,7 @@ class ClientUpdateView(ClientMixin, UpdateView):
         return context
 
 class ClientDeleteView(ClientMixin, DeleteView):
-    template_name = 'estatebase/confirm_delete.html'
+    template_name = 'confirm_delete.html'
     def get_context_data(self, **kwargs):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
         context.update({

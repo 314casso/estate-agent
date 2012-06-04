@@ -5,6 +5,7 @@
 {% block left %}
 {% load query_string %}
 {% load sorting_tags %}
+
 <div id="client_list">
 	<table class="base-table-list ui-widget ui-widget-content">
 		<thead>
@@ -42,7 +43,7 @@
 					</ul> 
 				</td>
 				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>
-					{% if estate_pk %}{{ estate_pk }} {% endif %}
+					{% if estate %}<a href="#"> Привязать</a> [{{ estate.pk }}] {% endif %}
 				</td>
 			</tr>
 			{% endfor %}
@@ -56,7 +57,7 @@
 				</div>
 					{% if is_paginated %}
 					<div class="pagination" style="float: left; padding-top:6px">
-						<span class="page-links"> {% if page_obj.has_previous %} <a href="{% url client_list %}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> {% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> {% if page_obj.has_next %} <a href="{% url client_list %}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> {% endif %} </span>
+						<span class="page-links"> {% if page_obj.has_previous %} <a href="{{ request.path }}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> {% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> {% if page_obj.has_next %} <a href="{{ request.path }}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> {% endif %} </span>
 					</div>
 					{% endif %}
 				</div></td>

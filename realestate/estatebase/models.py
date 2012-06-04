@@ -78,6 +78,7 @@ class Estate(models.Model):
     estate_type = models.ForeignKey(EstateType, blank=True, null=True, verbose_name=_('EstateType'),)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
     street = models.ForeignKey(Street, verbose_name=_('Street'),)    
+    clients = models.ManyToManyField('Client', verbose_name=_('Clients'))
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
