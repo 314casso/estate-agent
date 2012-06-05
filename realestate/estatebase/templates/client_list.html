@@ -42,8 +42,11 @@
 					{% endfor %}
 					</ul> 
 				</td>
-				<td><a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>
-					{% if estate %}<a href="#"> Привязать</a> [{{ estate.pk }}] {% endif %}
+				<td>{% if estate %}
+						<a href="{% url client_estate client.pk estate.pk %}?{{ next_url }}"> Привязать</a> [{{ estate.pk }}]
+					{% else %}
+						<a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>
+					{% endif %}
 				</td>
 			</tr>
 			{% endfor %}
@@ -83,7 +86,7 @@
 			<tfoot>
 				<tr>
 					<td colspan=2>
-					<a href="{% url client_list %}">Сбросить</a>	
+					<a href="{{ request.path }}">Сбросить</a>	
 					<input type="submit" value="Применить"/>
 					</td>
 				</tr>

@@ -1,9 +1,17 @@
 {% extends "estate_create.html" %}
 {% block dialog_title %}
-{{ bidg.estate_type }}
+{{ estate.estate_type }}
 {% endblock %}
 
 {% block contacts %}
 {{ bidg.pk }}
 <a href="{% url client_select estate.pk %}">123</a>
+
+{% for client in estate.clients.all %}
+	{{ client  }}
+	{% for contact in client.contacts %}
+		{{ contact }}
+	{% endfor %}
+	
+{% endfor %}
 {% endblock %}

@@ -15,8 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser, Bidg
-from estatebase.helpers.functions import safe_next_link #@UnresolvedImport
- 
+from estatebase.helpers.functions import safe_next_link 
 
 class BaseMixin():
     def get_success_url(self):   
@@ -74,6 +73,22 @@ class EstateCreateView(CreateView):
         })        
         return context
 
+class ClientUpdateEstateView(DetailView):   
+    model = Client
+    template_name = 'confirm_delete.html'
+    def get_context_data(self, **kwargs):
+        context = super(ClientUpdateEstateView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Привязка...',
+            'dialig_body'  : u'Привязать клиента %s к объекту [%s]?' % (self.object,self.kwargs['estate_pk']),                
+        })
+        return context 
+    def post(self, request, *args, **kwargs):        
+        self.object = Client.objects.get(pk=self.kwargs['pk'])
+        self.object.estates.add(self.kwargs['estate_pk'])
+        self.object.save()
+        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
+
 class BidgMixin(object):
     context_object_name = 'estate'
     model = Bidg    
@@ -86,7 +101,7 @@ class BidgMixin(object):
 class BidgCreateView(BidgMixin, EstateCreateView):
     template_name = 'estate_create.html'    
     model = Bidg
-    form_class = BidgForm
+    form_class = BidgForm    
 
 class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    
@@ -142,7 +157,11 @@ class ClientSelectView(ClientListView):
         context.update ({            
             'estate' : self.get_estate(),
         })        
-        return context    
+        return context
+    def get_queryset(self):
+        q =  super(ClientSelectView, self).get_queryset()
+        q = q.exclude(estates__id = self.kwargs['estate_pk'])
+        return q   
 
 class ClientMixin(ModelFormMixin):
     template_name = 'client_form.html'

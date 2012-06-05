@@ -215,3 +215,7 @@ span.contact-inline label {
  	border-top: 1px solid #ccc;
  	border-bottom: 1px solid #ccc;
 }
+
+.ui-button {
+	margin-top : 0;
+}

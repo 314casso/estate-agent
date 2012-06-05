@@ -16,6 +16,7 @@ class BidgForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:
         model = Bidg
+        exclude = ('clients',)
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup)
         }
