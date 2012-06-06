@@ -4,14 +4,13 @@
 {% endblock %}
 
 {% block contacts %}
-{{ bidg.pk }}
-<a href="{% url client_select estate.pk %}">123</a>
+
+<a href="{% url client_select estate.pk %}?{{ next_url }}">Привязать</a>
 
 {% for client in estate.clients.all %}
-	{{ client  }}
+	{{ client  }} <a href="{% url client_estate_unbind client.pk estate.pk %}?{{ next_url }}">Отвязать</a>
 	{% for contact in client.contacts %}
 		{{ contact }}
 	{% endfor %}
-	
 {% endfor %}
 {% endblock %}

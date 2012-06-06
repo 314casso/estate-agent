@@ -75,7 +75,7 @@ class EstateCreateView(CreateView):
 
 class ClientUpdateEstateView(DetailView):   
     model = Client
-    template_name = 'confirm_delete.html'
+    template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
         context = super(ClientUpdateEstateView, self).get_context_data(**kwargs)
         context.update({
@@ -89,6 +89,22 @@ class ClientUpdateEstateView(DetailView):
         self.object.save()
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
+class ClientRemoveEstateView(DetailView):   
+    model = Client
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(ClientRemoveEstateView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Отвязка...',
+            'dialig_body'  : u'Отвязать клиента %s от объекта [%s]?' % (self.object,self.kwargs['estate_pk']),                
+        })
+        return context 
+    def post(self, request, *args, **kwargs):        
+        self.object = Client.objects.get(pk=self.kwargs['pk'])
+        self.object.estates.remove(self.kwargs['estate_pk'])
+        self.object.save()            
+        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))        
+        
 class BidgMixin(object):
     context_object_name = 'estate'
     model = Bidg    
@@ -208,7 +224,7 @@ class ClientUpdateView(ClientMixin, UpdateView):
         return context
 
 class ClientDeleteView(ClientMixin, DeleteView):
-    template_name = 'confirm_delete.html'
+    template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
         context.update({

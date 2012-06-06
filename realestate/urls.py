@@ -3,7 +3,7 @@ from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateListView, BidgCreateView,\
     ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
     ContactHistoryListView, ContactUpdateView, BidgUpdateView, ClientSelectView,\
-    ClientUpdateEstateView
+    ClientUpdateEstateView, ClientRemoveEstateView
 from django.contrib.auth.decorators import login_required
 
 
@@ -33,7 +33,8 @@ urlpatterns += patterns('',
 )
  
 urlpatterns += patterns('',
-    url (r'^clientestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', ClientUpdateEstateView.as_view(), name='client_estate'),    
+    url (r'^clientestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', ClientUpdateEstateView.as_view(), name='client_estate'),   
+    url (r'^clientestateunbind/(?P<pk>\d+)/(?P<estate_pk>\d+)$', ClientRemoveEstateView.as_view(), name='client_estate_unbind'),     
 ) 
        
 urlpatterns += patterns('',
