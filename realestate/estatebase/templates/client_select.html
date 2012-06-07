@@ -1,0 +1,16 @@
+{% extends "client_list.html" %}
+{% load link_helper %}
+
+{% block topbar %}
+<div class="ui-widget">
+	<div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
+		<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"> </span>
+		<a href="{{ request.GET.next }}">Вернуться к объекту <b>[{{ estate.pk }}]</b></a>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block lastcol %}
+<a href="{% url client_estate client.pk estate.pk %}?{{ next_url }}"> Привязать</a> [{{ estate.pk }}]
+{% endblock %}

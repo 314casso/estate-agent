@@ -39,6 +39,7 @@ class ClientFilterForm(Form):
     origin = forms.ModelChoiceField(Origin.objects.all(), required=False, label=_('Origin'))
     address = forms.CharField(required=False, label=_('Address'))
     note = forms.CharField(required=False, label=_('Note'))
+    next = forms.CharField(required=False, widget=forms.HiddenInput())
     filters = {
             'pk' : 'id__exact',   
             'contact' : 'contactlist__contact__icontains',   

@@ -1,10 +1,15 @@
 {% extends "base.html" %}
+{% load link_helper %}
+
 {% block head %}
 
 {% endblock %}
 {% block left %}
 {% load query_string %}
 {% load sorting_tags %}
+
+{% block topbar %}
+{% endblock %}		
 
 <div id="client_list">
 	<table class="base-table-list ui-widget ui-widget-content">
@@ -31,22 +36,13 @@
 				<td>{{ client.origin|default_if_none:"----" }}</td>
 				<td>{{ client.address }}</td>
 				<td> 
-					<ul class="no-margin-list">
-					{% for contact in client.contacts %}
-					<li>					 
-					<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})">
-						<label>{{ contact.contact_type }}:</label> 
-						<a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a>
-					</span>
-					</li>					 
-					{% endfor %}
-					</ul> 
-				</td>
-				<td>{% if estate %}
-						<a href="{% url client_estate client.pk estate.pk %}?{{ next_url }}"> Привязать</a> [{{ estate.pk }}]
-					{% else %}
-						<a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>
-					{% endif %}
+					{% contact_list client next_url %}
+				</td>				
+				<td>
+					{% block lastcol %}					
+					<a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a>					
+					{% endblock %}
+					
 				</td>
 			</tr>
 			{% endfor %}
@@ -86,7 +82,7 @@
 			<tfoot>
 				<tr>
 					<td colspan=2>
-					<a href="{{ request.path }}">Сбросить</a>	
+					<a href="{{ request.path }}?next={{ request.GET.next }}">Сбросить</a>	
 					<input type="submit" value="Применить"/>
 					</td>
 				</tr>

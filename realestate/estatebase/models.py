@@ -108,8 +108,8 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True, related_name='creators')
-    created = models.DateTimeField(_('Created'), blank=True, null=True)
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
+    created = models.DateTimeField(_('Created'),)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
     updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updaters')     
     def __unicode__(self):

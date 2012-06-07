@@ -11,7 +11,7 @@ from estatebase.models import Estate, Client
 from estatebase.tables import EstateTable
 from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser, Bidg
@@ -82,16 +82,19 @@ class ClientUpdateEstateView(DetailView):
             'dialig_title' : u'Привязка...',
             'dialig_body'  : u'Привязать клиента %s к объекту [%s]?' % (self.object,self.kwargs['estate_pk']),                
         })
-        return context 
+        return context
+    def update_object(self):
+        '''
+        Вынесена для переопределения в потомках класса
+        '''        
+        self.object.estates.add(self.kwargs['estate_pk'])        
     def post(self, request, *args, **kwargs):        
         self.object = Client.objects.get(pk=self.kwargs['pk'])
-        self.object.estates.add(self.kwargs['estate_pk'])
+        self.update_object()
         self.object.save()
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
-class ClientRemoveEstateView(DetailView):   
-    model = Client
-    template_name = 'confirm.html'
+class ClientRemoveEstateView(ClientUpdateEstateView):    
     def get_context_data(self, **kwargs):
         context = super(ClientRemoveEstateView, self).get_context_data(**kwargs)
         context.update({
@@ -99,11 +102,8 @@ class ClientRemoveEstateView(DetailView):
             'dialig_body'  : u'Отвязать клиента %s от объекта [%s]?' % (self.object,self.kwargs['estate_pk']),                
         })
         return context 
-    def post(self, request, *args, **kwargs):        
-        self.object = Client.objects.get(pk=self.kwargs['pk'])
-        self.object.estates.remove(self.kwargs['estate_pk'])
-        self.object.save()            
-        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))        
+    def update_object(self):
+        self.object.estates.remove(self.kwargs['estate_pk'])            
         
 class BidgMixin(object):
     context_object_name = 'estate'
@@ -144,7 +144,7 @@ class EstateListView(TemplateView):
 class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
-    paginate_by = 10    
+    paginate_by = 5    
     def get_queryset(self):                        
         q = Client.objects.all().select_related()
         search_form = ClientFilterForm(self.request.GET)
@@ -155,8 +155,12 @@ class ClientListView(ListView):
         if order_by:      
             return q.order_by(','.join(order_by))
         return q    
-    def get_context_data(self, **kwargs): 
-        context = super(ClientListView, self).get_context_data(**kwargs)          
+    def get_context_data(self, **kwargs):        
+        try:
+            context = super(ClientListView, self).get_context_data(**kwargs)
+        except Http404:
+            self.kwargs['page'] = 'last'
+            context = super(ClientListView, self).get_context_data(**kwargs)                  
         context.update ({        
             'title': 'list',
             'next_url': safe_next_link(self.request.get_full_path()),
@@ -165,13 +169,15 @@ class ClientListView(ListView):
         return context
 
 class ClientSelectView(ClientListView):
+    template_name = 'client_select.html'
     def get_estate(self):
         estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
         return estate            
-    def get_context_data(self, **kwargs): 
-        context = super(ClientSelectView, self).get_context_data(**kwargs)          
+    def get_context_data(self, **kwargs):         
+        context = super(ClientSelectView, self).get_context_data(**kwargs)                    
         context.update ({            
             'estate' : self.get_estate(),
+            'client_filter_form' : ClientFilterForm(self.request.GET),
         })        
         return context
     def get_queryset(self):
@@ -232,8 +238,6 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object,                
         })
         return context 
-    def get_success_url(self):
-        return reverse('client_list')        
     
 class ContactMixin(BaseMixin):
     model = Contact    
