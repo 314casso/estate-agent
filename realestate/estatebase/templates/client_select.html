@@ -12,5 +12,5 @@
 {% endblock %}
 
 {% block lastcol %}
-<a href="{% url client_estate client.pk estate.pk %}?{{ next_url }}"> Привязать</a> [{{ estate.pk }}]
+<a href="{% url client_estate client.pk estate.pk %}?next={{ request.GET.next }}"> Привязать</a> [{{ estate.pk }}]
 {% endblock %}

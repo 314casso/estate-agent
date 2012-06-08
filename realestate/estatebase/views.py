@@ -130,6 +130,16 @@ class BidgUpdateView(BidgMixin, UpdateView):
         })        
         return context
 
+class BidgDetailView(BidgMixin, DetailView):
+    template_name = 'estate_detail.html'    
+    model = Bidg
+    def get_context_data(self, **kwargs):
+        context = super(BidgDetailView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context
+
 class EstateListView(TemplateView):    
     template_name = 'estate_table.html'    
     def get_context_data(self, **kwargs):

@@ -181,6 +181,7 @@ span.contact-inline label {
 
 .no-margin-list li {
 	list-style: none;
+	padding: 2px 0;
 }
 
 .available-state {

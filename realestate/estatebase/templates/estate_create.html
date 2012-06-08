@@ -38,9 +38,8 @@
 		{{ form.as_table }}{% csrf_token %}
 		<tfoot class="button">
 			<tr>
-				<td colspan="100%">
-				<input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
-				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
+				<td colspan="100%">				
+				<input value="{% trans 'Add' %}" type="submit" name="_save"/>
 				</td>
 			</tr>
 		</tfoot>
