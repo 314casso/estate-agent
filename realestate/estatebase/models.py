@@ -20,17 +20,26 @@ class SimpleDict(models.Model):
         abstract = True
 
 class Region(SimpleDict):
+    '''
+    Районы
+    '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
         verbose_name_plural = _('regions')
 
 class Locality(SimpleDict):
+    '''
+    Населенные пункты
+    '''
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
         verbose_name_plural = _('localities')    
 
 class Microdistrict(SimpleDict):
+    '''
+    Микрорайоны в населенном пункте
+    '''
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('microdistrict')
@@ -75,6 +84,9 @@ class EstateType(OrderedModel):
         verbose_name_plural = _('estate types')     
     
 class Estate(models.Model):
+    '''
+    Базовая модель объектов недвижимости
+    '''
     estate_type = models.ForeignKey(EstateType, blank=True, null=True, verbose_name=_('EstateType'),)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
     street = models.ForeignKey(Street, verbose_name=_('Street'),)    
