@@ -220,3 +220,7 @@ span.contact-inline label {
 .ui-button {
 	margin-top : 0;
 }
+
+.ui-combo-button .ui-button-text {	
+	padding: 0;
+}

@@ -51,6 +51,14 @@ class Street(SimpleDict):
         verbose_name = _('street')
         verbose_name_plural = _('streets')
 
+class Beside(SimpleDict):    
+    '''
+    Рассояние до (моря, речки и т.п.)
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('beside')
+        verbose_name_plural = _('besides')
+
 class EstateTypeCategory(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     def __unicode__(self):
@@ -88,9 +96,16 @@ class Estate(models.Model):
     Базовая модель объектов недвижимости
     '''
     estate_type = models.ForeignKey(EstateType, blank=True, null=True, verbose_name=_('EstateType'),)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),) 
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
+    microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True)
     street = models.ForeignKey(Street, verbose_name=_('Street'),)    
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'),related_name='estates')
+    origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True)
+    beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True)
+    beside_distance = models.PositiveIntegerField('Beside distance',blank=True, null=True)
+    saler_price = models.PositiveIntegerField('Saler price',blank=True, null=True)
+    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -107,6 +122,9 @@ class ClientType(SimpleDict):
         verbose_name_plural = _('client types')
 
 class Origin(SimpleDict):
+    '''
+    Источник      
+    '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('origin')
         verbose_name_plural = _('origins')

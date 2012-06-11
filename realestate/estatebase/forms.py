@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from estatebase.lookups import StreetLookup
+from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg
@@ -11,6 +11,7 @@ from django.forms.widgets import Textarea, TextInput, DateTimeInput
 from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
+from selectable.forms.widgets import AutoComboboxSelectWidget
 
 class BidgForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -18,7 +19,9 @@ class BidgForm(ModelForm):
         model = Bidg
         exclude = ('clients',)
         widgets = {
-            'street': AutoCompleteSelectWidget(StreetLookup)
+            'street': AutoCompleteSelectWidget(StreetLookup),
+            'locality': AutoComboboxSelectWidget(LocalityLookup),
+            'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
         }
 
 class ClientForm(ModelForm):              

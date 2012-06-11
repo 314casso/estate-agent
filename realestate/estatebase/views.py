@@ -117,7 +117,10 @@ class BidgMixin(object):
 class BidgCreateView(BidgMixin, EstateCreateView):
     template_name = 'estate_create.html'    
     model = Bidg
-    form_class = BidgForm    
+    form_class = BidgForm   
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                          
+        return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))         
 
 class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    

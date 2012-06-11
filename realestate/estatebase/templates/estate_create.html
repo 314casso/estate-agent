@@ -6,15 +6,18 @@
 {{ form.media.css }}
 {{ form.media.js }}
 <script type="text/javascript">
-	function newParameters(query) {
-		query.locality = $('#id_locality').val();
+	function localityParam(query) {
+		query.locality = $('#id_locality_1').val();
 	}
-
-
+	function regionParam(query) {
+		query.region = $('#id_region').val();
+	}
+		
 	$(document).ready(function() {
-		$('#id_street_0').djselectable('option', 'prepareQuery', newParameters);
+		$('#id_street_0').djselectable('option', 'prepareQuery', localityParam);
+		$('#id_locality_0').djselectable('option', 'prepareQuery', regionParam);
+		$('#id_microdistrict_0').djselectable('option', 'prepareQuery', localityParam);
 	});
-
 </script>
 
 {% endblock %}
