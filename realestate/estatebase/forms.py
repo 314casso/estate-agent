@@ -13,11 +13,13 @@ from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 
-class BidgForm(ModelForm):
+class BidgCreateForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:
         model = Bidg
-        exclude = ('clients',)
+        #exclude = ('clients',)
+        fields = ('origin','region','locality','microdistrict','street','bidg_number',
+                  'beside','beside_distance','saler_price','agency_price')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),

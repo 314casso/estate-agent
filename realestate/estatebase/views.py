@@ -4,7 +4,8 @@ from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import ClientForm, ContactFormSet, \
-    ClientFilterForm, ContactHistoryFormSet, ContactForm, BidgForm
+    ClientFilterForm, ContactHistoryFormSet, ContactForm, \
+    BidgCreateForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -117,7 +118,7 @@ class BidgMixin(object):
 class BidgCreateView(BidgMixin, EstateCreateView):
     template_name = 'estate_create.html'    
     model = Bidg
-    form_class = BidgForm   
+    form_class = BidgCreateForm   
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                          
         return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))         
@@ -125,7 +126,7 @@ class BidgCreateView(BidgMixin, EstateCreateView):
 class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    
     model = Bidg
-    form_class = BidgForm
+    form_class = BidgCreateForm
     def get_context_data(self, **kwargs):
         context = super(BidgUpdateView, self).get_context_data(**kwargs)        
         context.update({            

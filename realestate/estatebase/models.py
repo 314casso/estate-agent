@@ -59,6 +59,62 @@ class Beside(SimpleDict):
         verbose_name = _('beside')
         verbose_name_plural = _('besides')
 
+class Electricity(SimpleDict):
+    '''
+    Электричество
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('electricity')
+        verbose_name_plural = _('electricities')
+        
+class Watersupply(SimpleDict):
+    '''
+    Водоснабжение
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('watersupply')
+        verbose_name_plural = _('watersupplies')
+
+class Gassupply(SimpleDict):
+    '''
+    Газоснабжение
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('gassupply')
+        verbose_name_plural = _('gassupplies')                
+
+class Sewerage(SimpleDict):
+    '''
+    Канализация
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('sewerage')
+        verbose_name_plural = _('sewerages')
+
+class Telephony(SimpleDict):
+    '''
+    Телефония
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('telephony')
+        verbose_name_plural = _('telephonies')
+        
+class Internet(SimpleDict):
+    '''
+    Интернет
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('internet')
+        verbose_name_plural = _('internets')   
+
+class Driveway(SimpleDict):
+    '''
+    Подъезд
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('driveway')
+        verbose_name_plural = _('driveways')                      
+
 class EstateTypeCategory(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     def __unicode__(self):
@@ -95,6 +151,7 @@ class Estate(models.Model):
     '''
     Базовая модель объектов недвижимости
     '''
+    #Базовые
     estate_type = models.ForeignKey(EstateType, blank=True, null=True, verbose_name=_('EstateType'),)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),) 
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
@@ -105,13 +162,26 @@ class Estate(models.Model):
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True)
     beside_distance = models.PositiveIntegerField('Beside distance',blank=True, null=True)
     saler_price = models.PositiveIntegerField('Saler price',blank=True, null=True)
-    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
+    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)    
+    #Коммуникации    
+    electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True)
+    electricity_distance = models.PositiveIntegerField('Electricity distance',blank=True, null=True)
+    watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True) 
+    watersupply_distance = models.PositiveIntegerField('Watersupply distance',blank=True, null=True)
+    gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True)
+    gassupply_distance = models.PositiveIntegerField('Gassupply distance',blank=True, null=True)
+    sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True)
+    sewerage_distance = models.PositiveIntegerField('Sewerage distance',blank=True, null=True)
+    telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True)
+    internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
+    driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
+    driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
 
 class Bidg(Estate):    
-    room_number = models.CharField(_('Room number'), max_length=10)
+    bidg_number = models.CharField(_('Bidg number'), max_length=10)
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
