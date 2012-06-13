@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
-    url(r'^estatelist/$',EstateListView.as_view(), name='estate_table'),
+    url(r'^estatelist/$',EstateListView.as_view(), name='estate_list'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
     url(r'^clients/(?P<estate_pk>\d+)$',ClientSelectView.as_view(), name='client_select'),

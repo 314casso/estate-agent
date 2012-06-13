@@ -74,6 +74,16 @@ class EstateCreateView(CreateView):
         })        
         return context
 
+class EstateListView(ListView):
+    model = Estate
+    template_name = 'estate_list.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateListView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context
+
 class ClientUpdateEstateView(DetailView):   
     model = Client
     template_name = 'confirm.html'
@@ -144,17 +154,6 @@ class BidgDetailView(BidgMixin, DetailView):
         })        
         return context
 
-class EstateListView(TemplateView):    
-    template_name = 'estate_table.html'    
-    def get_context_data(self, **kwargs):
-        table = EstateTable(Estate.objects.all().select_related())
-        RequestConfig(self.request, paginate={"per_page": 20}).configure(table)
-        context = {
-            'table': table,
-            'title': 'list'
-        }        
-        return context
-    
 class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"

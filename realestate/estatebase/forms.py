@@ -19,7 +19,7 @@ class BidgCreateForm(ModelForm):
         model = Bidg
         #exclude = ('clients',)
         fields = ('origin','region','locality','microdistrict','street','bidg_number',
-                  'beside','beside_distance','saler_price','agency_price')
+                  'beside','beside_distance','saler_price','agency_price','estate_status')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),

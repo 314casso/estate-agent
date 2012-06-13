@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load link_helper %}
+{% block head %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+	}); 
+</script>
+
+{% endblock head %}
+
+{% block left %}
+
+{{ estate_list.count }}
+
+
+{% for estate in estate_list %}
+
+<table>
+	<tr>
+		<td>{{ estate.pk }}</td>
+		<td>{{ estate.estate_type }}</td>
+		<td>{% address estate %}</td>
+	</tr>
+</table>
+
+
+{% if estate.is_bidg %}
+{{ estate.bidg.bidg_number }}
+{% else %}
+Левак
+{% endif %}
+
+{% client_list estate next_url %}
+
+
+{% endfor %}
+
+{% endblock left %}

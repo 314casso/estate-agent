@@ -23,21 +23,7 @@
 		<a href="{% url client_select estate.pk %}?{{ next_url }}">привязать</a>
 	</div>
 	<div class="confirm-dialog-content">
-
-		{% for client in estate.clients.all %}
-		<div class="ui-widget ui-widget-content ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
-			<div class="ui-widget">
-				<div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
-					<span class="ui-icon ui-icon-minus" style="float: left; margin-right: .3em;"> </span>
-					<a title="{{ client.origin|default_if_none:"" }} {{ client.address }}" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a>
-					({{ client.client_type }})
-					<a href="{% url client_estate_unbind client.pk estate.pk %}?{{ next_url }}">Отвязать</a>
-				</div>
-			</div>
-			{% contact_list client next_url %}
-		</div>
-		{% endfor %}
-
+		{% client_list estate next_url %}
 	</div>
 </div>
 

@@ -115,6 +115,14 @@ class Driveway(SimpleDict):
         verbose_name = _('driveway')
         verbose_name_plural = _('driveways')                      
 
+class EstateStatus(SimpleDict):
+    '''
+    Статус объекта
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('estate status')
+        verbose_name_plural = _('estate statuses') 
+
 class EstateTypeCategory(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     def __unicode__(self):
@@ -152,17 +160,19 @@ class Estate(models.Model):
     Базовая модель объектов недвижимости
     '''
     #Базовые
-    estate_type = models.ForeignKey(EstateType, blank=True, null=True, verbose_name=_('EstateType'),)
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'),)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),) 
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
     microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True)
     street = models.ForeignKey(Street, verbose_name=_('Street'),)    
+    estate_number = models.CharField(_('Estate number'), max_length=10)
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'),related_name='estates')
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True)
     beside_distance = models.PositiveIntegerField('Beside distance',blank=True, null=True)
     saler_price = models.PositiveIntegerField('Saler price',blank=True, null=True)
-    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)    
+    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
+    estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'))     
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True)
     electricity_distance = models.PositiveIntegerField('Electricity distance',blank=True, null=True)
@@ -176,6 +186,10 @@ class Estate(models.Model):
     internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
     driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
+    @property
+    def is_bidg(self):
+        if self.estate_type.object_type  == 'BIDG':
+            return True  
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
