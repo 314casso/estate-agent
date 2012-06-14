@@ -24,7 +24,7 @@ def client_list(estate, next_url):
 def address(estate):    
     items = []
     if estate.region:
-        items.add(estate.region)
+        items.append(estate.region.name)
     items.append(estate.locality.name)
     if estate.microdistrict:         
         items.append(estate.microdistrict.name)
