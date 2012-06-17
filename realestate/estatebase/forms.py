@@ -3,7 +3,7 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg
+    Origin, ContactHistory, Bidg, Estate
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -13,18 +13,28 @@ from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 
-class BidgCreateForm(ModelForm):
+class EstateCreateForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
-    class Meta:
-        model = Bidg
-        #exclude = ('clients',)
-        fields = ('estate_type','origin','region','locality','microdistrict','street','bidg_number',
+    class Meta:                
+        model = Estate
+        fields = ('estate_type','origin','region','locality','microdistrict','street','estate_number',
                   'beside','beside_distance','saler_price','agency_price','estate_status')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
         }
+
+class EstateCommunicationForm(ModelForm):
+    class Meta:                
+        model = Estate
+        fields = ('electricity', 'electricity_distance', 'watersupply', 'watersupply_distance',
+                  'gassupply', 'gassupply_distance', 'sewerage', 'sewerage_distance', 'telephony',
+                  'internet', 'driveway', 'driveway_distance',)
+
+class BidgCreateForm(ModelForm):
+    class Meta:
+        model = Bidg
 
 class ClientForm(ModelForm):              
     class Meta:        

@@ -5,12 +5,10 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
-    BidgCreateForm
+    EstateCreateForm, BidgCreateForm, EstateCommunicationForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
-from estatebase.tables import EstateTable
-from django_tables2.config import RequestConfig
 from django.utils import simplejson as json
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic.list import ListView
@@ -61,7 +59,10 @@ class EstateTypeView(TemplateView):
         })        
         return context 
 
-class EstateCreateView(CreateView):        
+class EstateCreateView(CreateView):
+    template_name = 'estate_create.html'     
+    model = Estate   
+    form_class = EstateCreateForm
     def get_initial(self):        
         initial = super(EstateCreateView, self).get_initial()                
         initial['estate_type'] = self.kwargs['estate_type']
@@ -73,6 +74,34 @@ class EstateCreateView(CreateView):
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                                  
+        return '%s?%s' % (reverse('%s_detail' % self.object.estate_type.view_prefix
+                                  ,args=[self.object.id]), safe_next_link(next_url))
+
+class EstateDetailView(DetailView):
+    template_name = 'estate_detail.html'    
+    model = Estate
+    def get_context_data(self, **kwargs):
+        context = super(EstateDetailView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context
+
+class EstateUpdateView(BaseMixin, UpdateView):
+    model = Estate
+    template_name = 'estate_update.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateUpdateView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context    
+
+class EstateCommunicationUpdateView(EstateUpdateView):
+    template_name = 'estate_comm.html'
+    form_class = EstateCommunicationForm
 
 class EstateListView(ListView):
     model = Estate
@@ -132,7 +161,7 @@ class BidgCreateView(BidgMixin, EstateCreateView):
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                          
         return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))         
-
+# TODO:fix
 class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    
     model = Bidg
@@ -144,13 +173,12 @@ class BidgUpdateView(BidgMixin, UpdateView):
         })        
         return context
 
-class BidgDetailView(BidgMixin, DetailView):
+class ApartmentDetailView(EstateDetailView):
     template_name = 'estate_detail.html'    
-    model = Bidg
     def get_context_data(self, **kwargs):
-        context = super(BidgDetailView, self).get_context_data(**kwargs)        
+        context = super(ApartmentDetailView, self).get_context_data(**kwargs)        
         context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),
+            'next_url': safe_next_link(self.request.get_full_path()),            
         })        
         return context
 

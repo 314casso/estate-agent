@@ -1,0 +1,91 @@
+{% extends "estate_dialog.html" %}
+{% load i18n %}
+
+{% block dialog_title %}
+Коммуникации                    
+{% endblock %}
+
+{% block dialog_form %}
+{{ form.non_field_errors }}
+<tr>
+	<th>{{ form.electricity.label_tag }}:</th>
+	<td> 
+		{{ form.electricity.errors }}
+		{{ form.electricity }} 
+	</td>	
+	<td class="number-field"> 
+		{{ form.electricity_distance.errors }}
+		{{ form.electricity_distance }} 
+	</td>
+</tr>
+
+<tr>
+	<th>{{ form.watersupply.label_tag }}:</th>
+	<td> 
+		{{ form.watersupply.errors }}
+		{{ form.watersupply }} 
+	</td>	
+	<td class="number-field"> 
+		{{ form.watersupply_distance.errors }}
+		{{ form.watersupply_distance }} 
+	</td>
+</tr>
+
+<tr>
+	<th>{{ form.gassupply.label_tag }}:</th>
+	<td> 
+		{{ form.gassupply.errors }}
+		{{ form.gassupply }} 
+	</td>	
+	<td class="number-field"> 
+		{{ form.gassupply_distance.errors }}
+		{{ form.gassupply_distance }} 
+	</td>
+</tr>
+
+<tr>
+	<th>{{ form.sewerage.label_tag }}:</th>
+	<td> 
+		{{ form.sewerage.errors }}
+		{{ form.sewerage }} 
+	</td>	
+	<td class="number-field"> 
+		{{ form.sewerage_distance.errors }}
+		{{ form.sewerage_distance }} 
+	</td>
+</tr>
+
+<tr>
+	<th>{{ form.telephony.label_tag }}:</th>
+	<td colspan="100%"> 
+		{{ form.telephony.errors }}
+		{{ form.telephony }} 
+	</td>	
+</tr>
+
+<tr>
+	<th>{{ form.internet.label_tag }}:</th>
+	<td colspan="100%"> 
+		{{ form.internet.errors }}
+		{{ form.internet }} 
+	</td>	
+</tr>
+
+<tr>
+	<th>{{ form.driveway.label_tag }}:</th>
+	<td> 
+		{{ form.driveway.errors }}
+		{{ form.driveway }} 
+	</td>	
+	<td class="number-field"> 
+		{{ form.driveway_distance.errors }}
+		{{ form.driveway_distance }} 
+	</td>
+</tr>
+
+
+{% endblock %}
+
+{% block dialog_buttons %}	              
+ <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+{% endblock dialog_buttons %}

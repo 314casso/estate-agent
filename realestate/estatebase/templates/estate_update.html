@@ -1,16 +1,16 @@
-{% extends "estate_create.html" %}
+{% extends "estate_dialog.html" %}
+{% load i18n %}
+
+
 {% block dialog_title %}
-{{ estate.estate_type }}
+                    
 {% endblock %}
-{% load link_helper %}
 
-{% block contacts %}
+{% block dialog_form %}
+     {{ form.as_table }}               
+{% endblock %}    
 
-<a href="{% url client_select estate.pk %}?{{ next_url }}">Привязать</a>
 
-{% for client in estate.clients.all %}
-	{{ client  }} <a href="{% url client_estate_unbind client.pk estate.pk %}?{{ next_url }}">Отвязать</a>	
-	{% contact_list client next_url %}	
-{% endfor %}
 
-{% endblock %}
+
+

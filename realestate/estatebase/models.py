@@ -115,6 +115,22 @@ class Driveway(SimpleDict):
         verbose_name = _('driveway')
         verbose_name_plural = _('driveways')                      
 
+class Document(SimpleDict):
+    '''
+    Документы
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('document')
+        verbose_name_plural = _('documents')                      
+
+class EstateParam(SimpleDict):
+    '''
+    Дополнительные параметры
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('estate param')
+        verbose_name_plural = _('estate params')
+
 class EstateStatus(SimpleDict):
     '''
     Статус объекта
@@ -136,10 +152,15 @@ OBJECT_TYPE_CHOICES = (
     ('STEAD', 'Участок'),
 )
 
+VIEW_PREFIX_CHOICES = (
+    ('apartment','Квартира'),
+)
+
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)    
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
+    view_prefix = models.CharField(_('View prefix'), max_length=50, choices=VIEW_PREFIX_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     @property
     def reverse_link(self):
@@ -153,7 +174,7 @@ class EstateType(OrderedModel):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
         verbose_name = _('estate type')
-        verbose_name_plural = _('estate types')     
+        verbose_name_plural = _('estate types') 
     
 class Estate(models.Model):
     '''
@@ -186,16 +207,28 @@ class Estate(models.Model):
     internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
     driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
+    #Дополнительно
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
+    documents = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
+    description = models.TextField('Description', blank=True, null=True)
+    comment = models.CharField ('Note', blank=True, null=True, max_length=255)    
     @property
     def is_bidg(self):
         if self.estate_type.object_type  == 'BIDG':
-            return True  
+            return True
+    @property
+    def basic_bidg(self):
+        if self.bidgs:
+            bidgs = list(self.bidgs.all()[:1])
+            if bidgs:
+                return bidgs[0]                      
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
 
-class Bidg(Estate):    
-    bidg_number = models.CharField(_('Bidg number'), max_length=10)
+class Bidg(models.Model):
+    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
+    room_number = models.CharField(_('Bidg number'), max_length=10)
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')

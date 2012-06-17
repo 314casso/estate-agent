@@ -3,7 +3,9 @@ from django.contrib import admin
 from estatebase.views import EstateTypeView, EstateListView, BidgCreateView,\
     ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
     ContactHistoryListView, ContactUpdateView, BidgUpdateView, ClientSelectView,\
-    ClientUpdateEstateView, ClientRemoveEstateView, BidgDetailView
+    ClientUpdateEstateView, ClientRemoveEstateView, \
+    EstateCreateView, EstateDetailView, ApartmentDetailView,\
+    EstateCommunicationUpdateView
 from django.contrib.auth.decorators import login_required
 
 
@@ -38,8 +40,9 @@ urlpatterns += patterns('',
 ) 
        
 urlpatterns += patterns('',
-    url (r'^bidgcreate/(?P<estate_type>\d+)$', view=BidgCreateView.as_view(), name='bidg_create'),
+    url (r'^estatecreate/(?P<estate_type>\d+)$', view=EstateCreateView.as_view(), name='estate_create'),
     url (r'^bidgupdate/(?P<pk>\d+)$', view=BidgUpdateView.as_view(), name='bidg_update'),
-    url (r'^bidgdetail/(?P<pk>\d+)$', view=BidgDetailView.as_view(), name='bidg_detail'),
+    url (r'^apartmentdetail/(?P<pk>\d+)$', view=ApartmentDetailView.as_view(), name='apartment_detail'),
+    url (r'^estatecommupdate/(?P<pk>\d+)$', view=EstateCommunicationUpdateView.as_view(), name='estate_comm_update'),
 )
 

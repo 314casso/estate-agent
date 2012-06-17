@@ -41,6 +41,8 @@ body {
 .table-form table th {
 	text-align: left;
 	padding-left: 10px;
+	/*vertical-align: bottom;*/
+	/*padding-bottom: 0.5em;*/
 }
 
 .table-form thead tr td {
@@ -53,6 +55,7 @@ body {
 
 .table-form table td {
 	padding: 2px;
+	/*vertical-align: bottom;*/
 }
 
 .table-form .big-text-input, .table-form textarea {
@@ -223,4 +226,8 @@ span.contact-inline label {
 
 .ui-combo-button .ui-button-text {	
 	padding: 0;
+}
+
+.number-field input {
+	width: 5em;
 }
