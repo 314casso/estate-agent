@@ -4,50 +4,59 @@
 {% block left %}
 
 <form action="" method="post" class="table-form">
-    {% block general_info %}
-    <table class="ui-widget ui-widget-content ui-corner-all">
-        <thead>
-            <tr>
-                <td colspan="100%">
-                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
-                    {% csrf_token %}
-                    {% block dialog_title %}
-                    
-                    {% endblock %}
-                    {% close_btn request.GET.next %}
-                </div></td>
-            </tr>
-        </thead>
-        {% block dialog_form %}
-                    
-        {% endblock %}        
-        <tfoot class="button">
-            <tr>
-                <td colspan="100%">  
-                {% block dialog_buttons %}	              
-                <input value="{% trans 'Add' %}" type="submit" name="_save"/>
-                {% endblock dialog_buttons %}
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-    {% endblock general_info %}
+	{% block general_info %}
+	<table class="ui-widget ui-widget-content ui-corner-all">
+		<thead>
+			<tr>
+				<td colspan="100%">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{% csrf_token %}
+					{% block dialog_title %}
+
+					{% endblock %}
+					{% close_btn request.GET.next %}
+				</div></td>
+			</tr>
+		</thead>
+		{% block dialog_form %}
+
+		{% endblock %}
+		<tfoot class="button">
+			<tr>
+				<td colspan="100%"> {% block dialog_buttons %}
+				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
+				{% endblock dialog_buttons %} </td>
+			</tr>
+		</tfoot>
+	</table>
+	{% endblock general_info %}
 
 </form>
 
 {% endblock left %}
 
 {% block right %}
-<h3>Карточка объекта {{ estate.pk }}</h3>
-<table>
-	<tr>
-		<th>Тип объекта:</th>
-		<td>{{ estate.estate_type }}</td>
-	</tr>
-	<tr>
-		<th>Адрес:</th>
-		<td>{% address estate %}</td>
-	</tr>
-</table>
+
+<div class="table-form">
+	<table class="ui-widget ui-widget-content ui-corner-all ui-priority-secondary">
+		<thead>
+			<tr>
+				<td colspan="100%">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					Редактируемый объект [{{ estate.pk }}]
+				</div>
+				</td>
+			</tr>
+		</thead>
+		<tr>
+			<th>Тип объекта:</th>
+			<td>{{ estate.estate_type }}</td>
+		</tr>
+		<tr>
+			<th>Адрес:</th>
+			<td>{% address estate %}</td>
+		</tr>
+	</table>
+</div>
 
 {% endblock right %}

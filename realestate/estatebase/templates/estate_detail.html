@@ -6,9 +6,9 @@
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		Основная информация по объекту
-		<span class="ui-icon ui-icon-minus" style="float: left; margin-right: .3em;"> </span>
-		<a href="">удалить</a>
+		<a href="">Основная информация по объекту</a>
+		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>
+		
 	</div>
 	<div class="confirm-dialog-content">
 		{% address estate %}
@@ -18,9 +18,9 @@
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		Клиенты
+		<a title="Привязать клиентов" href="{% url client_select estate.pk %}?{{ next_url }}">Клиенты</a>
 		<span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span>
-		<a href="{% url client_select estate.pk %}?{{ next_url }}">привязать</a>
+		
 	</div>
 	<div class="confirm-dialog-content">
 		{% client_list estate next_url %}
@@ -30,15 +30,24 @@
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		Дополнительно
-		<span class="ui-icon ui-icon-minus" style="float: left; margin-right: .3em;"> </span>
-		<a href="">удалить</a>
+		<a href="{% url estate_comm_update estate.pk %}?{{ next_url }}">Коммуникации</a>
+		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
+	</div>
+	<div class="confirm-dialog-content">
+		{{ estate.electricity }} {{ estate.electricity_distance }}
+	</div>
+</div>
+
+<div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
+		<a href="">Дополнительно</a>
+		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
 	</div>
 	<div class="confirm-dialog-content">
 		<a href="">WWW</a>
 	</div>
 </div>
 
-<a href="{% url estate_comm_update estate.pk %}?{{ next_url }}">Comm</a>
+
 
 {% endblock left %}
