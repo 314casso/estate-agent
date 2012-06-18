@@ -34,7 +34,10 @@
 		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
 	</div>
 	<div class="confirm-dialog-content">
-		{{ estate.electricity }} {{ estate.electricity_distance }}
+		<table style="margin:0">		
+		{% include "comm_form.html" %}
+		</table>
+		
 	</div>
 </div>
 

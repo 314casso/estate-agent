@@ -86,6 +86,7 @@ class EstateDetailView(DetailView):
         context = super(EstateDetailView, self).get_context_data(**kwargs)        
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
+            'comm_form': EstateCommunicationForm(instance=self.object)
         })        
         return context
 
