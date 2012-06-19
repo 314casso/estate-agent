@@ -34,8 +34,23 @@
 		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
 	</div>
 	<div class="confirm-dialog-content">
-		<table style="margin:0">		
+		<table class="detail-table">		
 		{% include "comm_form.html" %}
+		</table>
+		
+	</div>
+</div>
+
+<div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
+		<a href="{% url estate_docs_update estate.pk %}?{{ next_url }}">Документы</a>
+		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
+	</div>
+	<div class="confirm-dialog-content">
+		<table class="detail-table">		
+		 {% for doc in estate.documents.all %}		 	
+		 	<tr><td>{{ doc.name }}</td></tr>		 	 
+		 {% endfor %}
 		</table>
 		
 	</div>

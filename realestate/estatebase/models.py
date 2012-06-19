@@ -119,6 +119,7 @@ class Document(SimpleDict):
     '''
     Документы
     '''
+    estate_type = models.ManyToManyField('EstateType', verbose_name=_('EstateType'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('document')
         verbose_name_plural = _('documents')                      
@@ -209,7 +210,7 @@ class Estate(models.Model):
     driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
     #Дополнительно
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
-    documents = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
+    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField('Description', blank=True, null=True)
     comment = models.CharField ('Note', blank=True, null=True, max_length=255)    
     @property

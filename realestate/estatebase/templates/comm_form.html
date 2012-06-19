@@ -1,63 +1,63 @@
 <tr>
 	<th>{{ comm_form.electricity.label_tag }}:</th>
 	<td> 		
-		{{ comm_form.electricity.value }} 
+		{{ comm_form.electricity.value|default_if_none:"" }} 
 	</td>	
 	<td> 		
-		{{ comm_form.electricity_distance.value }} 
+		{{ comm_form.electricity_distance.value|default_if_none:"" }} 
 	</td>
 </tr>
 
 <tr>
 	<th>{{ comm_form.watersupply.label_tag }}:</th>
 	<td> 		
-		{{ comm_form.watersupply.value }} 
+		{{ comm_form.watersupply.value|default_if_none:"" }} 
 	</td>	
 	<td> 		
-		{{ comm_form.watersupply_distance.value }} 
+		{{ comm_form.watersupply_distance.value|default_if_none:"" }} 
 	</td>
 </tr>
 
 <tr>
 	<th>{{ comm_form.gassupply.label_tag }}:</th>
 	<td>		
-		{{ comm_form.gassupply.value }} 
+		{{ comm_form.gassupply.value|default_if_none:"" }} 
 	</td>	
 	<td> 		
-		{{ comm_form.gassupply_distance.value }} 
+		{{ comm_form.gassupply_distance.value|default_if_none:"" }} 
 	</td>
 </tr>
 
 <tr>
 	<th>{{ comm_form.sewerage.label_tag }}:</th>
 	<td> 		
-		{{ comm_form.sewerage.value }} 
+		{{ comm_form.sewerage.value|default_if_none:"" }} 
 	</td>	
 	<td> 		
-		{{ comm_form.sewerage_distance.value }} 
+		{{ comm_form.sewerage_distance.value|default_if_none:"" }}
 	</td>
 </tr>
 
 <tr>
 	<th>{{ comm_form.telephony.label_tag }}:</th>
 	<td colspan="100%">		
-		{{ comm_form.telephony.value }} 
+		{{ comm_form.telephony.value|default_if_none:"" }} 
 	</td>	
 </tr>
 
 <tr>
 	<th>{{ comm_form.internet.label_tag }}:</th>
 	<td colspan="100%">		
-		{{ comm_form.internet.value }} 
+		{{ comm_form.internet.value|default_if_none:"" }} 
 	</td>	
 </tr>
 
 <tr>
 	<th>{{ comm_form.driveway.label_tag }}:</th>
 	<td> 		
-		{{ comm_form.driveway.value }} 
+		{{ comm_form.driveway.value|default_if_none:"" }} 
 	</td>	
 	<td> 		
-		{{ comm_form.driveway_distance.value }} 
+		{{ comm_form.driveway_distance.value|default_if_none:"" }} 
 	</td>
 </tr>

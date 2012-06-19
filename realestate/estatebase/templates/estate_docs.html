@@ -1,0 +1,14 @@
+{% extends "estate_dialog.html" %}
+{% load i18n %}
+
+{% block dialog_title %}
+Документы                    
+{% endblock %}
+
+{% block dialog_form %}
+<tr>
+<td class="checkbox-select-multiple">{{ form.documents }}</td>
+</tr>
+
+{% endblock %}
+

@@ -3,7 +3,7 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate
+    Origin, ContactHistory, Bidg, Estate, Document
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -12,6 +12,7 @@ from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
+
 
 class EstateCreateForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -31,6 +32,17 @@ class EstateCommunicationForm(ModelForm):
         fields = ('electricity', 'electricity_distance', 'watersupply', 'watersupply_distance',
                   'gassupply', 'gassupply_distance', 'sewerage', 'sewerage_distance', 'telephony',
                   'internet', 'driveway', 'driveway_distance',)
+
+class EstateDocumentForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EstateDocumentForm, self).__init__(*args, **kwargs)        
+        self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
+    class Meta:                
+        model = Estate
+        fields = ('documents',)
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple()        
+        }
 
 class BidgCreateForm(ModelForm):
     class Meta:
