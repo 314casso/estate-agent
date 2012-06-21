@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, BidgCreateForm, EstateCommunicationForm,\
-    EstateDocumentForm
+    EstateDocumentForm, EstateParamForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -93,7 +93,8 @@ class EstateDetailView(DetailView):
 
 class EstateUpdateView(BaseMixin, UpdateView):
     model = Estate
-    template_name = 'estate_update.html'
+    template_name = 'estate_create.html'
+    form_class = EstateCreateForm
     def get_context_data(self, **kwargs):
         context = super(EstateUpdateView, self).get_context_data(**kwargs)        
         context.update({            
@@ -108,6 +109,10 @@ class EstateCommunicationUpdateView(EstateUpdateView):
 class EstateDocumentUpdateView(EstateUpdateView):    
     template_name = 'estate_docs.html'
     form_class = EstateDocumentForm    
+
+class EstateParamUpdateView(EstateUpdateView):    
+    template_name = 'estate_params.html'
+    form_class = EstateParamForm
 
 class EstateListView(ListView):
     model = Estate

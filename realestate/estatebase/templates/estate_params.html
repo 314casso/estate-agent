@@ -1,0 +1,21 @@
+{% extends "estate_dialog.html" %}
+{% load i18n %}
+
+{% block dialog_title %}
+Документы                    
+{% endblock %}
+
+{% block dialog_form %}
+<tr>
+	<td colspan="100%" class="checkbox-select-multiple">{{ form.estate_params }}</td>
+</tr>
+<tr>
+	<td colspan="100%">{{ form.description.label_tag }}<br />{{ form.description }}</td>
+</tr>
+<tr>
+	<td>{{ form.comment.label_tag }}</td><td>{{ form.comment }}</td>
+</tr>
+
+
+{% endblock %}
+

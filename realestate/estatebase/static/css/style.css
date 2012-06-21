@@ -236,7 +236,8 @@ span.contact-inline label {
 	border-spacing: 0;
 	border-collapse:collapse;
 	margin: 0 !important;
-	border-top: 1px solid #ccc;		
+	border: 1px solid #ccc;		
+	border-bottom: 0;
 }
 
 .detail-table td, .detail-table th{

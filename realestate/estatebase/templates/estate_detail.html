@@ -5,8 +5,8 @@
 
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
-	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		<a href="">Основная информация по объекту</a>
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">		
+		<a href="{% url estate_update estate.pk %}?{{ next_url }}">Основная информация</a>		
 		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>
 		
 	</div>
@@ -57,12 +57,19 @@
 </div>
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
-	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		<a href="">Дополнительно</a>
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">		
+		<a href="{% url estate_params_update estate.pk %}?{{ next_url }}">Дополнительно</a>
 		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
 	</div>
 	<div class="confirm-dialog-content">
-		<a href="">WWW</a>
+		<table class="detail-table">		
+		 {% for param in estate.estate_params.all %}		 	
+		 	<tr><td>{{ param.name }}</td></tr>		 	 
+		 {% endfor %}		 
+		</table>
+		
+		<div style="margin-top: 3px; padding: 3px" title="Описание" class="ui-widget-content">{{ estate.description }}</div>
+		<div style="margin-top: 3px; padding: 3px" title="Комментарий" class="ui-widget-content">{{ estate.comment }}</div>
 	</div>
 </div>
 

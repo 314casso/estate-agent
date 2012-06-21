@@ -124,11 +124,14 @@ class Document(SimpleDict):
         verbose_name = _('document')
         verbose_name_plural = _('documents')                      
 
-class EstateParam(SimpleDict):
+class EstateParam(OrderedModel):
     '''
     Дополнительные параметры
     '''
-    class Meta(SimpleDict.Meta):
+    name = models.CharField(_('Name'), max_length=100)
+    def __unicode__(self):
+        return u'%s' % self.name
+    class Meta(OrderedModel.Meta):
         verbose_name = _('estate param')
         verbose_name_plural = _('estate params')
 
@@ -211,8 +214,8 @@ class Estate(models.Model):
     #Дополнительно
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
-    description = models.TextField('Description', blank=True, null=True)
-    comment = models.CharField ('Note', blank=True, null=True, max_length=255)    
+    description = models.TextField(_('Description'), blank=True, null=True)
+    comment = models.CharField (_('Note'), blank=True, null=True, max_length=255)    
     @property
     def is_bidg(self):
         if self.estate_type.object_type  == 'BIDG':

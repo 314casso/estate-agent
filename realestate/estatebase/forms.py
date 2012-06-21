@@ -44,6 +44,15 @@ class EstateDocumentForm(ModelForm):
            'documents' : forms.CheckboxSelectMultiple()        
         }
 
+class EstateParamForm(ModelForm):
+    class Meta:                
+        model = Estate
+        fields = ('estate_params','description','comment')
+        widgets = {
+           'estate_params' : forms.CheckboxSelectMultiple()        
+        }
+    
+
 class BidgCreateForm(ModelForm):
     class Meta:
         model = Bidg
