@@ -260,3 +260,12 @@ span.contact-inline label {
 .checkbox-select-multiple ul li {
 	list-style: none;
 }
+
+.descr {
+	margin: 3px 0; 
+	padding: 3px
+}
+
+.all-borders td, .all-borders th{
+	border: 1px solid #ccc;
+}

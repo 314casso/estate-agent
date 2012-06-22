@@ -6,20 +6,70 @@
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">		
-		<a href="{% url estate_update estate.pk %}?{{ next_url }}">Основная информация</a>		
+		<a href="{% url estate_update estate.pk %}?{{ next_url }}">Основная информация</a>	
 		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>
-		
+		<span class="ui-state-highlight ui-corner-all" style="float: right; padding: 0 4px;">{{ estate.estate_status }}</span>		
 	</div>
-	<div class="confirm-dialog-content">
-		{% address estate %}
+	<div class="confirm-dialog-content">	
+		
+		<div class="ui-state-highlight ui-corner-all descr">
+			{{ estate.estate_type }} [{{ estate.pk }}]
+		</div>
+		
+		<div title="Адрес" class="ui-widget-content descr">
+			{% address estate %}
+			<div>
+				Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance }}</strong> м. 
+			</div>	
+		</div>
+		
+		<table class="detail-table">			
+			
+			<tr>
+				<th>Источник:</th>
+			 	<td colspan="100%">{{ estate.origin }}</td>
+		 	</tr>
+		 	
+		 	<tr>
+				<th>Добавил:</th>
+			 	<td colspan="100%">{{ estate.origin }}</td>
+		 	</tr>
+		 	
+		 	<tr>
+				<th>Цена продавца:</th>
+			 	<td colspan="100%">{{ estate.saler_price }}</td>			 	
+		 	</tr>
+		 	<tr>
+				<th>Цена агенства:</th>
+			 	<td colspan="100%">{{ estate.agency_price }}</td>			 	
+		 	</tr>		 			 		 
+		</table>
+		<div style="margin-top: 3px">
+		<table class="detail-table all-borders" style="font-size: 14px">
+			<tr>
+				<th colspan="2">Цена</th>
+				<th rowspan="2" valign="top">Маржа</th>
+			</tr>
+			<tr>
+				<th>Продавца</th>
+				<th>Агенства</th>
+			</tr>
+			<tr>
+				<td>{{ estate.saler_price }}</td>
+				<td>{{ estate.agency_price }}</td>
+				<td class="ui-state-highlight">{{ margin }}</td>
+			</tr>
+		</table>
+		</div>
 	</div>
 </div>
 
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-		<a title="Привязать клиентов" href="{% url client_select estate.pk %}?{{ next_url }}">Клиенты</a>
+		<a title="Привязать продавцов" href="{% url client_select estate.pk %}?{{ next_url }}">Продавцы</a>
 		<span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span>
+		<span class="ui-state-highlight ui-corner-all" style="float: right; padding: 0 4px;">{{ estate.clients.count }}</span>
 		
 	</div>
 	<div class="confirm-dialog-content">
@@ -68,8 +118,8 @@
 		 {% endfor %}		 
 		</table>
 		
-		<div style="margin-top: 3px; padding: 3px" title="Описание" class="ui-widget-content">{{ estate.description }}</div>
-		<div style="margin-top: 3px; padding: 3px" title="Комментарий" class="ui-widget-content">{{ estate.comment }}</div>
+		<div title="Описание" class="ui-widget-content descr">{{ estate.description }}</div>
+		<div title="Комментарий" class="ui-widget-content descr">{{ estate.comment }}</div>
 	</div>
 </div>
 

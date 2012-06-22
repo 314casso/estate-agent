@@ -84,10 +84,14 @@ class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
     model = Estate
     def get_context_data(self, **kwargs):
-        context = super(EstateDetailView, self).get_context_data(**kwargs)        
+        context = super(EstateDetailView, self).get_context_data(**kwargs)
+        r = self.object.agency_price - self.object.saler_price        
+        p = float(r) / self.object.saler_price * 100
+        print p       
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'comm_form': EstateCommunicationForm(instance=self.object),            
+            'comm_form': EstateCommunicationForm(instance=self.object),
+            'margin': '%d (%d%%)' % (r,p),                        
         })        
         return context
 
@@ -99,6 +103,7 @@ class EstateUpdateView(BaseMixin, UpdateView):
         context = super(EstateUpdateView, self).get_context_data(**kwargs)        
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
+            'estate_type': self.object.estate_type,
         })        
         return context    
 
