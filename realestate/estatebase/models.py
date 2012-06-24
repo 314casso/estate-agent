@@ -180,6 +180,24 @@ class EstateType(OrderedModel):
         verbose_name = _('estate type')
         verbose_name_plural = _('estate types') 
     
+class HistoryMeta(models.Model):
+    created = models.DateTimeField(_('Created'),)
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators' )
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True)
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')                        
+    
+def prepare_history(history,user):
+    if not history:
+        history = HistoryMeta()        
+        history.created = datetime.datetime.now()
+        history.created_by = user
+        history.save() 
+    else:
+        history.updated = datetime.datetime.now()
+        history.updated_by = user
+        history.save()
+    return history                 
+    
 class Estate(models.Model):
     '''
     Базовая модель объектов недвижимости
@@ -215,7 +233,9 @@ class Estate(models.Model):
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
-    comment = models.CharField (_('Note'), blank=True, null=True, max_length=255)    
+    comment = models.CharField (_('Note'), blank=True, null=True, max_length=255)  
+    #Изменения
+    history = models.OneToOneField(HistoryMeta,blank=True, null=True)  
     @property
     def is_bidg(self):
         if self.estate_type.object_type  == 'BIDG':
@@ -229,6 +249,11 @@ class Estate(models.Model):
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
+    
+    def save(self, *args, **kwargs):
+        user = kwargs.pop('user', None)                        
+        self.history = prepare_history(self.history,user)                                                     
+        super(Estate, self).save(*args, **kwargs)                
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
@@ -258,11 +283,11 @@ class Client(models.Model):
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)    
     created = models.DateTimeField(_('Created'),)
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='client_creators')
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updaters')     
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='client_updaters')     
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property

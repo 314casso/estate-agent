@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load link_helper %}
+{% load humanize %}
 
 {% block left %}
 
@@ -13,14 +14,16 @@
 	<div class="confirm-dialog-content">	
 		
 		<div class="ui-state-highlight ui-corner-all descr">
-			{{ estate.estate_type }} [{{ estate.pk }}]
+			<strong>{{ estate.estate_type }} [{{ estate.pk }}]</strong>
 		</div>
 		
 		<div title="Адрес" class="ui-widget-content descr">
 			{% address estate %}
+			{% if estate.beside %}
 			<div>
-				Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance }}</strong> м. 
+				Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance }}</strong> м 
 			</div>	
+			{% endif %}
 		</div>
 		
 		<table class="detail-table">			
@@ -32,17 +35,12 @@
 		 	
 		 	<tr>
 				<th>Добавил:</th>
-			 	<td colspan="100%">{{ estate.origin }}</td>
-		 	</tr>
-		 	
-		 	<tr>
-				<th>Цена продавца:</th>
-			 	<td colspan="100%">{{ estate.saler_price }}</td>			 	
+			 	<td colspan="100%">{{ estate.history.created_by }}<br />{{ estate.history.created }}</td>
 		 	</tr>
 		 	<tr>
-				<th>Цена агенства:</th>
-			 	<td colspan="100%">{{ estate.agency_price }}</td>			 	
-		 	</tr>		 			 		 
+				<th>Обновил:</th>
+			 	<td colspan="100%">{{ estate.history.updated_by }}<br />{{ estate.history.updated }}</td>
+		 	</tr>		 			 			 		 
 		</table>
 		<div style="margin-top: 3px">
 		<table class="detail-table all-borders" style="font-size: 14px">
@@ -55,8 +53,8 @@
 				<th>Агенства</th>
 			</tr>
 			<tr>
-				<td>{{ estate.saler_price }}</td>
-				<td>{{ estate.agency_price }}</td>
+				<td>{{ estate.saler_price|intcomma }}</td>
+				<td>{{ estate.agency_price|intcomma }}</td>
 				<td class="ui-state-highlight">{{ margin }}</td>
 			</tr>
 		</table>

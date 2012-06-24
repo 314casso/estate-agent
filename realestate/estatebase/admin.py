@@ -3,7 +3,9 @@ from models import Region, Locality, Microdistrict, Street, Estate, EstateType, 
 from django.contrib.contenttypes.models import ContentType
 from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
-    ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam
+    ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
+    Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
+    Driveway
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -47,3 +49,11 @@ admin.site.register(Bidg)
 admin.site.register(EstateStatus)
 admin.site.register(Document)
 admin.site.register(EstateParam,EstateParamAdmin)
+admin.site.register(Beside)
+admin.site.register(Electricity)                    
+admin.site.register(Watersupply)
+admin.site.register(Gassupply)
+admin.site.register(Sewerage)
+admin.site.register(Telephony)
+admin.site.register(Internet)
+admin.site.register(Driveway)

@@ -1,63 +1,80 @@
+{% load i18n %}
+
+{% if estate.electricity %}
 <tr>
-	<th>{{ comm_form.electricity.label_tag }}:</th>
+	<th>{% trans 'Electricity' %}:</th>
 	<td> 		
-		{{ comm_form.electricity.value|default_if_none:"" }} 
+		{{ estate.electricity }} 
 	</td>	
 	<td> 		
-		{{ comm_form.electricity_distance.value|default_if_none:"" }} 
+		{{ estate.electricity_distance|default_if_none:"" }} 
 	</td>
 </tr>
+{% endif %}
 
+{% if estate.watersupply %}
 <tr>
-	<th>{{ comm_form.watersupply.label_tag }}:</th>
+	<th>{% trans 'Watersupply' %}:</th>
 	<td> 		
-		{{ comm_form.watersupply.value|default_if_none:"" }} 
+		{{ estate.watersupply }} 
 	</td>	
 	<td> 		
-		{{ comm_form.watersupply_distance.value|default_if_none:"" }} 
+		{{ estate.watersupply_distance|default_if_none:"" }} 
 	</td>
 </tr>
+{% endif %}
 
+
+{% if estate.gassupply %}
 <tr>
-	<th>{{ comm_form.gassupply.label_tag }}:</th>
+	<th>{% trans 'Gassupply' %}:</th>
 	<td>		
-		{{ comm_form.gassupply.value|default_if_none:"" }} 
+		{{ estate.gassupply }} 
 	</td>	
 	<td> 		
-		{{ comm_form.gassupply_distance.value|default_if_none:"" }} 
+		{{ estate.gassupply_distance|default_if_none:"" }} 
 	</td>
 </tr>
+{% endif %}
 
+{% if estate.sewerage %}
 <tr>
-	<th>{{ comm_form.sewerage.label_tag }}:</th>
+	<th>{% trans 'Sewerage' %}:</th>
 	<td> 		
-		{{ comm_form.sewerage.value|default_if_none:"" }} 
+		{{ estate.sewerage }} 
 	</td>	
 	<td> 		
-		{{ comm_form.sewerage_distance.value|default_if_none:"" }}
+		{{ estate.sewerage_distance|default_if_none:"" }}
 	</td>
 </tr>
+{% endif %}
 
+{% if estate.telephony %}
 <tr>
-	<th>{{ comm_form.telephony.label_tag }}:</th>
-	<td colspan="100%">		
-		{{ comm_form.telephony.value|default_if_none:"" }} 
+	<th>{% trans 'Telephony' %}:</th>
+	<td colspan="2">		
+		{{ estate.telephony|default_if_none:"" }} 
 	</td>	
 </tr>
+{% endif %}
 
+{% if estate.internet %}
 <tr>
-	<th>{{ comm_form.internet.label_tag }}:</th>
-	<td colspan="100%">		
-		{{ comm_form.internet.value|default_if_none:"" }} 
+	<th>{% trans 'Internet' %}:</th>
+	<td colspan="2">		
+		{{ estate.internet|default_if_none:"" }} 
 	</td>	
 </tr>
+{% endif %}
 
+{% if estate.driveway %}
 <tr>
-	<th>{{ comm_form.driveway.label_tag }}:</th>
+	<th>{% trans 'Driveway' %}:</th>
 	<td> 		
-		{{ comm_form.driveway.value|default_if_none:"" }} 
+		{{ estate.driveway }} 
 	</td>	
 	<td> 		
-		{{ comm_form.driveway_distance.value|default_if_none:"" }} 
+		{{ estate.driveway_distance|default_if_none:"" }} 
 	</td>
 </tr>
+{% endif %}

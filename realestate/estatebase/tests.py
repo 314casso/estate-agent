@@ -4,13 +4,14 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+import sys
+sys.path.append('/home/picasso/django_workspace/estate-agent')
 
-#from django.test import TestCase
-#
-#
-#class SimpleTest(TestCase):
-#    def test_basic_addition(self):
-#        """
-#        Tests that 1 + 1 always equals 2.
-#        """
-#        self.assertEqual(1 + 1, 2)
+from estatebase.models import Watersupply, Gassupply, Sewerage, Telephony,\
+    Internet, Driveway
+
+filename = '/home/picasso/coding/temp/load.txt'
+lines = tuple(open(filename, 'r'))
+for line in lines:
+    e = Driveway(name=line)
+    e.save() 

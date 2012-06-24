@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'orderedmodel',
     'selectable',    
     'django_sorting',
+    'django.contrib.humanize',
     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

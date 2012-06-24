@@ -21,7 +21,13 @@ class BaseMixin():
     def get_success_url(self):   
         if '_save' in self.request.POST:     
             return self.request.REQUEST.get('next', '')
-        return ''
+        return ''    
+
+class HistoryMixin(BaseMixin, ModelFormMixin):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)                         
+        self.object.save(user=ExUser.objects.get(pk=self.request.user.pk))        
+        return super(HistoryMixin, self).form_valid(form)
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -53,14 +59,17 @@ class EstateTypeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(EstateTypeView, self).get_context_data(**kwargs)                
         estate_categories = EstateTypeCategory.objects.all()
+        #TODO: пример фильтрации
+        #filtered = (x for x in Contact.objects.all() if x.state_css == 'available-state')
+
         context.update({
             'title': 'base',
             'estate_categories': estate_categories,
-            'next_url': safe_next_link(self.request.get_full_path()),
+            'next_url': safe_next_link(self.request.get_full_path()),            
         })        
         return context 
 
-class EstateCreateView(CreateView):
+class EstateCreateView(HistoryMixin, CreateView):
     template_name = 'estate_create.html'     
     model = Estate   
     form_class = EstateCreateForm
@@ -85,17 +94,15 @@ class EstateDetailView(DetailView):
     model = Estate
     def get_context_data(self, **kwargs):
         context = super(EstateDetailView, self).get_context_data(**kwargs)
-        r = self.object.agency_price - self.object.saler_price        
-        p = float(r) / self.object.saler_price * 100
-        print p       
+        r = (self.object.agency_price or 0) - (self.object.saler_price or 0)        
+        p = float(r) / (self.object.saler_price or 1) * 100              
         context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),
-            'comm_form': EstateCommunicationForm(instance=self.object),
+            'next_url': safe_next_link(self.request.get_full_path()),            
             'margin': '%d (%d%%)' % (r,p),                        
         })        
         return context
 
-class EstateUpdateView(BaseMixin, UpdateView):
+class EstateUpdateView(HistoryMixin, UpdateView):
     model = Estate
     template_name = 'estate_create.html'
     form_class = EstateCreateForm
@@ -105,7 +112,7 @@ class EstateUpdateView(BaseMixin, UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'estate_type': self.object.estate_type,
         })        
-        return context    
+        return context
 
 class EstateCommunicationUpdateView(EstateUpdateView):
     template_name = 'estate_comm.html'
