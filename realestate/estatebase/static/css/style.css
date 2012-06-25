@@ -9,7 +9,7 @@ body {
 }
 
 #right {
-	/*	float: right;*/
+	float: left;
 }
 
 #estate_nav {

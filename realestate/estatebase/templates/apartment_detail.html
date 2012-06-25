@@ -1,0 +1,20 @@
+{% extends "estate_detail.html" %}
+
+{% block right %}
+
+<div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
+
+		<a title="Описание и отделка" href="{% url client_select estate.pk %}?{{ next_url }}">Описание и отделка</a>
+		<span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span>
+
+	</div>
+	<div class="confirm-dialog-content">
+		{% if estate.basic_bidg %}
+		OK
+		{% endif %}
+
+	</div>
+</div>
+
+{% endblock right %}

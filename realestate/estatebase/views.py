@@ -154,7 +154,11 @@ class ClientUpdateEstateView(DetailView):
     def post(self, request, *args, **kwargs):        
         self.object = Client.objects.get(pk=self.kwargs['pk'])
         self.update_object()
-        self.object.save()
+        user = ExUser.objects.get(pk=self.request.user.pk)                
+        self.object.save(user=user)
+        #Обновление истории объекта
+        estate = Estate.objects.get(pk=kwargs['estate_pk'])
+        estate.save(user=user)
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 class ClientRemoveEstateView(ClientUpdateEstateView):    
@@ -177,13 +181,15 @@ class BidgMixin(object):
             return '%s?%s' % (reverse('bidg_update',args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
 
-class BidgCreateView(BidgMixin, EstateCreateView):
-    template_name = 'estate_create.html'    
+class BidgCreateView(BidgMixin, EstateCreateView):        
     model = Bidg
     form_class = BidgCreateForm   
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                          
-        return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))         
+        return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))
+    
+
+             
 # TODO:fix
 class BidgUpdateView(BidgMixin, UpdateView):    
     template_name = 'estate_update.html'    
@@ -197,7 +203,7 @@ class BidgUpdateView(BidgMixin, UpdateView):
         return context
 
 class ApartmentDetailView(EstateDetailView):
-    template_name = 'estate_detail.html'    
+    template_name = 'apartment_detail.html'    
     def get_context_data(self, **kwargs):
         context = super(ApartmentDetailView, self).get_context_data(**kwargs)        
         context.update({            

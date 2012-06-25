@@ -192,7 +192,7 @@ def prepare_history(history,user):
         history.created = datetime.datetime.now()
         history.created_by = user
         history.save() 
-    else:
+    elif user:
         history.updated = datetime.datetime.now()
         history.updated_by = user
         history.save()
@@ -261,6 +261,12 @@ class Bidg(models.Model):
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
+
+class Steed(models.Model):
+    estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='steed')    
+    class Meta:
+        verbose_name = _('steed')
+        verbose_name_plural = _('steeds')
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
