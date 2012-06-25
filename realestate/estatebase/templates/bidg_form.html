@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% load i18n %}
+{% block left %}
+
+<form action="" method="post" class="table-form">
+    <table class="ui-widget ui-widget-content ui-corner-all">
+        <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    OLOLO
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+        </thead>        
+        <tbody>
+            <tr>
+                <td colspan="100%">
+                <table class="inline-formset ui-widget ui-widget-content ui-corner-all">
+                    {% csrf_token %}
+                    {{ form.as_table }}                    
+                </table>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot class="button">
+            <tr>
+                <td colspan="100%">
+                <input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</form>
+
+{% endblock left %}

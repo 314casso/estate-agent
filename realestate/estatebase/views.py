@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, BidgCreateForm, EstateCommunicationForm,\
-    EstateDocumentForm, EstateParamForm
+    EstateDocumentForm, EstateParamForm, ApartmentForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -173,22 +173,19 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
         self.object.estates.remove(self.kwargs['estate_pk'])            
         
 class BidgMixin(object):
-    context_object_name = 'estate'
+    #context_object_name = 'bidg'
     model = Bidg    
+    continue_url = None
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
-            return '%s?%s' % (reverse('bidg_update',args=[self.object.id]), safe_next_link(next_url)) 
+            return '%s?%s' % (reverse(self.continue_url, args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
 
-class BidgCreateView(BidgMixin, EstateCreateView):        
-    model = Bidg
-    form_class = BidgCreateForm   
-    def get_success_url(self):   
-        next_url = self.request.REQUEST.get('next', '')                          
-        return '%s?%s' % (reverse('bidg_detail',args=[self.object.id]), safe_next_link(next_url))
-    
-
+class ApartmentCreateView(BidgMixin, CreateView):
+    template_name = 'bidg_form.html'        
+    form_class = ApartmentForm   
+    continue_url = 'apartment_update'
              
 # TODO:fix
 class BidgUpdateView(BidgMixin, UpdateView):    

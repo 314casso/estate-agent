@@ -1,0 +1,65 @@
+{% extends "dialog_block.html" %}
+{% load humanize %}
+{% load link_helper %}
+{% block title_left %}
+<a href="{% url estate_params_update estate.pk %}?{{ next_url }}">Дополнительно</a>
+{% endblock %}
+{% block content %}
+
+<div class="ui-state-highlight ui-corner-all descr">
+	<strong>{{ estate.estate_type }} [{{ estate.pk }}]</strong>
+</div>
+
+<div title="Адрес" class="ui-widget-content descr">
+	{% address estate %}
+	{% if estate.beside %}
+	<div>
+		Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance }}</strong> м
+	</div>
+	{% endif %}
+</div>
+
+<table class="detail-table">
+	<tr>
+		<th>Источник:</th>
+		<td colspan="100%">{{ estate.origin }}</td>
+	</tr>
+
+	<tr>
+		<th>Добавил:</th>
+		<td colspan="100%">{{ estate.history.created_by }}
+		<br />
+		{{ estate.history.created }}</td>
+	</tr>
+	{% if estate.history.updated %}
+	<tr>
+		<th>Обновил:</th>
+		<td colspan="100%">{{ estate.history.updated_by }}
+		<br />
+		{{ estate.history.updated }}</td>
+	</tr>
+	{% endif %}
+</table>
+<div style="margin-top: 3px">
+	<table class="detail-table all-borders" style="font-size: 14px">
+		<tr>
+			<th colspan="2">Цена</th>
+			<th rowspan="2" valign="top">Маржа</th>
+		</tr>
+		<tr>
+			<th>Продавца</th>
+			<th>Агенства</th>
+		</tr>
+		<tr>
+			<td>{{ estate.saler_price|intcomma }}</td>
+			<td>{{ estate.agency_price|intcomma }}</td>
+			<td class="ui-state-highlight">{{ margin }}</td>
+		</tr>
+	</table>
+</div>
+
+{% endblock %}
+
+{% block title_right %}
+{{ estate.estate_status }}
+{% endblock %}

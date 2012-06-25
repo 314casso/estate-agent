@@ -1,0 +1,10 @@
+{% extends "dialog_block.html" %}
+{% load link_helper %}
+{% block title_left %}
+<a href="{% url estate_comm_update estate.pk %}?{{ next_url }}">Коммуникации</a>
+{% endblock %}
+{% block content %}
+<table class="detail-table">
+	{% include "comm_form.html" %}
+</table>
+{% endblock %}

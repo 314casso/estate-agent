@@ -1,0 +1,18 @@
+{% extends "dialog_block.html" %}
+{% load link_helper %}
+{% block title_left %}
+<a href="{% url estate_docs_update estate.pk %}?{{ next_url }}">Документы</a>
+{% endblock %}
+{% block content %}
+<table class="detail-table">
+	{% for doc in estate.documents.all %}
+	<tr>
+		<td>{{ doc.name }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+
+{% block title_right %}
+{{ estate.documents.count }}
+{% endblock %}

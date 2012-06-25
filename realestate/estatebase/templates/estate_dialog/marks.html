@@ -1,0 +1,27 @@
+{% extends "dialog_block.html" %}
+{% load link_helper %}
+{% block title_left %}
+<a href="{% url estate_params_update estate.pk %}?{{ next_url }}">Дополнительно</a>
+{% endblock %}
+{% block content %}
+
+<table class="detail-table">
+	{% for param in estate.estate_params.all %}
+	<tr>
+		<td>{{ param.name }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<div title="Описание" class="ui-widget-content descr">
+	{{ estate.description }}
+</div>
+<div title="Комментарий" class="ui-widget-content descr">
+	{{ estate.comment }}
+</div>
+
+{% endblock %}
+
+{% block title_right %}
+
+{% endblock %}

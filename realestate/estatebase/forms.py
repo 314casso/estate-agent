@@ -111,3 +111,9 @@ class ContactForm(ModelForm):
     class Meta:        
         fields = ('contact', 'contact_state')
         model = Contact    
+
+
+class ApartmentForm(ModelForm):
+    class Meta:        
+        #fields = ('contact', 'contact_state')
+        model = Bidg

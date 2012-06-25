@@ -250,6 +250,9 @@ class Estate(models.Model):
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
     
+    def __unicode__(self):
+        return u'%s' % self.pk
+    
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                        
         self.history = prepare_history(self.history,user)                                                     
