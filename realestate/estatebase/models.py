@@ -283,11 +283,8 @@ class Client(models.Model):
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)    
-    created = models.DateTimeField(_('Created'),)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='client_creators')
-    updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='client_updaters')     
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
+    history = models.OneToOneField(HistoryMeta,blank=True, null=True, editable=False)         
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
@@ -295,15 +292,10 @@ class Client(models.Model):
         return self.contactlist.all().select_related('contact_type')
     @property
     def user(self):
-        return self.updated_by or self.created_by 
+        return self.history.updated_by or self.history.created_by 
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                                           
-        if not self.id:
-            self.created = datetime.datetime.now()
-            self.created_by = user
-        else:    
-            self.updated = datetime.datetime.now()
-            self.updated_by = user                                     
+        self.history = prepare_history(self.history,user)                                     
         super(Client, self).save(*args, **kwargs)    
     class Meta:
         verbose_name = _('client')
