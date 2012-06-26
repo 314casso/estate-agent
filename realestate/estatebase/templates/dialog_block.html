@@ -1,11 +1,8 @@
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
 		{% block title_left %}{% endblock %}
-		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>
-		<span class="ui-state-highlight ui-corner-all" style="float: right; padding: 0 4px;">
-			{% block title_right %}{% endblock %}
-		</span>
-		
+		<span class="ui-icon ui-icon-pencil" style="float: left; margin-right: .3em;"> </span>		
+		<span class="ui-state-highlight ui-corner-all" style="float: right; padding: 0 4px;">{% block title_right %}{% endblock %}</span>		
 	</div>
 	<div class="confirm-dialog-content">
 		{% block content %}{% endblock %}

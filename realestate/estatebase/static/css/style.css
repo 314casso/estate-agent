@@ -3,6 +3,11 @@ body {
 	font-family: sans-serif;
 }
 
+#wrapper {
+	margin: auto;
+	/*width: 1100px;*/
+}
+
 #left {
 	float: left;
 	margin: 0 10px 0 0;

@@ -53,10 +53,6 @@ class EstateParamForm(ModelForm):
         }
     
 
-class BidgCreateForm(ModelForm):
-    class Meta:
-        model = Bidg
-
 class ClientForm(ModelForm):              
     class Meta:        
         exclude = ('created_by','updated','created', 'updated_by')
@@ -113,7 +109,12 @@ class ContactForm(ModelForm):
         model = Contact    
 
 
-class ApartmentForm(ModelForm):
+class BidgForm(ModelForm):
+    estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
+    class Meta:
+        model = Bidg
+
+class ApartmentForm(BidgForm):    
     class Meta:        
         #fields = ('contact', 'contact_state')
         model = Bidg

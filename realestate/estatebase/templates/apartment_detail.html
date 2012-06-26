@@ -4,13 +4,11 @@
 
 <div class="ui-widget ui-widget-content ui-corner-all confirm-dialog">
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix confirm-dialog-title">
-
-		<a title="Описание и отделка" href="{% if estate.basic_bidg %}{% url apartment_detail estate.basic_bidg.pk %}{% else %}{% url apartment_create %}{% endif %}?{{ next_url }}">Описание и отделка</a>
+		<a title="Описание и отделка" href="{% if estate.basic_bidg %}{% url apartment_update estate.basic_bidg.pk %}{% else %}{% url apartment_create estate.id %}{% endif %}?{{ next_url }}">Описание и отделка</a>
 		<span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span>
 
 	</div>
 	<div class="confirm-dialog-content">
-		
 
 	</div>
 </div>

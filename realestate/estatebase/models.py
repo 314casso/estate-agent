@@ -233,7 +233,7 @@ class Estate(models.Model):
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
-    comment = models.CharField (_('Note'), blank=True, null=True, max_length=255)  
+    comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
     #Изменения
     history = models.OneToOneField(HistoryMeta,blank=True, null=True)  
     @property
@@ -260,7 +260,18 @@ class Estate(models.Model):
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
-    room_number = models.CharField(_('Bidg number'), max_length=10)
+    room_number = models.CharField(_('Bidg number'), max_length=10, blank=True, null=True)
+    year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True)
+    floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
+    elevator = models.BooleanField(_('Elevator'), default=False)
+    #wall_construcion = 
+    #exterior_finish =
+    #window_type =
+    #heating =
+    #ceiling_height = 
+    room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
+    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')

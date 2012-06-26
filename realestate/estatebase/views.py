@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
-    EstateCreateForm, BidgCreateForm, EstateCommunicationForm,\
+    EstateCreateForm, EstateCommunicationForm,\
     EstateDocumentForm, EstateParamForm, ApartmentForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
@@ -172,32 +172,39 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
     def update_object(self):
         self.object.estates.remove(self.kwargs['estate_pk'])            
         
-class BidgMixin(object):
-    #context_object_name = 'bidg'
+class BidgMixin(ModelFormMixin):    
     model = Bidg    
-    continue_url = None
+    continue_url = None    
+    def form_valid(self, form):
+        self.get_estate().save(user=ExUser.objects.get(pk=self.request.user.pk))
+        return super(BidgMixin, self).form_valid(form)    
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse(self.continue_url, args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
+    def get_estate(self):
+        return self.object and self.object.estate or Estate.objects.get(pk=self.kwargs['estate'])            
+    def get_context_data(self, **kwargs):
+        context = super(BidgMixin, self).get_context_data(**kwargs)        
+        context.update({            
+            'estate': self.get_estate(),
+        })        
+        return context
 
 class ApartmentCreateView(BidgMixin, CreateView):
     template_name = 'bidg_form.html'        
     form_class = ApartmentForm   
     continue_url = 'apartment_update'
-             
-# TODO:fix
-class BidgUpdateView(BidgMixin, UpdateView):    
-    template_name = 'estate_update.html'    
-    model = Bidg
-    form_class = BidgCreateForm
-    def get_context_data(self, **kwargs):
-        context = super(BidgUpdateView, self).get_context_data(**kwargs)        
-        context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),
-        })        
-        return context
+    def get_initial(self):        
+        initial = super(ApartmentCreateView, self).get_initial()                
+        initial['estate'] = self.kwargs['estate']
+        return initial
+
+class ApartmentUpdateView(BidgMixin, UpdateView):
+    template_name = 'bidg_form.html'        
+    form_class = ApartmentForm   
+    continue_url = 'apartment_update'        
 
 class ApartmentDetailView(EstateDetailView):
     template_name = 'apartment_detail.html'    
