@@ -258,17 +258,57 @@ class Estate(models.Model):
         self.history = prepare_history(self.history,user)                                                     
         super(Estate, self).save(*args, **kwargs)                
 
+class WallConstrucion(SimpleDict):
+    '''
+    Стены
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('wall construcion')
+        verbose_name_plural = _('wall construcions') 
+
+class ExteriorFinish(SimpleDict):
+    '''
+    Внешняя оттелка
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('exterior finish')
+        verbose_name_plural = _('exterior finishs') 
+
+class WindowType(SimpleDict):
+    '''
+    Окна
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('window type')
+        verbose_name_plural = _('window types')
+
+class Heating(SimpleDict):
+    '''
+    Отопление
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('heating')
+        verbose_name_plural = _('heatings')
+
+class CeilingHeight(SimpleDict):
+    '''
+    Высота потолков
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('ceiling height')
+        verbose_name_plural = _('ceiling heights')        
+
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
     room_number = models.CharField(_('Bidg number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True)
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
     elevator = models.BooleanField(_('Elevator'), default=False)
-    #wall_construcion = 
-    #exterior_finish =
-    #window_type =
-    #heating =
-    #ceiling_height = 
+    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
+    exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True)    
+    window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True)
+    heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True)
+    ceiling_height = models.ForeignKey(CeilingHeight, verbose_name=_('Ceiling height'), blank=True, null=True)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
