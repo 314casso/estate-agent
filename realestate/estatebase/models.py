@@ -298,6 +298,30 @@ class CeilingHeight(SimpleDict):
         verbose_name = _('ceiling height')
         verbose_name_plural = _('ceiling heights')        
 
+class WallFinish(SimpleDict):
+    '''
+    Внутренняя оттелка стен
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('wall finish')
+        verbose_name_plural = _('wall finishes')
+
+class Flooring(SimpleDict):
+    '''
+    Пол
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Flooring')
+        verbose_name_plural = _('Floorings')
+
+class Ceiling(SimpleDict):
+    '''
+    Потолок
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Ceiling')
+        verbose_name_plural = _('Ceilings')
+
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
     room_number = models.CharField(_('Bidg number'), max_length=10, blank=True, null=True)
@@ -312,6 +336,10 @@ class Bidg(models.Model):
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    #Внутренняя отделка
+    #wall_finish = 
+    #flooring
+     
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
