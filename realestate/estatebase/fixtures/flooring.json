@@ -1,0 +1,51 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "без стяжки"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "деревянный"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "ковролин"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "ламинат"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "линолеум"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "паркет"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "стяжка"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.flooring",
+    "fields": {
+        "name": "теплый пол"
+    }
+}
+]

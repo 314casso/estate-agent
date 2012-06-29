@@ -296,19 +296,19 @@ class CeilingHeight(SimpleDict):
     '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('ceiling height')
-        verbose_name_plural = _('ceiling heights')        
+        verbose_name_plural = _('ceiling heights')      
 
 class WallFinish(SimpleDict):
     '''
-    Внутренняя оттелка стен
+    Внутренняя оттелка стен    
     '''
     class Meta(SimpleDict.Meta):
-        verbose_name = _('wall finish')
-        verbose_name_plural = _('wall finishes')
+        verbose_name = _('Wall finish')
+        verbose_name_plural = _('Wall finishs')
 
 class Flooring(SimpleDict):
     '''
-    Пол
+    Пол    
     '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('Flooring')
@@ -321,6 +321,14 @@ class Ceiling(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('Ceiling')
         verbose_name_plural = _('Ceilings')
+
+class Interior(SimpleDict):
+    '''
+    Внутренняя оттелка (ремонт)   
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Interior')
+        verbose_name_plural = _('Interiors')
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
@@ -336,9 +344,11 @@ class Bidg(models.Model):
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    #Внутренняя отделка
-    #wall_finish = 
-    #flooring
+    #Внутренняя отделка    
+    wall_finish = models.ForeignKey(WallFinish,verbose_name=_('WallFinish'),blank=True,null=True)
+    flooring = models.ForeignKey(Flooring,verbose_name=_('Flooring'),blank=True,null=True)
+    ceiling = models.ForeignKey(Ceiling,verbose_name=_('Ceiling'),blank=True,null=True)
+    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)
      
     class Meta:
         verbose_name = _('bidg')

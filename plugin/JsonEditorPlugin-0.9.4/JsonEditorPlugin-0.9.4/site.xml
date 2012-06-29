@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://eclipsejsonedit.svn.sourceforge.net/viewvc/eclipsejsonedit/trunk/Json%20Editor%20Plugin/">
+      Json Editor Plugin download.
+   </description>
+   <feature url="features/json.editor.plugin.feature_0.9.4.jar" id="json.editor.plugin.feature" version="0.9.4"/>
+</site>

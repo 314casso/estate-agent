@@ -1,0 +1,57 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "без отделки"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "гипсокартон"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "дерево"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "деревянная вагонка"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "обои"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "окрашены"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "оштукатурены"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "пластик"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.wallfinish",
+    "fields": {
+        "name": "побелены"
+    }
+}
+]

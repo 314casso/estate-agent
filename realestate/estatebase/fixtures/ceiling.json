@@ -1,0 +1,51 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "без отделки"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "гипсокартон"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "натяжные"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "окрашены"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "оштукатурены"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "пластик"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "побелены"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.ceiling",
+    "fields": {
+        "name": "подвесные"
+    }
+}
+]

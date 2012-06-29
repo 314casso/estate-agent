@@ -1,0 +1,69 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "без отделки"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "ветхое"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "евроремонт"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "жилое"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "капитальный ремонт"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "косметический ремонт"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "отличное"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "предчистовая отделка"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "ремонт"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "удовлетворительное"
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.interior",
+    "fields": {
+        "name": "хорошее"
+    }
+}
+]
