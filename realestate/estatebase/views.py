@@ -15,10 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser, Bidg
-from estatebase.helpers.functions import safe_next_link 
-from django.core import serializers
-import estatebase
-from django.forms.models import model_to_dict
+from estatebase.helpers.functions import safe_next_link
 
 class BaseMixin():
     def get_success_url(self):   
