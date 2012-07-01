@@ -1,0 +1,63 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "блок"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "газоблок"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "дерево"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "камень"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "каркас"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "кирпич"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "монолит"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "панель"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "саман"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.wallconstrucion",
+    "fields": {
+        "name": "шлакоблок"
+    }
+}
+]

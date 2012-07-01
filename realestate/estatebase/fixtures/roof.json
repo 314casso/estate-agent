@@ -1,0 +1,45 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "металлопрофиль"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "металлочерепица"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "мягкая кровля"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "ондулин"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "оцинкованная сталь"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "черепица"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.roof",
+    "fields": {
+        "name": "шифер"
+    }
+}
+]

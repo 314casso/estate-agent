@@ -78,20 +78,17 @@ class FixtureSimpleMaker(object):
 
 options = \
 '''
-без отделки
-ветхое
-евроремонт
-жилое
-капитальный ремонт
-косметический ремонт
-отличное
-предчистовая отделка
-ремонт
-удовлетворительное
-хорошее
+металлопрофиль
+металлочерепица
+мягкая кровля
+ондулин
+оцинкованная сталь
+черепица
+шифер
 '''
-MODEL = 'Interior'
 
+'''
+MODEL = 'Roof'
 
 import settings
 import os
@@ -105,7 +102,7 @@ if not os.path.isfile(fixfile):
     print './manage.py loaddata %s' % fm.fixfile 
 else:
     print 'Fixture already exists!'     
+'''
 
-
-#mm = ModelMaker('SimpleDict', 'interior')
-#print mm.get_model_code()
+mm = ModelMaker('SimpleDict', 'layout_feature')
+print mm.get_model_code()

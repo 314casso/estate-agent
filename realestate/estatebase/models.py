@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from orderedmodel.models import OrderedModel
 import datetime
 from django.contrib.auth.models import User
+from django.core.validators import URLValidator, RegexValidator, validate_email
+from django.core.exceptions import ValidationError
 
 class ExUser(User):
     def __unicode__(self):
@@ -15,6 +17,8 @@ class SimpleDict(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     def __unicode__(self):
         return u'%s' % self.name
+    def natural_key(self):
+        return self.__unicode__()
     class Meta:
         ordering = ['name']
         abstract = True
@@ -229,8 +233,7 @@ class Estate(models.Model):
     internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
     driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
-    #Дополнительно
-    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
+    #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
     comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
@@ -282,21 +285,21 @@ class WindowType(SimpleDict):
         verbose_name = _('window type')
         verbose_name_plural = _('window types')
 
+class Roof(SimpleDict):
+    '''
+    Крыша    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Roof')
+        verbose_name_plural = _('Roofs')
+
 class Heating(SimpleDict):
     '''
     Отопление
     '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('heating')
-        verbose_name_plural = _('heatings')
-
-class CeilingHeight(SimpleDict):
-    '''
-    Высота потолков
-    '''
-    class Meta(SimpleDict.Meta):
-        verbose_name = _('ceiling height')
-        verbose_name_plural = _('ceiling heights')      
+        verbose_name_plural = _('heatings')  
 
 class WallFinish(SimpleDict):
     '''
@@ -330,29 +333,79 @@ class Interior(SimpleDict):
         verbose_name = _('Interior')
         verbose_name_plural = _('Interiors')
 
+def validate_year(value):
+    if not 2100 > value > 1800:
+        raise ValidationError(u'Значение года указано не верно.')
+
+class Level(SimpleDict):
+    '''
+    Планоровка этажей
+    '''
+    bidg = models.ForeignKey('Bidg', verbose_name=_('Levels'), related_name='levels')    
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Level')
+        verbose_name_plural = _('Levels')
+
+class LayoutType(SimpleDict):
+    '''
+    Вид объекта планировки    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Layout type')
+        verbose_name_plural = _('Layout types')
+
+class Furniture(SimpleDict):
+    '''
+    Мебель    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Furniture')
+        verbose_name_plural = _('Furnitures')
+
+class LayoutFeature(SimpleDict):
+    '''
+    LayoutFeature    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Layout feature')
+        verbose_name_plural = _('Layout features')
+
+class Layout(models.Model):
+    level = models.ForeignKey(Level,verbose_name=_('Level'))
+    layout_type = models.ForeignKey(LayoutType,verbose_name=_('LayoutType'))
+    area = models.DecimalField(_('Area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    furniture = models.ForeignKey(Furniture,verbose_name=_('Furniture'),blank=True,null=True)
+    layout_feature = models.ForeignKey(LayoutFeature,verbose_name=_('LayoutFeature'),blank=True,null=True)
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    class Meta:
+        verbose_name = _('layout')
+        verbose_name_plural = _('layouts')             
+
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
-    room_number = models.CharField(_('Bidg number'), max_length=10, blank=True, null=True)
-    year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True)
+    room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
+    year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators = [validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
+    floor_count = models.PositiveIntegerField(_('Floor count'), blank=True, null=True)
     elevator = models.BooleanField(_('Elevator'), default=False)
     wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
     exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True)    
     window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True)
+    roof = models.ForeignKey(Roof,verbose_name=_('Roof'),blank=True,null=True)
     heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True)
-    ceiling_height = models.ForeignKey(CeilingHeight, verbose_name=_('Ceiling height'), blank=True, null=True)
+    ceiling_height = models.DecimalField(_('Ceiling height'), blank=True, null=True, max_digits=5, decimal_places=2)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     #Внутренняя отделка    
     wall_finish = models.ForeignKey(WallFinish,verbose_name=_('WallFinish'),blank=True,null=True)
     flooring = models.ForeignKey(Flooring,verbose_name=_('Flooring'),blank=True,null=True)
     ceiling = models.ForeignKey(Ceiling,verbose_name=_('Ceiling'),blank=True,null=True)
-    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)
-     
+    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)         
     class Meta:
         verbose_name = _('bidg')
-        verbose_name_plural = _('bidgs')
+        verbose_name_plural = _('bidgs')            
 
 class Steed(models.Model):
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='steed')    
@@ -433,10 +486,7 @@ class Contact(models.Model):
     def state_css(self):
         css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
-    def clean(self):
-        from django.core.validators import validate_email
-        from django.core.validators import URLValidator
-        from django.core.validators import RegexValidator          
+    def clean(self):                  
         validate_url = URLValidator(verify_exists=False)
         validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')        
         if self.contact_type.id == 1:

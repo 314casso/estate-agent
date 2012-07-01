@@ -10,7 +10,7 @@ body {
 
 #left {
 	float: left;
-	margin: 0 10px 0 0;
+	margin: 0 10px 0 0;	
 }
 
 #right {
@@ -39,8 +39,17 @@ body {
 	color: white;
 }
 
-.table-form table{
+.table-form table {
 	/*border-spacing: 0;*/
+}
+
+.table-form ul {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.table-form li {
+	list-style: none;	
 }
 
 .table-form table th {
@@ -75,11 +84,11 @@ body {
 	padding: 0 2px;
 }
 
-.inline-formset tfoot td{
-	padding-top: 20px; 
+.inline-formset tfoot td {
+	padding-top: 20px;
 }
 
-.inline-formset tbody td{
+.inline-formset tbody td {
 	vertical-align: bottom;
 }
 
@@ -125,11 +134,11 @@ span.contact-inline label {
 
 .base-table-list {
 	/*border: 1px solid #DFDFDF;*/
-	/*background-color: #F9F9F9;*/	
+	/*background-color: #F9F9F9;*/
 	border-radius: 4px;
 	/*color: #333;*/
 	border-spacing: 0;
-	border-collapse:collapse;
+	border-collapse: collapse;
 	/*padding: 4px;*/
 }
 .base-table-list td, .base-table-list th {
@@ -162,7 +171,7 @@ span.contact-inline label {
 }
 
 .base-table-list .ui-button-text {
-/*	padding: 0.1em 1em;*/
+	/*	padding: 0.1em 1em;*/
 }
 
 .inline-button a span {
@@ -174,17 +183,17 @@ span.contact-inline label {
 }
 
 .ui-dialog-titlebar-close {
-	float: right;	
+	float: right;
 	margin-right: 5px;
 }
 
 .table-grid {
-/*	width: 300px;*/	
+	/*	width: 300px;*/
 }
 
 .no-margin-list {
 	padding: 0;
-	margin : 0;
+	margin: 0;
 }
 
 .no-margin-list li {
@@ -216,21 +225,17 @@ span.contact-inline label {
 }
 
 .zebra-list li {
-	padding : 2px 5px 2px 5px;	
+	padding: 2px 5px 2px 5px;
 }
 
-.zebra-list li:nth-child(odd){	 
- 	background-color:#FFF; 	
- 	border-top: 1px solid #ccc;
- 	border-bottom: 1px solid #ccc;
+.zebra-list li:nth-child(odd) {
+	background-color: #FFF;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .ui-button {
-	margin-top : 0;
-}
-
-.ui-combo-button .ui-button-text {	
-	padding: 0;
+	margin-top: 0;
 }
 
 .number-field input {
@@ -239,27 +244,27 @@ span.contact-inline label {
 
 .detail-table {
 	border-spacing: 0;
-	border-collapse:collapse;
+	border-collapse: collapse;
 	margin: 0 !important;
-	border: 1px solid #ccc;		
+	border: 1px solid #ccc;
 	border-bottom: 0;
 }
 
-.detail-table td, .detail-table th{
-	text-align: left;	
+.detail-table td, .detail-table th {
+	text-align: left;
 	padding: 2px 5px;
 	border-bottom: 1px solid #ccc;
 }
 
-.detail-table td:nth-child(odd){
-	border-left: 1px solid #ccc; 
+.detail-table td:nth-child(odd) {
+	border-left: 1px solid #ccc;
 }
-.detail-table tr:nth-child(odd){
+.detail-table tr:nth-child(odd) {
 	background: white;
 }
 
-.checkbox-select-multiple ul{
-	padding: 0;	
+.checkbox-select-multiple ul {
+	padding: 0;
 }
 
 .checkbox-select-multiple ul li {
@@ -267,10 +272,35 @@ span.contact-inline label {
 }
 
 .descr {
-	margin: 3px 0; 
+	margin: 3px 0;
 	padding: 3px
 }
 
-.all-borders td, .all-borders th{
+.all-borders td, .all-borders th {
 	border: 1px solid #ccc;
+}
+
+.ui-combobox {
+	position: relative;
+	display: inline-block;
+}
+
+.ui-combo-button .ui-button-text {
+	padding: 0;
+	margin-left: -4px;
+}
+
+.ui-combobox-toggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-left: 2px;
+	padding: 0;
+	/* adjust styles for IE 6/7 */
+	*height: 1.7em;
+	*top: 0.1em;
+}
+
+.item {
+	font-weight: bold;
 }

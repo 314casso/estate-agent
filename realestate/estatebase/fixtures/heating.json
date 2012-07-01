@@ -1,0 +1,27 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.heating",
+    "fields": {
+        "name": "индивидуальное газовое"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.heating",
+    "fields": {
+        "name": "индивидуальное твердотоплевное"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.heating",
+    "fields": {
+        "name": "индивидуальное электрическое"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.heating",
+    "fields": {
+        "name": "центральное"
+    }
+}
+]

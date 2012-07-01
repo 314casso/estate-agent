@@ -13,7 +13,6 @@ from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 
-
 class EstateCreateForm(ModelForm):
     estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:                
@@ -33,16 +32,6 @@ class EstateCommunicationForm(ModelForm):
                   'gassupply', 'gassupply_distance', 'sewerage', 'sewerage_distance', 'telephony',
                   'internet', 'driveway', 'driveway_distance',)
 
-class EstateDocumentForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(EstateDocumentForm, self).__init__(*args, **kwargs)        
-        self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
-    class Meta:                
-        model = Estate
-        fields = ('documents',)
-        widgets = {
-           'documents' : forms.CheckboxSelectMultiple()        
-        }
 
 class EstateParamForm(ModelForm):
     class Meta:                
@@ -114,7 +103,15 @@ class BidgForm(ModelForm):
     class Meta:
         model = Bidg
 
-class ApartmentForm(BidgForm):    
+class ApartmentForm(BidgForm):  
+    def __init__(self, *args, **kwargs):
+        super(ApartmentForm, self).__init__(*args, **kwargs)
+        self.fields['used_area'].label = _('Living area')
+        self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate.estate_type_id)
+        self.fields['documents'].help_text=''  
     class Meta:        
-        #fields = ('contact', 'contact_state')
+        exclude = ('roof',)
         model = Bidg
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple()        
+        }

@@ -11,6 +11,12 @@ ADMINS = (
 
 from local_settings import * #@UnusedWildImport
 
+LOGIN_REQUIRED_URLS = (
+    r'/estatebase/(.*)$',    
+)
+
+LOGIN_REQUIRED_URLS_EXCEPTIONS = ('logon',)
+
 MANAGERS = ADMINS
 
 # Local time zone for this installation. Choices can be found here:
@@ -101,6 +107,7 @@ MIDDLEWARE_CLASSES = (
     'middleware.FilterPersistMiddleware',
     'django_sorting.middleware.SortingMiddleware',
 #    'middleware.SQLLogMiddleware',
+    'middleware.RequireLoginMiddleware',
 )
 
 ROOT_URLCONF = 'realestate.urls'
@@ -110,6 +117,13 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 INSTALLED_APPS = (
     'django.contrib.auth',

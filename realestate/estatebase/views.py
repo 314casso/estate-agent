@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
-    EstateDocumentForm, EstateParamForm, ApartmentForm
+    EstateParamForm, ApartmentForm
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -16,6 +16,9 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser, Bidg
 from estatebase.helpers.functions import safe_next_link 
+from django.core import serializers
+import estatebase
+from django.forms.models import model_to_dict
 
 class BaseMixin():
     def get_success_url(self):   
@@ -118,10 +121,6 @@ class EstateCommunicationUpdateView(EstateUpdateView):
     template_name = 'estate_comm.html'
     form_class = EstateCommunicationForm
 
-class EstateDocumentUpdateView(EstateUpdateView):    
-    template_name = 'estate_docs.html'
-    form_class = EstateDocumentForm    
-
 class EstateParamUpdateView(EstateUpdateView):    
     template_name = 'estate_params.html'
     form_class = EstateParamForm
@@ -206,10 +205,11 @@ class ApartmentUpdateView(BidgMixin, UpdateView):
     form_class = ApartmentForm   
     continue_url = 'apartment_update'        
 
+
 class ApartmentDetailView(EstateDetailView):
     template_name = 'apartment_detail.html'    
     def get_context_data(self, **kwargs):
-        context = super(ApartmentDetailView, self).get_context_data(**kwargs)        
+        context = super(ApartmentDetailView, self).get_context_data(**kwargs)                
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),            
         })        

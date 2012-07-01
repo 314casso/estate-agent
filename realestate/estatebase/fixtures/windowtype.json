@@ -1,0 +1,33 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.windowtype",
+    "fields": {
+        "name": "алюминиевые"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.windowtype",
+    "fields": {
+        "name": "деревянные"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.windowtype",
+    "fields": {
+        "name": "евродерево"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.windowtype",
+    "fields": {
+        "name": "металлопластиковые"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.windowtype",
+    "fields": {
+        "name": "не остеклено"
+    }
+}
+]

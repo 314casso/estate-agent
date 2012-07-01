@@ -1,0 +1,63 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "без отделки"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "дагестанский камень"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "камень"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "керамогранит"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "кирпич"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "короед"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "окрашено"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "оштукатурено"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "плитка"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.exteriorfinish",
+    "fields": {
+        "name": "сайдинг"
+    }
+}
+]

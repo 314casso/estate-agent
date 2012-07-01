@@ -1,0 +1,94 @@
+{% extends "dialog_block.html" %}
+{% load i18n %}
+{% load link_helper %}
+{% block title_left %}
+<a href="{% if estate.basic_bidg %}{% url apartment_update estate.basic_bidg.pk %}{% else %}{% url apartment_create estate.id %}{% endif %}?{{ next_url }}">Описание и отделка</a>
+{% endblock %}
+{% block content %}
+
+<table class="detail-table">
+    <tr>
+        <th>{% trans 'Year built' %}:</th>
+        <td colspan="2">{{ bidg.year_built|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Floor' %}:</th>
+        <td>{{ bidg.floor }} {% if bidg.floor_count  %} из {{ bidg.floor_count }} {% endif %}</td>
+        <td> (Лифт{% if not bidg.elevator %} отсутствует{% endif %}) </td>
+    </tr>
+    <tr>
+        <th>{% trans 'Room number' %}:</th>
+        <td colspan="2">{{ bidg.room_number|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Wall construcion' %}:</th>
+        <td colspan="2">{{ bidg.wall_construcion|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Exterior finish' %}:</th>
+        <td colspan="2">{{ bidg.exterior_finish|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Window type' %}:</th>
+        <td colspan="2">{{ bidg.window_type|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Heating' %}:</th>
+        <td colspan="2">{{ bidg.heating|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Ceiling height' %}:</th>
+        <td colspan="2">{{ bidg.ceiling_height|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Room count' %}:</th>
+        <td colspan="2">{{ bidg.room_count|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Total area' %}:</th>
+        <td colspan="2">{{ bidg.total_area|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Living area' %}:</th>
+        <td colspan="2">{{ bidg.used_area|default_if_none:"" }}</td>
+    </tr>
+</table>
+
+<div class="ui-widget-content descr">
+    <div class="ui-widget-header descr">
+        <span class="ui-icon ui-icon-document" style="float: left; margin-right: .3em;"> </span> Документы
+    </div>
+    {% for doc in bidg.documents.all %}
+    <span class="item"> {{ doc.name }}{% include "comma.html" %} </span>
+    {% endfor %}
+</div>
+
+<div class="ui-widget-content descr">
+    <div class="ui-widget-header descr">
+       <span class="ui-icon ui-icon-document" style="float: left; margin-right: .3em;"> </span> Внешняя отделка
+    </div>
+    <table class="detail-table">
+        <tr>
+            <th>{% trans 'Wall finish' %}:</th>
+            <td>{{ bidg.wall_finish|default_if_none:"" }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Flooring' %}:</th>
+            <td>{{ bidg.flooring|default_if_none:"" }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Ceiling' %}:</th>
+            <td>{{ bidg.ceiling|default_if_none:"" }}</td>
+        </tr>
+        <tr>
+            <th>{% trans 'Interior' %}:</th>
+            <td>{{ bidg.interior|default_if_none:"" }}</td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block title_right %}
+{{ bidg.room_count }}-комнатная, {{ bidg.total_area }} <small>м<sup>2</sup></small>
+{% endblock %}
