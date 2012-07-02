@@ -114,6 +114,7 @@ span.contact-inline label {
 .confirm-dialog {
 	width: 350px;
 	padding: 1px;
+	margin-bottom: 2px;
 }
 
 .confirm-dialog table {

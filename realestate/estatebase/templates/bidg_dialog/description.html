@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load link_helper %}
 {% block title_left %}
-<a href="{% if estate.basic_bidg %}{% url apartment_update estate.basic_bidg.pk %}{% else %}{% url apartment_create estate.id %}{% endif %}?{{ next_url }}">Описание и отделка</a>
+<a href="{% url apartment_update bidg.pk %}?{{ next_url }}">Описание и отделка</a>
 {% endblock %}
 {% block content %}
 
@@ -58,9 +58,11 @@
     <div class="ui-widget-header descr">
         <span class="ui-icon ui-icon-document" style="float: left; margin-right: .3em;"> </span> Документы
     </div>
+    <span class="descr">
     {% for doc in bidg.documents.all %}
     <span class="item"> {{ doc.name }}{% include "comma.html" %} </span>
     {% endfor %}
+    </span>
 </div>
 
 <div class="ui-widget-content descr">
@@ -90,5 +92,10 @@
 {% endblock %}
 
 {% block title_right %}
-{{ bidg.room_count }}-комнатная, {{ bidg.total_area }} <small>м<sup>2</sup></small>
+{% if bidg.room_count %}
+{{ bidg.room_count }}-комнатная
+{% endif %}
+{% if bidg.total_area %}
+{{ bidg.total_area }} <small>м<sup>2</sup></small>
+{% endif %}
 {% endblock %}

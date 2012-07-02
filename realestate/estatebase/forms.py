@@ -107,7 +107,8 @@ class ApartmentForm(BidgForm):
     def __init__(self, *args, **kwargs):
         super(ApartmentForm, self).__init__(*args, **kwargs)
         self.fields['used_area'].label = _('Living area')
-        self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate.estate_type_id)
+        if self.instance.pk:
+            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate.estate_type_id)
         self.fields['documents'].help_text=''  
     class Meta:        
         exclude = ('roof',)

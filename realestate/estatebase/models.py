@@ -6,6 +6,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.validators import URLValidator, RegexValidator, validate_email
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 
 class ExUser(User):
     def __unicode__(self):
@@ -162,6 +163,8 @@ OBJECT_TYPE_CHOICES = (
 
 VIEW_PREFIX_CHOICES = (
     ('apartment','Квартира'),
+    ('newapart','Новостройка'),
+    ('stead','Участок'),
 )
 
 class EstateType(OrderedModel):
@@ -170,13 +173,6 @@ class EstateType(OrderedModel):
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     view_prefix = models.CharField(_('View prefix'), max_length=50, choices=VIEW_PREFIX_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    @property
-    def reverse_link(self):
-        reverse_links = {
-                         'BIDG':'bidg_create',
-                         'STEAD':'bidg_create',
-                         }
-        return reverse_links[self.object_type]
 
     def __unicode__(self):
         return u'%s' % self.name    
