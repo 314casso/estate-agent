@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+{% block head %}
+<style>
+ #level-layouts tbody td {
+ 	border-bottom: 1px solid #DDDDDD;
+ }
+
+#level-layouts td{
+    padding: 0 0 1px 8px;
+}
+
+#level-layouts { 
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 0;
+}
+
+.layout-area input{
+	width: 50px;
+}
+</style>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
+<script type="text/javascript">
+    $(function() {
+        $('#level-layouts tbody tr').formset({
+            prefix : '{{ layout_formset.prefix }}',
+            addText : 'Добавить элемент планировки',
+            deleteText : 'Удалить'
+        });
+    })
+</script>
+{% endblock %}
+
+{% block left %}
+<form action="" method="post" class="table-form">
+    <table class="ui-widget ui-widget-content ui-corner-all">
+        <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    {{ dialig_title }}
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+        </thead>  
+        <tr>
+        	<td colspan="100%">
+		        <table>      
+		          {{ form.as_table }}{% csrf_token %}
+		        </table>
+		    </td>                
+        </tr>        
+        <tr>
+            <td colspan="100%"> {{ layout_formset.management_form }}
+            <table id="level-layouts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
+                {% for layout in layout_formset %}
+                {{ layout.id }}
+                
+                <thead class="ui-state-highlight">
+                <tr>
+                	<th>{{ layout.layout_type.label_tag }}</th>
+                    <th>{{ layout.area.label_tag }}</th>
+                    <th>{{ layout.furniture.label_tag }}</th>
+                    <th>{{ layout.layout_feature.label_tag }}</th>
+                    <th>{{ layout.note.label_tag }}</th>
+                    <th> </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>                    
+                    <td>{{ layout.layout_type.errors }}{{ layout.layout_type }}</td>                    
+                    <td class="layout-area">{{ layout.area.errors }}{{ layout.area }}</td>                    
+                    <td>{{ layout.furniture.errors }}{{ layout.furniture }}</td>                    
+                    <td>{{ layout.layout_feature.errors }}{{ layout.layout_feature }}</td>                    
+                    <td>{{ layout.note.errors }}{{ layout.note }}</td>                                        
+                    <td>{% if layout.instance.pk %}{{ layout.DELETE }} {% endif %}</td>                   
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="100%">{{ layout.non_field_errors }}</td>
+                </tr>
+                </tfoot>
+                {% endfor %}
+                
+            </table></td>
+        </tr>
+        <tfoot class="button">
+            <tr>
+                <td colspan="100%">
+                <input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</form>
+
+{% endblock %}
+

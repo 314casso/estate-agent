@@ -5,7 +5,8 @@ from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
-    Driveway
+    Driveway, LevelName
+
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -57,3 +58,4 @@ admin.site.register(Sewerage)
 admin.site.register(Telephony)
 admin.site.register(Internet)
 admin.site.register(Driveway)
+admin.site.register(LevelName)

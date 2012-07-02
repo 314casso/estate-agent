@@ -333,14 +333,25 @@ def validate_year(value):
     if not 2100 > value > 1800:
         raise ValidationError(u'Значение года указано не верно.')
 
-class Level(SimpleDict):
+class LevelName(SimpleDict):
+    '''
+    Назание этажа    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Level name')
+        verbose_name_plural = _('Level names')
+
+class Level(models.Model):
     '''
     Планоровка этажей
-    '''
-    bidg = models.ForeignKey('Bidg', verbose_name=_('Levels'), related_name='levels')    
-    class Meta(SimpleDict.Meta):
+    '''     
+    level_name = models.ForeignKey(LevelName, verbose_name=_('Level name'))
+    bidg = models.ForeignKey('Bidg', verbose_name=_('Level'), related_name='levels')    
+    class Meta:
         verbose_name = _('Level')
         verbose_name_plural = _('Levels')
+    def __unicode__(self):
+        return u'%s' % self.level_name    
 
 class LayoutType(SimpleDict):
     '''

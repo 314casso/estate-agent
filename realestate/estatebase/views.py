@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
-    EstateParamForm, ApartmentForm
+    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet
 from estatebase.models import EstateType, Contact
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -349,3 +349,41 @@ class ContactUpdateView(ContactMixin, UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),                                                          
         })        
         return context
+    
+class LevelMixin(ModelFormMixin):
+    template_name = 'layout_update.html'
+    form_class = LevelForm
+    def get_context_data(self, **kwargs):
+        context = super(LevelMixin, self).get_context_data(**kwargs)                
+        if self.request.POST:
+            context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            
+        else:
+            context['layout_formset'] = LevelFormSet(instance=self.object)
+        return context  
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('level_update',args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url
+    def form_valid(self, form):
+        context = self.get_context_data()
+        layout_form = context['layout_formset']
+        if layout_form.is_valid():
+            self.object = form.save(commit=False)                         
+            self.object.save()             
+            layout_form.instance = self.object
+            layout_form.save()
+            return super(ModelFormMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+class LevelCreateView(LevelMixin, CreateView):
+    def get_initial(self):        
+        initial = super(LevelCreateView, self).get_initial()                
+        initial['bidg'] = self.kwargs['bidg']
+        return initial
+
+class LevelUpdateView(LevelMixin, UpdateView):
+    pass
+    
+    

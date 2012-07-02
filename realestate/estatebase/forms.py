@@ -3,7 +3,7 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -116,3 +116,15 @@ class ApartmentForm(BidgForm):
         widgets = {
            'documents' : forms.CheckboxSelectMultiple()        
         }
+        
+class LayoutForm(ModelForm):
+    class Meta:
+        model = Layout        
+
+LevelFormSet = inlineformset_factory(Level, Layout, extra=1, form=LayoutForm)
+
+class LevelForm(ModelForm):
+    bidg = forms.ModelChoiceField(queryset=Bidg.objects.all(), widget=forms.HiddenInput())
+    class Meta:
+        model = Level
+                
