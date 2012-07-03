@@ -1,4 +1,13 @@
 {% extends "dialog_block.html" %}
 {% block title_left %}
-<a href="{% url apartment_create estate.id %}?{{ next_url }}">Планировка</a>
+
+<a href="{% url level_create bidg.id %}?{{ next_url }}">Планировка</a>
 {% endblock %}
+
+{% block content %}
+{% for level in bidg.levels.all %}
+
+<a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a>
+
+{% endfor %}
+{% endblock content %}

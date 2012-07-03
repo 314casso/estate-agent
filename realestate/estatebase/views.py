@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet
-from estatebase.models import EstateType, Contact
+from estatebase.models import EstateType, Contact, Level
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -353,6 +353,7 @@ class ContactUpdateView(ContactMixin, UpdateView):
 class LevelMixin(ModelFormMixin):
     template_name = 'layout_update.html'
     form_class = LevelForm
+    model = Level
     def get_context_data(self, **kwargs):
         context = super(LevelMixin, self).get_context_data(**kwargs)                
         if self.request.POST:
