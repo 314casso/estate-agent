@@ -355,7 +355,15 @@ class LevelMixin(ModelFormMixin):
     form_class = LevelForm
     model = Level
     def get_context_data(self, **kwargs):
-        context = super(LevelMixin, self).get_context_data(**kwargs)                
+        if 'bidg' in self.kwargs:
+            bidg = Bidg.objects.get(pk=self.kwargs['bidg'])
+        else:
+            bidg = self.object.bidg                
+        context = super(LevelMixin, self).get_context_data(**kwargs)
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'bidg': bidg,            
+        })                        
         if self.request.POST:
             context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            
         else:
@@ -387,4 +395,12 @@ class LevelCreateView(LevelMixin, CreateView):
 class LevelUpdateView(LevelMixin, UpdateView):
     pass
     
-    
+class LevelDeleteView(LevelMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(LevelDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление уровня планировки...',
+            'dialig_body'  : u'Подтвердите уровня: %s' % self.object,                
+        })
+        return context    

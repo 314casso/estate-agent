@@ -350,6 +350,7 @@ class Level(models.Model):
     class Meta:
         verbose_name = _('Level')
         verbose_name_plural = _('Levels')
+        ordering = ['level_name']
     def __unicode__(self):
         return u'%s' % self.level_name    
 

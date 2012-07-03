@@ -131,6 +131,7 @@ span.contact-inline label {
 
 .dialog-title {
 	padding: 0 0 0 8px;
+	white-space:nowrap;
 }
 
 .base-table-list {
@@ -189,7 +190,8 @@ span.contact-inline label {
 }
 
 .table-grid {
-	/*	width: 300px;*/
+	/*width: 300px;*/	
+    /*border-collapse: collapse;*/
 }
 
 .no-margin-list {
@@ -304,4 +306,9 @@ span.contact-inline label {
 
 .item {
 	font-weight: bold;
+}
+
+.user-info {
+	float: right;
+	font-size: 11px;
 }

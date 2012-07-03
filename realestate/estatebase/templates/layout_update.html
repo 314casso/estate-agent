@@ -30,6 +30,11 @@
             deleteText : 'Удалить'
         });
     })
+    
+    $(function() {
+        $(".table-grid tbody").find('.level-list-{{ object.id }}').addClass('ui-state-highlight')
+    });
+    
 </script>
 {% endblock %}
 
@@ -40,7 +45,12 @@
             <tr>
                 <td colspan="100%">
                 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
-                    {{ dialig_title }}
+                    Планировка объекта [{{ bidg.estate.pk }}].
+                    {% if object.pk %}
+                    Уровень {{ object.level_name }}
+                    {% else %}
+                    Новый уровень
+                    {% endif %}
                     {% close_btn request.GET.next %}
                 </div></td>
             </tr>
@@ -100,4 +110,29 @@
 </form>
 
 {% endblock %}
-
+{% block right %}
+    <table class="ui-widget ui-widget-content ui-corner-all table-grid">
+    <thead>
+        <tr>
+            <td colspan="2">
+            <div style="min-width: 170px" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+               <span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span> 
+               <a href="{% url level_create bidg.id %}?next={{ request.GET.next }}">Новый уровнь</a> 
+            </div></td>
+        </tr>
+    </thead>
+    <tbody>
+        
+        {% for level in bidg.levels.all %}
+        <tr>
+            <td class="level-list-{{ level.pk }}">
+            	<a href="{% url level_update level.pk %}?next={{ request.GET.next }}">{{ level }}</a> 
+            </td>
+            <td class="level-list-{{ level.pk }}">
+            	<a href="{% url level_delete level.pk %}?next={{ request.GET.next }}"><small>Удалить</small></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock right %}
