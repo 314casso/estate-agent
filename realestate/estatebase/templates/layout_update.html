@@ -65,35 +65,35 @@
         <tr>
             <td colspan="100%"> {{ layout_formset.management_form }}
             <table id="level-layouts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
-                {% for layout in layout_formset %}
-                {{ layout.id }}
-                
                 <thead class="ui-state-highlight">
                 <tr>
-                	<th>{{ layout.layout_type.label_tag }}</th>
-                    <th>{{ layout.area.label_tag }}</th>
-                    <th>{{ layout.furniture.label_tag }}</th>
-                    <th>{{ layout.layout_feature.label_tag }}</th>
-                    <th>{{ layout.note.label_tag }}</th>
+                	<th>{% trans 'LayoutType' %}</th>
+                    <th>{% trans 'Area' %}</th>
+                    <th>{% trans 'Furniture' %}</th>
+                    <th>{% trans 'LayoutFeature' %}</th>
+                    <th>{% trans 'Note' %}</th>
                     <th> </th>
                 </tr>
                 </thead>
                 <tbody>
+                {% for layout in layout_formset %}
+                {{ layout.id }}                
                 <tr>                    
                     <td>{{ layout.layout_type.errors }}{{ layout.layout_type }}</td>                    
                     <td class="layout-area">{{ layout.area.errors }}{{ layout.area }}</td>                    
                     <td>{{ layout.furniture.errors }}{{ layout.furniture }}</td>                    
                     <td>{{ layout.layout_feature.errors }}{{ layout.layout_feature }}</td>                    
                     <td>{{ layout.note.errors }}{{ layout.note }}</td>                                        
-                    <td>{% if layout.instance.pk %}{{ layout.DELETE }} {% endif %}</td>                   
+                    <td>{% if layout.instance.pk %}{{ layout.DELETE }} {% endif %}</td>                
                 </tr>
+                {% endfor %}
                 </tbody>
                 <tfoot>
                 <tr>
                     <td colspan="100%">{{ layout.non_field_errors }}</td>
                 </tr>
                 </tfoot>
-                {% endfor %}
+                
                 
             </table></td>
         </tr>
