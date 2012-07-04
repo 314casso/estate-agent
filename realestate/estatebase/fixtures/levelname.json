@@ -1,0 +1,51 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "1-й"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "2-й"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "3-й"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "4-й"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "5-й"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "Мансарда"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "Подвал"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.levelname",
+    "fields": {
+        "name": "цокольный"
+    }
+}
+]

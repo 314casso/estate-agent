@@ -65,7 +65,7 @@ class FixtureSimpleMaker(object):
         lines = sorted(lines)
         for name in lines:
             if len(name):            
-                result.append(self.template % {'model':self.model_name,'pk':pk,'name':name.strip()})
+                result.append(self.template % {'model':self.model_name,'pk':pk,'name':capfirst(name.strip())})
                 pk += 1   
         return result
 
@@ -78,17 +78,36 @@ class FixtureSimpleMaker(object):
 
 options = \
 '''
-металлопрофиль
-металлочерепица
-мягкая кровля
-ондулин
-оцинкованная сталь
-черепица
-шифер
+балкон
+баня
+бойлерная
+ванная комната
+гараж
+гардеробная
+гостиная
+зимний сад
+кабинет
+кладовая
+комната
+комната отдыха
+коридор
+кухня
+лоджия
+номер
+подвал
+помещение
+постирочная
+прихожая
+санузел
+сауна
+спальная комната
+спортзал
+терраса
+хозяйственная комната
+холл
 '''
 
-'''
-MODEL = 'Roof'
+MODEL = 'LayoutType'
 
 import settings
 import os
@@ -102,7 +121,7 @@ if not os.path.isfile(fixfile):
     print './manage.py loaddata %s' % fm.fixfile 
 else:
     print 'Fixture already exists!'     
-'''
 
-mm = ModelMaker('SimpleDict', 'layout_feature')
-print mm.get_model_code()
+
+#mm = ModelMaker('SimpleDict', 'layout_feature')
+#print mm.get_model_code()

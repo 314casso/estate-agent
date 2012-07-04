@@ -1,0 +1,165 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Балкон"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Баня"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Бойлерная"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Ванная комната"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Гараж"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Гардеробная"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Гостиная"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Зимний сад"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Кабинет"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Кладовая"
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Комната"
+    }
+},{
+    "pk": 12,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Комната отдыха"
+    }
+},{
+    "pk": 13,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Коридор"
+    }
+},{
+    "pk": 14,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Кухня"
+    }
+},{
+    "pk": 15,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Лоджия"
+    }
+},{
+    "pk": 16,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Номер"
+    }
+},{
+    "pk": 17,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Подвал"
+    }
+},{
+    "pk": 18,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Помещение"
+    }
+},{
+    "pk": 19,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Постирочная"
+    }
+},{
+    "pk": 20,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Прихожая"
+    }
+},{
+    "pk": 21,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Санузел"
+    }
+},{
+    "pk": 22,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Сауна"
+    }
+},{
+    "pk": 23,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Спальная комната"
+    }
+},{
+    "pk": 24,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Спортзал"
+    }
+},{
+    "pk": 25,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Терраса"
+    }
+},{
+    "pk": 26,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Хозяйственная комната"
+    }
+},{
+    "pk": 27,
+    "model": "estatebase.layouttype",
+    "fields": {
+        "name": "Холл"
+    }
+}
+]
