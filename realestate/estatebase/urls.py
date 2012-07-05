@@ -6,7 +6,8 @@ from estatebase.views import EstateTypeView, EstateListView,\
     EstateCreateView, ApartmentDetailView,\
     EstateCommunicationUpdateView,\
     EstateParamUpdateView, EstateUpdateView, ApartmentCreateView,\
-    ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView
+    ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView,\
+    upload_images
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -46,4 +47,8 @@ urlpatterns += patterns('',
     url (r'^levelcreate/(?P<bidg>\d+)$', view=LevelCreateView.as_view(), name='level_create'),
     url (r'^levelupdate/(?P<pk>\d+)$', view=LevelUpdateView.as_view(), name='level_update'),
     url (r'^leveldelete/(?P<pk>\d+)$', view=LevelDeleteView.as_view(), name='level_delete'),
-)    
+)   
+
+urlpatterns += patterns('',
+    url (r'^uploadimages/$', view=upload_images, name='upload_images'),
+)

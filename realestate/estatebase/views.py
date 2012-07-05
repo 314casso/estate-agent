@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView
+    DeleteView, FormView
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
@@ -53,6 +53,17 @@ class AjaxMixin(ModelFormMixin):
         if not self.request.is_ajax():
             return super(AjaxMixin, self).form_invalid(form)
         return self.response_alternative(form, False)
+
+def upload_images(request):
+    if request.method == 'POST':           
+        for upfile in request.FILES.getlist('form_file'):
+            filename = upfile.name
+            print filename
+            fd = open(filename, 'w+')  # or 'wb+' for binary file
+            for chunk in upfile.chunks():
+                fd.write(chunk)
+            fd.close()  
+    return HttpResponseRedirect(request.REQUEST.get('next', ''))         
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'        

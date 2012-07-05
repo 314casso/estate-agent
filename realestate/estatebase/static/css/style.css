@@ -192,7 +192,11 @@ span.contact-inline label {
 
 .table-grid {
 	/*width: 300px;*/	
-    /*border-collapse: collapse;*/
+    /*border-collapse: collapse;*/   
+}
+
+.table-grid tbody td {
+	padding-left: 7px;
 }
 
 .no-margin-list {

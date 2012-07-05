@@ -7,4 +7,12 @@
 {% empty %}
 {% include "bidg_dialog/empty_bidg.html" %}
 {% endfor %}
+<form method="post" action="{% url upload_images %}" enctype="multipart/form-data">
+	{% csrf_token %}
+	<input type="file" name="form_file" id="form_file" multiple/>
+	<input type="hidden" name="next" id="next_after" value="{{ request.path }}?next={{ request.GET.next }}"/>
+	<button type="submit">
+		Go!
+	</button>
+</form>
 {% endblock right %}

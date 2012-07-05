@@ -7,7 +7,7 @@
 {% block content %}
 {% for level in bidg.levels.all %}
 
-<span class="item"><a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a> <a href="{% url level_delete level.pk %}?{{ next_url }}"><small>Удалить</small></a> {% include 'comma.html' %}</span>
+<span class="item"><a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a> {% include 'comma.html' %}</span>
 
 {% endfor %}
 {% endblock content %}

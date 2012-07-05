@@ -6,7 +6,8 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.validators import URLValidator, RegexValidator, validate_email
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+import os
+from sorl.thumbnail.fields import ImageField
 
 class ExUser(User):
     def __unicode__(self):
@@ -256,6 +257,24 @@ class Estate(models.Model):
         user = kwargs.pop('user', None)                        
         self.history = prepare_history(self.history,user)                                                     
         super(Estate, self).save(*args, **kwargs)                
+
+
+def get_upload_to(instance, filename):    
+    return os.path.join('photos', instance.pk, filename)
+
+class EstatePhoto(OrderedModel):
+    '''
+    Фото
+    '''
+    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='photos')
+    name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
+    note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
+    image = ImageField(upload_to=get_upload_to)
+    def __unicode__(self):
+        return u'%s' % self.name
+    class Meta(OrderedModel.Meta):
+        verbose_name = _('EstatePhoto')
+        verbose_name_plural = _('EstatePhotos') 
 
 class WallConstrucion(SimpleDict):
     '''

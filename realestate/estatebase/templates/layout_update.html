@@ -129,7 +129,7 @@
             	<a href="{% url level_update level.pk %}?next={{ request.GET.next }}">{{ level }}</a> 
             </td>
             <td class="level-list-{{ level.pk }}">
-            	<a href="{% url level_delete level.pk %}?next={{ request.GET.next }}"><small>Удалить</small></a>
+            	<a href="{% url level_delete level.pk %}?next={{ request.GET.next }}">Удалить</a>
             </td>
         </tr>
         {% endfor %}
