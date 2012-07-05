@@ -260,13 +260,13 @@ class Estate(models.Model):
 
 
 def get_upload_to(instance, filename):    
-    return os.path.join('photos', instance.pk, filename)
+    return os.path.join('photos', str(instance.estate_id), filename)
 
 class EstatePhoto(OrderedModel):
     '''
     Фото
     '''
-    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='photos')
+    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='images')
     name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
     note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
     image = ImageField(upload_to=get_upload_to)

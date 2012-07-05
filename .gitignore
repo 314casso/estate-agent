@@ -2,4 +2,5 @@ realestate/local_settings.py
 *.pyc
 realestate/local_settings.py
 *~
-.directory
+.directoryrealestate/media
+realestate/media

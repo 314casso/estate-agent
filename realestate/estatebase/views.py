@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet
-from estatebase.models import EstateType, Contact, Level
+from estatebase.models import EstateType, Contact, Level, EstatePhoto
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -16,6 +16,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from estatebase.models import ExUser, Bidg
 from estatebase.helpers.functions import safe_next_link
+from django.core.files.base import ContentFile
 
 class BaseMixin():
     def get_success_url(self):   
@@ -57,12 +58,10 @@ class AjaxMixin(ModelFormMixin):
 def upload_images(request):
     if request.method == 'POST':           
         for upfile in request.FILES.getlist('form_file'):
-            filename = upfile.name
-            print filename
-            fd = open(filename, 'w+')  # or 'wb+' for binary file
-            for chunk in upfile.chunks():
-                fd.write(chunk)
-            fd.close()  
+            estate_photo = EstatePhoto(estate_id = request.REQUEST.get('estate', None)) 
+            file_content = ContentFile(upfile.read()) 
+            estate_photo.image.save(upfile.name, file_content)
+            estate_photo.save()  
     return HttpResponseRedirect(request.REQUEST.get('next', ''))         
 
 class EstateTypeView(TemplateView):    

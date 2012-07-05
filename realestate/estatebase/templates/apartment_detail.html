@@ -1,5 +1,7 @@
 {% extends "estate_detail.html" %}
 
+{% load thumbnail %}
+
 {% block right %}
 {% for bidg in estate.bidgs.all %}
 {% include "bidg_dialog/description.html" %}
@@ -9,10 +11,25 @@
 {% endfor %}
 <form method="post" action="{% url upload_images %}" enctype="multipart/form-data">
 	{% csrf_token %}
-	<input type="file" name="form_file" id="form_file" multiple/>
+	<input type="file" name="form_file" id="form_file" multiple="multiple"/>
 	<input type="hidden" name="next" id="next_after" value="{{ request.path }}?next={{ request.GET.next }}"/>
+	<input type="hidden" name="estate" id="estate_pk" value="{{ estate.pk }}"/>
 	<button type="submit">
 		Go!
 	</button>
 </form>
+
+{% for image in estate.images.all %}
+
+{% thumbnail image.image "100x100" crop="center" as im %}
+im.url
+   <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+{% endthumbnail %}
+
+{% endfor %}
+
+{% thumbnail "http://www.aino.se/media/i/logo.png" "40x40" crop="80% top" as im %}
+    <img src="{{ im.url }}">
+{% endthumbnail %}
+
 {% endblock right %}
