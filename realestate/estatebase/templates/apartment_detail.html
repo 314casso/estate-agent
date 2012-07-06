@@ -22,14 +22,9 @@
 {% for image in estate.images.all %}
 
 {% thumbnail image.image "100x100" crop="center" as im %}
-im.url
    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
 {% endthumbnail %}
 
 {% endfor %}
-
-{% thumbnail "http://www.aino.se/media/i/logo.png" "40x40" crop="80% top" as im %}
-    <img src="{{ im.url }}">
-{% endthumbnail %}
 
 {% endblock right %}
