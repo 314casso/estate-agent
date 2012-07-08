@@ -6,3 +6,5 @@ encoding//realestate/estatebase/templatetags/link_helper.py=utf-8
 encoding//realestate/estatebase/views.py=utf-8
 encoding//realestate/orderedmodel/admin.py=utf-8
 encoding//realestate/utils/model_template.py=utf-8
+encoding//realestate/watermarker/__init__.py=utf-8
+encoding//realestate/watermarker/sorl_engine.py=utf-8

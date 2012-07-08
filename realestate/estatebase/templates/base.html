@@ -13,6 +13,7 @@
 	<body>
 		<div id="wrapper">
 			<div id="header">{% block header %}{% endblock %}
+				<div style="float: left">{% block linkback %}{% endblock %}</div>
 				<div class="ui-widget user-info">Добро пожаловать, {{ request.user.get_full_name }} 
 					/ <a href="#">Выйти</a></div>
 					<br style="clear: both" />

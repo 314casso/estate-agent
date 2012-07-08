@@ -1,0 +1,37 @@
+{% extends "dialog_block.html" %}
+
+{% load thumbnail %}
+
+{% load link_helper %}
+{% block title_left %}
+<a href="{% url estate_images estate.pk %}?{{ next_url }}">Фотографии</a>
+{% endblock %}
+{% block content %}
+
+<form class="button" method="post" action="{% url upload_images %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input required type="file" name="form_file" id="form_file" multiple="multiple"/>
+    <input type="hidden" name="next" id="next_after" value="{{ request.path }}?next={{ request.GET.next }}"/>
+    <input type="hidden" name="estate" id="estate_pk" value="{{ estate.pk }}"/>
+    <button type="submit">
+        Загрузить
+    </button>
+</form>
+
+<div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px 1px 0px 1px; margin: 0">
+{% for image in images %}
+
+{% thumbnail image.image "110x80" crop="center" as im %}
+{% thumbnail image.image "800x600" watermark="http://yandex.ru" crop="center" as bim %}
+ <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+{% endthumbnail %}
+{% endthumbnail %}
+
+{% endfor %}
+</div>	
+	
+{% endblock %}
+
+{% block title_right %}
+    {{ estate.images.count }}
+{% endblock %}

@@ -13,14 +13,14 @@
 
 {% block left %}
 
-{{ estate_list.count }}
+Количество объектов {{ estate_list.count }}
 
 
 {% for estate in estate_list %}
 
 <table border=1>
 	<tr>
-		<td>{{ estate.pk }}</td>
+		<td><a href="{{ estate.detail_link  }}?{{ next_url }}">{{ estate.pk }}</a></td>
 		<td>{{ estate.estate_type }}</td>
 		<td>{% address estate %}</td>
 	</tr>

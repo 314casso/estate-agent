@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load thumbnail %}
+
+{% block head %}
+<link href="{{ STATIC_URL }}css/lightbox.css" rel="stylesheet" />
+<script src="{{ STATIC_URL }}js/lightbox.js"></script>
+<style>
+	.thumb {
+		float: left;
+		padding: 4px;
+		text-align: center;
+		margin: 3px;		
+	}
+	.thumb img {
+		border: 4px solid white;
+	}
+</style>
+{% endblock %}
+
+{% block linkback %}
+{% include 'back2estate.html' %}
+{% endblock linkback %}
+
+{% block left %}
+<div style="padding: 4px 1px 0px 1px; margin: 0; overflow: hidden">
+    {% for image in estate.images.all %}
+
+    <div class="ui-widget-content ui-corner-all thumb">
+
+        <div>
+            <a href="">Вверх</a> | <a href="">Вниз</a>
+        </div>
+
+        {% thumbnail image.image "110x80" crop="center" as im %}
+        {% thumbnail image.image "800x600" watermark="http://yandex.ru" crop="center" as bim %}
+        <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+        {% endthumbnail %}
+        {% endthumbnail %}
+        <div>
+            <a href="">Правка</a> | <a href="">Удалить</a>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}
+

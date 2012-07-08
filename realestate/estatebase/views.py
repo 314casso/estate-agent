@@ -96,8 +96,7 @@ class EstateCreateView(HistoryMixin, CreateView):
         return context
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                                  
-        return '%s?%s' % (reverse('%s_detail' % self.object.estate_type.view_prefix
-                                  ,args=[self.object.id]), safe_next_link(next_url))
+        return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))
 
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
@@ -108,7 +107,8 @@ class EstateDetailView(DetailView):
         p = float(r) / (self.object.saler_price or 1) * 100              
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),            
-            'margin': '%d (%d%%)' % (r,p),                        
+            'margin': '%d (%d%%)' % (r,p),  
+            'images' : self.object.images.all()[:6]                      
         })        
         return context
 
@@ -141,6 +141,17 @@ class EstateListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context
+
+class EstateImagesView(TemplateView):
+    template_name = 'estate_images.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateImagesView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'estate': Estate.objects.get(pk=kwargs['estate'])            
+        })        
+        return context
+    
 
 class ClientUpdateEstateView(DetailView):   
     model = Client
@@ -372,7 +383,7 @@ class LevelMixin(ModelFormMixin):
         context = super(LevelMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'bidg': bidg,            
+            'bidg': bidg,                        
         })                        
         if self.request.POST:
             context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            

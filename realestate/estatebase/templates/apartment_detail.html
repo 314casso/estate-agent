@@ -1,6 +1,9 @@
 {% extends "estate_detail.html" %}
 
-{% load thumbnail %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/lightbox.css" rel="stylesheet" />
+<script src="{{ STATIC_URL }}js/lightbox.js"></script>
+{% endblock %}
 
 {% block right %}
 {% for bidg in estate.bidgs.all %}
@@ -9,22 +12,7 @@
 {% empty %}
 {% include "bidg_dialog/empty_bidg.html" %}
 {% endfor %}
-<form method="post" action="{% url upload_images %}" enctype="multipart/form-data">
-	{% csrf_token %}
-	<input type="file" name="form_file" id="form_file" multiple="multiple"/>
-	<input type="hidden" name="next" id="next_after" value="{{ request.path }}?next={{ request.GET.next }}"/>
-	<input type="hidden" name="estate" id="estate_pk" value="{{ estate.pk }}"/>
-	<button type="submit">
-		Go!
-	</button>
-</form>
 
-{% for image in estate.images.all %}
-
-{% thumbnail image.image "100x100" crop="center" as im %}
-   <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-{% endthumbnail %}
-
-{% endfor %}
+{% include "estate_dialog/photos.html" %}
 
 {% endblock right %}

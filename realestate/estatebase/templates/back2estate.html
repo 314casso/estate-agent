@@ -1,0 +1,7 @@
+{% load link_helper %}
+<div class="ui-widget">
+    <div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
+        <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"> </span>
+        <a href="{{ request.GET.next }}">{{ estate.estate_type }} <b>[{{ estate.pk }}]</b> {% address estate %}</a>
+    </div>
+</div>

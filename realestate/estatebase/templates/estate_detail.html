@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block left %}
-
 {% include "estate_dialog/basic.html" %}
 {% include "estate_dialog/salers.html" %}
 {% include "estate_dialog/comm.html" %}
 {% include "estate_dialog/marks.html" %}
 
 {% endblock left %}
+
+{% block linkback %}
+<a href="{{ request.GET.next }}">Back</a>
+{% endblock %}

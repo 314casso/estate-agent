@@ -38,7 +38,12 @@
 </script>
 {% endblock %}
 
+{% block linkback %}
+{% include 'back2estate.html' with estate=bidg.estate %}
+{% endblock linkback %}
+
 {% block left %}
+
 <form action="" method="post" class="table-form">
     <table class="ui-widget ui-widget-content ui-corner-all">
         <thead>

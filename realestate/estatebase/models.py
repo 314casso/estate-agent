@@ -8,6 +8,7 @@ from django.core.validators import URLValidator, RegexValidator, validate_email
 from django.core.exceptions import ValidationError
 import os
 from sorl.thumbnail.fields import ImageField
+from django.core.urlresolvers import reverse
 
 class ExUser(User):
     def __unicode__(self):
@@ -235,7 +236,15 @@ class Estate(models.Model):
     description = models.TextField(_('Description'), blank=True, null=True)
     comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
     #Изменения
-    history = models.OneToOneField(HistoryMeta,blank=True, null=True)  
+    history = models.OneToOneField(HistoryMeta,blank=True, null=True)    
+    @property
+    def detail_link(self):
+        url = None
+        try:
+            url = reverse('%s_detail' % self.estate_type.view_prefix, args=[self.pk])        
+        except:
+            raise Exception(u'Не верный префикс вида!')        
+        return url  
     @property
     def is_bidg(self):
         if self.estate_type.object_type  == 'BIDG':
@@ -249,6 +258,7 @@ class Estate(models.Model):
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
+        ordering = ['id']
     
     def __unicode__(self):
         return u'%s' % self.pk
@@ -256,8 +266,7 @@ class Estate(models.Model):
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                        
         self.history = prepare_history(self.history,user)                                                     
-        super(Estate, self).save(*args, **kwargs)                
-
+        super(Estate, self).save(*args, **kwargs)
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)

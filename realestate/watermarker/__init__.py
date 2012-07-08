@@ -4,7 +4,7 @@
 __author__ = 'zeus'
 
 try:
-    from PIL import Image, ImageDraw, ImageFont, ImageEnhance
+    from PIL import Image, ImageDraw, ImageFont, ImageEnhance #@UnresolvedImport
 except:
     import Image, ImageDraw, ImageFont, ImageEnhance
 

@@ -26,4 +26,3 @@ class WatermarkEngine(Engine):
             if max(geometry)>WATERMARK_MIN_SIZE:
                 image = watermark(image, text ,**WATERMARK_OPTIONS)
         return image
-  

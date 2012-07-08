@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-{% block left %}
 
+{% block linkback %}
+{% include 'back2estate.html' %}
+{% endblock linkback %}
+
+{% block left %}
 <form action="" method="post" class="table-form">
 	{% block general_info %}
 	<table class="ui-widget ui-widget-content ui-corner-all">
@@ -36,27 +40,5 @@
 {% endblock left %}
 
 {% block right %}
-
-<div class="table-form">
-	<table class="ui-widget ui-widget-content ui-corner-all ui-priority-secondary">
-		<thead>
-			<tr>
-				<td colspan="100%">
-				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
-					Редактируемый объект [{{ estate.pk }}]
-				</div>
-				</td>
-			</tr>
-		</thead>
-		<tr>
-			<th>Тип объекта:</th>
-			<td>{{ estate.estate_type }}</td>
-		</tr>
-		<tr>
-			<th>Адрес:</th>
-			<td>{% address estate %}</td>
-		</tr>
-	</table>
-</div>
 
 {% endblock right %}
