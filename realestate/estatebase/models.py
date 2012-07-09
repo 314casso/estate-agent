@@ -280,7 +280,7 @@ class EstatePhoto(OrderedModel):
     note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
     image = ImageField(upload_to=get_upload_to)
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s' % (self.name or self.image.name)
     class Meta(OrderedModel.Meta):
         verbose_name = _('EstatePhoto')
         verbose_name_plural = _('EstatePhotos') 

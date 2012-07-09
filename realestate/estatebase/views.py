@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
-    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet
+    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
@@ -91,7 +91,30 @@ class SwapEstatePhotoView(SwapMixin):
     def get_queryset(self):                        
         q = EstatePhoto.objects.filter(estate_id=self.kwargs['estate'])
         return q
+
+class ImageUpdateView(BaseMixin,UpdateView):
+    model = EstatePhoto
+    template_name = 'image_update.html'
+    form_class = ImageUpdateForm
+    def get_context_data(self, **kwargs):
+        context = super(ImageUpdateView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),            
+        })        
+        return context    
     
+class ImageDeleteView(DeleteView):
+    model = EstatePhoto
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(ImageDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление фото...',
+            'dialig_body'  : u'Подтвердите удаление фотографии: %s' % self.object,                                  
+        })
+        return context
+    def get_success_url(self):   
+        return self.request.REQUEST.get('next', '')                    
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'        
@@ -153,7 +176,7 @@ class EstateUpdateView(HistoryMixin, UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'estate_type': self.object.estate_type,
         })        
-        return context
+        return context    
 
 class EstateCommunicationUpdateView(EstateUpdateView):
     template_name = 'estate_comm.html'
@@ -183,8 +206,7 @@ class EstateImagesView(TemplateView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'estate': Estate.objects.get(pk=kwargs['estate'])            
         })        
-        return context
-    
+        return context      
 
 class ClientUpdateEstateView(DetailView):   
     model = Client
@@ -360,7 +382,7 @@ class ClientDeleteView(ClientMixin, DeleteView):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Удаление клиента...',
-            'dialig_body'  : u'Подтвердите уделение клиента: %s' % self.object,                
+            'dialig_body'  : u'Подтвердите удаление клиента: %s' % self.object,                
         })
         return context 
     
@@ -455,6 +477,6 @@ class LevelDeleteView(LevelMixin, DeleteView):
         context = super(LevelDeleteView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Удаление уровня планировки...',
-            'dialig_body'  : u'Подтвердите уровня: %s' % self.object,                
+            'dialig_body'  : u'Подтвердите удаление уровня: %s' % self.object,                
         })
         return context    

@@ -10,7 +10,7 @@
 		float: left;
 		padding: 4px;
 		text-align: center;
-		margin: 3px;		
+		margin: 3px;
 	}
 	.thumb img {
 		border: 4px solid white;
@@ -38,7 +38,7 @@
         {% endthumbnail %}
         {% endthumbnail %}
         <div>
-            <a href="">Правка</a> | <a href="">Удалить</a>
+            <a href="{% url image_update image.pk %}?{{ next_url }}">Правка</a> | <a href="{% url image_delete image.pk %}?{{ next_url }}">Удалить</a>
         </div>
     </div>
 

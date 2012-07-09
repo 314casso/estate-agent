@@ -3,7 +3,7 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -127,4 +127,10 @@ class LevelForm(ModelForm):
     bidg = forms.ModelChoiceField(queryset=Bidg.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Level
-                
+
+class ImageUpdateForm(ModelForm):
+    class Meta:
+        model = EstatePhoto   
+        fields = ('name','note','image')     
+
+                    
