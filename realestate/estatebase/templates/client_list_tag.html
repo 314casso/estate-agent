@@ -3,7 +3,7 @@
 {% for client in estate.clients.all %}
 <div class="ui-widget ui-widget-content ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
 	<div class="ui-widget">
-		<div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
+		<div class="ui-state-highlight ui-corner-all">
 			<span class="ui-icon ui-icon-minus" style="float: left; margin-right: .3em;"> </span>
 			<a title="{{ client.origin|default_if_none:"" }} {{ client.address }}" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a>
 			({{ client.client_type }})

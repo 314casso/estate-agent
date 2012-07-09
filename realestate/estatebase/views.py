@@ -13,10 +13,12 @@ from estatebase.models import Estate, Client
 from django.utils import simplejson as json
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from estatebase.models import ExUser, Bidg
 from estatebase.helpers.functions import safe_next_link
 from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import View
 
 class BaseMixin():
     def get_success_url(self):   
@@ -64,6 +66,33 @@ def upload_images(request):
             estate_photo.save()  
     return HttpResponseRedirect(request.REQUEST.get('next', ''))         
 
+
+class SwapMixin(SingleObjectMixin, View):
+    def get_context_data(self, **kwargs):
+        context = super(SwapMixin, self).get_context_data(**kwargs)        
+        context.update({        
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })  
+    def get(self, request, *args, **kwargs):        
+        item = get_object_or_404(self.get_queryset(), pk=self.kwargs['pk'])        
+        try:
+            if self.kwargs['direction'] == 'up':
+                swap_item = self.get_queryset().filter(order__lt=item.order).order_by('-order')[0]
+            else:
+                swap_item = self.get_queryset().filter(order__gt=item.order).order_by('order')[0]    
+        except IndexError:
+            pass
+        else:
+            self.model.swap(item, swap_item)        
+        return HttpResponseRedirect(request.REQUEST.get('next', ''))    
+
+class SwapEstatePhotoView(SwapMixin):
+    model = EstatePhoto
+    def get_queryset(self):                        
+        q = EstatePhoto.objects.filter(estate_id=self.kwargs['estate'])
+        return q
+    
+
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'        
     def get_context_data(self, **kwargs):
@@ -100,7 +129,9 @@ class EstateCreateView(HistoryMixin, CreateView):
 
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
-    model = Estate
+    def get_queryset(self):                        
+        q = Estate.objects.all().select_related()
+        return q
     def get_context_data(self, **kwargs):
         context = super(EstateDetailView, self).get_context_data(**kwargs)
         r = (self.object.agency_price or 0) - (self.object.saler_price or 0)        
@@ -132,9 +163,11 @@ class EstateParamUpdateView(EstateUpdateView):
     template_name = 'estate_params.html'
     form_class = EstateParamForm
 
-class EstateListView(ListView):
-    model = Estate
+class EstateListView(ListView):    
     template_name = 'estate_list.html'
+    def get_queryset(self):                        
+        q = Estate.objects.all().select_related()
+        return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)        
         context.update({            

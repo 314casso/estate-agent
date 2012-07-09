@@ -1,6 +1,6 @@
 <ul class="no-margin-list">
 	{% for contact in client.contacts %}
-	<li>
+	<li style="display: inline-block; padding: 2px 1px">
 		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <label>{{ contact.contact_type }}:</label> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a> </span>
 	</li>
 	{% endfor %}

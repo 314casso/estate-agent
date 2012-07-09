@@ -29,7 +29,7 @@
     <div class="ui-widget-content ui-corner-all thumb">
 
         <div>
-            <a href="">Вверх</a> | <a href="">Вниз</a>
+            <a href="{% url image_swap estate.pk image.pk 'up' %}?{{ next_url }}">Вверх</a> | <a href="{% url image_swap estate.pk image.pk 'down' %}?{{ next_url }}">Вниз</a>
         </div>
 
         {% thumbnail image.image "110x80" crop="center" as im %}
