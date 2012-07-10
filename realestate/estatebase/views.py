@@ -278,7 +278,7 @@ class ApartmentUpdateView(BidgMixin, UpdateView):
     form_class = ApartmentForm   
     continue_url = 'apartment_update'        
 
-
+#TODO: Unused!!!
 class ApartmentDetailView(EstateDetailView):
     template_name = 'apartment_detail.html'    
     def get_context_data(self, **kwargs):

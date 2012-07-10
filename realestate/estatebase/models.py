@@ -238,13 +238,8 @@ class Estate(models.Model):
     #Изменения
     history = models.OneToOneField(HistoryMeta,blank=True, null=True)    
     @property
-    def detail_link(self):
-        url = None
-        try:
-            url = reverse('%s_detail' % self.estate_type.view_prefix, args=[self.pk])        
-        except:
-            raise Exception(u'Не верный префикс вида!')        
-        return url  
+    def detail_link(self):            
+        return reverse('estate_detail', args=[self.pk])  
     @property
     def is_bidg(self):
         if self.estate_type.object_type  == 'BIDG':

@@ -1,4 +1,10 @@
 {% extends "base.html" %}
+
+{% block head %}
+<link href="{{ STATIC_URL }}css/lightbox.css" rel="stylesheet" />
+<script src="{{ STATIC_URL }}js/lightbox.js"> </script>
+{% endblock %}
+
 {% block left %}
 {% include "estate_dialog/basic.html" %}
 {% include "estate_dialog/salers.html" %}
@@ -6,6 +12,19 @@
 {% include "estate_dialog/marks.html" %}
 
 {% endblock left %}
+
+{% block right %}
+{% for bidg in estate.bidgs.all %}
+{% include "bidg_dialog/description.html" %}
+{% include "bidg_dialog/layout.html" %}
+{% empty %}
+{% include "bidg_dialog/empty_bidg.html" %}
+{% endfor %}
+
+{% include "estate_dialog/photos.html" %}
+
+{% endblock right %}
+
 
 {% block linkback %}
 <a href="{{ request.GET.next }}">Back</a>
