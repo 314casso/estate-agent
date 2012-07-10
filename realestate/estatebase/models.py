@@ -418,7 +418,8 @@ class Layout(models.Model):
         verbose_name_plural = _('layouts')             
 
 class Bidg(models.Model):
-    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')   
+    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), blank=True, null=True, limit_choices_to = {'object_type__exact':'BIDG'})   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators = [validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
