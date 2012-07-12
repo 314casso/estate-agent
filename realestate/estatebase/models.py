@@ -162,6 +162,7 @@ OBJECT_TYPE_CHOICES = (
     ('BIDG', 'Строение'),
     ('STEAD', 'Участок'),
     ('MIX', 'Участок c постройками'),
+    ('COMPLEX', 'Участок и коммерция'),
 )
 
 TEMPLATE_CHOICES = (
@@ -251,11 +252,10 @@ class Estate(models.Model):
         if self.estate_type.object_type  == 'BIDG':
             return True
     @property
-    def basic_bidg(self):
-        if self.bidgs:
-            bidgs = list(self.bidgs.all()[:1])
-            if bidgs:
-                return bidgs[0]                      
+    def basic_bidg(self):        
+        bidgs = list(self.bidgs.all()[:1])
+        if bidgs:
+            return bidgs[0]                                  
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -266,8 +266,14 @@ class Estate(models.Model):
     
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                        
-        self.history = prepare_history(self.history,user)                                                     
+        self.history = prepare_history(self.history,user)                                                         
         super(Estate, self).save(*args, **kwargs)
+        if self.estate_type.object_type in ('BIDG','MIX') and not self.basic_bidg:
+            bidg = Bidg(estate=self,estate_type=self.estate_type)
+            bidg.save()        
+        if self.estate_type.object_type in ('STEAD','MIX') and not self.stead:
+            stead = Stead(estate=self)
+            stead.save()                       
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)
@@ -445,11 +451,11 @@ class Bidg(models.Model):
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')            
 
-class Steed(models.Model):
-    estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='steed')    
+class Stead(models.Model):
+    estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')        
     class Meta:
-        verbose_name = _('steed')
-        verbose_name_plural = _('steeds')
+        verbose_name = _('stead')
+        verbose_name_plural = _('steads')
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
