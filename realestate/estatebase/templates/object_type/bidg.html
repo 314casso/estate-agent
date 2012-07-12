@@ -1,0 +1,6 @@
+{% for bidg in estate.bidgs.all %}
+{% include "bidg_dialog/description.html" %}
+{% include "bidg_dialog/layout.html" %}
+{% empty %}
+{% include "bidg_dialog/empty_bidg.html" %}
+{% endfor %}

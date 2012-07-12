@@ -161,21 +161,27 @@ class EstateTypeCategory(OrderedModel):
 OBJECT_TYPE_CHOICES = (
     ('BIDG', 'Строение'),
     ('STEAD', 'Участок'),
+    ('MIX', 'Участок c постройками'),
 )
 
-VIEW_PREFIX_CHOICES = (
-    ('apartment','Квартира'),
-    ('newapart','Новостройка'),
-    ('stead','Участок'),
+TEMPLATE_CHOICES = (
+    ('APARTMENT','Квартира'),
+    ('NEWAPART','Новостройка'),
+    ('STEAD','Участок'),
 )
 
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)    
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
-    view_prefix = models.CharField(_('View prefix'), max_length=50, choices=VIEW_PREFIX_CHOICES)
+    template = models.CharField(_('View prefix'), max_length=50, choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-
+    @property
+    def object_type_template(self):        
+        return 'object_type/%s.html' % self.object_type.lower()
+    @property
+    def detail_template(self):        
+        return 'detail/%s.html' % self.template.lower()
     def __unicode__(self):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
