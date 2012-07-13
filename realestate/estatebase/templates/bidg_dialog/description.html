@@ -8,7 +8,7 @@
 
 <table class="detail-table">
     <tr>
-        <th>{% trans 'Year built' %}:</th>
+        <th>{% get_estate_label bidg template 'year_built' %}:</th>
         <td colspan="2">{{ bidg.year_built|default_if_none:"" }}</td>
     </tr>
     <tr>

@@ -171,6 +171,11 @@ TEMPLATE_CHOICES = (
     ('STEAD','Участок'),
 )
 
+ESTATE_LABELS = {
+                 'APARTMENT': {'year_built':'Год постройки'},
+                 'NEWAPART': {'year_built':'Год сдачи'},
+                 }
+
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)    
@@ -182,7 +187,7 @@ class EstateType(OrderedModel):
         return 'object_type/%s.html' % self.object_type.lower()
     @property
     def detail_template(self):        
-        return 'detail/%s.html' % self.template.lower()
+        return 'details/%s.html' % self.template.lower()
     def __unicode__(self):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
@@ -253,24 +258,26 @@ class Estate(models.Model):
             return True
     @property
     def basic_bidg(self):        
-        bidgs = list(self.bidgs.all()[:1])
+        bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
         if bidgs:
             return bidgs[0]                                  
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
-        ordering = ['id']
-    
+        ordering = ['id']    
     def __unicode__(self):
-        return u'%s' % self.pk
-    
+        return u'%s' % self.pk    
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                        
         self.history = prepare_history(self.history,user)                                                         
         super(Estate, self).save(*args, **kwargs)
-        if self.estate_type.object_type in ('BIDG','MIX') and not self.basic_bidg:
-            bidg = Bidg(estate=self,estate_type=self.estate_type)
-            bidg.save()        
+        basic_bidg = self.basic_bidg        
+        if self.estate_type.object_type in ('BIDG','MIX') and not basic_bidg:
+            bidg = Bidg(estate=self,estate_type=self.estate_type,basic=True)
+            bidg.save()
+        elif basic_bidg and basic_bidg.estate_type != self.estate_type:            
+            basic_bidg.estate_type = self.estate_type
+            basic_bidg.save()                    
         if self.estate_type.object_type in ('STEAD','MIX') and not self.stead:
             stead = Stead(estate=self)
             stead.save()                       
@@ -446,10 +453,12 @@ class Bidg(models.Model):
     wall_finish = models.ForeignKey(WallFinish,verbose_name=_('WallFinish'),blank=True,null=True)
     flooring = models.ForeignKey(Flooring,verbose_name=_('Flooring'),blank=True,null=True)
     ceiling = models.ForeignKey(Ceiling,verbose_name=_('Ceiling'),blank=True,null=True)
-    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)         
+    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)
+    #param
+    basic = models.BooleanField(_('Basic'), default=False, editable=False)
     class Meta:
         verbose_name = _('bidg')
-        verbose_name_plural = _('bidgs')            
+        verbose_name_plural = _('bidgs')                    
 
 class Stead(models.Model):
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')        

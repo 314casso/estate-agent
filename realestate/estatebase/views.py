@@ -162,7 +162,7 @@ class EstateDetailView(DetailView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),            
             'margin': '%d (%d%%)' % (r,p),  
-            'images' : self.object.images.all()[:6]                      
+            'images': self.object.images.all()[:6],                                   
         })        
         return context
 

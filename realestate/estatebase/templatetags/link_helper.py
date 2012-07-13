@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import template
 from django.core.urlresolvers import reverse
+from estatebase.models import ESTATE_LABELS
 
 register = template.Library()
 
@@ -35,3 +36,13 @@ def address(estate):
         items.append(u'кв. %s' % estate.basic_bidg.room_number)        
     address = ', '.join(items)
     return {'address': address}
+
+@register.simple_tag
+def get_estate_label(queryset, estate_type, field_name):
+    try:
+        return ESTATE_LABELS[estate_type][field_name]
+    except KeyError:
+        return get_verbose_name(queryset, field_name)            
+
+def get_verbose_name(queryset, field_name):
+    return queryset._meta.get_field(field_name).verbose_name

@@ -1,3 +1,10 @@
-{% if estate.basic_bidg %}
-
+{% with bidg=estate.basic_bidg %}
+{% if bidg %}
+{% with template=bidg.estate_type.template %}
+{% include bidg.estate_type.detail_template %}
+{% include "bidg_dialog/layout.html" %}
+{% endwith %}
+{% else %}
+Нет ни одного сооружения.
 {% endif %}
+{% endwith %}

@@ -3,7 +3,8 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto,\
+    ESTATE_LABELS
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -14,11 +15,11 @@ from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 
 class EstateCreateForm(ModelForm):
-    estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
+    #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:                
         model = Estate
         fields = ('estate_type','origin','region','locality','microdistrict','street','estate_number',
-                  'beside','beside_distance','saler_price','agency_price','estate_status')
+                  'beside','beside_distance','saler_price','agency_price','estate_status','estate_type')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
@@ -103,15 +104,16 @@ class BidgForm(ModelForm):
     class Meta:
         model = Bidg
 
-class ApartmentForm(BidgForm):  
+class ApartmentForm(BidgForm):    
     def __init__(self, *args, **kwargs):
         super(ApartmentForm, self).__init__(*args, **kwargs)
         self.fields['used_area'].label = _('Living area')
+        self.fields['year_built'].label = ESTATE_LABELS[self.instance.estate_type.template]['year_built']        
         if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate.estate_type_id)
+            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
         self.fields['documents'].help_text=''  
     class Meta:        
-        exclude = ('roof',)
+        exclude = ('roof','estate_type')
         model = Bidg
         widgets = {
            'documents' : forms.CheckboxSelectMultiple()        
