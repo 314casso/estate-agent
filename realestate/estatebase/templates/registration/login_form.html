@@ -1,0 +1,23 @@
+{% extends "dialog_block.html" %}
+
+{% block content %}
+<form method="post" action="{% url login %}" class="button">
+    {% csrf_token %}
+    <table class="detail-table" style="width:100%">
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+    </table>
+
+    <input style="margin: 4px 0 3px; float: right" type="submit" value="Войти" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    <br style="clear: both" />
+</form>
+{% endblock %}
+
+{% block title_left %}Введите имя пользователя и пароль...{% endblock %}

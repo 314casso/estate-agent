@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+	.detail-table input {
+		width: 100%;
+	}
+	.confirm-dialog {
+		margin: 150px auto;
+	} 
+</style>
+{% endblock %}
+
+{% block header %}
+
+{% if form.errors %}
+<p>
+    Your username and password didn't match. Please try again.
+</p>
+{% endif %}
+
+{% include 'registration/login_form.html' %}
+
+{% endblock %}

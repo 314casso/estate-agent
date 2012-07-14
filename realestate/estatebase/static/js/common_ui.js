@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$('input:submit, a, button', '.button').button();
 	// $( ".date-time-input" ).datepicker();
 	//$("select").combobox();
-	$('input:text, textarea').addClass('ui-widget ui-widget-content ui-corner-all');
+	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
 });
 
 $(document).ajaxSend(function(event, xhr, settings) {

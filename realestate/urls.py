@@ -6,8 +6,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',    
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^estatebase/', include('estatebase.urls')),        
-     
+    url(r'^estatebase/', include('estatebase.urls')),  
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login',name='login'),     
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login',name='logout'),
 )
 
 if settings.DEBUG:

@@ -171,10 +171,16 @@ TEMPLATE_CHOICES = (
     ('STEAD','Участок'),
 )
 
-ESTATE_LABELS = {
-                 'APARTMENT': {'year_built':'Год постройки'},
-                 'NEWAPART': {'year_built':'Год сдачи'},
-                 }
+
+def get_polymorph_label(estate_type,field):
+    ESTATE_LABELS = {
+                     'APARTMENT': {'year_built':'Год постройки'},
+                     'NEWAPART': {'year_built':'Год сдачи'},
+                     }
+    try:
+        return ESTATE_LABELS[estate_type][field]
+    except KeyError:
+        return None;
 
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)

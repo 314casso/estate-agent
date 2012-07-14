@@ -57,3 +57,5 @@ urlpatterns += patterns('',
     url (r'^imageupdate/(?P<pk>\d+)$', view=ImageUpdateView.as_view(), name='image_update'),
     url (r'^imagedelete/(?P<pk>\d+)$', view=ImageDeleteView.as_view(), name='image_delete'),    
 )
+
+

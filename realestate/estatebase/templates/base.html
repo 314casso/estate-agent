@@ -1,32 +1,40 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>{{ title }}</title>
-		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css"/>
-		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"> </script>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"> </script>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"> </script>
-		{% block head %}{% endblock %}
-	</head>
-	<body>
-		<div id="wrapper">
-			<div id="header">{% block header %}{% endblock %}
-				<div style="float: left">{% block linkback %}{% endblock %}</div>
-				<div class="ui-widget user-info">Добро пожаловать, {{ request.user.get_full_name }} 
-					/ <a href="#">Выйти</a></div>
-					<br style="clear: both" />
-			</div>
-			<div id="content">
-				<div id="left">
-					{% block left %}{% endblock %}
-				</div>
-				<div id="right">
-					{% block right %}{% endblock %}
-				</div>
-			</div>
-			<div id="footer">{% block footer %}{% endblock %}</div>
-		</div>
-	</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>{{ title }}</title>
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css"/>
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"></script>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="header">
+                {% block header %}{% endblock %}
+                <div style="float: left">
+                    {% block linkback %}{% endblock %}
+                </div>
+                {% if user.is_authenticated %}
+                <div class="ui-widget ui-widget-content ui-corner-all user-info">
+                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> / <a href="{% url logout %}">Выйти</a>
+                </div>
+                {% endif %}
+                <br style="clear: both" />
+            </div>
+            <div id="content">
+                <div id="left">
+                    {% block left %}{% endblock %}
+                </div>
+                <div id="right">
+                    {% block right %}{% endblock %}
+                </div>
+            </div>
+            <div id="footer">
+                {% block footer %}{% endblock %}
+            </div>
+        </div>
+    </body>
 </html>

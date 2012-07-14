@@ -17,6 +17,8 @@ LOGIN_REQUIRED_URLS = (
 
 LOGIN_REQUIRED_URLS_EXCEPTIONS = ('logon',)
 
+LOGIN_REDIRECT_URL = '/estatebase/cat/'
+
 MANAGERS = ADMINS
 
 # Local time zone for this installation. Choices can be found here:

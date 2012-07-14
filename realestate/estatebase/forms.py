@@ -2,9 +2,8 @@
 
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
-from estatebase.models import  EstateType, Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto,\
-    ESTATE_LABELS
+from estatebase.models import  Client, Contact, ClientType, \
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -108,7 +107,7 @@ class ApartmentForm(BidgForm):
     def __init__(self, *args, **kwargs):
         super(ApartmentForm, self).__init__(*args, **kwargs)
         self.fields['used_area'].label = _('Living area')
-        self.fields['year_built'].label = ESTATE_LABELS[self.instance.estate_type.template]['year_built']        
+        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')        
         if self.instance.pk:
             self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
         self.fields['documents'].help_text=''  
