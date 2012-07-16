@@ -6,9 +6,10 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
-    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm
+    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm,\
+    SteadUpdateForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto,\
-    prepare_history
+    prepare_history, Stead
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -232,7 +233,7 @@ class ClientUpdateEstateView(DetailView):
         self.object.save(user=user)
         #Обновление истории объекта
         estate = Estate.objects.get(pk=kwargs['estate_pk'])
-        estate.save(user=user)
+        prepare_history(estate.history,user)
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 class ClientRemoveEstateView(ClientUpdateEstateView):    
@@ -246,12 +247,12 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
     def update_object(self):
         self.object.estates.remove(self.kwargs['estate_pk'])            
         
-class BidgMixin(ModelFormMixin):    
+class ObjectMixin(ModelFormMixin):    
     model = Bidg    
     continue_url = None    
     def form_valid(self, form):
-        self.get_estate().save(user=ExUser.objects.get(pk=self.request.user.pk))
-        return super(BidgMixin, self).form_valid(form)    
+        prepare_history(self.get_estate().history,user=ExUser.objects.get(pk=self.request.user.pk))       
+        return super(ObjectMixin, self).form_valid(form)    
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
@@ -260,13 +261,13 @@ class BidgMixin(ModelFormMixin):
     def get_estate(self):
         return self.object and self.object.estate or Estate.objects.get(pk=self.kwargs['estate'])            
     def get_context_data(self, **kwargs):
-        context = super(BidgMixin, self).get_context_data(**kwargs)        
+        context = super(ObjectMixin, self).get_context_data(**kwargs)        
         context.update({            
             'estate': self.get_estate(),
         })        
         return context
 
-class ApartmentCreateView(BidgMixin, CreateView):
+class ApartmentCreateView(ObjectMixin, CreateView):
     template_name = 'bidg_form.html'        
     form_class = ApartmentForm   
     continue_url = 'apartment_update'
@@ -275,7 +276,7 @@ class ApartmentCreateView(BidgMixin, CreateView):
         initial['estate'] = self.kwargs['estate']
         return initial
 
-class ApartmentUpdateView(BidgMixin, UpdateView):
+class ApartmentUpdateView(ObjectMixin, UpdateView):
     template_name = 'bidg_form.html'        
     form_class = ApartmentForm   
     continue_url = 'apartment_update'        
@@ -482,3 +483,9 @@ class LevelDeleteView(LevelMixin, DeleteView):
             'dialig_body'  : u'Подтвердите удаление уровня: %s' % self.object,                
         })
         return context    
+
+class SteadUpdateView(ObjectMixin, UpdateView):
+    model = Stead
+    template_name = 'stead_form.html'        
+    form_class = SteadUpdateForm   
+    continue_url = 'stead_update'       

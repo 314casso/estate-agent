@@ -3,7 +3,8 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label,\
+    Stead
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -99,24 +100,25 @@ class ContactForm(ModelForm):
 
 
 class BidgForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(BidgForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
+        self.fields['documents'].help_text=''
     estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Bidg
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple()        
+        }
 
 class ApartmentForm(BidgForm):    
     def __init__(self, *args, **kwargs):
         super(ApartmentForm, self).__init__(*args, **kwargs)
         self.fields['used_area'].label = _('Living area')
-        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')        
-        if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
-        self.fields['documents'].help_text=''  
-    class Meta:        
+        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')          
+    class Meta(BidgForm.Meta):        
         exclude = ('roof','estate_type')
-        model = Bidg
-        widgets = {
-           'documents' : forms.CheckboxSelectMultiple()        
-        }
         
 class LayoutForm(ModelForm):
     class Meta:
@@ -134,4 +136,8 @@ class ImageUpdateForm(ModelForm):
         model = EstatePhoto   
         fields = ('name','note','image')     
 
+class SteadUpdateForm(ModelForm):
+    class Meta:
+        model = Stead   
+        exclude = ('estate',)
                     

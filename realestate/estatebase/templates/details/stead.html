@@ -1,0 +1,25 @@
+{% extends "dialog_block.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% block title_left %}
+
+<a href="{% url stead_update stead.pk estate.pk %}?{{ next_url }}">Участок</a>
+
+{% endblock %}
+{% block content %}
+
+<table class="detail-table">        
+    <tr>
+        <th>{% trans 'Total area' %}:</th>
+        <td colspan="2">{{ stead.total_area }}</td>
+    </tr>    
+</table>
+
+{% endblock %}
+
+{% block title_right %}
+{% if stead.total_area %}
+{{ stead.total_area }} <small>м<sup>2</sup></small>
+{% endif %}
+{% endblock %}
