@@ -1,0 +1,33 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.layoutfeature",
+    "fields": {
+        "name": "Изолированная"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.layoutfeature",
+    "fields": {
+        "name": "Остекление"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.layoutfeature",
+    "fields": {
+        "name": "Раздельный"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.layoutfeature",
+    "fields": {
+        "name": "Смежная"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.layoutfeature",
+    "fields": {
+        "name": "Совмещенный"
+    }
+}
+]

@@ -318,3 +318,12 @@ span.contact-inline label {
 	font-size: 11px;
 	padding: 1px 10px 2px 10px;	
 }
+
+.layout-details span{		
+	line-height: 21px;
+}
+
+.layout-details {
+	border: 1px dotted #ccc;
+	margin-top: 1px;
+}

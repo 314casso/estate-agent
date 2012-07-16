@@ -1,0 +1,21 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.furniture",
+    "fields": {
+        "name": "Да"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.furniture",
+    "fields": {
+        "name": "Нет"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.furniture",
+    "fields": {
+        "name": "Частично"
+    }
+}
+]

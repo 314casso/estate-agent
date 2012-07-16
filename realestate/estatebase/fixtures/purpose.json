@@ -1,0 +1,33 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.purpose",
+    "fields": {
+        "name": "Для коммерческого использования"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.purpose",
+    "fields": {
+        "name": "Для личного подсобного хозяйства"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.purpose",
+    "fields": {
+        "name": "Для садоводства и огородничества"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.purpose",
+    "fields": {
+        "name": "Для строительства жилого дома"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.purpose",
+    "fields": {
+        "name": "Сельхозпроизводства"
+    }
+}
+]

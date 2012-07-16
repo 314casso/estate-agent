@@ -71,6 +71,9 @@ class FixtureSimpleMaker(object):
 
 
 '''
+Загрузить все файлы
+find . -name "*.json" -exec manage.py loaddata {} \;
+
 Регулярка для вытаскивания опций их списка select
 ^.*>(.*)<\/.*$
 \1
@@ -78,36 +81,15 @@ class FixtureSimpleMaker(object):
 
 options = \
 '''
-балкон
-баня
-бойлерная
-ванная комната
-гараж
-гардеробная
-гостиная
-зимний сад
-кабинет
-кладовая
-комната
-комната отдыха
-коридор
-кухня
-лоджия
-номер
-подвал
-помещение
-постирочная
-прихожая
-санузел
-сауна
-спальная комната
-спортзал
-терраса
-хозяйственная комната
-холл
+изолированная
+остекление
+раздельный
+смежная
+совмещенный
 '''
 
-MODEL = 'LayoutType'
+
+MODEL = 'LayoutFeature'
 
 import settings
 import os
@@ -123,5 +105,5 @@ else:
     print 'Fixture already exists!'     
 
 
-#mm = ModelMaker('SimpleDict', 'layout_feature')
+#mm = ModelMaker('SimpleDict', 'purpose')
 #print mm.get_model_code()

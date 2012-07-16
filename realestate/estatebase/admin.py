@@ -5,7 +5,7 @@ from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
-    Driveway, LevelName, EstatePhoto
+    Driveway, LevelName, EstatePhoto, Stead
 
 
 class StreetAdmin(admin.ModelAdmin):
@@ -60,3 +60,4 @@ admin.site.register(Internet)
 admin.site.register(Driveway)
 admin.site.register(LevelName)
 admin.site.register(EstatePhoto)
+admin.site.register(Stead)

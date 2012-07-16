@@ -7,7 +7,8 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm,\
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm
-from estatebase.models import EstateType, Contact, Level, EstatePhoto
+from estatebase.models import EstateType, Contact, Level, EstatePhoto,\
+    prepare_history
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -28,8 +29,9 @@ class BaseMixin():
 
 class HistoryMixin(BaseMixin, ModelFormMixin):
     def form_valid(self, form):
-        self.object = form.save(commit=False)                         
-        self.object.save(user=ExUser.objects.get(pk=self.request.user.pk))        
+        self.object = form.save(commit=False)
+        user=ExUser.objects.get(pk=self.request.user.pk) 
+        self.object.history = prepare_history(self.object.history,user)        
         return super(HistoryMixin, self).form_valid(form)
 
 class AjaxMixin(ModelFormMixin):

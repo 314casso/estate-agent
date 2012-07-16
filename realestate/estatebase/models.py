@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 import os
 from sorl.thumbnail.fields import ImageField
 from django.core.urlresolvers import reverse
+from django.db.models.aggregates import Sum
 
 class ExUser(User):
     def __unicode__(self):
@@ -267,15 +268,19 @@ class Estate(models.Model):
         bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
         if bidgs:
             return bidgs[0]                                  
+    @property
+    def basic_stead(self):        
+        try:
+            return self.stead
+        except Stead.DoesNotExist:
+            return None    
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
         ordering = ['id']    
     def __unicode__(self):
         return u'%s' % self.pk    
-    def save(self, *args, **kwargs):
-        user = kwargs.pop('user', None)                        
-        self.history = prepare_history(self.history,user)                                                         
+    def save(self, *args, **kwargs):                                                                        
         super(Estate, self).save(*args, **kwargs)
         basic_bidg = self.basic_bidg        
         if self.estate_type.object_type in ('BIDG','MIX') and not basic_bidg:
@@ -283,8 +288,8 @@ class Estate(models.Model):
             bidg.save()
         elif basic_bidg and basic_bidg.estate_type != self.estate_type:            
             basic_bidg.estate_type = self.estate_type
-            basic_bidg.save()                    
-        if self.estate_type.object_type in ('STEAD','MIX') and not self.stead:
+            basic_bidg.save()        
+        if self.estate_type.object_type in ('STEAD','MIX','COMPLEX') and not self.basic_stead:
             stead = Stead(estate=self)
             stead.save()                       
 
@@ -464,10 +469,44 @@ class Bidg(models.Model):
     basic = models.BooleanField(_('Basic'), default=False, editable=False)
     class Meta:
         verbose_name = _('bidg')
-        verbose_name_plural = _('bidgs')                    
+        verbose_name_plural = _('bidgs')
+    @property    
+    def layout_area(self):
+        return Layout.objects.filter(level__in = self.levels.all()).aggregate(Sum('area'))['area__sum']
+                            
+
+
+class Shape(SimpleDict):
+    '''
+    Shape    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Shape')
+        verbose_name_plural = _('Shapes')
+
+class LandType(SimpleDict):
+    '''
+    LandType    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Land type')
+        verbose_name_plural = _('Land types')
+
+class Purpose(SimpleDict):
+    '''
+    Purpose    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Purpose')
+        verbose_name_plural = _('Purposes')
 
 class Stead(models.Model):
-    estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')        
+    estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')  
+    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)      
+    face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    shape = models.ForeignKey(Shape,verbose_name=_('Shape'),blank=True,null=True)
+    land_type = models.ForeignKey(LandType,verbose_name=_('LandType'),blank=True,null=True)
+    purpose = models.ForeignKey(Purpose,verbose_name=_('Purpose'),blank=True,null=True)
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')

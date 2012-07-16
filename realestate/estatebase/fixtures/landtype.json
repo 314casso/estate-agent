@@ -1,0 +1,27 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.landtype",
+    "fields": {
+        "name": "Населенных пунктов"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.landtype",
+    "fields": {
+        "name": "Особо охраняемых территорий"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.landtype",
+    "fields": {
+        "name": "Промышленности"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.landtype",
+    "fields": {
+        "name": "Сельскохозяйственного назначения"
+    }
+}
+]

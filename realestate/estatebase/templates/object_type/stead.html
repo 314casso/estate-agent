@@ -1,0 +1,73 @@
+{% extends "dialog_block.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% with stead=estate.basic_stead %}
+
+{% block title_left %}
+<a href="?{{ next_url }}">Участок</a>
+{% endblock %}
+{% block content %}
+
+<table class="detail-table">
+    <tr>
+        <th>{% get_estate_label bidg template 'year_built' %}:</th>
+        <td colspan="2">{{ bidg.year_built|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Floor' %}:</th>
+        <td>{{ bidg.floor }} {% if bidg.floor_count  %} из {{ bidg.floor_count }} {% endif %}</td>
+        <td> (Лифт{% if not bidg.elevator %} отсутствует{% endif %}) </td>
+    </tr>
+    <tr>
+        <th>{% trans 'Room number' %}:</th>
+        <td colspan="2">{{ bidg.room_number|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Wall construcion' %}:</th>
+        <td colspan="2">{{ bidg.wall_construcion|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Exterior finish' %}:</th>
+        <td colspan="2">{{ bidg.exterior_finish|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Window type' %}:</th>
+        <td colspan="2">{{ bidg.window_type|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Heating' %}:</th>
+        <td colspan="2">{{ bidg.heating|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Ceiling height' %}:</th>
+        <td colspan="2">{{ bidg.ceiling_height|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Room count' %}:</th>
+        <td colspan="2">{{ bidg.room_count|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Total area' %}:</th>
+        <td colspan="2">{{ bidg.total_area|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <th>{% trans 'Living area' %}:</th>
+        <td colspan="2">{{ bidg.used_area|default_if_none:"" }}</td>
+    </tr>
+</table>
+
+
+
+{% endblock %}
+
+{% block title_right %}
+{% if bidg.room_count %}
+{{ bidg.room_count }}-комнатная
+{% endif %}
+{% if bidg.total_area %}
+{{ bidg.total_area }} <small>м<sup>2</sup></small>
+{% endif %}
+{% endblock %}
+
+{% endwith %}

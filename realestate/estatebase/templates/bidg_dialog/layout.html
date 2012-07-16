@@ -6,22 +6,34 @@
 
 {% block content %}
 <table class="detail-table">
-    {% for level in bidg.levels.all %}
-    <tr>
-        <td><span class="item"><a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a></span></td>
-        <td> {% for layout in level.layout_set.all %}
-        <div>
-            <span>{{ layout.layout_type }}</span>
-            {% if  layout.area %}
-            <span>{{ layout.area|default_if_none:"" }} м<sup>2</sup></span>
-            {% endif %}
-            {% if  layout.furniture %}
-            <span>{{ layout.furniture|default_if_none:"" }}</span>
-            {% endif %}
-            <span>{{ layout.layout_feature|default_if_none:"" }}</span>
-            <span><small>{{ layout.note|default_if_none:"" }}</small></span>
-        </div> {% endfor %} </td>
-    </tr>
-    {% endfor %}
+	{% for level in bidg.levels.all %}
+	<tr>
+		<td nowrap><span class="item"><a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a></span></td>
+		<td> {% for layout in level.layout_set.all %}
+		<div class="layout-details">
+			<span><strong>{{ layout.layout_type }}: </strong></span>
+			{% if  layout.area %}
+			<span>{{ layout.area }} м<sup>2</sup></span>
+			{% endif %}
+			{% if  layout.furniture %}
+			<span>{{ layout.furniture }}</span>
+			{% endif %}
+			{% if  layout.layout_feature %}
+			<span>{{ layout.layout_feature }}</span>
+			{% endif %}
+			{% if  layout.note %}			
+			<span><small>{{ layout.note }}</small></span>
+			{% endif %}
+		</div> {% endfor %} </td>
+	</tr>
+	{% endfor %}
 </table>
 {% endblock content %}
+
+{% block title_right %}
+{% with area=bidg.layout_area %}
+{% if area %}
+{{ area }} м<sup>2</sup>
+{% endif %}
+{% endwith %}
+{% endblock %}

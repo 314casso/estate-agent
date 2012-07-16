@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Г-образный"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Квадратный"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Многогранный"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Прямоугольный"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Трапециевидный"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.shape",
+    "fields": {
+        "name": "Треугольный"
+    }
+}
+]
