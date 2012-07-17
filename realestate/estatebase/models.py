@@ -274,6 +274,9 @@ class Estate(models.Model):
             return self.stead
         except Stead.DoesNotExist:
             return None    
+    @property
+    def correct(self):
+        return self.estate_params.get(pk=1)    
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')

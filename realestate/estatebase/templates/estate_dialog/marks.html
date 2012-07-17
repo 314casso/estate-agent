@@ -5,23 +5,37 @@
 {% endblock %}
 {% block content %}
 
-<table class="detail-table">
-	{% for param in estate.estate_params.all %}
-	<tr>
-		<td>{{ param.name }}</td>
-	</tr>
-	{% endfor %}
-</table>
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Отметки
+    </legend>
+    {% for param in estate.estate_params.all %}
+    {{ param.name }} {% include 'comma.html' %}
+    {% endfor %}
+</fieldset>
 
-<div title="Описание" class="ui-widget-content descr">
-	{{ estate.description }}
-</div>
-<div title="Комментарий" class="ui-widget-content descr">
-	{{ estate.comment }}
-</div>
+{% if estate.description %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Описание
+    </legend>
+    {{ estate.description }}
+</fieldset>
+{% endif %}
+
+{% if estate.comment %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Комментарий
+    </legend>
+    {{ estate.comment }}
+</fieldset>
+{% endif %}
 
 {% endblock %}
 
 {% block title_right %}
-
+{%if estate.correct %}
+Корректно
+{% endif %}
 {% endblock %}

@@ -81,15 +81,16 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-изолированная
-остекление
-раздельный
-смежная
-совмещенный
+Корректно
+Обмен
+Ипотека
+Эксклюзив
+Сделать фото
+Рекламировать
 '''
 
 
-MODEL = 'LayoutFeature'
+MODEL = 'EstateParam'
 
 import settings
 import os

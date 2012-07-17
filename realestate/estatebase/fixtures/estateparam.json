@@ -1,0 +1,45 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Корректно",
+        "order": 1
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Ипотека",
+        "order": 2
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Обмен",
+        "order": 3
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Рекламировать",
+        "order": 4
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Сделать фото",
+        "order": 5
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.estateparam",
+    "fields": {
+        "name": "Эксклюзив",
+        "order": 6
+    }
+}
+]

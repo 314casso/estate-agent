@@ -78,6 +78,10 @@ body {
 	width: 98%;
 }
 
+.table-form textarea {
+	height: 75px;
+}
+
 .inline-formset {
 	padding: 4px;
 }
