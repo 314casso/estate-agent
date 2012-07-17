@@ -162,13 +162,13 @@ class EstateTypeCategory(OrderedModel):
 OBJECT_TYPE_CHOICES = (
     ('BIDG', 'Строение'),
     ('STEAD', 'Участок'),
-    ('MIX', 'Участок c постройками'),
-    ('COMPLEX', 'Участок и коммерция'),
+    ('MIX', 'Участок c постройками'),    
 )
 
 TEMPLATE_CHOICES = (
     ('APARTMENT','Квартира'),
     ('NEWAPART','Новостройка'),
+    ('HOME','Дом'),
     ('STEAD','Участок'),
 )
 

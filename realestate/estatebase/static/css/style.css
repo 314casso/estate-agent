@@ -12,7 +12,7 @@ body {
 
 #left {
 	float: left;
-	margin: 0 10px 0 0;	
+	margin: 0 10px 0 0;
 }
 
 #right {
@@ -51,7 +51,7 @@ body {
 }
 
 .table-form li {
-	list-style: none;	
+	list-style: none;
 }
 
 .table-form table th {
@@ -132,7 +132,7 @@ span.contact-inline label {
 }
 
 .dialog-title {
-	padding: 0 0 0 8px;	
+	padding: 0 0 0 8px;
 }
 
 .base-table-list {
@@ -191,8 +191,8 @@ span.contact-inline label {
 }
 
 .table-grid {
-	/*width: 300px;*/	
-    /*border-collapse: collapse;*/   
+	/*width: 300px;*/
+	/*border-collapse: collapse;*/
 }
 
 .table-grid tbody td {
@@ -310,20 +310,36 @@ span.contact-inline label {
 }
 
 .item {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 .user-info {
 	float: right;
 	font-size: 11px;
-	padding: 1px 10px 2px 10px;	
+	padding: 1px 10px 2px 10px;
 }
 
-.layout-details span{		
+.layout-details span {
 	line-height: 21px;
 }
 
-.layout-details {
-	border: 1px dotted #ccc;
-	margin-top: 1px;
+.layout-details{	
+	margin-top: 1px;	
+}
+
+.layout-details{	
+	border-bottom: 1px solid #ddd;	
+}
+
+.layout-details:last-child{	
+	border-bottom: 0;	
+}
+
+fieldset {
+	padding: 3px;	
+	margin-bottom: 3px;	
+}
+
+legend {	
+	font-weight: bold;	
 }
