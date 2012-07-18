@@ -1,14 +1,51 @@
-{% with bidg=estate.basic_bidg %}
-{% if bidg %}
+<script type="text/javascript">
+	$(function() {
+		$('a.ajax-dialog').live('click', function() {
+			var url = this.href;
+			var uniq = 'dialog' + (new Date()).getTime();
+
+			var dialog = $('<div id="' + uniq + '" style="display:hidden"></div>').appendTo('body');
+
+			// load remote content
+			dialog.load(url, function(responseText, textStatus, XMLHttpRequest) {
+				dialog.dialog({
+					modal : true,
+					close : function(event, ui) {
+						dialog.remove();
+					},
+					buttons : {
+						Отмена : function() {
+							dialog.dialog("close");
+						}
+					}
+				});
+			});
+			//prevent the browser to follow the link
+			return false;
+		});
+	});
+</script>
+
+{% for bidg in estate.bidgs.all %}
 {% with template=bidg.estate_type.template %}
-{% include bidg.estate_type.detail_template %}
-{% include "bidg_dialog/layout.html" %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all">
+	<legend>
+		{{ bidg.estate_type }}
+		{% if bidg.basic %}
+		Basic
+		{% endif %}
+	</legend>
+	{% include bidg.estate_type.detail_template %}
+	{% include "bidg_dialog/layout.html" %}
+</fieldset>
 {% endwith %}
-{% else %}
+{% empty %}
 Нет ни одного сооружения.
-{% endif %}
-{% endwith %}
+{% endfor %}
+
+<a href="{% url select_estate_type %}?{{ next_url }}" class="ajax-dialog">OK</a>
 
 {% with stead=estate.basic_stead %}
 {% include "details/stead.html" %}
 {% endwith %}
+

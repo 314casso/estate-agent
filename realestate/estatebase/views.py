@@ -134,6 +134,17 @@ class EstateTypeView(TemplateView):
         })        
         return context 
 
+class EstateTypeViewAjax(TemplateView):
+    template_name = 'ajax/estate_type_select.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
+        estate_categories = EstateTypeCategory.objects.all()
+        context.update({            
+            'estate_categories': estate_categories,
+            'next_url': '12',            
+        })        
+        return context
+
 class EstateCreateView(HistoryMixin, CreateView):
     template_name = 'estate_create.html'     
     model = Estate   

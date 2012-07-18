@@ -1,0 +1,31 @@
+{% load link_helper %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#estate_nav").accordion({
+			autoHeight : false,
+			active : 0
+		});
+	}); 
+</script>
+
+<div id="estate_nav">
+	{% for estate_category in estate_categories %}
+	<h3><a href="#">{{ estate_category.name }}</a></h3>
+	<div>
+		<ul>
+			{% for estate_type in estate_category.estatetype_set.all %}
+			<li>
+				<table>
+					<td>
+					<div>
+						<a href="{% url estate_create estate_type.pk  %}?next={{ request.GET.next }}">{{ estate_type.name }}</a>
+					</div></td>
+				</table>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</div>
+

@@ -8,7 +8,7 @@ from estatebase.views import EstateTypeView, EstateListView,\
     EstateParamUpdateView, EstateUpdateView, ApartmentCreateView,\
     ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView,\
     upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView,\
-    ImageDeleteView, EstateDetailView, SteadUpdateView
+    ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -59,7 +59,9 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
-    url (r'^steadupdate/(?P<pk>\d+)/(?P<estate>\d+)$', SteadUpdateView.as_view(), name='stead_update'),  
-     
+    url (r'^steadupdate/(?P<pk>\d+)/(?P<estate>\d+)$', SteadUpdateView.as_view(), name='stead_update'),     
 ) 
 
+urlpatterns += patterns('',
+    url (r'^selectestatetype/$', EstateTypeViewAjax.as_view(), name='select_estate_type'),     
+)
