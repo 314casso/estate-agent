@@ -140,8 +140,8 @@ class EstateTypeViewAjax(TemplateView):
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
         estate_categories = EstateTypeCategory.objects.all()
         context.update({            
-            'estate_categories': estate_categories,
-            'next_url': '12',            
+            'estate_categories': estate_categories, 
+            'estate': self.kwargs['estate']                       
         })        
         return context
 
@@ -243,7 +243,7 @@ class ClientUpdateEstateView(DetailView):
         user = ExUser.objects.get(pk=self.request.user.pk)                
         self.object.save(user=user)
         #Обновление истории объекта
-        estate = Estate.objects.get(pk=kwargs['estate_pk'])
+        estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
         prepare_history(estate.history,user)
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
@@ -499,4 +499,27 @@ class SteadUpdateView(ObjectMixin, UpdateView):
     model = Stead
     template_name = 'stead_form.html'        
     form_class = SteadUpdateForm   
-    continue_url = 'stead_update'       
+    continue_url = 'stead_update'
+
+class BidgAppendView(TemplateView):    
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(BidgAppendView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Добавление строения...',
+            'dialig_body'  : u'Добавить %s к объекту [%s]?' % (self.kwargs['estate_type'],self.kwargs['estate']),                
+        })
+        return context
+    def update_object(self):
+        '''
+        Вынесена для переопределения в потомках класса
+        '''        
+        bidg = Bidg(estate_id=self.kwargs['estate'],estate_type_id=self.kwargs['estate_type'])
+        bidg.save()        
+    def post(self, request, *args, **kwargs):        
+        self.update_object()
+        user = ExUser.objects.get(pk=self.request.user.pk)        
+        #Обновление истории объекта
+        estate = Estate.objects.get(pk=self.kwargs['estate'])
+        prepare_history(estate.history,user)
+        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))           

@@ -43,7 +43,7 @@
 Нет ни одного сооружения.
 {% endfor %}
 
-<a href="{% url select_estate_type %}?{{ next_url }}" class="ajax-dialog">OK</a>
+<a href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">OK</a>
 
 {% with stead=estate.basic_stead %}
 {% include "details/stead.html" %}

@@ -473,6 +473,7 @@ class Bidg(models.Model):
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
+        ordering = ['id']
     @property    
     def layout_area(self):
         return Layout.objects.filter(level__in = self.levels.all()).aggregate(Sum('area'))['area__sum']

@@ -19,7 +19,7 @@
 				<table>
 					<td>
 					<div>
-						<a href="{% url estate_create estate_type.pk  %}?next={{ request.GET.next }}">{{ estate_type.name }}</a>
+						<a href="{% url bidg_append estate estate_type.pk  %}?next={{ request.GET.next }}">{{ estate_type.name }}</a>
 					</div></td>
 				</table>
 			</li>
