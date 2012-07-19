@@ -1,6 +1,13 @@
 {% extends "dialog_block.html" %}
 
 {% block content %}
+
+{% if form.errors %}
+<div class="ui-state-error ui-corner-all" style="padding: 3px;margin: 3px">
+    Ваше имя пользователя и пароль не совпадают. Пожалуйста, попробуйте еще раз.
+</div>
+{% endif %}
+
 <form method="post" action="{% url login %}" class="button">
     {% csrf_token %}
     <table class="detail-table" style="width:100%">

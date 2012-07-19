@@ -477,8 +477,6 @@ class Bidg(models.Model):
     @property    
     def layout_area(self):
         return Layout.objects.filter(level__in = self.levels.all()).aggregate(Sum('area'))['area__sum']
-                            
-
 
 class Shape(SimpleDict):
     '''

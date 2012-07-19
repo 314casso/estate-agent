@@ -177,6 +177,11 @@ class EstateDetailView(DetailView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.object.images.all()[:6],
+            'ext_field_list': ('room_number','year_built','floor','floor_count','elevator',
+                           'wall_construcion','exterior_finish','window_type',
+                           'heating','ceiling_height','room_count','total_area',
+                           'used_area'),
+            'int_field_list': ('wall_finish','flooring','ceiling','interior')           
         })        
         return context
 

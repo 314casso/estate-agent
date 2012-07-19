@@ -7,96 +7,27 @@
 {% block content %}
 
 <table class="detail-table">
-	{% if bidg.year_built %}
-	<tr>
-		<th>{% get_estate_label bidg template 'year_built' %}:</th>
-		<td colspan="2">{{ bidg.year_built }}</td>
-	</tr>
-	{% endif %}
-	{% if bidg.floor or bidg.elevator %}	
-	<tr>
-		<th>{% trans 'Floor' %}:</th>
-		<td>{{ bidg.floor|default_if_none:"" }} {% if bidg.floor_count  %} из {{ bidg.floor_count }} {% endif %}</td>
-		<td> (Лифт{% if not bidg.elevator %} отсутствует{% endif %}) </td>
-	</tr>
-	{% endif %}
-	
-	{% if bidg.room_number %}
-	<tr>
-		<th>{% trans 'Room number' %}:</th>
-		<td colspan="2">{{ bidg.room_number }}</td>
-	</tr>
-	{% endif %}
-	
-	{% if bidg.wall_construcion %}
-	<tr>
-		<th>{% trans 'Wall construcion' %}:</th>
-		<td colspan="2">{{ bidg.wall_construcion }}</td>
-	</tr>
-	{% endif %}
-	{% if bidg.exterior_finish %}
-	<tr>
-		<th>{% trans 'Exterior finish' %}:</th>
-		<td colspan="2">{{ bidg.exterior_finish }}</td>
-	</tr>
-	{% endif %}
-	{% if bidg.window_type %}	
-	<tr>
-		<th>{% trans 'Window type' %}:</th>
-		<td colspan="2">{{ bidg.window_type|default_if_none:"" }}</td>
-	</tr>
-	{% endif %}
-	<tr>
-		<th>{% trans 'Heating' %}:</th>
-		<td colspan="2">{{ bidg.heating|default_if_none:"" }}</td>
-	</tr>
-	<tr>
-		<th>{% trans 'Ceiling height' %}:</th>
-		<td colspan="2">{{ bidg.ceiling_height|default_if_none:"" }}</td>
-	</tr>
-	<tr>
-		<th>{% trans 'Room count' %}:</th>
-		<td colspan="2">{{ bidg.room_count|default_if_none:"" }}</td>
-	</tr>
-	<tr>
-		<th>{% trans 'Total area' %}:</th>
-		<td colspan="2">{{ bidg.total_area|default_if_none:"" }}</td>
-	</tr>
-	<tr>
-		<th>{% trans 'Living area' %}:</th>
-		<td colspan="2">{{ bidg.used_area|default_if_none:"" }}</td>
-	</tr>
+    {% for field_name in ext_field_list %}
+    {% table_row bidg field_name template %}
+    {% endfor %}
 </table>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
-	<legend>
-		Документы
-	</legend>
-	<span class="descr"> {% for doc in bidg.documents.all %} <span class="item"> {{ doc.name }}{% include "comma.html" %} </span> {% endfor %} </span>
+    <legend>
+        Документы
+    </legend>
+    <span class="descr"> {% for doc in bidg.documents.all %} <span class="item"> {{ doc.name }}{% include "comma.html" %} </span> {% endfor %} </span>
 </fieldset>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
-	<legend>
-		Внешняя отделка
-	</legend>
-	<table class="detail-table">
-		<tr>
-			<th>{% trans 'Wall finish' %}:</th>
-			<td>{{ bidg.wall_finish|default_if_none:"" }}</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Flooring' %}:</th>
-			<td>{{ bidg.flooring|default_if_none:"" }}</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Ceiling' %}:</th>
-			<td>{{ bidg.ceiling|default_if_none:"" }}</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Interior' %}:</th>
-			<td>{{ bidg.interior|default_if_none:"" }}</td>
-		</tr>
-	</table>
+    <legend>
+        Внешняя отделка
+    </legend>
+    <table class="detail-table">
+        {% for field_name in int_field_list %}
+        {% table_row bidg field_name template %}
+        {% endfor %}
+    </table>
 </fieldset>
 
 {% endblock %}
