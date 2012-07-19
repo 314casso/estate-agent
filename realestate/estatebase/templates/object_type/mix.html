@@ -1,3 +1,12 @@
+<style>
+	.ui-accordion-content {
+		padding: 3px !important;
+	}
+	#estate-accordion h3{
+		font-size: 16px;
+	}
+</style>
+
 <script type="text/javascript">
 	$(function() {
 		$('a.ajax-dialog').live('click', function() {
@@ -23,27 +32,41 @@
 			//prevent the browser to follow the link
 			return false;
 		});
-	});
+		$("#estate-accordion").accordion({
+			change : function(event, ui) {
+				localStorage.setItem('saved_index', ui.options.active);				
+			},
+			active : parseInt(localStorage.getItem('saved_index')),
+			autoHeight : false
+		});
+	}); 
 </script>
 
-{% for bidg in estate.bidgs.all %}
-{% with template=bidg.estate_type.template %}
-<fieldset class="ui-widget ui-widget-content ui-corner-all">
-	<legend>
-		{{ bidg.estate_type }}
-		{% if bidg.basic %}
-		Basic
-		{% endif %}
-	</legend>
-	{% include bidg.estate_type.detail_template %}
-	{% include "bidg_dialog/layout.html" %}
-</fieldset>
-{% endwith %}
-{% empty %}
-Нет ни одного сооружения.
-{% endfor %}
+<div id="estate-accordion">
 
-<a href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">OK</a>
+	{% for bidg in estate.bidgs.all %}
+	{% with template=bidg.estate_type.template %}
+
+	<h3><a href="#tab-{{ bidg.pk }}">{{ bidg.estate_type }}</a></h3>
+	<div id="tab-{{ bidg.pk }}">		
+		{% include bidg.estate_type.detail_template %}
+		{% include "bidg_dialog/layout.html" %}
+		{% if not bidg.basic %}
+		<div class="button" style="float: right">
+			<a href="{% url bidg_remove bidg.pk %}?{{ next_url }}"><strong>Удалить строение "{{ bidg.estate_type }}"</strong></a>
+		</div>		
+		{% endif %}		
+	</div>
+	{% endwith %}
+	{% empty %}
+	Нет ни одного сооружения.
+	{% endfor %}
+
+</div>
+
+<div class="button" style="text-align: right; margin: 10px 0">
+<a href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить строение</a>
+</div>
 
 {% with stead=estate.basic_stead %}
 {% include "details/stead.html" %}

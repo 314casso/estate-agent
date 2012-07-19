@@ -1,15 +1,13 @@
 from django.conf.urls.defaults import patterns, include, url
-from estatebase.views import EstateTypeView, EstateListView,\
-    ClientListView, ClientCreateView, ClientUpdateView, ClientDeleteView,\
-    ContactHistoryListView, ContactUpdateView, ClientSelectView,\
-    ClientUpdateEstateView, ClientRemoveEstateView, \
-    EstateCreateView, ApartmentDetailView,\
-    EstateCommunicationUpdateView,\
-    EstateParamUpdateView, EstateUpdateView, ApartmentCreateView,\
-    ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView,\
-    upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView,\
-    ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax,\
-    BidgAppendView
+from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
+    ClientCreateView, ClientUpdateView, ClientDeleteView, ContactHistoryListView, \
+    ContactUpdateView, ClientSelectView, ClientUpdateEstateView, \
+    ClientRemoveEstateView, EstateCreateView, EstateCommunicationUpdateView, \
+    EstateParamUpdateView, EstateUpdateView, ApartmentCreateView, \
+    ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView, \
+    upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView, \
+    ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax, \
+    BidgAppendView, BidgRemoveView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -65,5 +63,6 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
     url (r'^selectestatetype/(?P<estate>\d+)$', EstateTypeViewAjax.as_view(), name='select_estate_type'),
-    url (r'^bidgappend/(?P<estate>\d+)/(?P<estate_type>\d+)$', BidgAppendView.as_view(), name='bidg_append'),     
+    url (r'^bidgappend/(?P<estate>\d+)/(?P<estate_type>\d+)$', BidgAppendView.as_view(), name='bidg_append'),    
+    url (r'^bidgremove/(?P<pk>\d+)$', BidgRemoveView.as_view(), name='bidg_remove'),     
 )

@@ -7,31 +7,45 @@
 {% block content %}
 
 <table class="detail-table">
+	{% if bidg.year_built %}
 	<tr>
 		<th>{% get_estate_label bidg template 'year_built' %}:</th>
-		<td colspan="2">{{ bidg.year_built|default_if_none:"" }}</td>
+		<td colspan="2">{{ bidg.year_built }}</td>
 	</tr>
+	{% endif %}
+	{% if bidg.floor or bidg.elevator %}	
 	<tr>
 		<th>{% trans 'Floor' %}:</th>
-		<td>{{ bidg.floor }} {% if bidg.floor_count  %} из {{ bidg.floor_count }} {% endif %}</td>
+		<td>{{ bidg.floor|default_if_none:"" }} {% if bidg.floor_count  %} из {{ bidg.floor_count }} {% endif %}</td>
 		<td> (Лифт{% if not bidg.elevator %} отсутствует{% endif %}) </td>
 	</tr>
+	{% endif %}
+	
+	{% if bidg.room_number %}
 	<tr>
 		<th>{% trans 'Room number' %}:</th>
-		<td colspan="2">{{ bidg.room_number|default_if_none:"" }}</td>
+		<td colspan="2">{{ bidg.room_number }}</td>
 	</tr>
+	{% endif %}
+	
+	{% if bidg.wall_construcion %}
 	<tr>
 		<th>{% trans 'Wall construcion' %}:</th>
-		<td colspan="2">{{ bidg.wall_construcion|default_if_none:"" }}</td>
+		<td colspan="2">{{ bidg.wall_construcion }}</td>
 	</tr>
+	{% endif %}
+	{% if bidg.exterior_finish %}
 	<tr>
 		<th>{% trans 'Exterior finish' %}:</th>
-		<td colspan="2">{{ bidg.exterior_finish|default_if_none:"" }}</td>
+		<td colspan="2">{{ bidg.exterior_finish }}</td>
 	</tr>
+	{% endif %}
+	{% if bidg.window_type %}	
 	<tr>
 		<th>{% trans 'Window type' %}:</th>
 		<td colspan="2">{{ bidg.window_type|default_if_none:"" }}</td>
 	</tr>
+	{% endif %}
 	<tr>
 		<th>{% trans 'Heating' %}:</th>
 		<td colspan="2">{{ bidg.heating|default_if_none:"" }}</td>

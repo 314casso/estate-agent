@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
+from django.core.validators import URLValidator, RegexValidator, validate_email
 from django.db import models
+from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from orderedmodel.models import OrderedModel
-import datetime
-from django.contrib.auth.models import User
-from django.core.validators import URLValidator, RegexValidator, validate_email
-from django.core.exceptions import ValidationError
-import os
 from sorl.thumbnail.fields import ImageField
-from django.core.urlresolvers import reverse
-from django.db.models.aggregates import Sum
+import datetime
+import os
 
 class ExUser(User):
     def __unicode__(self):
