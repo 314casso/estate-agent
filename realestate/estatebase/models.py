@@ -10,6 +10,9 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
+import sys
+from django.utils.text import capfirst
+from estatebase.profile import profile
 
 class ExUser(User):
     def __unicode__(self):
@@ -162,26 +165,60 @@ class EstateTypeCategory(OrderedModel):
 OBJECT_TYPE_CHOICES = (
     ('BIDG', 'Строение'),
     ('STEAD', 'Участок'),
-    ('MIX', 'Участок c постройками'),    
+    ('MIX', 'Участок c постройками'),
 )
 
 TEMPLATE_CHOICES = (
-    ('APARTMENT','Квартира'),
-    ('NEWAPART','Новостройка'),
-    ('HOME','Дом'),
-    ('STEAD','Участок'),
+    ('APARTMENT', 'Квартира'),
+    ('NEWAPART', 'Новостройка'),
+    ('HOME', 'Дом'),
+    ('STEAD', 'Участок'),
 )
 
+class BidgWrapper(object):
+    _exclude_set = ['id', 'estate', 'estate_type']  
+    interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']  
+    def __init__(self):
+        self.set_field_list()    
+    def get_exclude_list(self):
+        self._exclude_set.extend(self.interior_set)
+        return self._exclude_set                     
+    def field_list(self):                
+        return self._field_list
+    def interior_list(self):
+        return self.interior_set  
+    def set_field_list(self):
+        fields = [field.name for field in Bidg._meta.fields]
+        self._field_list = [f for f in fields if not (f in self.get_exclude_list())]                  
 
-def get_polymorph_label(estate_type,field):
-    ESTATE_LABELS = {
-                     'APARTMENT': {'year_built':'Год постройки'},
-                     'NEWAPART': {'year_built':'Год сдачи'},
-                     }
+class ApartmentWrapper(BidgWrapper):    
+    def get_exclude_list(self):
+        exclude_list = super(ApartmentWrapper, self).get_exclude_list()
+        eflds = ['roof']
+        exclude_list.extend(eflds)        
+        return exclude_list              
+
+class NewapartWrapper(ApartmentWrapper):
+    year_built = u'Год сдачи'    
+
+class HomeWrapper(BidgWrapper):
+    pass
+
+class SteadWrapper(BidgWrapper):
+    pass
+
+def get_wrapper(template):
+    class_name = '%sWrapper' % capfirst(template.lower())
+    WrapperClass = getattr(sys.modules[__name__], class_name)
+    return WrapperClass()
+
+#TODO: тормозит невероятно!!!!!
+def get_polymorph_label(template, field):            
+    wrapper = get_wrapper(template)    
     try:
-        return ESTATE_LABELS[estate_type][field]
-    except KeyError:
-        return None;
+        return getattr(wrapper, field)
+    except AttributeError:
+        return None
 
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
@@ -203,11 +240,11 @@ class EstateType(OrderedModel):
     
 class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators' )
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
     updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')                        
     
-def prepare_history(history,user):
+def prepare_history(history, user):
     if not history:
         history = HistoryMeta()        
         history.created = datetime.datetime.now()
@@ -230,38 +267,38 @@ class Estate(models.Model):
     microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True)
     street = models.ForeignKey(Street, verbose_name=_('Street'),)    
     estate_number = models.CharField(_('Estate number'), max_length=10)
-    clients = models.ManyToManyField('Client', verbose_name=_('Clients'),related_name='estates')
+    clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates')
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True)
-    beside_distance = models.PositiveIntegerField('Beside distance',blank=True, null=True)
-    saler_price = models.PositiveIntegerField('Saler price',blank=True, null=True)
+    beside_distance = models.PositiveIntegerField('Beside distance', blank=True, null=True)
+    saler_price = models.PositiveIntegerField('Saler price', blank=True, null=True)
     agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'))     
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True)
-    electricity_distance = models.PositiveIntegerField('Electricity distance',blank=True, null=True)
+    electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
     watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True) 
-    watersupply_distance = models.PositiveIntegerField('Watersupply distance',blank=True, null=True)
+    watersupply_distance = models.PositiveIntegerField('Watersupply distance', blank=True, null=True)
     gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True)
-    gassupply_distance = models.PositiveIntegerField('Gassupply distance',blank=True, null=True)
+    gassupply_distance = models.PositiveIntegerField('Gassupply distance', blank=True, null=True)
     sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True)
-    sewerage_distance = models.PositiveIntegerField('Sewerage distance',blank=True, null=True)
+    sewerage_distance = models.PositiveIntegerField('Sewerage distance', blank=True, null=True)
     telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True)
     internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
-    driveway_distance = models.PositiveIntegerField('Driveway distance',blank=True, null=True)
+    driveway_distance = models.PositiveIntegerField('Driveway distance', blank=True, null=True)
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
     comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
     #Изменения
-    history = models.OneToOneField(HistoryMeta,blank=True, null=True)    
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True)    
     @property
     def detail_link(self):            
         return reverse('estate_detail', args=[self.pk])  
     @property
     def is_bidg(self):
-        if self.estate_type.object_type  == 'BIDG':
+        if self.estate_type.object_type == 'BIDG':
             return True
     @property
     def basic_bidg(self):        
@@ -286,13 +323,13 @@ class Estate(models.Model):
     def save(self, *args, **kwargs):                                                                        
         super(Estate, self).save(*args, **kwargs)
         basic_bidg = self.basic_bidg        
-        if self.estate_type.object_type in ('BIDG','MIX') and not basic_bidg:
-            bidg = Bidg(estate=self,estate_type=self.estate_type,basic=True)
+        if self.estate_type.object_type in ('BIDG', 'MIX') and not basic_bidg:
+            bidg = Bidg(estate=self, estate_type=self.estate_type, basic=True)
             bidg.save()
         elif basic_bidg and basic_bidg.estate_type != self.estate_type:            
             basic_bidg.estate_type = self.estate_type
             basic_bidg.save()        
-        if self.estate_type.object_type in ('STEAD','MIX','COMPLEX') and not self.basic_stead:
+        if self.estate_type.object_type in ('STEAD', 'MIX', 'COMPLEX') and not self.basic_stead:
             stead = Stead(estate=self)
             stead.save()                       
 
@@ -435,11 +472,11 @@ class LayoutFeature(SimpleDict):
         verbose_name_plural = _('Layout features')
 
 class Layout(models.Model):
-    level = models.ForeignKey(Level,verbose_name=_('Level'))
-    layout_type = models.ForeignKey(LayoutType,verbose_name=_('LayoutType'))
+    level = models.ForeignKey(Level, verbose_name=_('Level'))
+    layout_type = models.ForeignKey(LayoutType, verbose_name=_('LayoutType'))
     area = models.DecimalField(_('Area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    furniture = models.ForeignKey(Furniture,verbose_name=_('Furniture'),blank=True,null=True)
-    layout_feature = models.ForeignKey(LayoutFeature,verbose_name=_('LayoutFeature'),blank=True,null=True)
+    furniture = models.ForeignKey(Furniture, verbose_name=_('Furniture'), blank=True, null=True)
+    layout_feature = models.ForeignKey(LayoutFeature, verbose_name=_('LayoutFeature'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     class Meta:
         verbose_name = _('layout')
@@ -447,16 +484,16 @@ class Layout(models.Model):
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), blank=True, null=True, limit_choices_to = {'object_type__exact':'BIDG'})   
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), blank=True, null=True, limit_choices_to={'object_type__exact':'BIDG'})   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
-    year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators = [validate_year])
+    year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators=[validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
     floor_count = models.PositiveIntegerField(_('Floor count'), blank=True, null=True)
     elevator = models.BooleanField(_('Elevator'), default=False)
     wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
     exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True)    
     window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True)
-    roof = models.ForeignKey(Roof,verbose_name=_('Roof'),blank=True,null=True)
+    roof = models.ForeignKey(Roof, verbose_name=_('Roof'), blank=True, null=True)
     heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True)
     ceiling_height = models.DecimalField(_('Ceiling height'), blank=True, null=True, max_digits=5, decimal_places=2)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
@@ -464,10 +501,10 @@ class Bidg(models.Model):
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     #Внутренняя отделка    
-    wall_finish = models.ForeignKey(WallFinish,verbose_name=_('WallFinish'),blank=True,null=True)
-    flooring = models.ForeignKey(Flooring,verbose_name=_('Flooring'),blank=True,null=True)
-    ceiling = models.ForeignKey(Ceiling,verbose_name=_('Ceiling'),blank=True,null=True)
-    interior = models.ForeignKey(Interior,verbose_name=_('Interior'),blank=True,null=True)
+    wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True)
+    flooring = models.ForeignKey(Flooring, verbose_name=_('Flooring'), blank=True, null=True)
+    ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True)
+    interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=False)
     class Meta:
@@ -476,7 +513,15 @@ class Bidg(models.Model):
         ordering = ['id']
     @property    
     def layout_area(self):
-        return Layout.objects.filter(level__in = self.levels.all()).aggregate(Sum('area'))['area__sum']
+        return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
+    @property
+    def field_list(self):
+        wrapper = get_wrapper(self.estate_type.template)                          
+        return wrapper.field_list()
+    @property
+    def interior_list(self):
+        wrapper = get_wrapper(self.estate_type.template)                          
+        return wrapper.interior_list()    
 
 class Shape(SimpleDict):
     '''
@@ -506,9 +551,9 @@ class Stead(models.Model):
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')  
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)      
     face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    shape = models.ForeignKey(Shape,verbose_name=_('Shape'),blank=True,null=True)
-    land_type = models.ForeignKey(LandType,verbose_name=_('LandType'),blank=True,null=True)
-    purpose = models.ForeignKey(Purpose,verbose_name=_('Purpose'),blank=True,null=True)
+    shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True)
+    land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True)
+    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True)
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')
@@ -535,7 +580,7 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta,blank=True, null=True, editable=False)         
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)         
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)
     @property
@@ -546,7 +591,7 @@ class Client(models.Model):
         return self.history.updated_by or self.history.created_by 
     def save(self, *args, **kwargs):
         user = kwargs.pop('user', None)                                           
-        self.history = prepare_history(self.history,user)                                     
+        self.history = prepare_history(self.history, user)                                     
         super(Client, self).save(*args, **kwargs)    
     class Meta:
         verbose_name = _('client')
@@ -608,8 +653,8 @@ class Contact(models.Model):
         if latest:                        
             if (latest.contact_state == self.contact_state) and (latest.event_date > self.updated - datetime.timedelta(minutes=20)):
                 return             
-        contact_history = ContactHistory(event_date=self.updated, 
-                                         contact_state=self.contact_state, contact=self, 
+        contact_history = ContactHistory(event_date=self.updated,
+                                         contact_state=self.contact_state, contact=self,
                                          user_id=Client.objects.get(pk=self.client_id).user.pk)
         contact_history.save()                                            
     class Meta:

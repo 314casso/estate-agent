@@ -114,10 +114,10 @@ class BidgForm(ModelForm):
 
 class ApartmentForm(BidgForm):    
     def __init__(self, *args, **kwargs):
-        super(ApartmentForm, self).__init__(*args, **kwargs)
-        self.fields['used_area'].label = _('Living area')
-        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')          
-    class Meta(BidgForm.Meta):        
+        super(ApartmentForm, self).__init__(*args, **kwargs)        
+        self.fields['used_area'].label = get_polymorph_label(self.instance.estate_type.template,'used_area')
+        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')                  
+    class Meta(BidgForm.Meta):                
         exclude = ('roof','estate_type')
         
 class LayoutForm(ModelForm):

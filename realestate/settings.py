@@ -112,6 +112,8 @@ MIDDLEWARE_CLASSES = (
     'middleware.RequireLoginMiddleware',
 )
 
+PROFILE_LOG_BASE = MEDIA_ROOT
+
 ROOT_URLCONF = 'realestate.urls'
 
 TEMPLATE_DIRS = (

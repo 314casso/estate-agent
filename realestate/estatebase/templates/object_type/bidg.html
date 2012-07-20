@@ -1,11 +1,8 @@
 {% with bidg=estate.basic_bidg %}
 {% if bidg %}
 {% with template=bidg.estate_type.template %}
-<fieldset class="ui-widget ui-widget-content ui-corner-all">
-   <legend>{{ bidg.estate_type }}</legend>
 {% include bidg.estate_type.detail_template %}
 {% include "bidg_dialog/layout.html" %}
-</fieldset>
 {% endwith %}
 {% else %}
 Нет ни одного сооружения.

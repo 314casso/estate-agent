@@ -7,7 +7,7 @@
 {% block content %}
 
 <table class="detail-table">
-    {% for field_name in ext_field_list %}
+    {% for field_name in bidg.field_list %}    
     {% table_row bidg field_name template %}
     {% endfor %}
 </table>
@@ -24,7 +24,7 @@
         Внешняя отделка
     </legend>
     <table class="detail-table">
-        {% for field_name in int_field_list %}
+        {% for field_name in bidg.interior_list %}
         {% table_row bidg field_name template %}
         {% endfor %}
     </table>
