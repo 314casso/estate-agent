@@ -9,11 +9,10 @@
 {% endblock %}
 {% block content %}
 
-<table class="detail-table">        
-    <tr>
-        <th>{% trans 'Total area' %}:</th>
-        <td colspan="2">{{ stead.total_area }}</td>
-    </tr>    
+<table class="detail-table">
+    {% for field_name in stead.field_list %}    
+    {% table_row stead field_name %}
+    {% endfor %}
 </table>
 
 {% endblock %}

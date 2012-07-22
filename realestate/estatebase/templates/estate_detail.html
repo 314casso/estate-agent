@@ -13,15 +13,26 @@
 
 {% endblock left %}
 
+<!-- Этот блок только для строений, если объект участок, то включится пустой шаблон -->
 {% block right %}
-
 {% include estate.estate_type.object_type_template %}
-
-{% include "estate_dialog/photos.html" %}
-
 {% endblock right %}
 
+{% block extra %}
+{% if estate.stead %}
+{% with stead=estate.basic_stead %}
+{% include "details/stead.html" %}
+{% endwith %}
+{% endif %}
+{% include "estate_dialog/photos.html" %}
+{% endblock extra %}
 
 {% block linkback %}
-<a href="{{ request.GET.next }}">Back</a>
+<div class="ui-widget">
+    <div class="ui-state-highlight ui-corner-all" style="padding: .3em;">
+        <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"> </span>
+        <a href="{{ request.GET.next }}">Вернуться к списку объектов</a>
+    </div>
+</div>
+
 {% endblock %}

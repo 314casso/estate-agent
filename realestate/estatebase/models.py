@@ -10,9 +10,6 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-import sys
-from django.utils.text import capfirst
-from estatebase.profile import profile
 
 class ExUser(User):
     def __unicode__(self):
@@ -175,54 +172,9 @@ TEMPLATE_CHOICES = (
     ('STEAD', 'Участок'),
 )
 
-class BidgWrapper(object):
-    _exclude_set = ['id', 'estate', 'estate_type']  
-    interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']  
-    def __init__(self):
-        self.set_field_list()    
-    def get_exclude_list(self):
-        self._exclude_set.extend(self.interior_set)
-        return self._exclude_set                     
-    def field_list(self):                
-        return self._field_list
-    def interior_list(self):
-        return self.interior_set  
-    def set_field_list(self):
-        fields = [field.name for field in Bidg._meta.fields]
-        self._field_list = [f for f in fields if not (f in self.get_exclude_list())]                  
-
-class ApartmentWrapper(BidgWrapper):    
-    def get_exclude_list(self):
-        exclude_list = super(ApartmentWrapper, self).get_exclude_list()
-        eflds = ['roof']
-        exclude_list.extend(eflds)        
-        return exclude_list              
-
-class NewapartWrapper(ApartmentWrapper):
-    year_built = u'Год сдачи'    
-
-class HomeWrapper(BidgWrapper):
-    pass
-
-class SteadWrapper(BidgWrapper):
-    pass
-
-def get_wrapper(template):
-    class_name = '%sWrapper' % capfirst(template.lower())
-    WrapperClass = getattr(sys.modules[__name__], class_name)
-    return WrapperClass()
-
-#TODO: тормозит невероятно!!!!!
-def get_polymorph_label(template, field):            
-    wrapper = get_wrapper(template)    
-    try:
-        return getattr(wrapper, field)
-    except AttributeError:
-        return None
-
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
-    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)    
+    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'))    
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     template = models.CharField(_('View prefix'), max_length=50, choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
@@ -230,7 +182,7 @@ class EstateType(OrderedModel):
     def object_type_template(self):        
         return 'object_type/%s.html' % self.object_type.lower()
     @property
-    def detail_template(self):        
+    def detail_template(self):             
         return 'details/%s.html' % self.template.lower()
     def __unicode__(self):
         return u'%s' % self.name    
@@ -484,7 +436,7 @@ class Layout(models.Model):
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), blank=True, null=True, limit_choices_to={'object_type__exact':'BIDG'})   
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'object_type__exact':'BIDG'})   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators=[validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
@@ -516,12 +468,17 @@ class Bidg(models.Model):
         return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
     @property
     def field_list(self):
-        wrapper = get_wrapper(self.estate_type.template)                          
-        return wrapper.field_list()
+        wrapper = get_wrapper(self)                            
+        return wrapper.field_list() 
     @property
     def interior_list(self):
-        wrapper = get_wrapper(self.estate_type.template)                          
+        wrapper = get_wrapper(self)                          
         return wrapper.interior_list()    
+    @property
+    def all_fields(self):
+        fields = self.field_list[:]
+        fields.extend(self.interior_list)        
+        return fields        
 
 class Shape(SimpleDict):
     '''
@@ -554,9 +511,14 @@ class Stead(models.Model):
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True)
     purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True)
+    _field_list = None
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')
+    @property
+    def field_list(self):
+        wrapper = get_wrapper(self)                          
+        return wrapper.field_list()       
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
@@ -660,7 +622,69 @@ class Contact(models.Model):
     class Meta:
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 
-        ordering = ['contact_type__pk']  
+        ordering = ['contact_type__pk']
 
+class ObjectWrapper(object):
+    _field_list = None
+    exclude_set = ['id', 'estate']
+    queryset = None      
+    def __init__(self):
+        self.populate_field_list()        
+    def get_exclude_list(self):       
+        return self.exclude_set                     
+    def field_list(self):                
+        return self._field_list          
+    def populate_field_list(self):                
+        fields = [field.name for field in self.queryset._meta.fields]              
+        for f in self.get_exclude_list():
+            try:             
+                fields.remove(f)
+            except:
+                pass            
+        self._field_list = fields
 
+class BidgWrapper(ObjectWrapper):
+    queryset = Bidg      
+    interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']  
+    def get_exclude_list(self):        
+        exclude_list = super(BidgWrapper, self).get_exclude_list()[:]
+        exclude_list.extend(self.interior_list())
+        exclude_list.extend(['estate_type', 'basic'])                        
+        return exclude_list    
+    def interior_list(self):
+        return self.interior_set          
+
+class ApartmentWrapper(BidgWrapper):
+    def get_exclude_list(self):        
+        exclude_list = super(ApartmentWrapper, self).get_exclude_list()[:]        
+        exclude_list.extend(['roof'])        
+        return exclude_list    
+
+class NewapartWrapper(ApartmentWrapper):
+    year_built = u'Год сдачи'    
+
+class HomeWrapper(BidgWrapper):
+    pass
+
+class SteadWrapper(ObjectWrapper):
+    queryset = Stead    
+
+def get_wrapper(obj):
+    if type(obj) == Bidg:
+        return WRAPPERS[obj.estate_type.template][0]
+    elif type(obj) == Stead:
+        return WRAPPERS[obj.estate.estate_type.template][1]
     
+def get_polymorph_label(template, field):            
+    wrapper = get_wrapper(template)    
+    try:
+        return getattr(wrapper, field)
+    except AttributeError:
+        return None
+    
+WRAPPERS = {
+           'APARTMENT':(ApartmentWrapper(), None),
+           'NEWAPART':(NewapartWrapper(), None),
+           'HOME':(HomeWrapper(), SteadWrapper()),
+           'STEAD':(None, SteadWrapper()),
+           }

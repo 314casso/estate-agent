@@ -15,9 +15,9 @@ def close_btn(url):
     return {'url': url or ''}
 
 @register.inclusion_tag('inclusion/table_row.html')
-def table_row(queryset,field_name,template): 
+def table_row(queryset,field_name): 
     field = get_field(queryset, field_name)     
-    label = get_label(queryset,field_name,template)    
+    label = get_label(queryset,field_name)    
     value = getattr(queryset,field_name)
     if field.get_internal_type() == 'BooleanField' and value:
         value = u'Есть'           
@@ -47,9 +47,8 @@ def address(estate):
     return {'address': address}
 
 @register.simple_tag
-def get_label(queryset,field_name,template):
-    return get_polymorph_label(template,field_name) or get_field(queryset, field_name).verbose_name            
-    #return get_field(queryset, field_name).verbose_name
+def get_label(queryset,field_name):
+    return get_polymorph_label(queryset,field_name) or get_field(queryset, field_name).verbose_name
 
 def get_field(queryset, field_name):
     return queryset._meta.get_field(field_name)

@@ -5,6 +5,7 @@ $(document).ready(function() {
 	// $( ".date-time-input" ).datepicker();
 	//$("select").combobox();
 	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
+	//$('table.detail-table').addClass('ui-corner-all');
 });
 
 $(document).ajaxSend(function(event, xhr, settings) {

@@ -138,7 +138,7 @@ class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
     def get_context_data(self, **kwargs):
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
-        estate_categories = EstateTypeCategory.objects.all()
+        estate_categories = EstateType.objects.filter(object_type='BIDG').select_related().order_by('estate_type_category')
         context.update({            
             'estate_categories': estate_categories,
             'estate': self.kwargs['estate']                       
@@ -202,7 +202,7 @@ class EstateParamUpdateView(EstateUpdateView):
 
 class EstateListView(ListView):    
     template_name = 'estate_list.html'
-    def get_queryset(self):                        
+    def get_queryset(self):        
         q = Estate.objects.all().select_related()
         return q
     def get_context_data(self, **kwargs):
@@ -472,6 +472,8 @@ class LevelMixin(ModelFormMixin):
             self.object.save()             
             layout_form.instance = self.object
             layout_form.save()
+            #Обновление истории объекта                                 
+            prepare_history(self.object.bidg.estate.history, ExUser.objects.get(pk=self.request.user.pk))
             return super(ModelFormMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))

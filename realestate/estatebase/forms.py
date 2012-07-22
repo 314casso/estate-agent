@@ -114,11 +114,22 @@ class BidgForm(ModelForm):
 
 class ApartmentForm(BidgForm):    
     def __init__(self, *args, **kwargs):
-        super(ApartmentForm, self).__init__(*args, **kwargs)        
-        self.fields['used_area'].label = get_polymorph_label(self.instance.estate_type.template,'used_area')
-        self.fields['year_built'].label = get_polymorph_label(self.instance.estate_type.template,'year_built')                  
-    class Meta(BidgForm.Meta):                
-        exclude = ('roof','estate_type')
+        super(ApartmentForm, self).__init__(*args, **kwargs)
+        field_to_delete = []
+        fields = self.instance.all_fields[:] 
+        extra = ['documents']
+        if not self.instance.basic:
+            extra.append('estate_type')
+        fields.extend(extra)        
+        for field in self.fields:            
+            if field not in fields:
+                field_to_delete.append(field)                
+            else:                                
+                self.fields[field].label = get_polymorph_label(self.instance,field)                           
+        for field in field_to_delete:
+            del self.fields[field]                                                  
+    class Meta(BidgForm.Meta):
+        pass        
         
 class LayoutForm(ModelForm):
     class Meta:

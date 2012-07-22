@@ -10,11 +10,12 @@
 </script>
 
 <div id="estate_nav">
-	{% for estate_category in estate_categories %}
-	<h3><a href="#">{{ estate_category.name }}</a></h3>
+	{% regroup estate_categories by estate_type_category as estate_bidgs %}
+	{% for estate_category in estate_bidgs %}
+	<h3><a href="#">{{ estate_category.grouper }}</a></h3>
 	<div>
 		<ul>
-			{% for estate_type in estate_category.estatetype_set.all %}
+			{% for estate_type in estate_category.list %}
 			<li>
 				<table>
 					<td>
