@@ -202,13 +202,15 @@ class EstateParamUpdateView(EstateUpdateView):
 
 class EstateListView(ListView):    
     template_name = 'estate_list.html'
+    paginate_by = 10
     def get_queryset(self):        
-        q = Estate.objects.all().select_related()
+        q = Estate.objects.all().select_related().prefetch_related('clients__origin','clients__client_type','clients__history','bidgs')
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)        
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
+            'total_count': Estate.objects.count()
         })        
         return context
 
