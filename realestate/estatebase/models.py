@@ -182,7 +182,8 @@ class EstateType(OrderedModel):
     def object_type_template(self):        
         return 'object_type/%s.html' % self.object_type.lower()
     @property
-    def detail_template(self):             
+    def detail_template(self):
+        raise Exception('Property EstateType.detail_template is deprecated')             
         return 'details/%s.html' % self.template.lower()
     def __unicode__(self):
         return u'%s' % self.name    

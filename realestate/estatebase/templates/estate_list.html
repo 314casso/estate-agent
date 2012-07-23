@@ -15,26 +15,44 @@
 
 Количество объектов {{ estate_list.count }}
 
-
 {% for estate in estate_list %}
 
-<table border=1>
-	<tr>
-		<td><a href="{{ estate.detail_link  }}?{{ next_url }}">{{ estate.pk }}</a></td>
-		<td>{{ estate.estate_type }}</td>
-		<td>{% address estate %}</td>
-	</tr>
-</table>
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+	<legend>
+		<span class="ui-corner-all ui-widget-content ui-state-highlight" style="padding: 2px 5px;"> 
+			[<a href="{{ estate.detail_link  }}?{{ next_url }}">{{ estate.pk }}</a>]
+			{{ estate.estate_type }}			
+			{% address estate %} </span>
 
+	</legend>
+	<div class="ui-corner-all ui-widget-content" style="float: right; position: relative; top: -25px; padding: 2px 5px;">
+		{{ estate.estate_status }}
+	</div>
+	<div style="float: left; width: 300px ">
+	{% client_list estate next_url %}
+	</div>
+	<div style="float: left; width: 300px">
+	{% if estate.basic_bidg %}	
+	{% get_label estate.basic_bidg 'year_built' %}: {{ estate.basic_bidg.year_built }}  
+	{% get_label estate.basic_bidg 'floor_count' %}: {{ estate.basic_bidg.floor_count }}
+	{% endif %}
+	этажность 	площадь, м2 	комнаты 	состояние 	лифт 	цена, руб
+	</div>
+</fieldset>
 
-{% if estate.is_bidg %}
+<!-- {% if estate.is_bidg %}
 Строение
 {% else %}
 Левак
-{% endif %}
+{% endif %} -->
 
-{% client_list estate next_url %}
-
+<!-- <table border=1>
+<tr>
+<td><a href="{{ estate.detail_link  }}?{{ next_url }}">{{ estate.pk }}</a></td>
+<td>{{ estate.estate_type }}</td>
+<td>{% address estate %}</td>
+</tr>
+</table> -->
 
 {% endfor %}
 

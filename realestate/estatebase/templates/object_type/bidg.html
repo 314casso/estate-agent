@@ -1,6 +1,6 @@
 {% with bidg=estate.basic_bidg %}
 {% if bidg %}
-{% include bidg.estate_type.detail_template %}
+{% include "bidg_dialog/description.html" %}
 {% include "bidg_dialog/layout.html" %}
 {% else %}
 Нет ни одного сооружения.

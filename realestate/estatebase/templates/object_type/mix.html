@@ -49,7 +49,7 @@
 	{% for bidg in estate.bidgs.all %}
 	<h3><a href="#tab-{{ bidg.pk }}">{{ bidg.estate_type }}</a></h3>
 	<div id="tab-{{ bidg.pk }}">			
-		{% include bidg.estate_type.detail_template %}
+		{% include "bidg_dialog/description.html" %}
 		{% include "bidg_dialog/layout.html" %}
 		{% if not bidg.basic %}
 		<div class="button" style="float: right">
