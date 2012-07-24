@@ -81,16 +81,14 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-Корректно
-Обмен
-Ипотека
-Эксклюзив
-Сделать фото
-Рекламировать
+Вакантно
+Новый
+Продано
+Снят с продажи
 '''
 
 
-MODEL = 'EstateParam'
+MODEL = 'EstateStatus'
 
 import settings
 import os

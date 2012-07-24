@@ -15,13 +15,14 @@ def close_btn(url):
     return {'url': url or ''}
 
 @register.inclusion_tag('inclusion/table_row.html')
-def table_row(queryset,field_name): 
-    field = get_field(queryset, field_name)     
+def table_row(queryset,field_name):         
     label = get_label(queryset,field_name)    
-    value = getattr(queryset,field_name)
-    if field.get_internal_type() == 'BooleanField' and value:
-        value = u'Есть'           
+    value = get_value(queryset,field_name)           
     return {'field': value, 'label':label }
+
+@register.inclusion_tag('inclusion/inline_field.html')
+def inline_field(queryset,field_name):
+    return table_row(queryset,field_name)
 
 @register.inclusion_tag('inclusion/contact_list_tag.html')
 def contact_list(client, next_url):        
@@ -49,6 +50,14 @@ def address(estate):
 @register.simple_tag
 def get_label(queryset,field_name):
     return get_polymorph_label(queryset,field_name) or get_field(queryset, field_name).verbose_name
+
+@register.simple_tag
+def get_value(queryset,field_name):
+    field = get_field(queryset, field_name)
+    value = getattr(queryset,field_name)
+    if field.get_internal_type() == 'BooleanField' and value:
+        value = u'Есть'
+    return value
 
 def get_field(queryset, field_name):
     return queryset._meta.get_field(field_name)

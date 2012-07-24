@@ -136,12 +136,12 @@ class EstateParam(OrderedModel):
     '''
     Дополнительные параметры
     '''
-    name = models.CharField(_('Name'), max_length=100)
+    name = models.CharField(_('Name'), max_length=100)    
     def __unicode__(self):
         return u'%s' % self.name
     class Meta(OrderedModel.Meta):
         verbose_name = _('estate param')
-        verbose_name_plural = _('estate params')
+        verbose_name_plural = _('estate params')            
 
 class EstateStatus(SimpleDict):
     '''
@@ -149,7 +149,7 @@ class EstateStatus(SimpleDict):
     '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('estate status')
-        verbose_name_plural = _('estate statuses') 
+        verbose_name_plural = _('estate statuses')         
 
 class EstateTypeCategory(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
@@ -195,7 +195,10 @@ class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
     created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')                        
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')
+    @property
+    def modificated(self):
+        return self.updated or self.created                         
     
 def prepare_history(history, user):
     if not history:
@@ -266,7 +269,11 @@ class Estate(models.Model):
             return None    
     @property
     def correct(self):
-        return self.estate_params.get(pk=1)    
+        return self.estate_params.get(pk=1)  
+    @property
+    def state_css(self):
+        css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
+        return self.estate_status_id in css and css[self.estate_status_id] or ''  
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -479,7 +486,12 @@ class Bidg(models.Model):
     def all_fields(self):
         fields = self.field_list[:]
         fields.extend(self.interior_list)        
-        return fields        
+        return fields
+    @property
+    def inline_fields(self):
+        wrapper = get_wrapper(self)                          
+        return wrapper.inline_fields()
+                
 
 class Shape(SimpleDict):
     '''
@@ -511,15 +523,18 @@ class Stead(models.Model):
     face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True)
-    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True)
-    _field_list = None
+    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True)    
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')
     @property
     def field_list(self):
         wrapper = get_wrapper(self)                          
-        return wrapper.field_list()       
+        return wrapper.field_list()    
+    @property
+    def inline_fields(self):
+        wrapper = get_wrapper(self)                          
+        return wrapper.inline_fields()   
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
@@ -653,7 +668,9 @@ class BidgWrapper(ObjectWrapper):
         exclude_list.extend(['estate_type', 'basic'])                        
         return exclude_list    
     def interior_list(self):
-        return self.interior_set          
+        return self.interior_set
+    def inline_fields(self):
+        return ['year_built', 'floor_count','room_count', 'interior', 'elevator', 'used_area', 'total_area' ]          
 
 class ApartmentWrapper(BidgWrapper):
     def get_exclude_list(self):        
@@ -668,7 +685,9 @@ class HomeWrapper(BidgWrapper):
     pass
 
 class SteadWrapper(ObjectWrapper):
-    queryset = Stead    
+    queryset = Stead
+    def inline_fields(self):    
+        return ['total_area', 'face_area', 'shape', 'land_type' ]    
 
 def get_wrapper(obj):
     if type(obj) == Bidg:
