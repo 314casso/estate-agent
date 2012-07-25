@@ -82,7 +82,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in contact.client.contacts %}
+		{% for item in contact.client.contacts.all %}
 		<tr>
 			<td id="contact-list-{{ item.pk }}"><a href="{% url contact_update item.pk %}?next={{ request.GET.next }}">{{ item }}</a></td>
 		</tr>
