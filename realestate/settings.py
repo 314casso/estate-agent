@@ -108,7 +108,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.FilterPersistMiddleware',
     'django_sorting.middleware.SortingMiddleware',
-#    'middleware.SQLLogMiddleware',
+    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
 )
 

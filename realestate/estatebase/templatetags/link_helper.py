@@ -41,9 +41,10 @@ def address(estate):
     if estate.microdistrict:         
         items.append(estate.microdistrict.name)
     items.append(estate.street.name)                 
-    items.append(estate.estate_number)    
-    if estate.basic_bidg and estate.basic_bidg.room_number:
-        items.append(u'кв. %s' % estate.basic_bidg.room_number)        
+    items.append(estate.estate_number)        
+    basic_bidg = estate.basic_bidg     
+    if basic_bidg and basic_bidg.room_number:
+        items.append(u'кв. %s' % basic_bidg.room_number)        
     address = ', '.join(items)
     return {'address': address}
 

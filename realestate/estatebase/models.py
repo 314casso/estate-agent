@@ -258,7 +258,8 @@ class Estate(models.Model):
             return True
     @property
     def basic_bidg(self):        
-        bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
+        #bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
+        bidgs = list(self.bidgs.all()[:1])
         if bidgs:
             return bidgs[0]                                  
     @property
@@ -560,10 +561,7 @@ class Client(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)         
     def __unicode__(self):
-        return u'%s %s' % (self.name, self.address)
-    @property
-    def contacts(self):
-        return self.contactlist.all().select_related('contact_type')
+        return u'%s %s' % (self.name, self.address)    
     @property
     def user(self):
         return self.history.updated_by or self.history.created_by 
@@ -598,7 +596,7 @@ class ContactHistory(models.Model):
         verbose_name_plural = _('contact history') 
 
 class Contact(models.Model):    
-    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contactlist')
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Created'), blank=True, null=True)   

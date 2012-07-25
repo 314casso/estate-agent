@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% load query_string %}
+{% load link_helper %}
+{% load humanize %}
+
+{% block left %}
+
+Количество объектов {{ total_count }}
+
+{% for estate in estate_list %}
+
+<table>
+	<tr>		
+		<td><a href="{% url estate_update estate.pk %}?{{ next_url }}"> {% address estate %} </a></td>
+		<td>{{ estate.agency_price|default_if_none:''|intcomma }}</td>
+		<td>{{ estate.agency_price|default_if_none:''|intcomma }}</td>
+	</tr>
+</table>
+
+{% endfor %}
+
+{% endblock left %}

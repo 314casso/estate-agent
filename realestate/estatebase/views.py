@@ -201,10 +201,11 @@ class EstateParamUpdateView(EstateUpdateView):
     form_class = EstateParamForm
 
 class EstateListView(ListView):    
-    template_name = 'estate_list.html'
+    template_name = 'estate_short_list.html'
     paginate_by = 10
     def get_queryset(self):        
-        q = Estate.objects.all().select_related().prefetch_related('clients__origin','clients__client_type','clients__history','bidgs')
+        #q = Estate.objects.all().select_related().prefetch_related('clients__origin','clients__client_type','clients__history','bidgs')
+        q = Estate.objects.all().select_related().prefetch_related('bidgs').filter(clients__address__icontains=u'тамань')
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)        
@@ -309,7 +310,7 @@ class ClientListView(ListView):
     context_object_name = "clients"
     paginate_by = 5    
     def get_queryset(self):                        
-        q = Client.objects.all().select_related()
+        q = Client.objects.all().select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
         search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if len(filter_dict):
