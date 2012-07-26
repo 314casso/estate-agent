@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load link_helper %}
-
+{% load paginator %}
 {% block head %}
 
 {% endblock %}
@@ -54,9 +54,9 @@
 					<div  class="button" style="float: right">
 					<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
 				</div>
-					{% if is_paginated %}
+					{% if is_paginated %}					
 					<div class="pagination" style="float: left; padding-top:6px">
-						<span class="page-links"> {% if page_obj.has_previous %} <a href="{{ request.path }}{% query_string 'page=page_obj.previous_page_number' '' %}">Предыдущая</a> {% endif %} <span class="page-current"> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}. </span> {% if page_obj.has_next %} <a href="{{ request.path }}{% query_string 'page=page_obj.next_page_number' '' %}">Сдедующая</a> {% endif %} </span>
+						{% digg_paginator %}					
 					</div>
 					{% endif %}
 				</div></td>

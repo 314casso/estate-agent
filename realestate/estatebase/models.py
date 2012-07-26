@@ -248,7 +248,8 @@ class Estate(models.Model):
     description = models.TextField(_('Description'), blank=True, null=True)
     comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
     #Изменения
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True)    
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True)  
+    valid =  models.BooleanField(_('Valid'), default=False) 
     @property
     def detail_link(self):            
         return reverse('estate_detail', args=[self.pk])  
@@ -270,11 +271,17 @@ class Estate(models.Model):
             return None    
     @property
     def correct(self):
-        return self.estate_params.get(pk=1)  
+        return self.valid  
     @property
     def state_css(self):
         css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
-        return self.estate_status_id in css and css[self.estate_status_id] or ''  
+        return self.estate_status_id in css and css[self.estate_status_id] or ''
+    @property
+    def basic_contact(self):
+        contacts = Contact.objects.filter(client__in=self.clients.all())        
+        if contacts:
+            return contacts[0] 
+      
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -559,7 +566,8 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)         
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    valid =  models.BooleanField(_('Valid'), default=False)         
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
     @property

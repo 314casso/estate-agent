@@ -3,24 +3,51 @@
 
 {% load query_string %}
 {% load link_helper %}
+{% load paginator %}
 {% load humanize %}
+
+{% block head %}
+<style>
+	.detail-table td {
+		border: 1px solid #ddd;
+	}
+</style>
+{% endblock %}
 
 {% block left %}
 
 Количество объектов {{ total_count }}
 
-<table class="ui-widget ui-widget-content ui-corner-all detail-table">
-{% for estate in estate_list %}
-	<tr>		
-		<td><a href="{% url estate_update estate.pk %}?{{ next_url }}"> {% address estate %} </a></td>
-		<td>{{ estate.agency_price|default_if_none:''|intcomma }}</td>		
-		<td>
-		{% if estate.correct %}
-        <span class="ui-corner-all ui-widget-content" style="margin: 0 3px; padding: 1px 2px; background: #E3FDD5 !important;"> Корректно </span>
-        {% endif %}
-		</td>
-	</tr>
-{% endfor %}
-</table>
+
+	{% for estate in estate_list %}
+	<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px">
+	<legend>		
+	<a href="{% url estate_update estate.pk %}?{{ next_url }}"> [{{ estate.pk }}] </a>
+		{{ estate.estate_type }}
+		<span title="{{ estate.estate_status }}" class="ui-corner-all ui-widget-content {{ estate.state_css }}" style="padding: 0 3px; font-size: 11px">
+		{{ estate.history.modificated|date:"d M Y" }}
+		</span>
+		
+		{% if estate.agency_price %}
+		<span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px; margin-left: 1px"> {{ estate.agency_price|default_if_none:''|intcomma }} р. </span>
+		{% endif %}
+		
+		{% if estate.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
+	</legend>
+		{% address estate %}
+		<div>			
+		contacts
+		</div>
+	</fieldset>	
+
+	{{ estate.basic_contact }}
+	{% endfor %}
+
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:6px">
+	{% digg_paginator %}
+</div>
+{% endif %}
 
 {% endblock left %}

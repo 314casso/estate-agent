@@ -363,3 +363,20 @@ fieldset {
 legend {	
 	font-weight: bold;	
 }
+
+.no-border {
+	border: 0;
+}
+
+.pagination ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.pagination li{
+	display: inline;
+	padding: 1px 5px;
+	border: 1px solid #ddd;
+	margin: 0 1px;	
+}

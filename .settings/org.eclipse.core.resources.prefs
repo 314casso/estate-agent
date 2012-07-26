@@ -3,6 +3,7 @@ encoding//realestate/estatebase/forms.py=utf-8
 encoding//realestate/estatebase/migrations/0001_initial.py=utf-8
 encoding//realestate/estatebase/models.py=utf-8
 encoding//realestate/estatebase/templatetags/link_helper.py=utf-8
+encoding//realestate/estatebase/templatetags/paginator.py=utf-8
 encoding//realestate/estatebase/views.py=utf-8
 encoding//realestate/orderedmodel/admin.py=utf-8
 encoding//realestate/utils/model_template.py=utf-8
