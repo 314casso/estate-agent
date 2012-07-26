@@ -18,35 +18,38 @@
 
 Количество объектов {{ total_count }}
 
+{% for estate in estate_list %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px">
+    <legend>
+        <a href="{% url estate_update estate.pk %}?{{ next_url }}"> [{{ estate.pk }}] </a>
+        {{ estate.estate_type }}
+        <span title="{{ estate.estate_status }}" class="ui-corner-all ui-widget-content {{ estate.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate.history.modificated|date:"d M Y" }} </span>
 
-	{% for estate in estate_list %}
-	<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px">
-	<legend>		
-	<a href="{% url estate_update estate.pk %}?{{ next_url }}"> [{{ estate.pk }}] </a>
-		{{ estate.estate_type }}
-		<span title="{{ estate.estate_status }}" class="ui-corner-all ui-widget-content {{ estate.state_css }}" style="padding: 0 3px; font-size: 11px">
-		{{ estate.history.modificated|date:"d M Y" }}
-		</span>
-		
-		{% if estate.agency_price %}
-		<span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px; margin-left: 1px"> {{ estate.agency_price|default_if_none:''|intcomma }} р. </span>
-		{% endif %}
-		
-		{% if estate.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
-	</legend>
-		{% address estate %}
-		<div>			
-		contacts
-		</div>
-	</fieldset>	
+        {% if estate.agency_price %}
+        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px; margin-left: 1px"> {{ estate.agency_price|default_if_none:''|intcomma }} р. </span>
+        {% endif %}
 
-	{{ estate.basic_contact }}
-	{% endfor %}
+        {% if estate.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
+    </legend>
+    <div style="border-bottom: 1px solid #ddd;">
+    {% address estate %}
+    </div>
+    <div style="margin-top: 2px">
+        {% with contact=estate.basic_contact  %}
+        {% if contact %}
+        {{ contact.client.client_type }}
+        <a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> 
+        <span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <label>{{ contact.contact_type }}:</label> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>                
+        {% endif %}
+        {% endwith %}
+    </div>
+</fieldset>
 
+{% endfor %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">
-	{% digg_paginator %}
+    {% digg_paginator %}
 </div>
 {% endif %}
 

@@ -278,14 +278,13 @@ class Estate(models.Model):
         return self.estate_status_id in css and css[self.estate_status_id] or ''
     @property
     def basic_contact(self):
-        contacts = Contact.objects.filter(client__in=self.clients.all())        
+        contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id','contact_type__id','-updated')[:1]        
         if contacts:
-            return contacts[0] 
-      
+            return contacts[0]       
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
-        ordering = ['id']    
+        ordering = ['-id']    
     def __unicode__(self):
         return u'%s' % self.pk    
     def save(self, *args, **kwargs):                                                                        
@@ -607,7 +606,7 @@ class Contact(models.Model):
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
-    updated = models.DateTimeField(_('Created'), blank=True, null=True)   
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)     
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
