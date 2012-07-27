@@ -12,6 +12,7 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_list'),
+    url(r'^estatelist/(?P<pk>\d+)$',EstateListView.as_view(), name='estate_list'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
     url(r'^clients/(?P<estate_pk>\d+)$',ClientSelectView.as_view(), name='client_select'),

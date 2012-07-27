@@ -16,8 +16,6 @@
 
 {% block left %}
 
-Количество объектов {{ total_count }}
-
 {% for estate in estate_list %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px">
     <legend>
@@ -54,3 +52,10 @@
 {% endif %}
 
 {% endblock left %}
+
+{% block right %}
+{% include "estate_dialog/basic.html" %}
+{% include "estate_dialog/salers.html" %}
+{% include "estate_dialog/comm.html" %}
+{% include "estate_dialog/marks.html" %}
+{% endblock right %}

@@ -202,16 +202,26 @@ class EstateParamUpdateView(EstateUpdateView):
 
 class EstateListView(ListView):    
     template_name = 'estate_short_list.html'
-    paginate_by = 10
-    def get_queryset(self):        
+    paginate_by = 10    
+    def get_queryset(self):
+        self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])        
+         
         #q = Estate.objects.all().select_related().prefetch_related('clients__origin','clients__client_type','clients__history','bidgs')
         q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status').prefetch_related('bidgs').all()
         return q
     def get_context_data(self, **kwargs):
-        context = super(EstateListView, self).get_context_data(**kwargs)        
+        context = super(EstateListView, self).get_context_data(**kwargs)     
+        r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
+        p = float(r) / (self.estate.saler_price or 1) * 100              
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'total_count': Estate.objects.count()
+            'margin': '%d (%d%%)' % (r, p),
+            'images': self.estate.images.all()[:6],                       
+        })           
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'total_count': Estate.objects.count(),
+            'estate': self.estate
         })        
         return context
 
