@@ -110,6 +110,9 @@ MIDDLEWARE_CLASSES = (
     'django_sorting.middleware.SortingMiddleware',
 #    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
+    #cache
+#    'django.middleware.cache.UpdateCacheMiddleware',    
+#    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 PROFILE_LOG_BASE = MEDIA_ROOT

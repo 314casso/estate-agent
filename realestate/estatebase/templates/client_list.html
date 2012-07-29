@@ -82,7 +82,7 @@
 			<tfoot>
 				<tr>
 					<td colspan=2>
-					<a href="{{ request.path }}?next={{ request.GET.next }}">Сбросить</a>	
+					<a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>	
 					<input type="submit" value="Применить"/>
 					</td>
 				</tr>

@@ -2,6 +2,7 @@
 from django import template
 from django.core.urlresolvers import reverse
 from estatebase.models import get_polymorph_label
+import base64
 
 
 register = template.Library()
@@ -9,6 +10,18 @@ register = template.Library()
 @register.simple_tag
 def reverse_link(name, *args):
     return reverse(name, args=args)
+
+@register.simple_tag
+def next_from_request(next_url):    
+    return next_url and ('?next=%s' % next_url.urlencode()) or ''  
+
+@register.simple_tag
+def im_source(im):
+    return base64.b64encode(im.read())
+
+@register.simple_tag
+def selected_css(list_pk,item_pk):
+    return (list_pk == item_pk) and 'selected' or '' 
 
 @register.inclusion_tag('inclusion/close_btn.html')
 def close_btn(url):        

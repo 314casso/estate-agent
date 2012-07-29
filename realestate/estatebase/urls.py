@@ -7,12 +7,12 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView, \
     upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView, \
     ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax, \
-    BidgAppendView, BidgRemoveView
+    BidgAppendView, BidgRemoveView, EstateListDetailsView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_list'),
-    url(r'^estatelist/(?P<pk>\d+)$',EstateListView.as_view(), name='estate_list'),
+    url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
     url(r'^clients/(?P<estate_pk>\d+)$',ClientSelectView.as_view(), name='client_select'),

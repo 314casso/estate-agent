@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load thumbnail %}
-
 {% block head %}
 <link href="{{ STATIC_URL }}css/lightbox.css" rel="stylesheet" />
 <script src="{{ STATIC_URL }}js/lightbox.js"> </script>
@@ -23,6 +22,7 @@
 {% endblock linkback %}
 
 {% block left %}
+{% include 'estate_dialog/photo_form.html' %}
 <div style="padding: 4px 1px 0px 1px; margin: 0; overflow: hidden">
     {% for image in estate.images.all %}
 
@@ -32,7 +32,7 @@
             <a href="{% url image_swap estate.pk image.pk 'up' %}?{{ next_url }}">Вверх</a> | <a href="{% url image_swap estate.pk image.pk 'down' %}?{{ next_url }}">Вниз</a>
         </div>
 
-        {% thumbnail image.image "110x80" crop="center" as im %}
+        {% thumbnail image.image "110x80" crop="center" as im %}        
         {% thumbnail image.image "800x600" watermark="http://yandex.ru" crop="center" as bim %}
         <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
         {% endthumbnail %}

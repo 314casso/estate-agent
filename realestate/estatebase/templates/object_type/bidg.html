@@ -1,7 +1,12 @@
 {% with bidg=estate.basic_bidg %}
 {% if bidg %}
-{% include "bidg_dialog/description.html" %}
-{% include "bidg_dialog/layout.html" %}
+<div style="float: left;">
+    {% include "bidg_dialog/description.html" %}
+</div>
+<div style="float: left; margin-left: 10px">
+    {% include "bidg_dialog/layout.html" %}
+</div>
+<br style="clear: both" />
 {% else %}
 Нет ни одного сооружения.
 {% endif %}

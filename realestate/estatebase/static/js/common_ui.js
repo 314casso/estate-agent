@@ -8,6 +8,16 @@ $(document).ready(function() {
 	//$('table.detail-table').addClass('ui-corner-all');
 });
 
+function getIndex(id,item) {
+	estateId = parseInt(localStorage.getItem('estate_id'));	
+	if (parseInt(id) == parseInt(estateId)) {
+		return parseInt(localStorage.getItem(item));
+	} else {
+		return 0;
+	}
+}
+
+
 $(document).ajaxSend(function(event, xhr, settings) {
 	function getCookie(name) {
 		var cookieValue = null;
@@ -124,4 +134,4 @@ $(document).ajaxSend(function(event, xhr, settings) {
 			$.Widget.prototype.destroy.call(this);
 		}
 	});
-})(jQuery);
+})(jQuery); 
