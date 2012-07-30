@@ -216,7 +216,7 @@ class EstateListView(ListView):
             'total_count': Estate.objects.count(),            
         })        
         return context
-#TODO: Разделить виды
+
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_short_list.html'        
@@ -236,7 +236,7 @@ class EstateListDetailsView(EstateListView):
         })                
         return context
 
-class EstateImagesView(TemplateView):
+class EstateImagesView(TemplateView): 
     template_name = 'estate_images.html'
     def get_context_data(self, **kwargs):
         context = super(EstateImagesView, self).get_context_data(**kwargs)        
