@@ -101,6 +101,9 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 )
 
 MIDDLEWARE_CLASSES = (
+#    http://packages.python.org/johnny-cache/                  
+    'johnny.middleware.LocalStoreClearMiddleware',
+    'johnny.middleware.QueryCacheMiddleware',                  
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,9 +113,6 @@ MIDDLEWARE_CLASSES = (
     'django_sorting.middleware.SortingMiddleware',
 #    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
-    #cache
-#    'django.middleware.cache.UpdateCacheMiddleware',    
-#    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 PROFILE_LOG_BASE = MEDIA_ROOT
@@ -126,11 +126,14 @@ TEMPLATE_DIRS = (
 )
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
+    'default': dict(
+        BACKEND = 'django.core.cache.backends.memcached.MemcachedCache',
+        LOCATION = ['127.0.0.1:11211'],
+        JOHNNY_CACHE = True,
+    )
 }
+
+JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_realtydb'
 
 INSTALLED_APPS = (
     'django.contrib.auth',

@@ -38,7 +38,7 @@
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
     <legend style="font-size: 11px;">        
         <a href="{% url estate_list_details estate_item.pk %}{% query_string '' '' %}">[{{ estate_item.pk }}]</a>
-        <a title="{{ estate_item.estate_type }}" href="{% url estate_list_details estate_item.pk %}{% query_string '' '' %}"> {{ estate_item.estate_type|truncatechars:17 }} </a>
+        <a title="{{ estate_item.estate_type }}" href="{% url estate_list_details estate_item.pk %}{% query_string '' '' %}">{{ estate_item.estate_type|truncatechars:17 }}</a>
         <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
         {% if estate_item.agency_price %}
         <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
