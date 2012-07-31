@@ -140,7 +140,7 @@ class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
     def get_context_data(self, **kwargs):
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
-        estate_categories = EstateType.objects.filter(object_type='BIDG').select_related().order_by('estate_type_category')
+        estate_categories = EstateType.objects.filter(placeable=True).select_related().order_by('estate_type_category')
         context.update({            
             'estate_categories': estate_categories,
             'estate': self.kwargs['estate']                       
@@ -533,7 +533,7 @@ class BidgAppendView(TemplateView):
         context = super(BidgAppendView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Добавление строения...',
-            'dialig_body'  : u'Добавить %s к объекту [%s]?' % (self.kwargs['estate_type'], self.kwargs['estate']),
+            'dialig_body'  : u'Добавить строение на участок объекта [%s]?' % (self.kwargs['estate']),
         })
         return context
     def update_object(self):

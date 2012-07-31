@@ -178,6 +178,7 @@ class EstateType(OrderedModel):
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     template = models.CharField(_('View prefix'), max_length=50, choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    placeable = models.BooleanField(_('Placeable'), default=False)
     @property
     def object_type_template(self):        
         return 'object_type/%s.html' % self.object_type.lower()
@@ -189,7 +190,8 @@ class EstateType(OrderedModel):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
         verbose_name = _('estate type')
-        verbose_name_plural = _('estate types') 
+        verbose_name_plural = _('estate types')
+        ordering = ['name']    
     
 class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
@@ -451,7 +453,7 @@ class Layout(models.Model):
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'object_type__exact':'BIDG'})   
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'placeable__exact':True})   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators=[validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
