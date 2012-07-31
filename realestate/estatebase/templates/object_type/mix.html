@@ -8,32 +8,7 @@
 </style>
 
 <script type="text/javascript">
-    $(function() {
-        $('a.ajax-dialog').live('click', function() {
-            var url = this.href;
-            var uniq = 'dialog' + (new Date()).getTime();
-
-            var dialog = $('<div id="' + uniq + '" style="display:hidden"></div>').appendTo('body');
-
-            // load remote content
-            dialog.load(url, function(responseText, textStatus, XMLHttpRequest) {
-                dialog.dialog({
-                    modal : true,
-                    close : function(event, ui) {
-                        dialog.remove();
-                    },
-                    buttons : {
-                        Отмена : function() {
-                            dialog.dialog("close");
-                        }
-                    },
-                    width: 460,
-                    title: "Разместить строение на участке..." 
-                });
-            });
-            //prevent the browser to follow the link
-            return false;
-        });
+    $(function() {    
         $("#estate-accordion").accordion({
             change : function(event, ui) {              
                 localStorage.setItem('estate_id', '{{ estate.id }}');
@@ -41,12 +16,8 @@
             },
             active : getIndex('{{ estate.id }}','saved_index'),
             autoHeight : false
-        });
-        
-    }); 
-    
-    
-    
+        });        
+    });     
 </script>
 
 <div id="estate-accordion">
@@ -74,6 +45,6 @@
 </div>
 
 <div class="button" style="text-align: right; margin: 10px 0">
-    <a href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить строение</a>
+    <a data-width="450" title="Добавление строения на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить строение</a>
 </div>
 
