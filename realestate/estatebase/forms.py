@@ -64,7 +64,7 @@ class ClientFilterForm(Form):
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     filters = {
             'pk' : 'id__exact',   
-            'contact' : 'contactlist__contact__icontains',   
+            'contact' : 'contacts__contact__icontains',   
             'client_type' : 'client_type__id__exact',
             'name' : 'name__icontains',
             'origin' : 'origin__id__exact',

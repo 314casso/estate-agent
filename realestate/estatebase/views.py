@@ -148,7 +148,7 @@ class EstateTypeViewAjax(TemplateView):
         return context
 
 class PlaceableTypeViewAjax(TemplateView):
-    template_name = 'ajax/estate_type_select.html'
+    template_name = 'ajax/placeable_select.html'
     def get_context_data(self, **kwargs):
         context = super(PlaceableTypeViewAjax, self).get_context_data(**kwargs)                
         estate_categories = EstateType.objects.filter(placeable=True).select_related().order_by('estate_type_category')
