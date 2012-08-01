@@ -143,7 +143,7 @@ class EstateTypeViewAjax(TemplateView):
         estate_categories = EstateType.objects.all().order_by('estate_type_category')
         context.update({            
             'estate_categories': estate_categories,
-            'estate': self.kwargs['estate']                       
+            'estate': self.kwargs['estate'],                                   
         })        
         return context
 
@@ -154,7 +154,7 @@ class PlaceableTypeViewAjax(TemplateView):
         estate_categories = EstateType.objects.filter(placeable=True).select_related().order_by('estate_type_category')
         context.update({            
             'estate_categories': estate_categories,
-            'estate': self.kwargs['estate']                       
+            'estate': self.kwargs['estate'],                                   
         })        
         return context
 

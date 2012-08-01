@@ -254,7 +254,7 @@ class Estate(models.Model):
     valid =  models.BooleanField(_('Valid'), default=False) 
     @property
     def detail_link(self):            
-        return reverse('estate_detail', args=[self.pk])  
+        return reverse('estate_list_details', args=[self.pk])  
     @property
     def is_bidg(self):
         if self.estate_type.object_type == 'BIDG':
