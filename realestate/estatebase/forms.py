@@ -78,6 +78,9 @@ class ClientFilterForm(Form):
             if value and self.filters.has_key(field):                
                 f[self.filters[field]] = value      
         return f            
+
+class EstateFilterForm(Form):
+    pk = forms.CharField(required=False, label=_('ID'))
         
 class ContactHistoryForm(ModelForm):
     class Meta:        

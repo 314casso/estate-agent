@@ -34,6 +34,33 @@
 {% endblock %}
 
 {% block left %}
+<!--  -->
+<div class="button table-form">
+    <form method="get">
+        <table class="ui-widget ui-widget-content ui-corner-all">
+            <thead>
+                <tr>
+                    <td colspan="2">
+                    <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                        Фильтр
+                    </div></td>
+                </tr>
+            </thead>
+            {{ estate_filter_form.as_table }}            
+            <tfoot>
+                <tr>
+                    <td colspan=2>
+                    <a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a> 
+                    <input type="submit" value="Применить"/>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<!--  -->
+
+
 Количество объектов {{ total_count }}
 {% if request.GET.next %}
  <a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>

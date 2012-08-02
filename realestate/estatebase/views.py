@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm
+    SteadUpdateForm, EstateFilterForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead
 from django.core.urlresolvers import reverse
@@ -243,7 +243,8 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.estate.images.all(),
-            'estate': self.estate,                       
+            'estate': self.estate, 
+            'estate_filter_form' : EstateFilterForm(self.request.GET),                      
         })                
         return context
 
