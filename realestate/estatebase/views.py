@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm
+    SteadUpdateForm, EstateFilterForm, EstateTypeFormset
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead
 from django.core.urlresolvers import reverse
@@ -219,6 +219,10 @@ class EstateListView(ListView):
     def get_queryset(self):                  
         #q = Estate.objects.all().select_related().prefetch_related('clients__origin','clients__client_type','clients__history','bidgs')
         q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status').prefetch_related('bidgs').all()
+        search_form = EstateFilterForm(self.request.GET)
+        filter_dict = search_form.get_filter()
+        if len(filter_dict):
+            q = q.filter(**filter_dict)
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)                   
@@ -238,13 +242,19 @@ class EstateListDetailsView(EstateListView):
     def get_context_data(self, **kwargs):
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)     
         r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
-        p = float(r) / (self.estate.saler_price or 1) * 100              
+        p = float(r) / (self.estate.saler_price or 1) * 100    
+                
+        if 'form-TOTAL_FORMS' in self.request.GET:
+            context['estate_type_formset'] = EstateTypeFormset(self.request.GET)
+        else:
+            context['estate_type_formset'] = EstateTypeFormset()    
+                       
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.estate.images.all(),
             'estate': self.estate, 
-            'estate_filter_form' : EstateFilterForm(self.request.GET),                      
+            'estate_filter_form' : EstateFilterForm(self.request.GET),                                 
         })                
         return context
 

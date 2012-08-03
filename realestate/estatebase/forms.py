@@ -3,8 +3,8 @@
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label,\
-    Stead
+    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
+    Stead, EstateType
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -13,13 +13,14 @@ from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
+from django.forms.formsets import formset_factory
 
 class EstateCreateForm(ModelForm):
     #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
     class Meta:                
         model = Estate
-        fields = ('estate_type','origin','region','locality','microdistrict','street','estate_number',
-                  'beside','beside_distance','saler_price','agency_price','estate_status','estate_type')
+        fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
@@ -37,7 +38,7 @@ class EstateCommunicationForm(ModelForm):
 class EstateParamForm(ModelForm):
     class Meta:                
         model = Estate
-        fields = ('estate_params','description','comment')
+        fields = ('estate_params', 'description', 'comment')
         widgets = {
            'estate_params' : forms.CheckboxSelectMultiple()        
         }
@@ -45,12 +46,12 @@ class EstateParamForm(ModelForm):
 
 class ClientForm(ModelForm):              
     class Meta:        
-        exclude = ('created_by','updated','created', 'updated_by')
+        exclude = ('created_by', 'updated', 'created', 'updated_by')
         model = Client
         widgets = {
             'note': Textarea(attrs={'rows':'5'}),
             'address' : TextInput(attrs={'class': 'big-text-input'}),
-            'created' : DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),                        
+            'created' : DateTimeInput(attrs={'readonly':'True'}, format='%d.%m.%Y %H:%M'),
         }
 
 class ClientFilterForm(Form):
@@ -63,8 +64,8 @@ class ClientFilterForm(Form):
     note = forms.CharField(required=False, label=_('Note'))
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     filters = {
-            'pk' : 'id__exact',   
-            'contact' : 'contacts__contact__icontains',   
+            'pk' : 'id__exact',
+            'contact' : 'contacts__contact__icontains',
             'client_type' : 'client_type__id__exact',
             'name' : 'name__icontains',
             'origin' : 'origin__id__exact',
@@ -79,14 +80,26 @@ class ClientFilterForm(Form):
                 f[self.filters[field]] = value      
         return f            
 
+class EstateTypeForm(Form):
+    estate_type = forms.ModelChoiceField(EstateType.objects.all(), required=False, label=_('EstateType'))
+
+EstateTypeFormset = formset_factory(EstateTypeForm, extra=3)    
+
 class EstateFilterForm(Form):
-    pk = forms.CharField(required=False, label=_('ID'))
+    pk = forms.CharField(required=False, label=_('ID'))    
+    def get_filter(self):
+        f = {}   
+        if self['pk'].value():       
+            id_list = self['pk'].value().split(',')            
+            id_list = [int(x.strip()) for x in id_list]                     
+            f['id__in'] = id_list      
+        return f     
         
 class ContactHistoryForm(ModelForm):
     class Meta:        
         model = ContactHistory
         widgets = {
-            'event_date': DateTimeInput(attrs={'readonly':'True'},format = '%d.%m.%Y %H:%M'),            
+            'event_date': DateTimeInput(attrs={'readonly':'True'}, format='%d.%m.%Y %H:%M'),
         }            
         
 class ContactInlineForm(ModelForm):
@@ -107,7 +120,7 @@ class BidgForm(ModelForm):
         super(BidgForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
-        self.fields['documents'].help_text=''
+        self.fields['documents'].help_text = ''
     estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Bidg
@@ -128,7 +141,7 @@ class ApartmentForm(BidgForm):
             if field not in fields:
                 field_to_delete.append(field)                
             else:                                
-                self.fields[field].label = get_polymorph_label(self.instance,field)                           
+                self.fields[field].label = get_polymorph_label(self.instance, field)                           
         for field in field_to_delete:
             del self.fields[field]                                                  
     class Meta(BidgForm.Meta):
@@ -148,7 +161,7 @@ class LevelForm(ModelForm):
 class ImageUpdateForm(ModelForm):
     class Meta:
         model = EstatePhoto   
-        fields = ('name','note','image')     
+        fields = ('name', 'note', 'image')     
 
 class SteadUpdateForm(ModelForm):
     class Meta:

@@ -37,6 +37,7 @@
 <!--  -->
 <div class="button table-form">
     <form method="get">
+    	{{ estate_type_formset.management_form }}
         <table class="ui-widget ui-widget-content ui-corner-all">
             <thead>
                 <tr>
@@ -47,6 +48,7 @@
                 </tr>
             </thead>
             {{ estate_filter_form.as_table }}            
+            {{ estate_type_formset }}          
             <tfoot>
                 <tr>
                     <td colspan=2>
