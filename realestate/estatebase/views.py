@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView 
+    DeleteView , FormMixin, ProcessFormView, FormView
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
@@ -239,16 +239,14 @@ class EstateListDetailsView(EstateListView):
         self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])          
         q = super(EstateListDetailsView, self).get_queryset()        
         return q
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)     
         r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
-        p = float(r) / (self.estate.saler_price or 1) * 100    
-                
-        if 'form-TOTAL_FORMS' in self.request.GET:
-            context['estate_type_formset'] = EstateTypeFormset(self.request.GET)
+        p = float(r) / (self.estate.saler_price or 1) * 100                
+        if 'estate_types-TOTAL_FORMS' in self.request.GET:
+            context['estate_type_formset'] = EstateTypeFormset(self.request.GET,prefix='estate_types')
         else:
-            context['estate_type_formset'] = EstateTypeFormset()    
-                       
+            context['estate_type_formset'] = EstateTypeFormset(prefix='estate_types')                                   
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
@@ -257,6 +255,8 @@ class EstateListDetailsView(EstateListView):
             'estate_filter_form' : EstateFilterForm(self.request.GET),                                 
         })                
         return context
+   
+        
 
 class EstateImagesView(TemplateView): 
     template_name = 'estate_images.html'

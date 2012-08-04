@@ -37,6 +37,7 @@
 <!--  -->
 <div class="button table-form">
     <form method="get">
+    	{% csrf_token %}
     	{{ estate_type_formset.management_form }}
         <table class="ui-widget ui-widget-content ui-corner-all">
             <thead>
@@ -46,9 +47,14 @@
                         Фильтр
                     </div></td>
                 </tr>
-            </thead>
+            </thead>            
             {{ estate_filter_form.as_table }}            
-            {{ estate_type_formset }}          
+            {% for form in estate_type_formset %}
+            {{ form.id }}            
+            <tr>            	
+                <td colspan="2">{{ form.estate_type }}</td>
+            </tr>         
+            {% endfor %} 
             <tfoot>
                 <tr>
                     <td colspan=2>
