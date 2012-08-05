@@ -2,12 +2,12 @@
 from django.views.generic import TemplateView
 from models import EstateTypeCategory
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView , FormMixin, ProcessFormView, FormView
+    DeleteView 
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm, EstateTypeFormset
+    SteadUpdateForm, EstateFilterForm, EstateTypeFormset, RegionFormset
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead
 from django.core.urlresolvers import reverse
@@ -221,14 +221,33 @@ class EstateListView(ListView):
         q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status').prefetch_related('bidgs').all()
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
+        if 'estate_types-TOTAL_FORMS' in self.request.GET:
+            estate_type_filter =  EstateTypeFormset(self.request.GET,prefix='estate_types')
+            filter_dict.update(estate_type_filter.get_filter())
+        if 'regions-TOTAL_FORMS' in self.request.GET:
+            region_filter =  RegionFormset(self.request.GET,prefix='regions')
+            filter_dict.update(region_filter.get_filter())
+                                    
         if len(filter_dict):
             q = q.filter(**filter_dict)
         return q
     def get_context_data(self, **kwargs):
-        context = super(EstateListView, self).get_context_data(**kwargs)                   
+        context = super(EstateListView, self).get_context_data(**kwargs)
+        
+        if 'estate_types-TOTAL_FORMS' in self.request.GET:
+            context['estate_type_formset'] = EstateTypeFormset(self.request.GET,prefix='estate_types')
+        else:
+            context['estate_type_formset'] = EstateTypeFormset(prefix='estate_types')
+        
+        if 'regions-TOTAL_FORMS' in self.request.GET:
+            context['region_formset'] = RegionFormset(self.request.GET,prefix='regions')
+        else:
+            context['region_formset'] = RegionFormset(prefix='regions')
+                                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'total_count': Estate.objects.count(),            
+            'total_count': Estate.objects.count(),
+            'estate_filter_form' : EstateFilterForm(self.request.GET),            
         })        
         return context
 
@@ -242,17 +261,12 @@ class EstateListDetailsView(EstateListView):
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)     
         r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
-        p = float(r) / (self.estate.saler_price or 1) * 100                
-        if 'estate_types-TOTAL_FORMS' in self.request.GET:
-            context['estate_type_formset'] = EstateTypeFormset(self.request.GET,prefix='estate_types')
-        else:
-            context['estate_type_formset'] = EstateTypeFormset(prefix='estate_types')                                   
+        p = float(r) / (self.estate.saler_price or 1) * 100                                           
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.estate.images.all(),
-            'estate': self.estate, 
-            'estate_filter_form' : EstateFilterForm(self.request.GET),                                 
+            'estate': self.estate,                                             
         })                
         return context
    

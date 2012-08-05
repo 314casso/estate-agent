@@ -8,8 +8,10 @@
 
 {% block head %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
-<script type="text/javascript" src="{{ STATIC_URL }}js/lightbox.js"> </script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/simple-dialog.js"> </script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/lightbox.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/simple-dialog.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
+
 <style type="text/css">
 	.detail-table td {
 		border: 1px solid #ddd;
@@ -22,43 +24,69 @@
 	$(function() {
 		$(".selected").addClass('ui-state-highlight');
 		$("#tabs").tabs({
-			select: function(event, ui) {
-				localStorage.setItem('estate_id', '{{ estate.id }}');				
+            select: function(event, ui) {
+                localStorage.setItem('estate_id', '{{ estate.id }}');               
                 localStorage.setItem('saved_tab', ui.index);                
-			}, 
-			selected : getIndex('{{ estate.id }}','saved_tab')	
+            }, 
+            selected : getIndex('{{ estate.id }}','saved_tab')  
+        });
+
+		$("#filter").dialog({
+			modal : true,						
+			width : 700,
+			title : 'Фильтр',
+			position : ['center', 170],
+			autoOpen: false
 		});
+		
+		$('#estate-type-formset tr').formset({
+            prefix : 'estate_types',
+            addText : 'Добавить тип',
+            deleteText : 'Скрыть',
+            formCssClass: 'estate-type-formset'
+        });
+        
+        $('#region-formset tr').formset({
+            prefix : 'regions',
+            addText : 'Добавить район',
+            deleteText : 'Скрыть',
+            formCssClass: 'region-formset'
+        });
+        
 	}); 
-	
+
+function showFilter(){
+	$('#filter').dialog('open');
+}
+
 </script>
 {% endblock %}
 
 {% block left %}
+
+<input value="Показать фильтр" type="button" onclick="showFilter()">
 <!--  -->
-<div class="button table-form">
-    <form method="get">
-    	{% csrf_token %}
-    	{{ estate_type_formset.management_form }}
-        <table class="ui-widget ui-widget-content ui-corner-all">
-            <thead>
-                <tr>
-                    <td colspan="2">
-                    <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
-                        Фильтр
-                    </div></td>
-                </tr>
-            </thead>            
-            {{ estate_filter_form.as_table }}            
-            {% for form in estate_type_formset %}
-            {{ form.id }}            
-            <tr>            	
-                <td colspan="2">{{ form.estate_type }}</td>
-            </tr>         
-            {% endfor %} 
+<div class="button table-form" id='filter'>
+    <form method="get">        
+        <table class="ui-widget ui-widget-content ui-corner-all">           
+            {{ estate_filter_form.as_table }}
+            <tr>
+            	<td colspan="2">
+	            <table id="estate-type-formset">
+	            {{ estate_type_formset }}
+	            </table>
+	            </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                <table id="region-formset">
+                {{ region_formset }}
+                </table>
+                </td>
+            </tr>
             <tfoot>
                 <tr>
-                    <td colspan=2>
-                    <a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a> 
+                    <td colspan=2><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
                     <input type="submit" value="Применить"/>
                     </td>
                 </tr>
@@ -68,17 +96,16 @@
 </div>
 <!--  -->
 
-
 Количество объектов {{ total_count }}
 {% if request.GET.next %}
- <a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>
+<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>
 {% endif %}
 <div class="button" style="text-align: left; margin: 0 0 10px 3px">
     <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
 </div>
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
-    <legend style="font-size: 11px;">        
+    <legend style="font-size: 11px;">
         <a href="{% url estate_list_details estate_item.pk %}{% query_string '' '' %}">[{{ estate_item.pk }}]</a>
         <a title="{{ estate_item.estate_type }}" href="{% url estate_list_details estate_item.pk %}{% query_string '' '' %}">{{ estate_item.estate_type|truncatechars:19 }}</a>
         <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
@@ -86,10 +113,7 @@
         <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
         {% endif %}
 
-        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
-        <a href="{% url estate_update estate_item.pk %}?{{ next_url }}">
-        	<span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span>
-        </a>
+        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url estate_update estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
     </legend>
     <div style="border-bottom: 0px solid #ddd; font-style: italic">
         {% address estate_item %}

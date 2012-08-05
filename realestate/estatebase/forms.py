@@ -4,7 +4,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
-    Stead, EstateType
+    Stead, EstateType, Region
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -13,7 +13,7 @@ from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
-from django.forms.formsets import formset_factory
+from django.forms.formsets import formset_factory, BaseFormSet
 
 class EstateCreateForm(ModelForm):
     #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -82,8 +82,32 @@ class ClientFilterForm(Form):
 
 class EstateTypeForm(Form):
     estate_type = forms.ModelChoiceField(EstateType.objects.all(), required=False, label=_('EstateType'))
+    def get_filter_value(self):        
+        return self['estate_type'].value()
+    def get_filter_condition(self):
+        return 'estate_type_id__in'
+        
+class RegionForm(Form):
+    region = forms.ModelChoiceField(Region.objects.all(), required=False, label=_('Region'))
+    def get_filter_value(self):        
+        return self['region'].value()
+    def get_filter_condition(self):
+        return 'region_id__in'        
+        
+class BaseFilterFormSet(BaseFormSet):
+    def get_filter(self):
+        f = {}
+        id_list = []
+        for form in self:
+            value = form.get_filter_value()
+            if value:
+                id_list.append(value)
+        if len(id_list) > 0:
+            f[self.forms[0].get_filter_condition()] = id_list
+        return f                
 
-EstateTypeFormset = formset_factory(EstateTypeForm, extra=3)    
+EstateTypeFormset = formset_factory(EstateTypeForm, formset=BaseFilterFormSet, extra=1)
+RegionFormset = formset_factory(RegionForm, formset=BaseFilterFormSet, extra=1)     
 
 class EstateFilterForm(Form):
     pk = forms.CharField(required=False, label=_('ID'))    
