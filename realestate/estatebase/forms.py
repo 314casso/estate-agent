@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup,\
-    EstateTypeLookup, EstateLookup
+    EstateTypeLookup, EstateLookup, RegionLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.formsets import formset_factory, BaseFormSet
 from selectable.forms.fields import AutoCompleteSelectField,\
-    AutoCompleteSelectMultipleField
+    AutoCompleteSelectMultipleField, AutoComboboxSelectMultipleField
 
 
 
@@ -95,12 +95,29 @@ class EstateFilterForm(Form):
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),
             required=False,
-        ) 
+        )
+    
+    region = AutoComboboxSelectMultipleField(
+            lookup_class=RegionLookup,
+            label=_('Region'),
+            required=False,
+        )
+    
+    locality = AutoComboboxSelectMultipleField(
+            lookup_class=LocalityLookup,
+            label=_('Locality'),
+            required=False,
+        )
+     
     street = AutoCompleteSelectMultipleField(
             lookup_class=StreetLookup,
             label=_('Street'),
             required=False,
         )   
+    
+    estate_number = forms.CharField(required=False, label=_('Estate number'))
+    room_number = forms.CharField(required=False, label=_('Room number'))
+    
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -109,7 +126,19 @@ class EstateFilterForm(Form):
             f['street_id__in'] = self['street'].value()
         if self['estate_type'].value():
             f['estate_type_id__in'] = self['estate_type'].value()                
+        if self['region'].value():
+            f['region_id__in'] = self['region'].value()
+        if self['locality'].value():
+            f['locality_id__in'] = self['locality'].value()
+        if self['estate_number'].value():                                 
+            f['estate_number__in'] = split_string(self['estate_number'].value())
+        if self['room_number'].value():                                 
+            f['bidgs__room_number__contains'] = self['room_number'].value()                           
         return f     
+
+
+def split_string(value):                 
+    return [int(x.strip()) for x in value.split(',')]     
         
 class ContactHistoryForm(ModelForm):
     class Meta:        
