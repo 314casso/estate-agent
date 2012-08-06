@@ -1,8 +1,17 @@
 from selectable.base import ModelLookup
-from estatebase.models import Street, Locality, Microdistrict
+from estatebase.models import Street, Locality, Microdistrict, EstateType,\
+    Estate
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
+
+class EstateTypeLookup(ModelLookup):
+    model = EstateType
+    search_fields = ('name__icontains',)    
+    
+class EstateLookup(ModelLookup):
+    model = Estate
+    search_fields = ('id__icontains',)    
 
 class StreetLookup(ModelLookup):
     model = Street
@@ -35,5 +44,7 @@ try:
     registry.register(StreetLookup)
     registry.register(LocalityLookup)
     registry.register(MicrodistrictLookup)
+    registry.register(EstateTypeLookup)
+    registry.register(EstateLookup)
 except LookupAlreadyRegistered:
     pass    

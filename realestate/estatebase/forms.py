@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
+from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup,\
+    EstateTypeLookup, EstateLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
-    Stead, EstateType, Region
+    Stead, EstateType, Region, Street
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
@@ -14,6 +15,10 @@ from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
 from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.formsets import formset_factory, BaseFormSet
+from selectable.forms.fields import AutoCompleteSelectField,\
+    AutoCompleteSelectMultipleField
+
+
 
 class EstateCreateForm(ModelForm):
     #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -80,43 +85,30 @@ class ClientFilterForm(Form):
                 f[self.filters[field]] = value      
         return f            
 
-class EstateTypeForm(Form):
-    estate_type = forms.ModelChoiceField(EstateType.objects.all(), required=False, label=_('EstateType'))
-    def get_filter_value(self):        
-        return self['estate_type'].value()
-    def get_filter_condition(self):
-        return 'estate_type_id__in'
-        
-class RegionForm(Form):
-    region = forms.ModelChoiceField(Region.objects.all(), required=False, label=_('Region'))
-    def get_filter_value(self):        
-        return self['region'].value()
-    def get_filter_condition(self):
-        return 'region_id__in'        
-        
-class BaseFilterFormSet(BaseFormSet):
-    def get_filter(self):
-        f = {}
-        id_list = []
-        for form in self:
-            value = form.get_filter_value()
-            if value:
-                id_list.append(value)
-        if len(id_list) > 0:
-            f[self.forms[0].get_filter_condition()] = id_list
-        return f                
-
-EstateTypeFormset = formset_factory(EstateTypeForm, formset=BaseFilterFormSet, extra=1)
-RegionFormset = formset_factory(RegionForm, formset=BaseFilterFormSet, extra=1)     
-
 class EstateFilterForm(Form):
-    pk = forms.CharField(required=False, label=_('ID'))    
+    pk = AutoCompleteSelectMultipleField(
+            lookup_class=EstateLookup,
+            label=_('ID'),
+            required=False,
+        ) 
+    estate_type = AutoCompleteSelectMultipleField(
+            lookup_class=EstateTypeLookup,
+            label=_('Estate type'),
+            required=False,
+        ) 
+    street = AutoCompleteSelectMultipleField(
+            lookup_class=StreetLookup,
+            label=_('Street'),
+            required=False,
+        )   
     def get_filter(self):
         f = {}   
-        if self['pk'].value():       
-            id_list = self['pk'].value().split(',')            
-            id_list = [int(x.strip()) for x in id_list]                     
-            f['id__in'] = id_list      
+        if self['pk'].value():                                 
+            f['id__in'] = self['pk'].value()
+        if self['street'].value():
+            f['street_id__in'] = self['street'].value()
+        if self['estate_type'].value():
+            f['estate_type_id__in'] = self['estate_type'].value()                
         return f     
         
 class ContactHistoryForm(ModelForm):

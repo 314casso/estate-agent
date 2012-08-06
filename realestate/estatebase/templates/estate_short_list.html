@@ -38,21 +38,7 @@
 			position : ['center', 170],
 			autoOpen: false
 		});
-		
-		$('#estate-type-formset tr').formset({
-            prefix : 'estate_types',
-            addText : 'Добавить тип',
-            deleteText : 'Скрыть',
-            formCssClass: 'estate-type-formset'
-        });
-        
-        $('#region-formset tr').formset({
-            prefix : 'regions',
-            addText : 'Добавить район',
-            deleteText : 'Скрыть',
-            formCssClass: 'region-formset'
-        });
-        
+		        
 	}); 
 
 function showFilter(){
@@ -60,6 +46,10 @@ function showFilter(){
 }
 
 </script>
+
+<link href="/static/selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="/static/selectable/js/jquery.dj.selectable.js"></script>
+
 {% endblock %}
 
 {% block left %}
@@ -69,21 +59,7 @@ function showFilter(){
 <div class="button table-form" id='filter'>
     <form method="get">        
         <table class="ui-widget ui-widget-content ui-corner-all">           
-            {{ estate_filter_form.as_table }}
-            <tr>
-            	<td colspan="2">
-	            <table id="estate-type-formset">
-	            {{ estate_type_formset }}
-	            </table>
-	            </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                <table id="region-formset">
-                {{ region_formset }}
-                </table>
-                </td>
-            </tr>
+            {{ estate_filter_form.as_table }}                                    
             <tfoot>
                 <tr>
                     <td colspan=2><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
