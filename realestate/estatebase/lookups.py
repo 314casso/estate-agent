@@ -1,6 +1,6 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
-    Estate, Region
+    Estate, Region, EstateStatus
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -11,6 +11,10 @@ class EstateTypeLookup(ModelLookup):
     
 class EstateLookup(ModelLookup):
     model = Estate
+    search_fields = ('id__icontains',)    
+    
+class EstateStatusLookup(ModelLookup):
+    model = EstateStatus
     search_fields = ('id__icontains',)    
     
 class RegionLookup(ModelLookup):
@@ -51,5 +55,6 @@ try:
     registry.register(EstateTypeLookup)
     registry.register(EstateLookup)
     registry.register(RegionLookup)
+    registry.register(EstateStatusLookup)    
 except LookupAlreadyRegistered:
     pass    

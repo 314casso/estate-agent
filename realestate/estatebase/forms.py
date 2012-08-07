@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup,\
-    EstateTypeLookup, EstateLookup, RegionLookup
+    EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
@@ -17,6 +17,7 @@ from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.formsets import formset_factory, BaseFormSet
 from selectable.forms.fields import AutoCompleteSelectField,\
     AutoCompleteSelectMultipleField, AutoComboboxSelectMultipleField
+import re
 
 
 
@@ -95,29 +96,37 @@ class EstateFilterForm(Form):
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),
             required=False,
-        )
-    
+        )    
     region = AutoComboboxSelectMultipleField(
             lookup_class=RegionLookup,
             label=_('Region'),
             required=False,
-        )
-    
+        )    
     locality = AutoComboboxSelectMultipleField(
             lookup_class=LocalityLookup,
             label=_('Locality'),
             required=False,
-        )
-     
+        )    
+    microdistrict = AutoCompleteSelectMultipleField(
+            lookup_class=MicrodistrictLookup,
+            label=_('Microdistrict'),
+            required=False,
+        )     
     street = AutoCompleteSelectMultipleField(
             lookup_class=StreetLookup,
             label=_('Street'),
             required=False,
-        )   
-    
+        )    
     estate_number = forms.CharField(required=False, label=_('Estate number'))
-    room_number = forms.CharField(required=False, label=_('Room number'))
-    
+    room_number = forms.CharField(required=False, label=_('Room number'))    
+    estate_status = AutoComboboxSelectMultipleField(
+            lookup_class=EstateStatusLookup,
+            label=_('Estate status'),
+            required=False,
+        )         
+    agency_price = forms.CharField(required=False, label=_('Price'))    
+    client = forms.CharField(required=False, label=_('Client'))
+    contact = forms.CharField(required=False, label=_('Contact'))       
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -133,9 +142,44 @@ class EstateFilterForm(Form):
         if self['estate_number'].value():                                 
             f['estate_number__in'] = split_string(self['estate_number'].value())
         if self['room_number'].value():                                 
-            f['bidgs__room_number__contains'] = self['room_number'].value()                           
+            f['bidgs__room_number__contains'] = self['room_number'].value()
+        if self['microdistrict'].value():
+            f['microdistrict_id__in'] = self['microdistrict'].value()
+        if self['estate_status'].value():
+            f['estate_status_id__in'] = self['estate_status'].value()                                           
+        if self['client'].value():
+            f['clients__name__icontains'] = self['client'].value()    
+        if self['contact'].value():
+            f['clients__contacts__contact__icontains'] = self['contact'].value()    
+        if self['agency_price'].value():
+            value = from_to(self['agency_price'].value(),'agency_price')
+            if value:
+                f.update(value)    
         return f     
 
+'''
+Для формирование поля от до
+'''
+def from_to(value,field_name):
+    f = {}
+    if not value:
+        return None    
+    a = ''.join(value.split())
+    matchobjs = re.match(r"^(?P<oper>\>|\<)(?P<n>\d+)$", a)
+    if matchobjs:         
+        if matchobjs.group('oper') == '>':
+            f['%s__gte' % field_name] = matchobjs.group('n')
+        else:
+            f['%s__lte' % field_name] = matchobjs.group('n')    
+    else:
+        matchobjs = re.match(r"^(?P<n1>\d+)\-(?P<n2>\d+)$", a)
+        if matchobjs:
+            f['%s__range' % field_name] = (matchobjs.group('n1'), matchobjs.group('n2'))            
+        else:
+            matchobjs = re.match(r"^(?P<n>\d+)$", a)
+            if matchobjs:
+                f['%s__exact' % field_name] = matchobjs.group('n')   
+    return f or None    
 
 def split_string(value):                 
     return [int(x.strip()) for x in value.split(',')]     
