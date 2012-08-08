@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup,\
-    EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup
+    EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup,\
+    WallConstrucionLookup
 from django.forms import ModelForm
 from estatebase.models import  Client, Contact, ClientType, \
     Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
@@ -126,7 +127,19 @@ class EstateFilterForm(Form):
         )         
     agency_price = forms.CharField(required=False, label=_('Price'))    
     client = forms.CharField(required=False, label=_('Client'))
-    contact = forms.CharField(required=False, label=_('Contact'))       
+    contact = forms.CharField(required=False, label=_('Contact'))
+    year_built = forms.CharField(required=False, label=_('Year built'))
+    floor = forms.CharField(required=False, label=_('Floor'))        
+    floor_count = forms.CharField(required=False, label=_('Floor count'))
+    wall_construcion = AutoComboboxSelectMultipleField(
+            lookup_class=WallConstrucionLookup,
+            label=_('Wall Construcion'),
+            required=False,
+        )
+    total_area = forms.CharField(required=False, label=_('Total area'))
+    used_area = forms.CharField(required=False, label=_('Used area'))   
+    room_count = forms.CharField(required=False, label=_('Room count'))
+    stead_area = forms.CharField(required=False, label=_('Stead area'))
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -155,6 +168,36 @@ class EstateFilterForm(Form):
             value = from_to(self['agency_price'].value(),'agency_price')
             if value:
                 f.update(value)    
+        if self['year_built'].value():
+            value = from_to(self['year_built'].value(),'bidgs__year_built')
+            if value:
+                f.update(value)
+        if self['floor'].value():
+            value = from_to(self['floor'].value(),'bidgs__floor')
+            if value:
+                f.update(value)        
+        if self['floor_count'].value():
+            value = from_to(self['floor_count'].value(),'bidgs__floor_count')
+            if value:
+                f.update(value)                
+        if self['wall_construcion'].value():
+            f['bidgs__wall_construcion_id__in'] = self['wall_construcion'].value()            
+        if self['total_area'].value():
+            value = from_to(self['total_area'].value(),'bidgs__total_area')
+            if value:
+                f.update(value)            
+        if self['used_area'].value():
+            value = from_to(self['used_area'].value(),'bidgs__used_area')
+            if value:
+                f.update(value)        
+        if self['room_count'].value():
+            value = from_to(self['room_count'].value(),'bidgs__room_count')
+            if value:
+                f.update(value)        
+        if self['stead_area'].value():
+            value = from_to(self['stead_area'].value(),'stead__total_area')
+            if value:
+                f.update(value)        
         return f     
 
 '''

@@ -228,7 +228,7 @@ class EstateListView(ListView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
-            'estate_filter_form' : EstateFilterForm(self.request.GET),            
+            'estate_filter_form' : EstateFilterForm(self.request.GET),                      
         })        
         return context
 

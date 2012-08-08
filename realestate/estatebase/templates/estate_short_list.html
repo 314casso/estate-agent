@@ -15,14 +15,17 @@
 <style type="text/css">
 	.detail-table td {
 		border: 1px solid #ddd;
+		
 	}
 	.ui-tabs-panel {
 		padding: 4px 3px !important;
-	}
-	
+	}	
 	.selectable-deck {
 		margin: 0;
 	}
+	#filter td {
+		padding: 0 5px;
+	}	
 </style>
 <script type="text/javascript">
 	$(function() {
@@ -37,7 +40,7 @@
 
 		$("#filter").dialog({
 			modal : true,						
-			width : 700,
+			width : 340,
 			title : 'Фильтр',
 			position : ['center', 170],
 			autoOpen: false
@@ -62,8 +65,17 @@ function showFilter(){
 <!--  -->
 <div class="button table-form" id='filter'>
     <form method="get">        
-        <table class="ui-widget ui-widget-content ui-corner-all">           
-            {{ estate_filter_form.as_table }}                                    
+        <table class="ui-widget ui-widget-content ui-corner-all" style="width:100%">                
+            {% for field in estate_filter_form %}
+			    <tr>
+			    	<td>			        
+			        {{ field.label_tag }}
+			        </td>
+			        <td>
+			        {{ field.errors }}{{ field }}
+			        </td>
+			    </tr>
+			{% endfor %}                                          
             <tfoot>
                 <tr>
                     <td colspan=2><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>

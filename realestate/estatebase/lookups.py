@@ -1,6 +1,6 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
-    Estate, Region, EstateStatus
+    Estate, Region, EstateStatus, WallConstrucion
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -45,6 +45,10 @@ class LocalityLookup(ModelLookup):
     def get_item_label(self, item):
         return u"%s, %s" % (item.name, item.region or '')
 
+class WallConstrucionLookup(ModelLookup):
+    model = WallConstrucion
+    search_fields = ('name__icontains',)   
+
 class MicrodistrictLookup(StreetLookup):
     model = Microdistrict
 
@@ -55,6 +59,7 @@ try:
     registry.register(EstateTypeLookup)
     registry.register(EstateLookup)
     registry.register(RegionLookup)
-    registry.register(EstateStatusLookup)    
+    registry.register(EstateStatusLookup)   
+    registry.register(WallConstrucionLookup) 
 except LookupAlreadyRegistered:
     pass    
