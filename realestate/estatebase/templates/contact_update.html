@@ -60,8 +60,7 @@
 		</tbody>
 		<tfoot class="button">
 			<tr>
-				<td colspan="100%">
-				<input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+				<td colspan="100%">				
 				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
 				</td>
 			</tr>
@@ -84,7 +83,7 @@
 	<tbody>
 		{% for item in contact.client.contacts.all %}
 		<tr>
-			<td id="contact-list-{{ item.pk }}"><a href="{% url contact_update item.pk %}?next={{ request.GET.next }}">{{ item }}</a></td>
+			<td id="contact-list-{{ item.pk }}"><a href="{% url contact_update item.pk %}?next={{ request.GET.next|urlencode }}">{{ item }}</a></td>
 		</tr>
 		{% endfor %}
 	</tbody>
