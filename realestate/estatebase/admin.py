@@ -5,8 +5,9 @@ from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
-    Driveway, LevelName, EstatePhoto, Stead
-
+    Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -29,6 +30,17 @@ class EstateTypeCategoryAdmin(OrderedModelAdmin):
 
 class EstateParamAdmin(OrderedModelAdmin):
     list_display = ['name', 'reorder']
+
+
+admin.site.unregister(User)
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+
+class UserProfileAdmin(UserAdmin):
+    inlines = [ UserProfileInline, ]
+
+admin.site.register(User, UserProfileAdmin)
 
 admin.site.register(Region)
 admin.site.register(Locality)
@@ -61,3 +73,5 @@ admin.site.register(Driveway)
 admin.site.register(LevelName)
 admin.site.register(EstatePhoto)
 admin.site.register(Stead)
+admin.site.register(UserProfile)
+admin.site.register(GeoGroup)

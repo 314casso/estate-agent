@@ -1,17 +1,22 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
-    Estate, Region, EstateStatus, WallConstrucion
+    Estate, Region, EstateStatus, WallConstrucion, GeoGroup
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
 
 class EstateTypeLookup(ModelLookup):
     model = EstateType
-    search_fields = ('name__icontains',)    
+    search_fields = ('name__icontains',)        
     
 class EstateLookup(ModelLookup):
     model = Estate
-    search_fields = ('id__icontains',)    
+    search_fields = ('id__icontains',)
+    def get_query(self, request, term):
+        results = super(EstateLookup, self).get_query(request, term)        
+        if request.user:
+            results = results.filter(locality__geo_group__userprofile__user__exact = request.user)
+        return results        
     
 class EstateStatusLookup(ModelLookup):
     model = EstateStatus
@@ -60,6 +65,6 @@ try:
     registry.register(EstateLookup)
     registry.register(RegionLookup)
     registry.register(EstateStatusLookup)   
-    registry.register(WallConstrucionLookup) 
+    registry.register(WallConstrucionLookup)    
 except LookupAlreadyRegistered:
     pass    

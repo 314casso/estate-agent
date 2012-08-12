@@ -15,7 +15,11 @@ class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
     class Meta:
-        proxy = True    
+        proxy = True
+
+class UserProfile(models.Model):    
+    user = models.OneToOneField(User)    
+    geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)                
 
 class SimpleDict(models.Model):
     name = models.CharField(_('Name'), max_length=255)
@@ -26,6 +30,14 @@ class SimpleDict(models.Model):
     class Meta:
         ordering = ['name']
         abstract = True
+
+class GeoGroup(SimpleDict):
+    '''
+    GeoGroup    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Geo group')
+        verbose_name_plural = _('Geo groups')
 
 class Region(SimpleDict):
     '''
@@ -40,6 +52,7 @@ class Locality(SimpleDict):
     Населенные пункты
     '''
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),)
+    geo_group = models.ForeignKey(GeoGroup,verbose_name=_('GeoGroup'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
         verbose_name_plural = _('localities')    

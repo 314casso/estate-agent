@@ -87,7 +87,7 @@ options = \
 Снят с продажи
 '''
 
-
+"""
 MODEL = 'EstateStatus'
 
 import settings
@@ -103,6 +103,7 @@ if not os.path.isfile(fixfile):
 else:
     print 'Fixture already exists!'     
 
+"""
 
-#mm = ModelMaker('SimpleDict', 'purpose')
-#print mm.get_model_code()
+mm = ModelMaker('SimpleDict', 'geo_group')
+print mm.get_model_code()
