@@ -225,11 +225,13 @@ class EstateListView(ListView):
             q = q.filter(**filter_dict)
         return q
     def get_context_data(self, **kwargs):
-        context = super(EstateListView, self).get_context_data(**kwargs)                                            
+        context = super(EstateListView, self).get_context_data(**kwargs)
+        estate_filter_form = EstateFilterForm(self.request.GET)                                            
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
-            'estate_filter_form' : EstateFilterForm(self.request.GET),                      
+#            'estate_filter_form' : estate_filter_form,
+            'fields': list(estate_filter_form),                                   
         })        
         return context
 

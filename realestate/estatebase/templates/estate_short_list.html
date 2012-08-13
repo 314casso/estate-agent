@@ -40,7 +40,7 @@
 
 		$("#filter").dialog({
 			modal : true,						
-			width : 340,
+			width : 680,
 			title : 'Фильтр',
 			//position : ['center', 170],
 			autoOpen: false
@@ -65,17 +65,37 @@ function showFilter(){
 <!--  -->
 <div class="button table-form" id='filter'>
     <form method="get">        
-        <table class="ui-widget ui-widget-content ui-corner-all" style="width:100%">                
-            {% for field in estate_filter_form %}
-			    <tr>
-			    	<td>			        
-			        {{ field.label_tag }}
-			        </td>
-			        <td>
-			        {{ field.errors }}{{ field }}
-			        </td>
-			    </tr>
-			{% endfor %}                                          
+        <table class="ui-widget ui-widget-content ui-corner-all" style="width:100%">
+        	<tr>
+        		<td>{{ fields_count }}
+        			<table>	                
+		            {% for field in fields|slice:":10" %}
+					    <tr>
+					    	<td>			        
+					        {{ field.label_tag }}
+					        </td>
+					        <td>
+					        {{ field.errors }}{{ field }}
+					        </td>
+					    </tr>
+					{% endfor %}
+					</table>
+				</td>
+				<td>
+					<table>	                
+		            {% for field in fields|slice:"10:" %}
+					    <tr>
+					    	<td>			        
+					        {{ field.label_tag }}
+					        </td>
+					        <td>
+					        {{ field.errors }}{{ field }}
+					        </td>
+					    </tr>
+					{% endfor %}
+				</table>	
+				</td>	
+			</tr>                                          
             <tfoot>
                 <tr>
                     <td colspan=2><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
@@ -88,7 +108,7 @@ function showFilter(){
 </div>
 <!--  -->
 
-Количество объектов {{ total_count }}
+Количество объектов: {{ total_count }}
 {% if request.GET.next %}
 <a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>
 {% endif %}
