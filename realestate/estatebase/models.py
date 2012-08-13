@@ -311,9 +311,9 @@ class Estate(models.Model):
         elif basic_bidg and basic_bidg.estate_type != self.estate_type:            
             basic_bidg.estate_type = self.estate_type
             basic_bidg.save()        
-        if self.estate_type.object_type in ('STEAD', 'MIX', 'COMPLEX') and not self.basic_stead:
+        if self.estate_type.object_type in ('STEAD', 'MIX') and not self.basic_stead:
             stead = Stead(estate=self)
-            stead.save()                       
+            stead.save()                                   
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)
@@ -586,11 +586,7 @@ class Client(models.Model):
         return u'%s %s' % (self.name, self.address)    
     @property
     def user(self):
-        return self.history.updated_by or self.history.created_by 
-    def save(self, *args, **kwargs):
-        user = kwargs.pop('user', None)                                           
-        self.history = prepare_history(self.history, user)                                     
-        super(Client, self).save(*args, **kwargs)    
+        return self.history.updated_by or self.history.created_by        
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
@@ -611,6 +607,7 @@ class ContactHistory(models.Model):
     user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
+#    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='contact_estate_history',blank=True, null=True)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
     class Meta:
@@ -622,7 +619,8 @@ class Contact(models.Model):
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
-    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)     
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)
+#    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='update_via_estate',blank=True, null=True)      
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
     @property
@@ -653,7 +651,9 @@ class Contact(models.Model):
                 return             
         contact_history = ContactHistory(event_date=self.updated,
                                          contact_state=self.contact_state, contact=self,
-                                         user_id=Client.objects.get(pk=self.client_id).user.pk)
+                                         user_id=Client.objects.get(pk=self.client_id).user.pk,
+#                                         estate=self.estate
+                                         )
         contact_history.save()                                            
     class Meta:
         verbose_name = _('contact')

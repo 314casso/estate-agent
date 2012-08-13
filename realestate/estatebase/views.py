@@ -21,6 +21,7 @@ from estatebase.helpers.functions import safe_next_link
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
+from django.db.models.query_utils import Q
 
 class BaseMixin():
     def get_success_url(self):   
@@ -220,7 +221,12 @@ class EstateListView(ListView):
         q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status').prefetch_related('bidgs').all()        
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
-        filter_dict.update({'locality__geo_group__userprofile__user__exact': self.request.user })                                            
+        filter_dict.update({'locality__geo_group__userprofile__user__exact': self.request.user })
+#        Пример фильтра Q
+#        queries = []
+#        queries.append(Q(id__in=(25,29)) | Q(id=28))    
+#        queries.append(Q(estate_type_id__in=(13,17)))
+#        q = q.filter(*queries)                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
         return q
@@ -396,8 +402,10 @@ class ClientMixin(ModelFormMixin):
         context = self.get_context_data()
         contact_form = context['contact_formset']
         if contact_form.is_valid():
-            self.object = form.save(commit=False)                         
-            self.object.save(user=ExUser.objects.get(pk=self.request.user.pk))             
+            self.object = form.save(commit=False)
+            user = ExUser.objects.get(pk=self.request.user.pk) 
+            self.object.history = prepare_history(self.object.history, user)
+            self.object.save()                                     
             contact_form.instance = self.object
             contact_form.save()
             return super(ModelFormMixin, self).form_valid(form)
