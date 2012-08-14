@@ -149,7 +149,7 @@ class EstateFilterForm(Form):
         if self['street'].value():
             f['street_id__in'] = self['street'].value()
         if self['estate_type'].value():
-            f['estate_type_id__in'] = self['estate_type'].value()                
+            f['bidgs__estate_type_id__in'] = self['estate_type'].value()                
         if self['region'].value():
             f['region_id__in'] = self['region'].value()
         if self['locality'].value():

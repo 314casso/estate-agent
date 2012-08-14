@@ -287,9 +287,13 @@ class ClientUpdateEstateView(DetailView):
     def post(self, request, *args, **kwargs):        
         self.object = Client.objects.get(pk=self.kwargs['pk'])
         self.update_object()       
-        #Обновление истории клиента 
+        #Обновление истории клиента                     
         self.object.history = prepare_history(self.object.history, self.request.user.pk)                
         self.object.save()        
+        estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
+        estate.set_contact()
+        estate.save()            
+        prepare_history(estate.history, self.request.user.pk)      
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 class ClientRemoveEstateView(ClientUpdateEstateView):    
@@ -307,7 +311,7 @@ class ObjectMixin(ModelFormMixin):
     model = Bidg    
     continue_url = None    
     def form_valid(self, form):
-        prepare_history(self.get_estate().history, user=ExUser.objects.get(pk=self.request.user.pk))       
+        prepare_history(self.get_estate().history, self.request.user.pk)       
         return super(ObjectMixin, self).form_valid(form)    
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         

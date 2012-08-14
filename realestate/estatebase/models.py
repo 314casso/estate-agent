@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator, RegexValidator, validate_email
-from django.db import models
+from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
+from django.db.models.signals import post_save
 
 class ExUser(User):
     def __unicode__(self):
@@ -266,7 +267,8 @@ class Estate(models.Model):
     description = models.TextField(_('Description'), blank=True, null=True)
     comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
     #Изменения
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True)  
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True)
+    contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
     valid =  models.BooleanField(_('Valid'), default=False) 
     @property
     def detail_link(self):            
@@ -289,13 +291,15 @@ class Estate(models.Model):
             return None    
     @property
     def correct(self):
-        return self.valid and (datetime.datetime.now() - self.history.modificated < datetime.timedelta(minutes=2)) 
+        return self.valid and (datetime.datetime.now() - self.history.modificated < datetime.timedelta(minutes=2))
+    @property
+    def basic_contact(self):
+        return self.contact 
     @property
     def state_css(self):
         css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
-        return self.estate_status_id in css and css[self.estate_status_id] or ''
-    @property
-    def basic_contact(self):
+        return self.estate_status_id in css and css[self.estate_status_id] or ''    
+    def get_best_contact(self):
         contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id','contact_type__id','-updated')[:1]        
         if contacts:
             return contacts[0]             
@@ -305,8 +309,9 @@ class Estate(models.Model):
         ordering = ['-id']    
     def __unicode__(self):
         return u'%s' % self.pk    
-    def set_validity(self,has_valid_contact):
-        self.valid = has_valid_contact     
+    def set_contact(self):
+        self.contact = self.get_best_contact()
+        self.valid = self.contact and self.contact.contact_state_id == 1 or False       
     def save(self, *args, **kwargs):                                                                        
         super(Estate, self).save(*args, **kwargs)
         basic_bidg = self.basic_bidg        
@@ -597,14 +602,18 @@ class Client(models.Model):
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
-        ordering = ['id']
+        ordering = ['id']        
     def save(self, *args, **kwargs):        
         super(Client, self).save(*args, **kwargs)              
-        #Обновление истории объектов        
-        for estate in self.estates.all():
-            estate.set_validity(self.valid)
-            estate.save()            
-            prepare_history(estate.history, self.history.user_id)        
+
+@transaction.commit_on_success        
+def update_estate(sender, instance, created, **kwargs):
+    for estate in instance.estates.all():
+        estate.set_contact()
+        estate.save()            
+        prepare_history(estate.history, instance.history.user_id)                        
+
+post_save.connect(update_estate, sender=Client)
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):
