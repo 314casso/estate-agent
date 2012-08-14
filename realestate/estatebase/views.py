@@ -31,9 +31,8 @@ class BaseMixin():
 
 class HistoryMixin(BaseMixin, ModelFormMixin):
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        user = ExUser.objects.get(pk=self.request.user.pk) 
-        self.object.history = prepare_history(self.object.history, user)        
+        self.object = form.save(commit=False)        
+        self.object.history = prepare_history(self.object.history, self.request.user.pk)        
         return super(HistoryMixin, self).form_valid(form)
 
 class AjaxMixin(ModelFormMixin):
@@ -232,7 +231,7 @@ class EstateListView(ListView):
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)
-        estate_filter_form = EstateFilterForm(self.request.GET)                                            
+        estate_filter_form = EstateFilterForm(self.request.GET)                                                                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
@@ -287,12 +286,10 @@ class ClientUpdateEstateView(DetailView):
         self.object.estates.add(self.kwargs['estate_pk'])        
     def post(self, request, *args, **kwargs):        
         self.object = Client.objects.get(pk=self.kwargs['pk'])
-        self.update_object()
-        user = ExUser.objects.get(pk=self.request.user.pk)                
-        self.object.save(user=user)
-        #Обновление истории объекта
-        estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
-        prepare_history(estate.history, user)
+        self.update_object()       
+        #Обновление истории клиента 
+        self.object.history = prepare_history(self.object.history, self.request.user.pk)                
+        self.object.save()        
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 class ClientRemoveEstateView(ClientUpdateEstateView):    
@@ -402,12 +399,17 @@ class ClientMixin(ModelFormMixin):
         context = self.get_context_data()
         contact_form = context['contact_formset']
         if contact_form.is_valid():
-            self.object = form.save(commit=False)
-            user = ExUser.objects.get(pk=self.request.user.pk) 
-            self.object.history = prepare_history(self.object.history, user)
-            self.object.save()                                     
-            contact_form.instance = self.object
-            contact_form.save()
+            self.object = form.save(commit=False)             
+            self.object.history = prepare_history(self.object.history, self.request.user.pk)
+            self.object.save()            
+            if contact_form.has_changed():
+                contact_form.instance = self.object
+                contacts = contact_form.save(commit=False)
+                for contact in contacts:
+                    contact.user_id = self.request.user.pk
+                    contact.save() 
+            self.object.set_validity()
+            self.object.save()                           
             return super(ModelFormMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -451,7 +453,7 @@ class ClientDeleteView(ClientMixin, DeleteView):
         return context 
     
 class ContactMixin(BaseMixin):
-    model = Contact    
+    model = Contact       
     
 class ContactHistoryListView(ContactMixin, DetailView):
     '''  
@@ -489,6 +491,14 @@ class ContactUpdateView(ContactMixin, UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context
+    def form_valid(self, form):            
+        self.object = form.save(commit=False)
+        self.object.user_id = self.request.user.pk                
+        result = super(ContactUpdateView, self).form_valid(form) 
+        self.object.client.set_validity()
+        self.object.client.save()
+        prepare_history(self.object.client.history, self.request.user.pk)       
+        return result
     
 class LevelMixin(ModelFormMixin):
     template_name = 'layout_update.html'

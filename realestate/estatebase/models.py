@@ -210,20 +210,23 @@ class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
     created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')    
     @property
     def modificated(self):
-        return self.updated or self.created                         
+        return self.updated or self.created
+    @property
+    def user_id(self):
+        return self.updated_by and self.updated_by.pk or self.created_by.pk                                        
     
-def prepare_history(history, user):
+def prepare_history(history, user_id):
     if not history:
         history = HistoryMeta()        
         history.created = datetime.datetime.now()
-        history.created_by = user
+        history.created_by_id = user_id
         history.save() 
-    elif user:
+    elif user_id:
         history.updated = datetime.datetime.now()
-        history.updated_by = user
+        history.updated_by_id = user_id
         history.save()
     return history                 
     
@@ -286,7 +289,7 @@ class Estate(models.Model):
             return None    
     @property
     def correct(self):
-        return self.valid  
+        return self.valid and (datetime.datetime.now() - self.history.modificated < datetime.timedelta(minutes=2)) 
     @property
     def state_css(self):
         css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
@@ -295,13 +298,15 @@ class Estate(models.Model):
     def basic_contact(self):
         contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id','contact_type__id','-updated')[:1]        
         if contacts:
-            return contacts[0]       
+            return contacts[0]             
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
         ordering = ['-id']    
     def __unicode__(self):
         return u'%s' % self.pk    
+    def set_validity(self,has_valid_contact):
+        self.valid = has_valid_contact     
     def save(self, *args, **kwargs):                                                                        
         super(Estate, self).save(*args, **kwargs)
         basic_bidg = self.basic_bidg        
@@ -580,17 +585,26 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    valid =  models.BooleanField(_('Valid'), default=False)         
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)   
+    valid =  models.BooleanField(_('Available'), default=False)          
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
     @property
     def user(self):
-        return self.history.updated_by or self.history.created_by        
+        return self.history.updated_by or self.history.created_by
+    def set_validity(self):                 
+        self.valid = self.contacts.filter(contact_state__exact = 1).count() > 0            
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
-        ordering = ['id']    
+        ordering = ['id']
+    def save(self, *args, **kwargs):        
+        super(Client, self).save(*args, **kwargs)              
+        #Обновление истории объектов        
+        for estate in self.estates.all():
+            estate.set_validity(self.valid)
+            estate.save()            
+            prepare_history(estate.history, self.history.user_id)        
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):
@@ -607,7 +621,6 @@ class ContactHistory(models.Model):
     user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
-#    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='contact_estate_history',blank=True, null=True)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
     class Meta:
@@ -620,7 +633,7 @@ class Contact(models.Model):
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)
-#    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='update_via_estate',blank=True, null=True)      
+    user_id = None      
     def __unicode__(self):
         return u'%s: %s' % (self.contact_type.name, self.contact)
     @property
@@ -636,10 +649,7 @@ class Contact(models.Model):
             validate_email(self.contact)
         elif self.contact_type.id == 3:
             validate_url(self.contact)
-    def save(self, *args, **kwargs):
-        '''
-        TODO:Нужно продумать логику обновления клиента
-        '''
+    def save(self, *args, **kwargs):               
         self.updated = datetime.datetime.now()     
         super(Contact, self).save(*args, **kwargs)                      
         try: 
@@ -651,10 +661,9 @@ class Contact(models.Model):
                 return             
         contact_history = ContactHistory(event_date=self.updated,
                                          contact_state=self.contact_state, contact=self,
-                                         user_id=Client.objects.get(pk=self.client_id).user.pk,
-#                                         estate=self.estate
+                                         user_id=self.user_id,
                                          )
-        contact_history.save()                                            
+        contact_history.save()                                                            
     class Meta:
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 

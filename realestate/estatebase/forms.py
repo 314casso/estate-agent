@@ -10,7 +10,8 @@ from estatebase.models import  Client, Contact, ClientType, \
 from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
-from django.forms.widgets import Textarea, TextInput, DateTimeInput
+from django.forms.widgets import Textarea, TextInput, DateTimeInput,\
+    CheckboxInput
 from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
@@ -59,6 +60,7 @@ class ClientForm(ModelForm):
             'note': Textarea(attrs={'rows':'5'}),
             'address' : TextInput(attrs={'class': 'big-text-input'}),
             'created' : DateTimeInput(attrs={'readonly':'True'}, format='%d.%m.%Y %H:%M'),
+            'valid' : CheckboxInput(attrs={'disabled':'disabled'}),
         }
 
 class ClientFilterForm(Form):
@@ -139,7 +141,7 @@ class EstateFilterForm(Form):
     total_area = forms.CharField(required=False, label=_('Total area'))
     used_area = forms.CharField(required=False, label=_('Used area'))   
     room_count = forms.CharField(required=False, label=_('Room count'))
-    stead_area = forms.CharField(required=False, label=_('Stead area'))
+    stead_area = forms.CharField(required=False, label=_('Stead area'))    
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
