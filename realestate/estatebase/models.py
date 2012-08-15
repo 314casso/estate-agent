@@ -590,30 +590,18 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)   
-    valid =  models.BooleanField(_('Available'), default=False)          
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)             
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
     @property
     def user(self):
-        return self.history.updated_by or self.history.created_by
-    def set_validity(self):                 
-        self.valid = self.contacts.filter(contact_state__exact = 1).count() > 0            
+        return self.history.updated_by or self.history.created_by                
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
         ordering = ['id']        
     def save(self, *args, **kwargs):        
-        super(Client, self).save(*args, **kwargs)              
-
-@transaction.commit_on_success        
-def update_estate(sender, instance, created, **kwargs):
-    for estate in instance.estates.all():
-        estate.set_contact()
-        estate.save()            
-        prepare_history(estate.history, instance.history.user_id)                        
-
-post_save.connect(update_estate, sender=Client)
+        super(Client, self).save(*args, **kwargs)
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):
@@ -677,6 +665,17 @@ class Contact(models.Model):
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 
         ordering = ['contact_type__pk']
+
+@transaction.commit_on_success        
+def update_estate(sender, instance, created, **kwargs):
+    if instance.client.history:
+        prepare_history(instance.client.history, instance.user_id)
+    for estate in instance.client.estates.all():
+        estate.set_contact()
+        estate.save()            
+        prepare_history(estate.history, instance.user_id)                        
+
+post_save.connect(update_estate, sender=Contact)
 
 class ObjectWrapper(object):
     _field_list = None

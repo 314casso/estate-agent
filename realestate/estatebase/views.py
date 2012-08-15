@@ -287,9 +287,7 @@ class ClientUpdateEstateView(DetailView):
     def post(self, request, *args, **kwargs):        
         self.object = Client.objects.get(pk=self.kwargs['pk'])
         self.update_object()       
-        #Обновление истории клиента                     
-        self.object.history = prepare_history(self.object.history, self.request.user.pk)                
-        self.object.save()        
+        #Обновление истории и контакта у оъекта                
         estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
         estate.set_contact()
         estate.save()            
@@ -411,9 +409,7 @@ class ClientMixin(ModelFormMixin):
                 contacts = contact_form.save(commit=False)
                 for contact in contacts:
                     contact.user_id = self.request.user.pk
-                    contact.save() 
-            self.object.set_validity()
-            self.object.save()                           
+                    contact.save()                                       
             return super(ModelFormMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -497,12 +493,10 @@ class ContactUpdateView(ContactMixin, UpdateView):
         return context
     def form_valid(self, form):            
         self.object = form.save(commit=False)
-        self.object.user_id = self.request.user.pk                
-        result = super(ContactUpdateView, self).form_valid(form) 
-        self.object.client.set_validity()
-        self.object.client.save()
-        prepare_history(self.object.client.history, self.request.user.pk)       
-        return result
+        self.object.user_id = self.request.user.pk              
+        prepare_history(self.object.client.history, self.request.user.pk)  
+        return super(ContactUpdateView, self).form_valid(form)               
+        
     
 class LevelMixin(ModelFormMixin):
     template_name = 'layout_update.html'

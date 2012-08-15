@@ -2,10 +2,9 @@ $(document).ready(function() {
 	$('a.inline-button').parent().addClass('ui-state-default ui-corner-all');
 	$('a.icon-plus').addClass('ui-icon ui-icon-plus');
 	$('input:submit, a, button', '.button').button();
-	// $( ".date-time-input" ).datepicker();
-	//$("select").combobox();
+	// $( ".date-time-input" ).datepicker();	
 	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
-	//$('table.detail-table').addClass('ui-corner-all');
+	$('select').addClass('ui-corner-left')	
 });
 
 function getIndex(id,item) {
@@ -62,7 +61,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
 		_create : function() {
 			var input, self = this, select = this.element.hide(), selected = select.children(":selected"), value = selected.val() ? selected.text() : "", wrapper = this.wrapper = $("<span>").addClass("ui-combobox").insertAfter(select);
 
-			input = $("<input>").appendTo(wrapper).val(value).addClass("ui-state-default ui-combobox-input").autocomplete({
+			input = $("<input>").appendTo(wrapper).val(value).addClass("ui-combobox-input").autocomplete({
 				delay : 0,
 				minLength : 0,
 				source : function(request, response) {
