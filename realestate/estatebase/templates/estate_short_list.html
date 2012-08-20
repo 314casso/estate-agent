@@ -40,7 +40,7 @@
 
 		$("#filter").dialog({
 			modal : true,						
-			width : 680,
+			width : 1000,
 			title : 'Фильтр',
 			//position : ['center', 170],
 			autoOpen: false
@@ -83,7 +83,7 @@ function showFilter(){
 				</td>
 				<td>
 					<table>	                
-		            {% for field in fields|slice:"10:" %}
+		            {% for field in fields|slice:"10:20" %}
 					    <tr>
 					    	<td>			        
 					        {{ field.label_tag }}
@@ -93,12 +93,26 @@ function showFilter(){
 					        </td>
 					    </tr>
 					{% endfor %}
-				</table>	
+				</table>				
+				</td>	
+				<td>
+					<table>	                
+		            {% for field in fields|slice:"20:" %}
+					    <tr>
+					    	<td>			        
+					        {{ field.label_tag }}
+					        </td>
+					        <td>
+					        {{ field.errors }}{{ field }}
+					        </td>
+					    </tr>
+					{% endfor %}
+				</table>				
 				</td>	
 			</tr>                                          
             <tfoot>
                 <tr>
-                    <td colspan=2><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
                     <input type="submit" value="Применить"/>
                     </td>
                 </tr>

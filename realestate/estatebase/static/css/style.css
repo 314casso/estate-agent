@@ -391,3 +391,8 @@ legend {
 	border: 1px solid #ddd;
 	margin: 0 1px;	
 }
+
+.date-input {
+	width: 75px;
+	margin: 0 3px 0 0;
+}

@@ -677,6 +677,32 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
+#class EstateFilter(models.Model):    
+#    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
+#    estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
+#    region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
+#    localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
+#    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
+#    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
+#    estate_number = models.CharField(max_length=25, verbose_name=_('Estate number'), blank=True, null=True)
+#    room_number = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)    
+#    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
+#    agency_price = models.CharField(max_length=255, verbose_name=_('Price'), blank=True, null=True)
+#        
+#    
+#    year_built = forms.CharField(required=False, label=_('Year built'))
+#    floor = forms.CharField(required=False, label=_('Floor'))        
+#    floor_count = forms.CharField(required=False, label=_('Floor count'))
+#    wall_construcion = AutoComboboxSelectMultipleField(
+#            lookup_class=WallConstrucionLookup,
+#            label=_('Wall Construcion'),
+#            required=False,
+#        )
+#    total_area = forms.CharField(required=False, label=_('Total area'))
+#    used_area = forms.CharField(required=False, label=_('Used area'))   
+#    room_count = forms.CharField(required=False, label=_('Room count'))
+#    stead_area = forms.CharField(required=False, label=_('Stead area'))  
+
 class ObjectWrapper(object):
     _field_list = None
     exclude_set = ['id', 'estate']

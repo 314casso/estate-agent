@@ -4,7 +4,8 @@ $(document).ready(function() {
 	$('input:submit, a, button', '.button').button();
 	// $( ".date-time-input" ).datepicker();	
 	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
-	$('select').addClass('ui-corner-left')	
+	$('select').addClass('ui-corner-left')
+	$('.date-input').datepicker({dateFormat: "dd.mm.yy"});	
 });
 
 function getIndex(id,item) {

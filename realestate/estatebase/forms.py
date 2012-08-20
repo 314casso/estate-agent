@@ -11,7 +11,7 @@ from django import forms
 
 from selectable.forms import AutoCompleteSelectWidget
 from django.forms.widgets import Textarea, TextInput, DateTimeInput,\
-    CheckboxInput
+    CheckboxInput, DateInput
 from django.forms.models import inlineformset_factory
 from django.forms.forms import Form
 from django.utils.translation import ugettext_lazy as _
@@ -20,6 +20,8 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from selectable.forms.fields import AutoCompleteSelectField,\
     AutoCompleteSelectMultipleField, AutoComboboxSelectMultipleField
 import re
+from django.forms.fields import DateField, MultiValueField
+import datetime
 
 
 
@@ -89,6 +91,45 @@ class ClientFilterForm(Form):
                 f[self.filters[field]] = value      
         return f            
 
+
+class DateRangeWidget(forms.MultiWidget):
+    """
+    A Widget that splits datetime input into two <input type="text"> boxes.
+    """
+
+    def __init__(self, attrs=None, date_format=None):
+        date_input = DateInput(attrs={'class':'date-input'}, format=date_format)
+        widgets = (date_input, date_input)
+        super(DateRangeWidget, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:            
+            return value
+        return [None, None]    
+
+class DateRangeField(MultiValueField):
+    widget = DateRangeWidget    
+    default_error_messages = {
+        'invalid_date': _(u'Enter a valid date.'),
+        'invalid_time': _(u'Enter a valid date.'),
+    }
+
+    def __init__(self, input_date_formats=None, input_time_formats=None, *args, **kwargs):
+        errors = self.default_error_messages.copy()
+        if 'error_messages' in kwargs:
+            errors.update(kwargs['error_messages'])
+        localize = kwargs.get('localize', False)
+        field = DateField(input_formats=input_date_formats,
+                      error_messages={'invalid': errors['invalid_date']},
+                      localize=localize)
+        fields = (field,field,)
+        super(DateRangeField, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        if data_list:                        
+            return data_list
+        return None
+
 class EstateFilterForm(Form):
     pk = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
@@ -141,7 +182,9 @@ class EstateFilterForm(Form):
     total_area = forms.CharField(required=False, label=_('Total area'))
     used_area = forms.CharField(required=False, label=_('Used area'))   
     room_count = forms.CharField(required=False, label=_('Room count'))
-    stead_area = forms.CharField(required=False, label=_('Stead area'))    
+    stead_area = forms.CharField(required=False, label=_('Stead area'))
+    
+    created = DateRangeField(required=False, label=_('Created'))        
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -200,6 +243,11 @@ class EstateFilterForm(Form):
             value = from_to(self['stead_area'].value(),'stead__total_area')
             if value:
                 f.update(value)        
+        if self['created'].value():
+            value = self['created'].value()
+            if value:
+                print value
+                #f.update(value)        
         return f     
 
 '''
