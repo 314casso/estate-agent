@@ -392,7 +392,11 @@ legend {
 	margin: 0 1px;	
 }
 
-.date-input {
+.date-input, .number-input {
 	width: 75px;
 	margin: 0 3px 0 0;
+}
+
+.filter-table td.top-align{
+	vertical-align: top;
 }

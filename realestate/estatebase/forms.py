@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
-
-from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup,\
-    EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup,\
-    WallConstrucionLookup
-from django.forms import ModelForm
-from estatebase.models import  Client, Contact, ClientType, \
-    Origin, ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, get_polymorph_label, \
-    Stead, EstateType, Region, Street
 from django import forms
-
-from selectable.forms import AutoCompleteSelectWidget
-from django.forms.widgets import Textarea, TextInput, DateTimeInput,\
-    CheckboxInput, DateInput
-from django.forms.models import inlineformset_factory
+from django.forms import ModelForm
+from django.forms.fields import DateField, MultiValueField,\
+    CharField
 from django.forms.forms import Form
+from django.forms.models import inlineformset_factory
+from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
+    CheckboxInput, DateInput
 from django.utils.translation import ugettext_lazy as _
-from selectable.forms.widgets import AutoComboboxSelectWidget
-from django.forms.formsets import formset_factory, BaseFormSet
-from selectable.forms.fields import AutoCompleteSelectField,\
-    AutoCompleteSelectMultipleField, AutoComboboxSelectMultipleField
+from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
+    EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
+    WallConstrucionLookup, OriginLookup, BesideLookup
+from estatebase.models import Client, Contact, ClientType, Origin, \
+    ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
+    get_polymorph_label, Stead
+from selectable.forms import AutoCompleteSelectWidget
+from selectable.forms.fields import AutoCompleteSelectMultipleField, \
+    AutoComboboxSelectMultipleField
+from selectable.forms.widgets import AutoComboboxSelectWidget,\
+    AutoComboboxSelectMultipleWidget
 import re
-from django.forms.fields import DateField, MultiValueField
-import datetime
-
-
 
 class EstateCreateForm(ModelForm):
     #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -54,7 +50,7 @@ class EstateParamForm(ModelForm):
         }
     
 
-class ClientForm(ModelForm):              
+class ClientForm(ModelForm):                
     class Meta:        
         exclude = ('created_by', 'updated', 'created', 'updated_by')
         model = Client
@@ -98,7 +94,7 @@ class DateRangeWidget(forms.MultiWidget):
     """
 
     def __init__(self, attrs=None, date_format=None):
-        date_input = DateInput(attrs={'class':'date-input'}, format=date_format)
+        date_input = DateInput(attrs={'class':'date-input', 'pattern':'(((0[1-9]|[12]\d|3[01])\.(0[13578]|1[02])\.((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\.(0[13456789]|1[012])\.((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\.02\.((19|[2-9]\d)\d{2}))|(29\.02\.((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))'}, format=date_format)
         widgets = (date_input, date_input)
         super(DateRangeWidget, self).__init__(widgets, attrs)
 
@@ -111,7 +107,6 @@ class DateRangeField(MultiValueField):
     widget = DateRangeWidget    
     default_error_messages = {
         'invalid_date': _(u'Enter a valid date.'),
-        'invalid_time': _(u'Enter a valid date.'),
     }
 
     def __init__(self, input_date_formats=None, input_time_formats=None, *args, **kwargs):
@@ -122,13 +117,39 @@ class DateRangeField(MultiValueField):
         field = DateField(input_formats=input_date_formats,
                       error_messages={'invalid': errors['invalid_date']},
                       localize=localize)
-        fields = (field,field,)
+        fields = (field, field,)
         super(DateRangeField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:                        
             return data_list
-        return None
+        return [None, None]
+
+class ComplexFieldWidget(forms.MultiWidget):
+    def __init__(self, lookup_class, attrs=None):                
+        widgets = (AutoComboboxSelectWidget(lookup_class), TextInput(attrs={'class':'number-input'}))
+        super(ComplexFieldWidget, self).__init__(widgets, attrs)
+    def decompress(self, value):
+        if value:            
+            return value
+        return [None, None] 
+
+class ComplexField(MultiValueField):    
+    def __init__(self, lookup_class, *args, **kwargs):
+        self.widget = ComplexFieldWidget(lookup_class=lookup_class)        
+        fields = []
+        fields.append(AutoComboboxSelectMultipleField(
+            lookup_class=lookup_class,            
+            required=False,
+            )
+         )        
+        fields.append(CharField())        
+        super(ComplexField, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        if data_list:                        
+            return data_list
+        return [None, None]
 
 class EstateFilterForm(Form):
     pk = AutoCompleteSelectMultipleField(
@@ -185,6 +206,13 @@ class EstateFilterForm(Form):
     stead_area = forms.CharField(required=False, label=_('Stead area'))
     
     created = DateRangeField(required=False, label=_('Created'))        
+    updated = DateRangeField(required=False, label=_('Updated'))
+    origin = AutoComboboxSelectMultipleField(
+            lookup_class=OriginLookup,
+            label=_('Origin'),
+            required=False,
+        )  
+    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup) 
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -210,50 +238,61 @@ class EstateFilterForm(Form):
         if self['contact'].value():
             f['clients__contacts__contact__icontains'] = self['contact'].value()    
         if self['agency_price'].value():
-            value = from_to(self['agency_price'].value(),'agency_price')
+            value = from_to(self['agency_price'].value(), 'agency_price')
             if value:
                 f.update(value)    
         if self['year_built'].value():
-            value = from_to(self['year_built'].value(),'bidgs__year_built')
+            value = from_to(self['year_built'].value(), 'bidgs__year_built')
             if value:
                 f.update(value)
         if self['floor'].value():
-            value = from_to(self['floor'].value(),'bidgs__floor')
+            value = from_to(self['floor'].value(), 'bidgs__floor')
             if value:
                 f.update(value)        
         if self['floor_count'].value():
-            value = from_to(self['floor_count'].value(),'bidgs__floor_count')
+            value = from_to(self['floor_count'].value(), 'bidgs__floor_count')
             if value:
                 f.update(value)                
         if self['wall_construcion'].value():
             f['bidgs__wall_construcion_id__in'] = self['wall_construcion'].value()            
         if self['total_area'].value():
-            value = from_to(self['total_area'].value(),'bidgs__total_area')
+            value = from_to(self['total_area'].value(), 'bidgs__total_area')
             if value:
                 f.update(value)            
         if self['used_area'].value():
-            value = from_to(self['used_area'].value(),'bidgs__used_area')
+            value = from_to(self['used_area'].value(), 'bidgs__used_area')
             if value:
                 f.update(value)        
         if self['room_count'].value():
-            value = from_to(self['room_count'].value(),'bidgs__room_count')
+            value = from_to(self['room_count'].value(), 'bidgs__room_count')
             if value:
                 f.update(value)        
         if self['stead_area'].value():
-            value = from_to(self['stead_area'].value(),'stead__total_area')
+            value = from_to(self['stead_area'].value(), 'stead__total_area')
             if value:
                 f.update(value)        
-        if self['created'].value():
-            value = self['created'].value()
+        if self['created'].value():            
+            value = from_to_values(self['created'].field.clean(self['created'].value()), 'history__created')            
+            if value:                 
+                f.update(value)        
+        if self['updated'].value():            
+            value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
+            if value:                 
+                f.update(value)
+        if self['origin'].value():
+            f['origin_id__in'] = self['origin'].value()
+        if self['beside'].value():            
+            value = from_to(self['beside'].value()[1],'beside_distance')
             if value:
-                print value
-                #f.update(value)        
+                f.update(value)
+            if self['beside'].value()[0]:
+                f.update({'beside_id__exact':self['beside'].value()[0]})            
         return f     
 
 '''
 Для формирование поля от до
 '''
-def from_to(value,field_name):
+def from_to(value, field_name):
     f = {}
     if not value:
         return None    
@@ -272,6 +311,19 @@ def from_to(value,field_name):
             matchobjs = re.match(r"^(?P<n>\d+)$", a)
             if matchobjs:
                 f['%s__exact' % field_name] = matchobjs.group('n')   
+    return f or None    
+
+'''
+Для формирование поля от до по двум значениям
+'''
+def from_to_values(values, field_name):    
+    f = {}    
+    if values[0] and not values[1]:
+        f['%s__gte' % field_name] = values[0]
+    elif not values[0] and values[1]:
+        f['%s__lte' % field_name] = values[1]
+    elif values[0] and values[1]:
+        f['%s__range' % field_name] = values             
     return f or None    
 
 def split_string(value):                 
@@ -294,8 +346,7 @@ ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, 
 class ContactForm(ModelForm):     
     class Meta:        
         fields = ('contact', 'contact_state')
-        model = Contact    
-
+        model = Contact
 
 class BidgForm(ModelForm):
     def __init__(self, *args, **kwargs):
