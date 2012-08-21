@@ -10,7 +10,8 @@ from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
 from django.utils.translation import ugettext_lazy as _
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
-    WallConstrucionLookup, OriginLookup, BesideLookup
+    WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
+    ElectricityLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
     get_polymorph_label, Stead
@@ -212,7 +213,14 @@ class EstateFilterForm(Form):
             label=_('Origin'),
             required=False,
         )  
-    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup) 
+    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
+    interior = AutoComboboxSelectMultipleField(
+            lookup_class=InteriorLookup,
+            label=_('Interior'),
+            required=False,
+        )
+    face_area = forms.CharField(required=False, label=_('Face area'))
+    electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -281,12 +289,18 @@ class EstateFilterForm(Form):
                 f.update(value)
         if self['origin'].value():
             f['origin_id__in'] = self['origin'].value()
-        if self['beside'].value():            
-            value = from_to(self['beside'].value()[1],'beside_distance')
+        lst = complex_field_parser(self['beside'].value(),'beside')
+        if lst:            
+            f.update(lst)            
+        if self['interior'].value():
+            f['bidgs__interior_id__in'] = self['interior'].value()
+        if self['face_area'].value():
+            value = from_to(self['face_area'].value(), 'stead__face_area')
             if value:
                 f.update(value)
-            if self['beside'].value()[0]:
-                f.update({'beside_id__exact':self['beside'].value()[0]})            
+        lst = complex_field_parser(self['electricity'].value(),'electricity')
+        if lst:            
+            f.update(lst)                                                 
         return f     
 
 '''
@@ -324,6 +338,19 @@ def from_to_values(values, field_name):
         f['%s__lte' % field_name] = values[1]
     elif values[0] and values[1]:
         f['%s__range' % field_name] = values             
+    return f or None    
+
+'''
+Обработка составного поля
+'''
+def complex_field_parser(value, field_name):    
+    if not value[0]:
+        return None    
+    f = {'%s_id__exact' % field_name : value[0]}    
+    if value[1]:            
+        num = from_to(value[1],'%s_distance' % field_name)
+        if num:
+            f.update(num)                    
     return f or None    
 
 def split_string(value):                 

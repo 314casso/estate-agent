@@ -1,6 +1,7 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
-    Estate, Region, EstateStatus, WallConstrucion, Origin, Beside
+    Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
+    Electricity
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -63,6 +64,14 @@ class BesideLookup(ModelLookup):
     model = Beside
     search_fields = ('name__icontains',)    
 
+class InteriorLookup(ModelLookup):
+    model = Interior
+    search_fields = ('name__icontains',)
+    
+class ElectricityLookup(ModelLookup):
+    model = Electricity
+    search_fields = ('name__icontains',)
+
 class MicrodistrictLookup(StreetLookup):
     model = Microdistrict
 
@@ -77,5 +86,7 @@ try:
     registry.register(WallConstrucionLookup) 
     registry.register(OriginLookup)   
     registry.register(BesideLookup)
+    registry.register(InteriorLookup)
+    registry.register(ElectricityLookup)
 except LookupAlreadyRegistered:
     pass    
