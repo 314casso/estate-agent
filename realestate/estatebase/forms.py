@@ -19,8 +19,7 @@ from estatebase.models import Client, Contact, ClientType, Origin, \
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField
-from selectable.forms.widgets import AutoComboboxSelectWidget,\
-    AutoComboboxSelectMultipleWidget
+from selectable.forms.widgets import AutoComboboxSelectWidget
 import re
 
 class EstateCreateForm(ModelForm):
