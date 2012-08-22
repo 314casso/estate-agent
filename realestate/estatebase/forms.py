@@ -11,7 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
-    ElectricityLookup
+    ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
+    DrivewayLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
     get_polymorph_label, Stead
@@ -221,6 +222,11 @@ class EstateFilterForm(Form):
         )
     face_area = forms.CharField(required=False, label=_('Face area'))
     electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
+    watersupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=WatersupplyLookup)    
+    gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
+    sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
+    driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
+    
     def get_filter(self):
         f = {}   
         if self['pk'].value():                                 
@@ -288,21 +294,22 @@ class EstateFilterForm(Form):
             if value:                 
                 f.update(value)
         if self['origin'].value():
-            f['origin_id__in'] = self['origin'].value()
-        lst = complex_field_parser(self['beside'].value(),'beside')
-        if lst:            
-            f.update(lst)            
+            f['origin_id__in'] = self['origin'].value()                    
         if self['interior'].value():
             f['bidgs__interior_id__in'] = self['interior'].value()
         if self['face_area'].value():
             value = from_to(self['face_area'].value(), 'stead__face_area')
             if value:
-                f.update(value)
-        lst = complex_field_parser(self['electricity'].value(),'electricity')
-        if lst:            
-            f.update(lst)                                                 
-        return f     
-
+                f.update(value)        
+        complex_fields = ['beside','electricity','watersupply','gassupply','sewerage','driveway']
+        lst = {}
+        for fld in complex_fields:
+            result = complex_field_parser(self[fld].value(), fld)
+            if result: 
+                lst.update(result)          
+        f.update(lst)    
+        return f
+    
 '''
 Для формирование поля от до
 '''

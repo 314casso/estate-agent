@@ -677,22 +677,22 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
-#class EstateFilter(models.Model):    
-#    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
-#    estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
-#    region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
-#    localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
-#    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
-#    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
-#    estate_number = models.CharField(max_length=25, verbose_name=_('Estate number'), blank=True, null=True)
-#    room_number = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)    
-#    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
-#    agency_price = models.CharField(max_length=255, verbose_name=_('Price'), blank=True, null=True)
-#        
-#    
-#    year_built = forms.CharField(required=False, label=_('Year built'))
-#    floor = forms.CharField(required=False, label=_('Floor'))        
-#    floor_count = forms.CharField(required=False, label=_('Floor count'))
+class EstateFilter(models.Model):    
+    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
+    estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
+    region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
+    localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
+    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
+    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
+    estate_number = models.CharField(max_length=25, verbose_name=_('Estate number'), blank=True, null=True)
+    room_number = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)    
+    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
+    agency_price = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)
+    client = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
+    contact = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
+    year_built = models.CharField(max_length=25, verbose_name=_('Year built'), blank=True, null=True)
+    floor = models.CharField(max_length=25, verbose_name=_('Floor'), blank=True, null=True)
+    floor_count = models.CharField(max_length=25, verbose_name=_('Floor count'), blank=True, null=True)
 #    wall_construcion = AutoComboboxSelectMultipleField(
 #            lookup_class=WallConstrucionLookup,
 #            label=_('Wall Construcion'),
@@ -701,7 +701,27 @@ post_save.connect(update_estate, sender=Contact)
 #    total_area = forms.CharField(required=False, label=_('Total area'))
 #    used_area = forms.CharField(required=False, label=_('Used area'))   
 #    room_count = forms.CharField(required=False, label=_('Room count'))
-#    stead_area = forms.CharField(required=False, label=_('Stead area'))  
+#    stead_area = forms.CharField(required=False, label=_('Stead area'))
+#    
+#    created = DateRangeField(required=False, label=_('Created'))        
+#    updated = DateRangeField(required=False, label=_('Updated'))
+#    origin = AutoComboboxSelectMultipleField(
+#            lookup_class=OriginLookup,
+#            label=_('Origin'),
+#            required=False,
+#        )  
+#    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
+#    interior = AutoComboboxSelectMultipleField(
+#            lookup_class=InteriorLookup,
+#            label=_('Interior'),
+#            required=False,
+#        )
+#    face_area = forms.CharField(required=False, label=_('Face area'))
+#    electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
+#    watersupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=WatersupplyLookup)    
+#    gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
+#    sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
+#    driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
 
 class ObjectWrapper(object):
     _field_list = None

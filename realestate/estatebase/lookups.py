@@ -1,15 +1,12 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
-    Electricity
+    Electricity, Watersupply, Gassupply, Sewerage, Driveway
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
-
-
-class EstateTypeLookup(ModelLookup):
-    model = EstateType
-    search_fields = ('name__icontains',)        
+class SimpleNameLookup(ModelLookup):
+    search_fields = ('name__icontains',)
     
 class EstateLookup(ModelLookup):
     model = Estate
@@ -24,9 +21,8 @@ class EstateStatusLookup(ModelLookup):
     model = EstateStatus
     search_fields = ('id__icontains',)    
     
-class RegionLookup(ModelLookup):
+class RegionLookup(SimpleNameLookup):
     model = Region
-    search_fields = ('name__icontains',)    
 
 class StreetLookup(ModelLookup):
     model = Street
@@ -40,6 +36,9 @@ class StreetLookup(ModelLookup):
     def get_item_label(self, item):
         return u"%s, %s" % (item.name, item.locality)
 
+class MicrodistrictLookup(StreetLookup):
+    model = Microdistrict
+
 class LocalityLookup(ModelLookup):
     model = Locality
     search_fields = ('name__icontains',)
@@ -52,29 +51,36 @@ class LocalityLookup(ModelLookup):
     def get_item_label(self, item):
         return u"%s, %s" % (item.name, item.region or '')
 
-class WallConstrucionLookup(ModelLookup):
-    model = WallConstrucion
-    search_fields = ('name__icontains',)   
+class EstateTypeLookup(SimpleNameLookup):
+    model = EstateType
 
-class OriginLookup(ModelLookup):
-    model = Origin
-    search_fields = ('name__icontains',)
+class WallConstrucionLookup(SimpleNameLookup):
+    model = WallConstrucion       
+
+class OriginLookup(SimpleNameLookup):
+    model = Origin    
     
-class BesideLookup(ModelLookup):
-    model = Beside
-    search_fields = ('name__icontains',)    
+class BesideLookup(SimpleNameLookup):
+    model = Beside      
 
-class InteriorLookup(ModelLookup):
-    model = Interior
-    search_fields = ('name__icontains',)
+class InteriorLookup(SimpleNameLookup):
+    model = Interior    
     
-class ElectricityLookup(ModelLookup):
-    model = Electricity
-    search_fields = ('name__icontains',)
+class ElectricityLookup(SimpleNameLookup):
+    model = Electricity    
 
-class MicrodistrictLookup(StreetLookup):
-    model = Microdistrict
+class WatersupplyLookup(SimpleNameLookup):
+    model = Watersupply
 
+class GassupplyLookup(SimpleNameLookup):
+    model = Gassupply
+
+class SewerageLookup(SimpleNameLookup):
+    model = Sewerage
+
+class DrivewayLookup(SimpleNameLookup):
+    model = Driveway
+    
 try:
     registry.register(StreetLookup)
     registry.register(LocalityLookup)
@@ -88,5 +94,9 @@ try:
     registry.register(BesideLookup)
     registry.register(InteriorLookup)
     registry.register(ElectricityLookup)
+    registry.register(WatersupplyLookup)    
+    registry.register(GassupplyLookup)
+    registry.register(SewerageLookup)
+    registry.register(DrivewayLookup)
 except LookupAlreadyRegistered:
     pass    
