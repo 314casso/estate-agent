@@ -15,7 +15,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     DrivewayLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
-    get_polymorph_label, Stead
+    get_polymorph_label, Stead, Bid
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField
@@ -433,4 +433,8 @@ class SteadUpdateForm(ModelForm):
     class Meta:
         model = Stead   
         exclude = ('estate',)
-                    
+
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid    
+        exclude = ('estate_filter',)                    

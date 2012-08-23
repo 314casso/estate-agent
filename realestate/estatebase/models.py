@@ -11,6 +11,7 @@ from sorl.thumbnail.fields import ImageField
 import datetime
 import os
 from django.db.models.signals import post_save
+from picklefield.fields import PickledObjectField
 
 class ExUser(User):
     def __unicode__(self):
@@ -53,7 +54,7 @@ class Locality(SimpleDict):
     Населенные пункты
     '''
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),)
-    geo_group = models.ForeignKey(GeoGroup,verbose_name=_('GeoGroup'),)
+    geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
         verbose_name_plural = _('localities')    
@@ -269,7 +270,7 @@ class Estate(models.Model):
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    valid =  models.BooleanField(_('Valid'), default=False) 
+    valid = models.BooleanField(_('Valid'), default=False) 
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk])  
@@ -300,7 +301,7 @@ class Estate(models.Model):
         css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
         return self.estate_status_id in css and css[self.estate_status_id] or ''    
     def get_best_contact(self):
-        contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id','contact_type__id','-updated')[:1]        
+        contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id', 'contact_type__id', '-updated')[:1]        
         if contacts:
             return contacts[0]             
     class Meta:
@@ -677,32 +678,46 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
-class EstateFilter(models.Model):    
-    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
+class Bid(models.Model):
+    '''
+    Заявка
+    '''
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
+    estate_filter = PickledObjectField(blank=True, null=True)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='brokers', blank=True, null=True)
+    estate = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)
+    client = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
+    contact = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
     estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
     region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
-    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
-    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
-    estate_number = models.CharField(max_length=25, verbose_name=_('Estate number'), blank=True, null=True)
-    room_number = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)    
-    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
-    agency_price = models.CharField(max_length=25, verbose_name=_('Room number'), blank=True, null=True)
-    client = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
-    contact = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
-    year_built = models.CharField(max_length=25, verbose_name=_('Year built'), blank=True, null=True)
-    floor = models.CharField(max_length=25, verbose_name=_('Floor'), blank=True, null=True)
-    floor_count = models.CharField(max_length=25, verbose_name=_('Floor count'), blank=True, null=True)
-#    wall_construcion = AutoComboboxSelectMultipleField(
-#            lookup_class=WallConstrucionLookup,
-#            label=_('Wall Construcion'),
-#            required=False,
-#        )
-#    total_area = forms.CharField(required=False, label=_('Total area'))
-#    used_area = forms.CharField(required=False, label=_('Used area'))   
-#    room_count = forms.CharField(required=False, label=_('Room count'))
-#    stead_area = forms.CharField(required=False, label=_('Stead area'))
-#    
+    agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
+
+#class EstateFilter(models.Model):    
+#    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
+#    estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
+#    region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
+#    localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
+#    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
+#    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
+#    estate_number = custom_fields.MinMaxField(verbose_name=_('Estate number'))
+#    room_number = custom_fields.MinMaxField(verbose_name=_('Room number'))    
+#    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
+#    agency_price = custom_fields.MinMaxField(verbose_name=_('Room number'))
+#    client = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
+#    contact = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
+#    year_built = custom_fields.MinMaxField(verbose_name=_('Year built'))
+#    floor = custom_fields.MinMaxField(verbose_name=_('Floor'))
+#    floor_count = custom_fields.MinMaxField(verbose_name=_('Floor count'))
+#    wall_construcion = models.ManyToManyField(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
+#    total_area = custom_fields.MinMaxField(verbose_name=_('Total area'))
+#    used_area = custom_fields.MinMaxField(verbose_name=_('Used area'))
+#    room_count = custom_fields.MinMaxField(verbose_name=_('Room count'))
+#    stead_area = custom_fields.MinMaxField(verbose_name=_('Stead area'))
+#    created_min = models.DateTimeField(verbose_name=_('Created min'), blank=True, null=True)
+#    created_max = models.DateTimeField(verbose_name=_('Created max'), blank=True, null=True)
 #    created = DateRangeField(required=False, label=_('Created'))        
 #    updated = DateRangeField(required=False, label=_('Updated'))
 #    origin = AutoComboboxSelectMultipleField(
@@ -753,7 +768,7 @@ class BidgWrapper(ObjectWrapper):
     def interior_list(self):
         return self.interior_set
     def inline_fields(self):
-        return ['year_built', 'floor_count','room_count', 'interior', 'elevator', 'used_area', 'total_area' ]          
+        return ['year_built', 'floor_count', 'room_count', 'interior', 'elevator', 'used_area', 'total_area' ]          
 
 class ApartmentWrapper(BidgWrapper):
     def get_exclude_list(self):        

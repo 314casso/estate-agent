@@ -157,8 +157,7 @@ INSTALLED_APPS = (
     'selectable',    
     'django_sorting',
     'django.contrib.humanize',
-    'sorl.thumbnail'
-    
+    'sorl.thumbnail',    
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

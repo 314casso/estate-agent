@@ -7,9 +7,9 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm
+    SteadUpdateForm, EstateFilterForm, BidForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
-    prepare_history, Stead
+    prepare_history, Stead, Bid
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -596,3 +596,43 @@ class BidgRemoveView(BidgAppendView):
             'dialig_body'  : u'Удалить строение из объекта?'
         })
         return context    
+
+class BidMixin(ModelFormMixin):
+    template_name = 'bid_update.html'
+    form_class = BidForm
+    model = Bid
+#    def get_context_data(self, **kwargs):
+#        if 'bidg' in self.kwargs:
+#            bidg = Bidg.objects.get(pk=self.kwargs['bidg'])
+#        else:
+#            bidg = self.object.bidg                
+#        context = super(LevelMixin, self).get_context_data(**kwargs)
+#        context.update({            
+#            'next_url': safe_next_link(self.request.get_full_path()),
+#            'bidg': bidg,
+#        })                        
+#        if self.request.POST:
+#            context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            
+#        else:
+#            context['layout_formset'] = LevelFormSet(instance=self.object)
+#        return context  
+#    def get_success_url(self):   
+#        next_url = self.request.REQUEST.get('next', '')         
+#        if '_continue' in self.request.POST:                  
+#            return '%s?%s' % (reverse('level_update', args=[self.object.id]), safe_next_link(next_url)) 
+#        return next_url
+#    def form_valid(self, form):
+#        context = self.get_context_data()
+#        layout_form = context['layout_formset']
+#        if layout_form.is_valid():
+#            self.object = form.save(commit=False)                         
+#            self.object.save()             
+#            layout_form.instance = self.object
+#            layout_form.save()
+#            #Обновление истории объекта                                 
+#            prepare_history(self.object.bidg.estate.history, ExUser.objects.get(pk=self.request.user.pk))
+#            return super(ModelFormMixin, self).form_valid(form)
+#        else:
+#            return self.render_to_response(self.get_context_data(form=form))    
+
+#class BidCreateView():
