@@ -601,38 +601,40 @@ class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'
     form_class = BidForm
     model = Bid
-#    def get_context_data(self, **kwargs):
-#        if 'bidg' in self.kwargs:
-#            bidg = Bidg.objects.get(pk=self.kwargs['bidg'])
-#        else:
-#            bidg = self.object.bidg                
-#        context = super(LevelMixin, self).get_context_data(**kwargs)
-#        context.update({            
-#            'next_url': safe_next_link(self.request.get_full_path()),
-#            'bidg': bidg,
-#        })                        
-#        if self.request.POST:
-#            context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            
-#        else:
-#            context['layout_formset'] = LevelFormSet(instance=self.object)
-#        return context  
-#    def get_success_url(self):   
-#        next_url = self.request.REQUEST.get('next', '')         
-#        if '_continue' in self.request.POST:                  
-#            return '%s?%s' % (reverse('level_update', args=[self.object.id]), safe_next_link(next_url)) 
-#        return next_url
-#    def form_valid(self, form):
-#        context = self.get_context_data()
-#        layout_form = context['layout_formset']
-#        if layout_form.is_valid():
-#            self.object = form.save(commit=False)                         
-#            self.object.save()             
-#            layout_form.instance = self.object
-#            layout_form.save()
-#            #Обновление истории объекта                                 
-#            prepare_history(self.object.bidg.estate.history, ExUser.objects.get(pk=self.request.user.pk))
-#            return super(ModelFormMixin, self).form_valid(form)
-#        else:
-#            return self.render_to_response(self.get_context_data(form=form))    
+    def get_context_data(self, **kwargs):        
+        client = self.object.pk and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
+        context = super(BidMixin, self).get_context_data(**kwargs)
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'client': client,
+        })                        
+        if self.request.POST:
+            context['estate_filter_form'] = EstateFilterForm(self.request.POST)            
+        else:
+            context['estate_filter_form'] = EstateFilterForm(self.object.estate_filter)
+        return context  
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('bid_update', args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url
+    def form_valid(self, form):
+        context = self.get_context_data()
+        estate_filter_form = context['estate_filter_form']
+        if estate_filter_form.is_valid():
+            self.object = form.save(commit=False)                      
+            # Запаковываем фильтр в поле   
+            self.object.estate_filter = estate_filter_form.cleaned_data 
+            self.object.save()            
+            return super(ModelFormMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))    
 
-#class BidCreateView():
+class BidCreateView(BidMixin, CreateView):
+    def get_initial(self):        
+        initial = super(BidCreateView, self).get_initial()                
+        initial['client'] = self.kwargs['client']
+        return initial
+
+class BidUpdateView(BidMixin, UpdateView):
+    pass    
