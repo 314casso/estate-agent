@@ -602,16 +602,20 @@ class BidMixin(ModelFormMixin):
     form_class = BidForm
     model = Bid
     def get_context_data(self, **kwargs):        
-        client = self.object.pk and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
+        client = self.kwargs['client'] #self.object and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
         context = super(BidMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'client': client,
-        })                        
+            'client': client,            
+        })       
+                           
         if self.request.POST:
             context['estate_filter_form'] = EstateFilterForm(self.request.POST)            
         else:
-            context['estate_filter_form'] = EstateFilterForm(self.object.estate_filter)
+            data = None
+            if self.object:
+                data = self.object.estate_filter
+            context['estate_filter_form'] = EstateFilterForm(data)            
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -632,8 +636,11 @@ class BidMixin(ModelFormMixin):
 
 class BidCreateView(BidMixin, CreateView):
     def get_initial(self):        
-        initial = super(BidCreateView, self).get_initial()                
-        initial['client'] = self.kwargs['client']
+        initial = super(BidCreateView, self).get_initial()
+        client_pk = self.kwargs['client']
+        if not Client.objects.filter(pk=client_pk).exists():
+            raise Exception(u'Клиент с id %s не найден!' % client_pk)                
+        initial['client'] = client_pk
         return initial
 
 class BidUpdateView(BidMixin, UpdateView):

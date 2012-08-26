@@ -11,22 +11,6 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/lightbox.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/simple-dialog.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
-
-<style type="text/css">
-	.detail-table td {
-		border: 1px solid #ddd;
-		
-	}
-	.ui-tabs-panel {
-		padding: 4px 3px !important;
-	}	
-	.selectable-deck {
-		margin: 0;
-	}
-	#filter td {
-		padding: 0 5px;
-	}	
-</style>
 <script type="text/javascript">
 	$(function() {
 		$(".selected").addClass('ui-state-highlight');
@@ -54,8 +38,8 @@ function showFilter(){
 
 </script>
 
-<link href="/static/selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="/static/selectable/js/jquery.dj.selectable.js"></script>
+<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
 
 {% endblock %}
 
@@ -67,7 +51,7 @@ function showFilter(){
     <form method="get">        
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
         	<tr>
-        		<td class="top-align">{{ fields_count }}
+        		<td class="top-align">
         			<table>	                
 		            {% for field in fields|slice:":10" %}
 					    <tr>

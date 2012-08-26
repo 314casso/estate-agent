@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+{% block head %}
+<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+{% endblock head %}
+
+{% block left %}
+<form method="post" action="">
+	{% csrf_token %}{{ form }}        
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+            <tr>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in estate_filter_form.fieldsets.left %}
+                        <tr>
+                            <td>                    
+                            {{ field.label_tag }}
+                            </td>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </td>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in estate_filter_form.fieldsets.center %}
+                        <tr>
+                            <td>                    
+                            {{ field.label_tag }}
+                            </td>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>                
+                </td>   
+                <td class="top-align">
+                    <table>                 
+                    {% for field in estate_filter_form.fieldsets.right %}
+                        <tr>
+                            <td>                    
+                            {{ field.label_tag }}
+                            </td>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>                
+                </td>   
+            </tr>                                           
+            <tfoot>
+                <tr>
+                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+
+{% endblock left %}

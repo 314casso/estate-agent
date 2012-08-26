@@ -21,6 +21,7 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField
 from selectable.forms.widgets import AutoComboboxSelectWidget
 import re
+from form_utils.forms import BetterForm
 
 class EstateCreateForm(ModelForm):
     #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
@@ -152,7 +153,7 @@ class ComplexField(MultiValueField):
             return data_list
         return [None, None]
 
-class EstateFilterForm(Form):
+class EstateFilterForm(BetterForm):
     pk = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
             label=_('ID'),
@@ -191,7 +192,7 @@ class EstateFilterForm(Form):
             required=False,
         )         
     agency_price = forms.CharField(required=False, label=_('Price'))    
-    client = forms.CharField(required=False, label=_('Client'))
+    clients = forms.CharField(required=False, label=_('Client'))
     contact = forms.CharField(required=False, label=_('Contact'))
     year_built = forms.CharField(required=False, label=_('Year built'))
     floor = forms.CharField(required=False, label=_('Floor'))        
@@ -246,8 +247,8 @@ class EstateFilterForm(Form):
             f['microdistrict_id__in'] = self['microdistrict'].value()
         if self['estate_status'].value():
             f['estate_status_id__in'] = self['estate_status'].value()                                           
-        if self['client'].value():
-            f['clients__name__icontains'] = self['client'].value()    
+        if self['clients'].value():
+            f['clients__name__icontains'] = self['clients'].value()    
         if self['contact'].value():
             f['clients__contacts__contact__icontains'] = self['contact'].value()    
         if self['agency_price'].value():
@@ -308,6 +309,11 @@ class EstateFilterForm(Form):
                 lst.update(result)          
         f.update(lst)    
         return f
+    class Meta:
+        fieldsets = [('left', {'fields': ['pk','estate_type','region','locality','microdistrict','street','estate_number','room_number','estate_status','agency_price',], 'legend': ''}),
+                     ('center', {'fields': ['clients','contact','year_built','floor','floor_count','wall_construcion','total_area','used_area','room_count','stead_area',]}),
+                     ('right', {'fields': ['created','updated','origin','beside','interior','face_area','electricity','watersupply','gassupply','sewerage','driveway']})
+                     ]
     
 '''
 Для формирование поля от до
@@ -435,6 +441,7 @@ class SteadUpdateForm(ModelForm):
         exclude = ('estate',)
 
 class BidForm(ModelForm):
+    client = forms.ModelChoiceField(queryset=Client.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Bid    
-        exclude = ('estate_filter',)                    
+        fields = ('client',)                    

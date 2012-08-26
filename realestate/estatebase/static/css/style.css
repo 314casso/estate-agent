@@ -8,10 +8,10 @@ body {
 #wrapper {
 	margin: auto;
 	padding: 2px 10px 10px 10px;
-	width: 1100px;	
+	width: 1100px;
 	background: white;
-	border: 3px solid #666;	
-	border-top: 0; 
+	border: 3px solid #666;
+	border-top: 0;
 	background: white;
 }
 
@@ -21,12 +21,12 @@ body {
 }
 
 #right {
-	float: left;	
+	float: left;
 }
 
 #extra {
 	float: left;
-	margin: 0 0 0 10px;	
+	margin: 0 0 0 10px;
 }
 
 #estate_nav {
@@ -246,8 +246,6 @@ span.contact-inline label, .bidg-list label {
 	background: white !important;
 }
 
- 
-
 .zebra-list {
 	list-style: none;
 }
@@ -310,11 +308,11 @@ span.contact-inline label, .bidg-list label {
 
 .ui-combobox {
 	position: relative;
-	display: inline-block;	    
+	display: inline-block;
 }
 
-input{
-	padding: 1px 2px;	
+input {
+	padding: 1px 2px;
 }
 
 select {
@@ -322,11 +320,11 @@ select {
 }
 
 .ui-combo-button {
-	
+
 }
 
 .ui-combo-button .ui-button-text {
-	padding: 1px;	
+	padding: 1px;
 }
 
 .ui-combobox-toggle {
@@ -354,42 +352,42 @@ select {
 	/*line-height: 21px;*/
 }
 
-.layout-details{	
-	margin-top: 1px;	
+.layout-details {
+	margin-top: 1px;
 }
 
-.layout-details{	
-	border-bottom: 1px solid #ddd;	
+.layout-details {
+	border-bottom: 1px solid #ddd;
 }
 
-.layout-details:last-child{	
-	border-bottom: 0;	
+.layout-details:last-child {
+	border-bottom: 0;
 }
 
 fieldset {
-	padding: 3px;	
-	margin-bottom: 3px;	
+	padding: 3px;
+	margin-bottom: 3px;
 }
 
-legend {	
-	font-weight: bold;	
+legend {
+	font-weight: bold;
 }
 
 .no-border {
 	border: 0;
 }
 
-.pagination ul{
+.pagination ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-.pagination li{
+.pagination li {
 	display: inline;
 	padding: 1px 5px;
 	border: 1px solid #ddd;
-	margin: 0 1px;	
+	margin: 0 1px;
 }
 
 .date-input, .number-input {
@@ -397,6 +395,19 @@ legend {
 	margin: 0 3px 0 0;
 }
 
-.filter-table td.top-align{
+.filter-table td.top-align {
 	vertical-align: top;
+}
+
+.detail-table td {
+	border: 1px solid #ddd;
+}
+.ui-tabs-panel {
+	padding: 4px 3px !important;
+}
+.selectable-deck {
+	margin: 0;
+}
+#filter td {
+	padding: 0 5px;
 }
