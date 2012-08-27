@@ -72,6 +72,6 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',    
     url (r'^bidcreate/(?P<client>\d+)$', BidCreateView.as_view(), name='bid_create'),    
-    url (r'^bidupdate/(?P<id>\d+)$', BidUpdateView.as_view(), name='bid_append'),    
+    url (r'^bidupdate/(?P<pk>\d+)$', BidUpdateView.as_view(), name='bid_update'),    
     #url (r'^bidremove/(?P<pk>\d+)$', BidgRemoveView.as_view(), name='bid_remove'),     
 )

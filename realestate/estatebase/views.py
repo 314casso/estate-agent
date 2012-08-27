@@ -602,7 +602,7 @@ class BidMixin(ModelFormMixin):
     form_class = BidForm
     model = Bid
     def get_context_data(self, **kwargs):        
-        client = self.kwargs['client'] #self.object and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
+        client = None#self.kwargs['client'] #self.object and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
         context = super(BidMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
@@ -615,7 +615,9 @@ class BidMixin(ModelFormMixin):
             data = None
             if self.object:
                 data = self.object.estate_filter
-            context['estate_filter_form'] = EstateFilterForm(data)            
+                print data
+            context['estate_filter_form'] = EstateFilterForm(data)  
+        print context['estate_filter_form']              
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -628,7 +630,7 @@ class BidMixin(ModelFormMixin):
         if estate_filter_form.is_valid():
             self.object = form.save(commit=False)                      
             # Запаковываем фильтр в поле   
-            self.object.estate_filter = estate_filter_form.cleaned_data 
+            self.object.estate_filter = estate_filter_form.data 
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:
