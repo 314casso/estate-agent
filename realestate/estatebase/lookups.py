@@ -1,7 +1,7 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
-    Electricity, Watersupply, Gassupply, Sewerage, Driveway
+    Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -80,6 +80,13 @@ class SewerageLookup(SimpleNameLookup):
 
 class DrivewayLookup(SimpleNameLookup):
     model = Driveway
+
+class ClientLookup(SimpleNameLookup):
+    model = Client
+    
+class ContactLookup(ModelLookup):
+    model = Contact
+    search_fields = ('contact__icontains',)
     
 try:
     registry.register(StreetLookup)
@@ -98,5 +105,7 @@ try:
     registry.register(GassupplyLookup)
     registry.register(SewerageLookup)
     registry.register(DrivewayLookup)
+    registry.register(ClientLookup)
+    registry.register(ContactLookup)
 except LookupAlreadyRegistered:
     pass    

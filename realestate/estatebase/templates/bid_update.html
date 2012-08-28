@@ -7,6 +7,10 @@
 {% endblock head %}
 
 {% block left %}
+{{ bid.history.updated_by }}
+{% for id in bid.estates.all %}
+{{ id.estate_type }}
+{% endfor %}
 <form method="post" action="">
 	{% csrf_token %}{{ form }}	
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">

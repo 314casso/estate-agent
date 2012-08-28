@@ -528,7 +528,7 @@ class LevelMixin(ModelFormMixin):
         if layout_form.is_valid():
             self.object = form.save(commit=False)                         
             self.object.save()             
-            layout_form.instance = self.object
+            layout_form.instance = self.object            
             layout_form.save()
             #Обновление истории объекта                                 
             prepare_history(self.object.bidg.estate.history, ExUser.objects.get(pk=self.request.user.pk))
@@ -614,10 +614,8 @@ class BidMixin(ModelFormMixin):
         else:
             data = None
             if self.object:
-                data = self.object.estate_filter
-                print data
-            context['estate_filter_form'] = EstateFilterForm(data)  
-        print context['estate_filter_form']              
+                data = self.object.estate_filter                
+            context['estate_filter_form'] = EstateFilterForm(data)                      
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -630,7 +628,9 @@ class BidMixin(ModelFormMixin):
         if estate_filter_form.is_valid():
             self.object = form.save(commit=False)                      
             # Запаковываем фильтр в поле   
-            self.object.estate_filter = estate_filter_form.data 
+            self.object.estate_filter = estate_filter_form.data
+            self.object.history = prepare_history(self.object.history, self.request.user.pk)
+            self.object.estates = estate_filter_form['pk'].value()
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:

@@ -674,7 +674,7 @@ def update_estate(sender, instance, created, **kwargs):
     for estate in instance.client.estates.all():
         estate.set_contact()
         estate.save()            
-        prepare_history(estate.history, instance.user_id)                        
+        prepare_history(estate.history, instance.user_id)                                
 
 post_save.connect(update_estate, sender=Contact)
 
@@ -694,49 +694,8 @@ class Bid(models.Model):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
-
-#class EstateFilter(models.Model):    
-#    esate = models.ManyToManyField(Estate, verbose_name=_('Estates'), blank=True, null=True)
-#    estate_type = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
-#    region = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
-#    localitie = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
-#    microdistrict = models.ManyToManyField(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True)
-#    street = models.ManyToManyField(Street, verbose_name=_('Street'), blank=True, null=True)
-#    estate_number = custom_fields.MinMaxField(verbose_name=_('Estate number'))
-#    room_number = custom_fields.MinMaxField(verbose_name=_('Room number'))    
-#    estate_status = models.ManyToManyField(EstateStatus, verbose_name=_('Estate status'), blank=True, null=True)
-#    agency_price = custom_fields.MinMaxField(verbose_name=_('Room number'))
-#    client = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
-#    contact = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
-#    year_built = custom_fields.MinMaxField(verbose_name=_('Year built'))
-#    floor = custom_fields.MinMaxField(verbose_name=_('Floor'))
-#    floor_count = custom_fields.MinMaxField(verbose_name=_('Floor count'))
-#    wall_construcion = models.ManyToManyField(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
-#    total_area = custom_fields.MinMaxField(verbose_name=_('Total area'))
-#    used_area = custom_fields.MinMaxField(verbose_name=_('Used area'))
-#    room_count = custom_fields.MinMaxField(verbose_name=_('Room count'))
-#    stead_area = custom_fields.MinMaxField(verbose_name=_('Stead area'))
-#    created_min = models.DateTimeField(verbose_name=_('Created min'), blank=True, null=True)
-#    created_max = models.DateTimeField(verbose_name=_('Created max'), blank=True, null=True)
-#    created = DateRangeField(required=False, label=_('Created'))        
-#    updated = DateRangeField(required=False, label=_('Updated'))
-#    origin = AutoComboboxSelectMultipleField(
-#            lookup_class=OriginLookup,
-#            label=_('Origin'),
-#            required=False,
-#        )  
-#    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
-#    interior = AutoComboboxSelectMultipleField(
-#            lookup_class=InteriorLookup,
-#            label=_('Interior'),
-#            required=False,
-#        )
-#    face_area = forms.CharField(required=False, label=_('Face area'))
-#    electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
-#    watersupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=WatersupplyLookup)    
-#    gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
-#    sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
-#    driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
+    def save(self, *args, **kwargs):               
+        super(Bid, self).save(*args, **kwargs)
 
 class ObjectWrapper(object):
     _field_list = None

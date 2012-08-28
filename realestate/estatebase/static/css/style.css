@@ -411,3 +411,7 @@ legend {
 #filter td {
 	padding: 0 5px;
 }
+
+.ui-button-text {
+	line-height: inherit !important;
+}

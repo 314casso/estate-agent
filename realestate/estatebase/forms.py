@@ -12,7 +12,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
-    DrivewayLookup
+    DrivewayLookup, ClientLookup, ContactLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
     get_polymorph_label, Stead, Bid
@@ -192,8 +192,16 @@ class EstateFilterForm(BetterForm):
             required=False,
         )         
     agency_price = forms.CharField(required=False, label=_('Price'))    
-    clients = forms.CharField(required=False, label=_('Client'))
-    contact = forms.CharField(required=False, label=_('Contact'))
+    clients = AutoCompleteSelectMultipleField(
+            lookup_class=ClientLookup,
+            label=_('Client'),
+            required=False,
+        )
+    contacts = AutoCompleteSelectMultipleField(
+            lookup_class=ContactLookup,
+            label=_('Contact'),
+            required=False,
+        )    
     year_built = forms.CharField(required=False, label=_('Year built'))
     floor = forms.CharField(required=False, label=_('Floor'))        
     floor_count = forms.CharField(required=False, label=_('Floor count'))
@@ -248,9 +256,9 @@ class EstateFilterForm(BetterForm):
         if self['estate_status'].value():
             f['estate_status_id__in'] = self['estate_status'].value()                                           
         if self['clients'].value():
-            f['clients__name__icontains'] = self['clients'].value()    
-        if self['contact'].value():
-            f['clients__contacts__contact__icontains'] = self['contact'].value()    
+            f['clients__id__in'] = self['clients'].value()    
+        if self['contacts'].value():
+            f['clients__contacts__id__in'] = self['contacts'].value()    
         if self['agency_price'].value():
             value = from_to(self['agency_price'].value(), 'agency_price')
             if value:
