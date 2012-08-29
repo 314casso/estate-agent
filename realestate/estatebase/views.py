@@ -626,7 +626,7 @@ class BidMixin(ModelFormMixin):
         context = self.get_context_data()
         estate_filter_form = context['estate_filter_form']
         if estate_filter_form.is_valid():
-            self.object = form.save(commit=False)                      
+            self.object = form.save()                      
             # Запаковываем фильтр в поле   
             self.object.estate_filter = estate_filter_form.data
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
