@@ -8,6 +8,8 @@
 
 {% block left %}
 {{ bid.history.updated_by }}
+{{ bid.agency_price_min }}
+{{ bid.agency_price_max }}
 {% for id in bid.estates.all %}
 {{ id.estate_type }}
 {% endfor %}

@@ -1,7 +1,8 @@
 from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
-    Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact
+    Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
+    ExUser
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -87,6 +88,10 @@ class ClientLookup(SimpleNameLookup):
 class ContactLookup(ModelLookup):
     model = Contact
     search_fields = ('contact__icontains',)
+
+class ExUserLookup(ModelLookup):
+    model = ExUser
+    search_fields = ('username__icontains', 'first_name__icontains', 'last_name__icontains', 'email__icontains')
     
 try:
     registry.register(StreetLookup)
@@ -107,5 +112,6 @@ try:
     registry.register(DrivewayLookup)
     registry.register(ClientLookup)
     registry.register(ContactLookup)
+    registry.register(ExUserLookup)
 except LookupAlreadyRegistered:
     pass    

@@ -12,14 +12,15 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
-    DrivewayLookup, ClientLookup, ContactLookup
+    DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, \
     get_polymorph_label, Stead, Bid
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField
-from selectable.forms.widgets import AutoComboboxSelectWidget
+from selectable.forms.widgets import AutoComboboxSelectWidget,\
+    AutoComboboxSelectMultipleWidget
 import re
 from form_utils.forms import BetterForm
 
@@ -326,7 +327,7 @@ class EstateFilterForm(BetterForm):
 '''
 Для формирование поля от до
 '''
-def from_to(value, field_name):
+def from_to(value, field_name=None):
     f = {}
     if not value:
         return None    
@@ -334,17 +335,32 @@ def from_to(value, field_name):
     matchobjs = re.match(r"^(?P<oper>\>|\<)(?P<n>\d+)$", a)
     if matchobjs:         
         if matchobjs.group('oper') == '>':
-            f['%s__gte' % field_name] = matchobjs.group('n')
+            if field_name:
+                f['%s__gte' % field_name] = matchobjs.group('n')
+            else:
+                f['min'] = matchobjs.group('n')
+                f['max'] = None    
         else:
-            f['%s__lte' % field_name] = matchobjs.group('n')    
+            if field_name:
+                f['%s__lte' % field_name] = matchobjs.group('n')
+            else:
+                f['max'] = matchobjs.group('n')
+                f['min'] = None    
     else:
         matchobjs = re.match(r"^(?P<n1>\d+)\-(?P<n2>\d+)$", a)
         if matchobjs:
-            f['%s__range' % field_name] = (matchobjs.group('n1'), matchobjs.group('n2'))            
+            if field_name:
+                f['%s__range' % field_name] = (matchobjs.group('n1'), matchobjs.group('n2'))
+            else:
+                f['min'] = matchobjs.group('n1')
+                f['max'] = matchobjs.group('n2')                
         else:
             matchobjs = re.match(r"^(?P<n>\d+)$", a)
             if matchobjs:
-                f['%s__exact' % field_name] = matchobjs.group('n')   
+                if field_name:
+                    f['%s__exact' % field_name] = matchobjs.group('n')
+                else:
+                    f['min'] = f['max'] = matchobjs.group('n')                            
     return f or None    
 
 '''
@@ -449,7 +465,10 @@ class SteadUpdateForm(ModelForm):
         exclude = ('estate',)
 
 class BidForm(ModelForm):
-    client = forms.ModelChoiceField(queryset=Client.objects.all(), widget=forms.HiddenInput())
+    client = forms.ModelChoiceField(queryset=Client.objects.all(), widget=forms.HiddenInput())    
     class Meta:
         model = Bid    
-        fields = ('client',)                    
+        fields = ('client','broker')
+        widgets = {
+           'broker' : AutoComboboxSelectWidget(lookup_class=ExUserLookup)        
+        }                    

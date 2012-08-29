@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm, BidForm
+    SteadUpdateForm, EstateFilterForm, BidForm, from_to
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead, Bid
 from django.core.urlresolvers import reverse
@@ -217,7 +217,7 @@ class EstateListView(ListView):
     template_name = 'estate_list.html'
     paginate_by = 10    
     def get_queryset(self):        
-        q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status').prefetch_related('bidgs').all()        
+        q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type').all()        
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         filter_dict.update({'locality__geo_group__userprofile__user__exact': self.request.user })
@@ -631,6 +631,13 @@ class BidMixin(ModelFormMixin):
             self.object.estate_filter = estate_filter_form.data
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
             self.object.estates = estate_filter_form['pk'].value()
+            self.object.clients = estate_filter_form['clients'].value()
+            self.object.contacts = estate_filter_form['contacts'].value()
+            self.object.estate_types = estate_filter_form['estate_type'].value()
+            self.object.regions = estate_filter_form['region'].value()            
+            self.object.localities = estate_filter_form['locality'].value()            
+            self.object.agency_price_min = from_to(estate_filter_form['agency_price'].value())['min']            
+            self.object.agency_price_max = from_to(estate_filter_form['agency_price'].value())['max']
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:

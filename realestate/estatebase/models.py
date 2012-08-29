@@ -24,7 +24,7 @@ class UserProfile(models.Model):
     geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)                
 
 class SimpleDict(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):
@@ -633,7 +633,7 @@ class Contact(models.Model):
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)
     user_id = None      
     def __unicode__(self):
-        return u'%s: %s' % (self.contact_type.name, self.contact)
+        return u'%s: %s (%s)' % (self.contact_type.name, self.contact, self.client.name)
     @property
     def state_css(self):
         css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
@@ -694,7 +694,7 @@ class Bid(models.Model):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
-    def save(self, *args, **kwargs):               
+    def save(self, *args, **kwargs):                     
         super(Bid, self).save(*args, **kwargs)
 
 class ObjectWrapper(object):
