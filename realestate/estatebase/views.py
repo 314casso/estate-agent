@@ -601,8 +601,11 @@ class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'
     form_class = BidForm
     model = Bid
-    def get_context_data(self, **kwargs):        
-        client = None#self.kwargs['client'] #self.object and Client.objects.get(pk=self.kwargs['client']) or self.object.client         
+    def get_context_data(self, **kwargs):
+        if 'client' in self.kwargs:
+            client = Client.objects.get(pk=self.kwargs['client'])
+        else:
+            client = self.object.client                 
         context = super(BidMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
@@ -636,8 +639,10 @@ class BidMixin(ModelFormMixin):
             self.object.estate_types = estate_filter_form['estate_type'].value()
             self.object.regions = estate_filter_form['region'].value()            
             self.object.localities = estate_filter_form['locality'].value()            
-            self.object.agency_price_min = from_to(estate_filter_form['agency_price'].value())['min']            
-            self.object.agency_price_max = from_to(estate_filter_form['agency_price'].value())['max']
+            prices = from_to(estate_filter_form['agency_price'].value())
+            if prices:
+                self.object.agency_price_min = prices['min']                        
+                self.object.agency_price_max = prices['max']
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:
