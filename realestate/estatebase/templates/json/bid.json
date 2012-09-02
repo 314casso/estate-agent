@@ -1,0 +1,16 @@
+{
+    "sEcho": {{ sEcho }},
+    "iTotalRecords": {{ iTotalRecords }},
+    "iTotalDisplayRecords": {{ iTotalDisplayRecords }},
+    "aaData":[
+    {% for bid in querySet %}
+    [
+        "<a href='#'>{{ bid.id }}</a>",
+        "{{ bid.client }}"                
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
+}

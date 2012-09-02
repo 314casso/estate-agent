@@ -7,7 +7,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm, BidForm, from_to
+    SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead, Bid
 from django.core.urlresolvers import reverse
@@ -22,6 +22,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from django.db.models.query_utils import Q
+from estatebase.datatables import get_datatables_records
 
 class BaseMixin():
     def get_success_url(self):   
@@ -658,4 +659,31 @@ class BidCreateView(BidMixin, CreateView):
         return initial
 
 class BidUpdateView(BidMixin, UpdateView):
-    pass    
+    pass
+
+class BidListView(ListView):    
+    template_name = 'bid_list.html'
+    paginate_by = 10    
+    def get_queryset(self):        
+        q = Bid.objects.all().select_related().all()        
+        search_form = BidFilterForm(self.request.GET)
+        filter_dict = search_form.get_filter()
+#        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        
+        if len(filter_dict):
+            q = q.filter(**filter_dict)
+        return q
+    def get_context_data(self, **kwargs):
+        context = super(BidListView, self).get_context_data(**kwargs)
+        bid_filter_form = BidFilterForm(self.request.GET)                                                                    
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'bid_count': Bid.objects.count(),           
+            'fields': list(bid_filter_form),                                   
+        })        
+        return context    
+
+def bid_json_list(request):        
+    querySet = Bid.objects.all()    
+    columnIndexNameMap = { 0: 'id', 1 : 'client'}    
+    jsonTemplatePath = 'json/bid.json'    
+    return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)        

@@ -154,17 +154,7 @@ class ComplexField(MultiValueField):
             return data_list
         return [None, None]
 
-class EstateFilterForm(BetterForm):
-    pk = AutoCompleteSelectMultipleField(
-            lookup_class=EstateLookup,
-            label=_('ID'),
-            required=False,
-        ) 
-    estate_type = AutoCompleteSelectMultipleField(
-            lookup_class=EstateTypeLookup,
-            label=_('Estate type'),
-            required=False,
-        )    
+class BaseFilterForm(BetterForm):
     region = AutoComboboxSelectMultipleField(
             lookup_class=RegionLookup,
             label=_('Region'),
@@ -184,7 +174,31 @@ class EstateFilterForm(BetterForm):
             lookup_class=StreetLookup,
             label=_('Street'),
             required=False,
+        )
+    def get_filter(self):
+        f = {}
+        if self['region'].value():
+            f['region_id__in'] = self['region'].value()
+        if self['locality'].value():
+            f['locality_id__in'] = self['locality'].value()
+        if self['microdistrict'].value():
+            f['microdistrict_id__in'] = self['microdistrict'].value()    
+        if self['street'].value():
+            f['street_id__in'] = self['street'].value()
+        return f        
+
+class EstateFilterForm(BaseFilterForm):
+    pk = AutoCompleteSelectMultipleField(
+            lookup_class=EstateLookup,
+            label=_('ID'),
+            required=False,
+        ) 
+    estate_type = AutoCompleteSelectMultipleField(
+            lookup_class=EstateTypeLookup,
+            label=_('Estate type'),
+            required=False,
         )    
+        
     estate_number = forms.CharField(required=False, label=_('Estate number'))
     room_number = forms.CharField(required=False, label=_('Room number'))    
     estate_status = AutoComboboxSelectMultipleField(
@@ -237,23 +251,15 @@ class EstateFilterForm(BetterForm):
     driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
     
     def get_filter(self):
-        f = {}   
+        f = super(EstateFilterForm, self).get_filter()   
         if self['pk'].value():                                 
-            f['id__in'] = self['pk'].value()
-        if self['street'].value():
-            f['street_id__in'] = self['street'].value()
+            f['id__in'] = self['pk'].value()        
         if self['estate_type'].value():
-            f['bidgs__estate_type_id__in'] = self['estate_type'].value()                
-        if self['region'].value():
-            f['region_id__in'] = self['region'].value()
-        if self['locality'].value():
-            f['locality_id__in'] = self['locality'].value()
+            f['bidgs__estate_type_id__in'] = self['estate_type'].value()        
         if self['estate_number'].value():                                 
             f['estate_number__in'] = split_string(self['estate_number'].value())
         if self['room_number'].value():                                 
-            f['bidgs__room_number__contains'] = self['room_number'].value()
-        if self['microdistrict'].value():
-            f['microdistrict_id__in'] = self['microdistrict'].value()
+            f['bidgs__room_number__contains'] = self['room_number'].value()        
         if self['estate_status'].value():
             f['estate_status_id__in'] = self['estate_status'].value()                                           
         if self['clients'].value():
@@ -470,3 +476,12 @@ class BidForm(ModelForm):
     class Meta:
         model = Bid    
         fields = ('client','broker')                          
+
+class BidFilterForm(BaseFilterForm):
+    def get_filter(self):
+        f = {}
+        if self['region'].value():
+            f['regions__id__in'] = self['region'].value()
+        if self['locality'].value():
+            f['localities__id__in'] = self['locality'].value()        
+        return f
