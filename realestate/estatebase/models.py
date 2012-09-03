@@ -696,6 +696,8 @@ class Bid(models.Model):
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     def save(self, *args, **kwargs):                     
         super(Bid, self).save(*args, **kwargs)
+    class Meta:      
+        ordering = ['-id']    
 
 class ObjectWrapper(object):
     _field_list = None
