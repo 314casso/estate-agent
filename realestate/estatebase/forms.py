@@ -165,26 +165,12 @@ class BaseFilterForm(BetterForm):
             label=_('Locality'),
             required=False,
         )    
-    microdistrict = AutoCompleteSelectMultipleField(
-            lookup_class=MicrodistrictLookup,
-            label=_('Microdistrict'),
-            required=False,
-        )     
-    street = AutoCompleteSelectMultipleField(
-            lookup_class=StreetLookup,
-            label=_('Street'),
-            required=False,
-        )
     def get_filter(self):
         f = {}
         if self['region'].value():
             f['region_id__in'] = self['region'].value()
         if self['locality'].value():
             f['locality_id__in'] = self['locality'].value()
-        if self['microdistrict'].value():
-            f['microdistrict_id__in'] = self['microdistrict'].value()    
-        if self['street'].value():
-            f['street_id__in'] = self['street'].value()
         return f        
 
 class EstateFilterForm(BaseFilterForm):
@@ -198,7 +184,16 @@ class EstateFilterForm(BaseFilterForm):
             label=_('Estate type'),
             required=False,
         )    
-        
+    microdistrict = AutoCompleteSelectMultipleField(
+            lookup_class=MicrodistrictLookup,
+            label=_('Microdistrict'),
+            required=False,
+        )     
+    street = AutoCompleteSelectMultipleField(
+            lookup_class=StreetLookup,
+            label=_('Street'),
+            required=False,
+        )    
     estate_number = forms.CharField(required=False, label=_('Estate number'))
     room_number = forms.CharField(required=False, label=_('Room number'))    
     estate_status = AutoComboboxSelectMultipleField(
@@ -255,7 +250,11 @@ class EstateFilterForm(BaseFilterForm):
         if self['pk'].value():                                 
             f['id__in'] = self['pk'].value()        
         if self['estate_type'].value():
-            f['bidgs__estate_type_id__in'] = self['estate_type'].value()        
+            f['bidgs__estate_type_id__in'] = self['estate_type'].value()
+        if self['microdistrict'].value():
+            f['microdistrict_id__in'] = self['microdistrict'].value()    
+        if self['street'].value():
+            f['street_id__in'] = self['street'].value()                    
         if self['estate_number'].value():                                 
             f['estate_number__in'] = split_string(self['estate_number'].value())
         if self['room_number'].value():                                 

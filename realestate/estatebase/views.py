@@ -21,7 +21,6 @@ from estatebase.helpers.functions import safe_next_link
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
-from django.db.models.query_utils import Q
 from estatebase.datatables import get_datatables_records
 
 class BaseMixin():
