@@ -2,7 +2,7 @@
 {% load link_helper %}
 {% load query_string %}
 {% load paginator %}
-
+{% load humanize %}
 {% block head %}
 
 
@@ -120,10 +120,25 @@ function showFilter(){
         <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">[{{ bid_item.pk }}]</a>
         
         <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px"> {{ bid_item.history.modificated|date:"d M Y" }} </span>
+        {% if bid_item.agency_price_max or bid_item.agency_price_min %}
+        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px; margin: 0 0 0 2px">        	 
+        	{{ bid_item.agency_price_min|default_if_none:'0'|intcomma }} - 
+        	{{ bid_item.agency_price_max|default_if_none:'&#8734;'|intcomma }} р.        	 
+        </span>
+        {% endif %}
     </legend>
     <div style="border-bottom: 0px solid #ddd;">
-    {{ bid_item.client }}
-    {% contact_list bid_item.client next_url %}
+    	<div style="clear: both">
+            {% for estate_type in bid_item.estate_types.all %}
+            <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+            {% endfor %}    
+        </div>
+        <table>
+        	<tr>
+        		<td><div style="font-size: 11px">{{ bid_item.client }}</div></td>
+        		<td>{% contact_list bid_item.client next_url %}</td>
+        	</tr>
+        </table>	    	    
     </div>    
 </fieldset>
 

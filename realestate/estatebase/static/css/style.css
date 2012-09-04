@@ -125,6 +125,7 @@ span.contact-inline {
 	margin-right: 0;
 	background-color: #fffdec;
 	border-radius: 2px;
+	font-size: 11px;
 }
 
 span.contact-inline label, .bidg-list label {
