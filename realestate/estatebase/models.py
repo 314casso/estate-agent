@@ -10,7 +10,7 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from picklefield.fields import PickledObjectField
 
 class ExUser(User):
@@ -665,7 +665,7 @@ class Contact(models.Model):
     class Meta:
         verbose_name = _('contact')
         verbose_name_plural = _('contacts') 
-        ordering = ['contact_type__pk']
+        ordering = ['contact_state__id', 'contact_type__id']
 
 @transaction.commit_on_success        
 def update_estate(sender, instance, created, **kwargs):
@@ -693,11 +693,19 @@ class Bid(models.Model):
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
-    def save(self, *args, **kwargs):                     
-        super(Bid, self).save(*args, **kwargs)
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)                      
     class Meta:      
         ordering = ['-id']    
+
+def update_localities(sender, instance, **kwargs):
+    if instance.pk:
+        if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
+            for region in instance.regions.all():
+                for locality in region.locality_set.all(): 
+                    instance.localities.add(locality)
+                    instance.estate_filter.update({'locality_1' : locality.pk})                    
+
+pre_save.connect(update_localities, sender=Bid)
 
 class ObjectWrapper(object):
     _field_list = None

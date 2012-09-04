@@ -9,7 +9,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
     SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
-    prepare_history, Stead, Bid
+    prepare_history, Stead, Bid, Region
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -601,6 +601,10 @@ class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'
     form_class = BidForm
     model = Bid
+    def get_initial(self):        
+        initial = super(BidMixin, self).get_initial()                
+        initial['broker'] = self.request.user.pk
+        return initial
     def get_context_data(self, **kwargs):
         if 'client' in self.kwargs:
             client = Client.objects.get(pk=self.kwargs['client'])
@@ -617,7 +621,7 @@ class BidMixin(ModelFormMixin):
         else:
             data = None
             if self.object:
-                data = self.object.estate_filter                
+                data = self.object.estate_filter                   
             context['estate_filter_form'] = EstateFilterForm(data)                      
         return context  
     def get_success_url(self):   
@@ -630,16 +634,16 @@ class BidMixin(ModelFormMixin):
         estate_filter_form = context['estate_filter_form']
         if estate_filter_form.is_valid():
             self.object = form.save()                      
-            # Запаковываем фильтр в поле   
-            self.object.estate_filter = estate_filter_form.data
+            # Запаковываем фильтр в поле
+            self.object.estate_filter = estate_filter_form.data.copy()                        
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
             self.object.estates = estate_filter_form['pk'].value()
             self.object.clients = estate_filter_form['clients'].value()
             self.object.contacts = estate_filter_form['contacts'].value()
             self.object.estate_types = estate_filter_form['estate_type'].value()
             self.object.regions = estate_filter_form['region'].value()            
-            self.object.localities = estate_filter_form['locality'].value()            
-            prices = from_to(estate_filter_form['agency_price'].value())
+            self.object.localities = estate_filter_form['locality'].value()                                  
+            prices = from_to(estate_filter_form['agency_price'].value())            
             if prices:
                 self.object.agency_price_min = prices['min']                        
                 self.object.agency_price_max = prices['max']
@@ -662,7 +666,7 @@ class BidUpdateView(BidMixin, UpdateView):
 
 class BidListView(ListView):    
     template_name = 'bid_list.html'
-    paginate_by = 10    
+    paginate_by = 5   
     def get_queryset(self):        
         q = Bid.objects.all().select_related().all()        
         search_form = BidFilterForm(self.request.GET)

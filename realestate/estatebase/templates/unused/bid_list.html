@@ -40,6 +40,8 @@ function showFilter(){
 
 </script>
 
+
+
 {% endblock %}
 
 {% block left %}
@@ -105,16 +107,51 @@ function showFilter(){
 </div>
 <!--  -->
 
+{% for bid_item in bid_list %}
+<fieldset class="{% selected_css bid_item.pk bid.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px">
+    <legend>
+        <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">[{{ bid_item.pk }}]</a>
+        
+        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px"> {{ bid_item.history.modificated|date:"d M Y" }} </span>
+        {% if bid_item.agency_price_max or bid_item.agency_price_min %}
+        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; font-size: 11px; margin: 0 0 0 2px">        	 
+        	{{ bid_item.agency_price_min|default_if_none:'0'|intcomma }} - 
+        	{{ bid_item.agency_price_max|default_if_none:'&#8734;'|intcomma }} р.        	 
+        </span>
+        {% endif %}
+    </legend>
+    <div style="border-bottom: 0px solid #ddd;">
+    	<div style="clear: both">
+            {% for estate_type in bid_item.estate_types.all %}
+            <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+            {% endfor %}    
+        </div>
+        <table>
+        	<tr>
+        		<td><div style="font-size: 11px">{{ bid_item.client }}</div></td>
+        		<td>{% contact_list bid_item.client next_url %}</td>
+        	</tr>
+        </table>	    	    
+    </div>    
+</fieldset>
+
+{% endfor %}
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:6px">
+    {% digg_paginator %}
+</div>
+{% endif %}
+
 <table id="bid-table" class="table-no-cellspace">
 	<thead>		
 		<tr>
 			<th>Код</th>
 			<th>Вид недвижимости</th>
-			<th>Цена</th>
-			<th>Населенные пункты</th>
 			<th>Обновлено</th>
 			<th>Клиент</th>
-			<th>Контакты</th>			
+			<th>Контакты</th>
+			<th>Цена</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -126,24 +163,13 @@ function showFilter(){
             		<a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
             	{% endfor %}
             </td>
-            <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
-			<td>
-				{% for locality in bid_item.localities.all %}
-            		{{ locality }}{% include 'comma.html' %}
-            	{% endfor %}
-			</td>
 			<td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
 			<td>{{ bid_item.client }}</td>
-			<td>{% contact_list bid_item.client next_url 3 %}</td>			
+			<td>{% contact_list bid_item.client next_url %}</td>
+			<td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
-
-{% if is_paginated %}
-<div class="pagination" style="float: left; padding-top:6px">
-    {% digg_paginator %}
-</div>
-{% endif %}
 
 {% endblock left %}

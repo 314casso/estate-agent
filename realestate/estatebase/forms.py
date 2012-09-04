@@ -476,7 +476,7 @@ class BidForm(ModelForm):
         model = Bid    
         fields = ('client','broker')                          
 
-class BidFilterForm(BaseFilterForm):
+class BidFilterForm(BaseFilterForm):    
     def get_filter(self):
         f = {}
         if self['region'].value():

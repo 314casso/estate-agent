@@ -3,6 +3,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from estatebase.models import get_polymorph_label
 import base64
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 
 register = template.Library()
@@ -38,8 +39,11 @@ def inline_field(queryset,field_name):
     return table_row(queryset,field_name)
 
 @register.inclusion_tag('inclusion/contact_list_tag.html')
-def contact_list(client, next_url):        
-    return {'client': client, 'next_url': next_url}
+def contact_list(client, next_url, first=None):
+    contacts = client.contacts.all()[:first]
+    if first:
+        contacts = contacts[:first]    
+    return {'contacts': contacts, 'next_url': next_url}
 
 @register.inclusion_tag('inclusion/client_list_tag.html')
 def client_list(estate, next_url):        
@@ -75,3 +79,19 @@ def get_value(queryset,field_name):
 
 def get_field(queryset, field_name):
     return queryset._meta.get_field(field_name)
+
+@register.simple_tag
+def two_num(n_min, n_max):
+    result = ''
+    if n_min and n_max:
+        if n_min != n_max:     
+            result = 'от %s до %s' % (intcomma(n_min),intcomma(n_max))
+        else:
+            result = '%s' % intcomma(n_max)    
+    elif n_min and not n_max:
+        result = 'более %s' % (intcomma(n_min))
+    elif n_max and not n_min:
+        result = 'менее %s' % (intcomma(n_max))
+    return result             
+
+

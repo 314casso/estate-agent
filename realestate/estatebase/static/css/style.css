@@ -125,7 +125,6 @@ span.contact-inline {
 	margin-right: 0;
 	background-color: #fffdec;
 	border-radius: 2px;
-	font-size: 11px;
 }
 
 span.contact-inline label, .bidg-list label {
@@ -423,12 +422,12 @@ legend {
 }
 .style-table td {
 	font-weight: normal !important;
-	padding: .3em;
+	padding: .2em .2em;
 	border-top-width: 1px !important;	
 }
 .style-table th {
 	text-align: left;
-	padding: .8em .4em;
+	padding: .6em .2em;
 }
 .style-table td.first, .styleTable th.first {
 	border-left-width: 1px !important;
