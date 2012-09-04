@@ -415,3 +415,21 @@ legend {
 .ui-button-text {
 	line-height: inherit !important;
 }
+
+.style-table {
+	border-collapse: separate;
+	border-spacing: 1px;
+}
+.style-table td {
+	font-weight: normal !important;
+	padding: .3em;
+	border-top-width: 1px !important;	
+}
+.style-table th {
+	text-align: left;
+	padding: .8em .4em;
+}
+.style-table td.first, .styleTable th.first {
+	border-left-width: 1px !important;
+}
+
