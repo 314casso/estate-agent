@@ -13,6 +13,7 @@ import os
 from django.db.models.signals import post_save, pre_save
 from picklefield.fields import PickledObjectField
 
+
 class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
@@ -678,10 +679,25 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
-class Bid(models.Model):
+class LiveManager(models.Manager):
+    def get_query_set(self):
+        return super(LiveManager, self).get_query_set().filter(deleted=False)
+
+class TrashManager(models.Manager):
+    def get_query_set(self):
+        return super(TrashManager, self).get_query_set().filter(deleted=True)    
+
+class LiveDeleted(models.Model):
+    objects = LiveManager()
+    trash = TrashManager()
+    deleted = models.BooleanField(default=False)
+    class Meta:        
+        abstract = True
+
+class Bid(LiveDeleted):
     '''
     Заявка
-    '''
+    '''    
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
     estate_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -693,7 +709,7 @@ class Bid(models.Model):
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)                      
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)                          
     class Meta:      
         ordering = ['-id']    
 
