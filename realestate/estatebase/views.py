@@ -217,7 +217,10 @@ class EstateListView(ListView):
     template_name = 'estate_list.html'
     paginate_by = 10    
     def get_queryset(self):        
-        q = Estate.objects.all().select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type').all()        
+        #q = Estate.objects.select_related()
+        q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
+        #q.prefetch_related('bidgs')
+                
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         filter_dict.update({'locality__geo_group__userprofile__user__exact': self.request.user })

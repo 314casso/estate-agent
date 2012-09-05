@@ -418,18 +418,18 @@ legend {
 
 .style-table {
 	border-collapse: separate;
-	border-spacing: 1px;
+	border-spacing: 0 1px;
 }
 .style-table td {
 	font-weight: normal !important;
-	padding: .2em .2em;
+	padding: .2em .4em;
 	border-top-width: 1px !important;	
 }
 .style-table th {
 	text-align: left;
-	padding: .6em .2em;
+	padding: .6em .4em;
 }
-.style-table td.first, .styleTable th.first {
-	border-left-width: 1px !important;
+.style-table td.first, .style-table th.first {
+	border-left-width: 0px !important;
 }
 

@@ -109,8 +109,8 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 
 MIDDLEWARE_CLASSES = (
 #    http://packages.python.org/johnny-cache/                  
-    'johnny.middleware.LocalStoreClearMiddleware',
-    'johnny.middleware.QueryCacheMiddleware',                  
+#    'johnny.middleware.LocalStoreClearMiddleware',
+#    'johnny.middleware.QueryCacheMiddleware',                  
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -42,7 +42,9 @@
         {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
     </legend>
     <div style="border-bottom: 0px solid #ddd; font-style: italic">
+    {% with estate_item=estate_item %}	
     {% address estate_item %}
+    {% endwith %}
     </div>
     <div style="margin-top: 2px">
         {% with contact=estate_item.basic_contact  %}

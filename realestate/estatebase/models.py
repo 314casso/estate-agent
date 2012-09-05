@@ -53,8 +53,8 @@ class Locality(SimpleDict):
     '''
     Населенные пункты
     '''
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),)
-    geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'),)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
+    geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
         verbose_name_plural = _('localities')    
@@ -63,13 +63,13 @@ class Microdistrict(SimpleDict):
     '''
     Микрорайоны в населенном пункте
     '''
-    locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
+    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('microdistrict')
         verbose_name_plural = _('microdistricts')
 
 class Street(SimpleDict):
-    locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
+    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('street')
         verbose_name_plural = _('streets')
@@ -189,7 +189,7 @@ TEMPLATE_CHOICES = (
 
 class EstateType(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
-    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'))    
+    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT)    
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     template = models.CharField(_('View prefix'), max_length=50, choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
@@ -210,9 +210,9 @@ class EstateType(OrderedModel):
     
 class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators')
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators',on_delete=models.PROTECT)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators')    
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)    
     @property
     def modificated(self):
         return self.updated or self.created
@@ -237,31 +237,31 @@ class Estate(models.Model):
     Базовая модель объектов недвижимости
     '''
     #Базовые
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'),)
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'),) 
-    locality = models.ForeignKey(Locality, verbose_name=_('Locality'),)
-    microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True)
-    street = models.ForeignKey(Street, verbose_name=_('Street'),)    
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT) 
+    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
+    microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.PROTECT)
+    street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT)    
     estate_number = models.CharField(_('Estate number'), max_length=10)
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates')
-    origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True)
-    beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True)
+    origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
+    beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.PROTECT)
     beside_distance = models.PositiveIntegerField('Beside distance', blank=True, null=True)
     saler_price = models.PositiveIntegerField('Saler price', blank=True, null=True)
     agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
-    estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'))     
+    estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)     
     #Коммуникации    
-    electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True)
+    electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
-    watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True) 
+    watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True, on_delete=models.PROTECT) 
     watersupply_distance = models.PositiveIntegerField('Watersupply distance', blank=True, null=True)
-    gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True)
+    gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True, on_delete=models.PROTECT)
     gassupply_distance = models.PositiveIntegerField('Gassupply distance', blank=True, null=True)
-    sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True)
+    sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True, on_delete=models.PROTECT)
     sewerage_distance = models.PositiveIntegerField('Sewerage distance', blank=True, null=True)
-    telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True)
-    internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True)
-    driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True)
+    telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True, on_delete=models.PROTECT)
+    internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True, on_delete=models.PROTECT)
+    driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.PROTECT)
     driveway_distance = models.PositiveIntegerField('Driveway distance', blank=True, null=True)
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
@@ -466,10 +466,10 @@ class LayoutFeature(SimpleDict):
 
 class Layout(models.Model):
     level = models.ForeignKey(Level, verbose_name=_('Level'))
-    layout_type = models.ForeignKey(LayoutType, verbose_name=_('LayoutType'))
+    layout_type = models.ForeignKey(LayoutType, verbose_name=_('LayoutType'), on_delete=models.PROTECT)
     area = models.DecimalField(_('Area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    furniture = models.ForeignKey(Furniture, verbose_name=_('Furniture'), blank=True, null=True)
-    layout_feature = models.ForeignKey(LayoutFeature, verbose_name=_('LayoutFeature'), blank=True, null=True)
+    furniture = models.ForeignKey(Furniture, verbose_name=_('Furniture'), blank=True, null=True, on_delete=models.PROTECT)
+    layout_feature = models.ForeignKey(LayoutFeature, verbose_name=_('LayoutFeature'), blank=True, null=True, on_delete=models.PROTECT)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     class Meta:
         verbose_name = _('layout')
@@ -477,27 +477,27 @@ class Layout(models.Model):
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'placeable__exact':True})   
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'placeable__exact':True},  on_delete=models.PROTECT)   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators=[validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
     floor_count = models.PositiveIntegerField(_('Floor count'), blank=True, null=True)
     elevator = models.BooleanField(_('Elevator'), default=False)
-    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True)
-    exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True)    
-    window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True)
-    roof = models.ForeignKey(Roof, verbose_name=_('Roof'), blank=True, null=True)
-    heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True)
+    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True,  on_delete=models.PROTECT)
+    exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True, on_delete=models.PROTECT)    
+    window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True, on_delete=models.PROTECT)
+    roof = models.ForeignKey(Roof, verbose_name=_('Roof'), blank=True, null=True, on_delete=models.PROTECT)
+    heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True, on_delete=models.PROTECT)
     ceiling_height = models.DecimalField(_('Ceiling height'), blank=True, null=True, max_digits=5, decimal_places=2)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     #Внутренняя отделка    
-    wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True)
-    flooring = models.ForeignKey(Flooring, verbose_name=_('Flooring'), blank=True, null=True)
-    ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True)
-    interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True)
+    wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True, on_delete=models.PROTECT)
+    flooring = models.ForeignKey(Flooring, verbose_name=_('Flooring'), blank=True, null=True, on_delete=models.PROTECT)
+    ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True, on_delete=models.PROTECT)
+    interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=False)
     class Meta:
@@ -554,9 +554,9 @@ class Stead(models.Model):
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')  
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)      
     face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True)
-    land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True)
-    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True)    
+    shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)
+    land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True, on_delete=models.PROTECT)
+    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)    
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')
@@ -587,8 +587,8 @@ class Client(models.Model):
     An client entity      
     """
     name = models.CharField(_('Name'), max_length=255)
-    client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'),)
-    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True) 
+    client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'), on_delete=models.PROTECT)
+    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)             
@@ -616,8 +616,8 @@ class ContactState(SimpleDict):
 
 class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now())
-    user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True)
-    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'),) 
+    user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True, on_delete=models.PROTECT)
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), on_delete=models.PROTECT) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
@@ -627,10 +627,10 @@ class ContactHistory(models.Model):
 
 class Contact(models.Model):    
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
-    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'),)
+    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'), on_delete=models.PROTECT)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
-    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5)
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5, on_delete=models.PROTECT)
     user_id = None      
     def __unicode__(self):
         return u'%s: %s (%s)' % (self.contact_type.name, self.contact, self.client.name)
@@ -685,7 +685,7 @@ class Bid(models.Model):
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
     estate_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='brokers', blank=True, null=True)
+    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='brokers', blank=True, null=True, on_delete=models.PROTECT)
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)
     clients = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
     contacts = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)

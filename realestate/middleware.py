@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import http
 from django.db import connection
 from django.template import Template, Context
@@ -79,5 +80,5 @@ class SQLLogMiddleware:
             </ul>
         ''')
 
-        response.content = "%s%s" % (response.content, t.render(Context({'sqllog':connection.queries, 'count':len(connection.queries), 'time':time}))) #@UndefinedVariable
+        response.content = u"%s%s" % (response.content, t.render(Context({'sqllog':connection.queries, 'count':len(connection.queries), 'time':time}))) #@UndefinedVariable
         return response
