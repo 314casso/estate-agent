@@ -672,10 +672,11 @@ class Contact(models.Model):
 def update_estate(sender, instance, created, **kwargs):
     if instance.client.history:
         prepare_history(instance.client.history, instance.user_id)
-    for estate in instance.client.estates.all():
-        estate.set_contact()
-        estate.save()            
-        prepare_history(estate.history, instance.user_id)                                
+    if instance.client.pk:    
+        for estate in instance.client.estates.all():
+            estate.set_contact()
+            estate.save()            
+            prepare_history(estate.history, instance.user_id)                                
 
 post_save.connect(update_estate, sender=Contact)
 
