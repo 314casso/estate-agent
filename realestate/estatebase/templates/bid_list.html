@@ -115,6 +115,7 @@ function showFilter(){
 			<th>Обновлено</th>
 			<th>Клиент</th>
 			<th>Контакты</th>			
+			<th>Действие</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -134,7 +135,8 @@ function showFilter(){
 			</td>
 			<td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
 			<td>{{ bid_item.client }}</td>
-			<td>{% contact_list bid_item.client next_url 3 %}</td>			
+			<td>{% contact_list bid_item.client next_url 3 %}</td>
+			<td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>			
 		</tr>
 		{% endfor %}
 	</tbody>
