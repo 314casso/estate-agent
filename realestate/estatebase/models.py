@@ -592,7 +592,8 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)             
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+                 
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
     @property
@@ -792,3 +793,4 @@ WRAPPERS = {
            'HOME':(HomeWrapper(), SteadWrapper()),
            'STEAD':(None, SteadWrapper()),
            }
+
