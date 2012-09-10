@@ -1,15 +1,26 @@
 $(document).ready(function() {
 	$('a.inline-button').parent().addClass('ui-state-default ui-corner-all');
 	$('a.icon-plus').addClass('ui-icon ui-icon-plus');
-	$('input:submit, a, button', '.button').button();
-	// $( ".date-time-input" ).datepicker();	
+	$('input:submit, input:button, a, button', '.button').button();
+	// $( ".date-time-input" ).datepicker();
 	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
 	$('select').addClass('ui-corner-left')
-	$('.date-input').datepicker({dateFormat: "dd.mm.yy"});	
+	$('.date-input').datepicker({
+		dateFormat : "dd.mm.yy"
+	});
+
+	$(".base-table-list").find("tr").live('mouseover mouseout', function(event) {
+		if (event.type == 'mouseover') {
+			$(this).children("td").addClass("table-state-highlight");
+		} else {
+			$(this).children("td").removeClass("table-state-highlight");
+		}
+	});
+
 });
 
-function getIndex(id,item) {
-	estateId = parseInt(localStorage.getItem('estate_id'));	
+function getIndex(id, item) {
+	estateId = parseInt(localStorage.getItem('estate_id'));
 	if (parseInt(id) == parseInt(estateId)) {
 		return parseInt(localStorage.getItem(item));
 	} else {
@@ -134,35 +145,9 @@ $(document).ajaxSend(function(event, xhr, settings) {
 			$.Widget.prototype.destroy.call(this);
 		}
 	});
-})(jQuery); 
+})(jQuery);
 
-(function ($) {
-        $.fn.styleTable = function (options) {
-            var defaults = {
-                css: 'style-table'
-            };
-            options = $.extend(defaults, options);
 
-            return this.each(function () {
-
-                input = $(this);
-                input.addClass(options.css);
-
-                input.find("tr").live('mouseover mouseout', function (event) {
-                    if (event.type == 'mouseover') {
-                        $(this).children("td").addClass("ui-state-hover");
-                    } else {
-                        $(this).children("td").removeClass("ui-state-hover");
-                    }
-                });
-
-                input.find("th").addClass("ui-state-default");
-                input.find("td").addClass("ui-widget-content");
-
-                input.find("tr").each(function () {
-                    $(this).children("td:not(:first)").addClass("first");
-                    $(this).children("th:not(:first)").addClass("first");
-                });
-            });
-        };
-    })(jQuery);
+function showFilter(id){
+    $(id).dialog('open');
+}

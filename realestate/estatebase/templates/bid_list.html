@@ -33,79 +33,17 @@
         $("#bid-table").styleTable();
                         
     }); 
-
-function showFilter(){
-    $('#filter').dialog('open');
-}
-
 </script>
 
 {% endblock %}
 
 {% block left %}
 
-<input value="Показать фильтр" type="button" onclick="showFilter()">
-<!--  -->
-<div class="button table-form" id='filter'>
-    <form method="get">        
-        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
-            <tr>
-                <td class="top-align">
-                    <table>                 
-                    {% for field in fields|slice:":10" %}
-                        <tr>
-                            <td>                    
-                            {{ field.label_tag }}
-                            </td>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                </td>
-                <td class="top-align">
-                    <table>                 
-                    {% for field in fields|slice:"10:20" %}
-                        <tr>
-                            <td>                    
-                            {{ field.label_tag }}
-                            </td>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>                
-                </td>   
-                <td class="top-align">
-                    <table>                 
-                    {% for field in fields|slice:"20:" %}
-                        <tr>
-                            <td>                    
-                            {{ field.label_tag }}
-                            </td>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>                
-                </td>   
-            </tr>                                          
-            <tfoot>
-                <tr>
-                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-                    <input type="submit" value="Применить"/>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </form>
+<div class="topbar button">
+<input value="Показать фильтр" type="button" onclick="showFilter('#filter')">
 </div>
-<!--  -->
 
-<table id="bid-table" class="table-no-cellspace">
+<table class="base-table-list ui-widget ui-widget-content">
 	<thead>		
 		<tr>
 			<th>Код</th>
@@ -117,7 +55,7 @@ function showFilter(){
 			<th>Контакты</th>			
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="ui-widget-content">
 		{% for bid_item in bid_list %}
 		<tr>
 			<td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
@@ -145,5 +83,65 @@ function showFilter(){
     {% digg_paginator %}
 </div>
 {% endif %}
+
+<!--  -->
+<div class="button table-form" id='filter'>
+    <form method="get">        
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+            <tr>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:":10" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </td>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:"10:20" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>                
+                </td>   
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:"20:" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>                
+                </td>   
+            </tr>                                          
+            <tfoot>
+                <tr>
+                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <input type="submit" value="Применить"/>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<!--  -->
 
 {% endblock left %}

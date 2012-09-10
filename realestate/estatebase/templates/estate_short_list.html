@@ -55,9 +55,9 @@ function showFilter(){
         			<table>	                
 		            {% for field in fields|slice:":10" %}
 					    <tr>
-					    	<td>			        
+					    	<th>			        
 					        {{ field.label_tag }}
-					        </td>
+					        </th>
 					        <td>
 					        {{ field.errors }}{{ field }}
 					        </td>
@@ -69,9 +69,9 @@ function showFilter(){
 					<table>	                
 		            {% for field in fields|slice:"10:20" %}
 					    <tr>
-					    	<td>			        
+					    	<th>			        
 					        {{ field.label_tag }}
-					        </td>
+					        </th>
 					        <td>
 					        {{ field.errors }}{{ field }}
 					        </td>
@@ -83,9 +83,9 @@ function showFilter(){
 					<table>	                
 		            {% for field in fields|slice:"20:" %}
 					    <tr>
-					    	<td>			        
+					    	<th>			        
 					        {{ field.label_tag }}
-					        </td>
+					        </th>
 					        <td>
 					        {{ field.errors }}{{ field }}
 					        </td>
