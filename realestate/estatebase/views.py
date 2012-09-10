@@ -667,11 +667,26 @@ class BidCreateView(BidMixin, CreateView):
 class BidUpdateView(BidMixin, UpdateView):
     pass
 
+class BidDeleteView(BidMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(BidDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление заявки...',
+            'dialig_body'  : u'Подтвердите удаление заявки: %s' % self.object,
+        })
+        return context 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.deleted = True
+        self.object.save() 
+        return HttpResponseRedirect(self.get_success_url())
+
 class BidListView(ListView):    
     template_name = 'bid_list.html'
     paginate_by = 5   
     def get_queryset(self):        
-        q = Bid.objects.all().select_related().all()        
+        q = Bid.objects.filter(deleted=False).select_related().all()        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
 #        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        

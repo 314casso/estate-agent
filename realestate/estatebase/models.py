@@ -681,25 +681,10 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
-class LiveManager(models.Manager):
-    def get_query_set(self):
-        return super(LiveManager, self).get_query_set().filter(deleted=False)
-
-class TrashManager(models.Manager):
-    def get_query_set(self):
-        return super(TrashManager, self).get_query_set().filter(deleted=True)    
-
-class LiveDeleted(models.Model):
-    objects = LiveManager()
-    trash = TrashManager()
-    deleted = models.BooleanField(default=False)
-    class Meta:        
-        abstract = True
-
-class Bid(LiveDeleted):
+class Bid(models.Model):
     '''
     Заявка
-    '''    
+    '''      
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
     estate_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -711,7 +696,8 @@ class Bid(LiveDeleted):
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)                          
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
+    deleted = models.BooleanField(default=False)                          
     class Meta:      
         ordering = ['-id']    
 

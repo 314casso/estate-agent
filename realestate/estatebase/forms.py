@@ -18,7 +18,8 @@ from estatebase.models import Client, Contact, ClientType, Origin, \
     get_polymorph_label, Stead, Bid
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
-    AutoComboboxSelectMultipleField, AutoComboboxSelectField
+    AutoComboboxSelectMultipleField, AutoComboboxSelectField,\
+    AutoCompleteSelectField
 from selectable.forms.widgets import AutoComboboxSelectWidget,\
     AutoComboboxSelectMultipleWidget
 import re
@@ -470,7 +471,7 @@ class SteadUpdateForm(ModelForm):
         exclude = ('estate',)
 
 class BidForm(ModelForm):
-    client = forms.ModelChoiceField(queryset=Client.objects.all(), widget=forms.HiddenInput())
+    client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Клиент')
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')    
     class Meta:
         model = Bid    

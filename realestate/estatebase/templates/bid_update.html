@@ -7,19 +7,42 @@
 {% endblock head %}
 
 {% block left %}
-{{ bid.history.created_by }}
-{{ bid.history.updated_by }}
-{{ bid.agency_price_min }}
-{{ bid.agency_price_max }}
-{% for id in bid.estates.all %}
-{{ id.estate_type }}
-{% endfor %}
-<form method="post" action="">
-	{% csrf_token %}{{ form }}	
+<form method="post" action="" class="table-form">
+	{% csrf_token %}	
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+        	<thead>
+			<tr>
+				<td colspan="100%">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{% csrf_token %}
+					Заявка клиента [{{ bid.id|default_if_none:'Новая' }}]
+					{% close_btn request.GET.next %}
+				</div></td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td colspan="100%">
+					<table>
+						<tr>
+							<th>Создано:</th><td>{{ bid.history.created_by }} {{ bid.history.created }}</td>												
+						</tr>						
+						<tr>
+							<th>Обновлено:</th><td>{{ bid.history.updated_by }} {{ bid.history.updated }}</td>
+						</tr>							
+					</table>
+				</td>					
+			</tr>	
+			<tr>
+				<td colspan="100%">
+					<table>
+					{{ form.as_table }}
+					</table>
+				</td>					
+			</tr>	
             <tr>
                 <td class="top-align">
-                    <table>                 
+                    <table class="inline-formset ui-widget ui-widget-content ui-corner-all">                 
                     {% for field in estate_filter_form.fieldsets.left %}
                         <tr>
                             <td>                    
@@ -33,7 +56,7 @@
                     </table>
                 </td>
                 <td class="top-align">
-                    <table>                 
+                    <table class="inline-formset ui-widget ui-widget-content ui-corner-all">                 
                     {% for field in estate_filter_form.fieldsets.center %}
                         <tr>
                             <td>                    
@@ -47,7 +70,7 @@
                     </table>                
                 </td>   
                 <td class="top-align">
-                    <table>                 
+                    <table class="inline-formset ui-widget ui-widget-content ui-corner-all">                 
                     {% for field in estate_filter_form.fieldsets.right %}
                         <tr>
                             <td>                    
@@ -60,14 +83,15 @@
                     {% endfor %}
                     </table>                
                 </td>   
-            </tr>                                           
-            <tfoot>
-                <tr>
-                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-                    <input value="{% trans 'Save' %}" type="submit" name="_save"/>
-                    </td>
-                </tr>
-            </tfoot>
+            </tr>  
+            </tbody>                                         
+            <tfoot class="button">
+			<tr>
+				<td colspan="100%" style="text-align: right"> {% block dialog_buttons %}
+				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
+				{% endblock dialog_buttons %} </td>
+			</tr>
+			</tfoot>
         </table>
     </form>
 
