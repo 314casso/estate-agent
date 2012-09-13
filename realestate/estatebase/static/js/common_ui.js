@@ -11,9 +11,9 @@ $(document).ready(function() {
 
 	$(".base-table-list").find("tr").live('mouseover mouseout', function(event) {
 		if (event.type == 'mouseover') {
-			$(this).children("td").addClass("table-state-highlight");
+			$(this).children("td").addClass("ui-state-hover");
 		} else {
-			$(this).children("td").removeClass("table-state-highlight");
+			$(this).children("td").removeClass("ui-state-hover");
 		}
 	});
 

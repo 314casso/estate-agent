@@ -5,33 +5,18 @@
 {% load humanize %}
 {% block head %}
 
-
-<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.dataTables.css">
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+{{ bid_filter_form.media.css }}
+{{ bid_filter_form.media.js }}
 
 <script type="text/javascript">
     $(function() {
-        $(".selected").addClass('ui-state-highlight');
-        $("#tabs").tabs({
-            select: function(event, ui) {
-                localStorage.setItem('estate_id', '{{ estate.id }}');               
-                localStorage.setItem('saved_tab', ui.index);                
-            }, 
-            selected : getIndex('{{ estate.id }}','saved_tab')  
-        });
-
         $("#filter").dialog({
             modal : true,                       
-            width : 1150,
+            width : 420,
             title : 'Фильтр',
             //position : ['center', 170],
             autoOpen: false
-        });                
-        
-        $("#bid-table").styleTable();
-                        
+        });                        
     }); 
 </script>
 
@@ -53,11 +38,12 @@
 			<th>Обновлено</th>
 			<th>Клиент</th>
 			<th>Контакты</th>			
+			<th>Действие</th>
 		</tr>
 	</thead>
-	<tbody class="ui-widget-content">
+	<tbody>
 		{% for bid_item in bid_list %}
-		<tr>
+		<tr class="ui-widget-content">
 			<td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
 			<td>
 				{% for estate_type in bid_item.estate_types.all %}
@@ -72,7 +58,8 @@
 			</td>
 			<td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
 			<td>{{ bid_item.client }}</td>
-			<td>{% contact_list bid_item.client next_url 3 %}</td>			
+			<td>{% contact_list bid_item.client next_url 2 %}</td>			
+			<td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
 		</tr>
 		{% endfor %}
 	</tbody>
@@ -91,7 +78,7 @@
             <tr>
                 <td class="top-align">
                     <table>                 
-                    {% for field in fields|slice:":10" %}
+                    {% for field in bid_filter_form %}
                         <tr>
                             <th>                    
                             {{ field.label_tag }}
@@ -102,35 +89,7 @@
                         </tr>
                     {% endfor %}
                     </table>
-                </td>
-                <td class="top-align">
-                    <table>                 
-                    {% for field in fields|slice:"10:20" %}
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>                
-                </td>   
-                <td class="top-align">
-                    <table>                 
-                    {% for field in fields|slice:"20:" %}
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>                
-                </td>   
+                </td>                   
             </tr>                                          
             <tfoot>
                 <tr>

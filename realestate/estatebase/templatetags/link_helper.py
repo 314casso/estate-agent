@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import template
 from django.core.urlresolvers import reverse
-from estatebase.models import get_polymorph_label
 import base64
 from django.contrib.humanize.templatetags.humanize import intcomma
-
+from estatebase.models import get_polymorph_label
 
 register = template.Library()
 

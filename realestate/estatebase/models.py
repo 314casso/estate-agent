@@ -14,6 +14,7 @@ from django.db.models.signals import post_save, pre_save
 from picklefield.fields import PickledObjectField
 
 
+
 class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
@@ -593,7 +594,8 @@ class Client(models.Model):
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-                 
+    deleted = models.BooleanField(default=False)
+    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='clientbrokers', blank=True, null=True, on_delete=models.PROTECT)             
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
     @property
@@ -602,7 +604,7 @@ class Client(models.Model):
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
-        ordering = ['id']        
+        ordering = ['-id']        
     def save(self, *args, **kwargs):        
         super(Client, self).save(*args, **kwargs)
 
@@ -635,7 +637,7 @@ class Contact(models.Model):
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5, on_delete=models.PROTECT)
     user_id = None      
     def __unicode__(self):
-        return u'%s: %s (%s)' % (self.contact_type.name, self.contact, self.client.name)
+        return u'%s (%s)' % (self.contact, self.client.name)
     @property
     def state_css(self):
         css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
@@ -689,15 +691,15 @@ class Bid(models.Model):
     estate_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='brokers', blank=True, null=True, on_delete=models.PROTECT)
-    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)
-    clients = models.ManyToManyField(Client, verbose_name=_('Client'), blank=True, null=True)
-    contacts = models.ManyToManyField(Contact, verbose_name=_('Contact'), blank=True, null=True)
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
     estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
-    deleted = models.BooleanField(default=False)                          
+    deleted = models.BooleanField(default=False)
+    def __unicode__(self):
+        return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']    
 
@@ -710,7 +712,7 @@ def update_localities(sender, instance, **kwargs):
                     instance.estate_filter.update({'locality_1' : locality.pk})                    
 
 pre_save.connect(update_localities, sender=Bid)
-
+    
 class ObjectWrapper(object):
     _field_list = None
     exclude_set = ['id', 'estate']
@@ -757,14 +759,13 @@ class HomeWrapper(BidgWrapper):
 
 class SteadWrapper(ObjectWrapper):
     queryset = Stead
+    land_type = u'Земля в элюминаторе'
     def inline_fields(self):    
         return ['total_area', 'face_area', 'shape', 'land_type' ]    
-
-def get_wrapper(obj):
-    if type(obj) == Bidg:
-        return WRAPPERS[obj.estate_type.template][0]
-    elif type(obj) == Stead:
-        return WRAPPERS[obj.estate.estate_type.template][1]
+    def get_exclude_list(self):        
+        exclude_list = super(SteadWrapper, self).get_exclude_list()[:]        
+        exclude_list.extend(['shape'])        
+        return exclude_list
     
 def get_polymorph_label(template, field):            
     wrapper = get_wrapper(template)    
@@ -772,11 +773,17 @@ def get_polymorph_label(template, field):
         return getattr(wrapper, field)
     except AttributeError:
         return None
-    
+
 WRAPPERS = {
            'APARTMENT':(ApartmentWrapper(), None),
            'NEWAPART':(NewapartWrapper(), None),
            'HOME':(HomeWrapper(), SteadWrapper()),
            'STEAD':(None, SteadWrapper()),
            }
-
+   
+def get_wrapper(obj):
+    if type(obj) == Bidg:
+        return WRAPPERS[obj.estate_type.template][0]
+    elif type(obj) == Stead:
+        print "STEED DETECTED"
+        return WRAPPERS[obj.estate.estate_type.template][1]

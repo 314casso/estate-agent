@@ -6,15 +6,15 @@
 
 {% block head %}
 
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+{{ client_filter_form.media.css }}
+{{ client_filter_form.media.js }}
 
 <script type="text/javascript">
 	$(function() {
 
 		$("#filter").dialog({
 			modal : true,
-			width : 400,
+			width : 450,
 			title : 'Фильтр',
 			autoOpen : false
 		});		
@@ -43,9 +43,9 @@
             <th>Действие</th>
         </tr>
     </thead>
-    <tbody class="ui-widget-content">
+    <tbody>
         {% for client in clients %}
-        <tr>
+        <tr class="ui-widget-content">
             <td>{{ client.pk }}</td>
             <td><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.client_type }}</td>

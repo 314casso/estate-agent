@@ -7,7 +7,8 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm
+    SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
+    BidPicleForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead, Bid, Region
 from django.core.urlresolvers import reverse
@@ -357,7 +358,7 @@ class ClientListView(ListView):
     context_object_name = "clients"
     paginate_by = 5    
     def get_queryset(self):                        
-        q = Client.objects.all().select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
+        q = Client.objects.filter(deleted=False).select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
         search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if len(filter_dict):
@@ -436,6 +437,10 @@ class ClientCreateView(ClientMixin, CreateView):
             'dialig_title' : 'Добавление нового клиента'
         })        
         return context    
+    def get_initial(self):        
+        initial = super(ClientCreateView, self).get_initial()
+        initial['broker'] = self.request.user.pk        
+        return initial
       
 class ClientUpdateView(ClientMixin, UpdateView):
     def get_context_data(self, **kwargs):
@@ -445,7 +450,14 @@ class ClientUpdateView(ClientMixin, UpdateView):
         })        
         return context
 
-class ClientDeleteView(ClientMixin, DeleteView):
+class DeleteMixin(object):
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.deleted = True
+        self.object.save() 
+        return HttpResponseRedirect(self.get_success_url())
+
+class ClientDeleteView(DeleteMixin, ClientMixin, DeleteView):
     template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
@@ -453,7 +465,7 @@ class ClientDeleteView(ClientMixin, DeleteView):
             'dialig_title' : u'Удаление клиента...',
             'dialig_body'  : u'Подтвердите удаление клиента: %s' % self.object,
         })
-        return context 
+        return context     
     
 class ContactMixin(BaseMixin):
     model = Contact       
@@ -620,12 +632,12 @@ class BidMixin(ModelFormMixin):
         })       
                            
         if self.request.POST:
-            context['estate_filter_form'] = EstateFilterForm(self.request.POST)            
+            context['estate_filter_form'] = BidPicleForm(self.request.POST)            
         else:
             data = None
             if self.object:
                 data = self.object.estate_filter                   
-            context['estate_filter_form'] = EstateFilterForm(data)                      
+            context['estate_filter_form'] = BidPicleForm(data)                      
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -667,7 +679,7 @@ class BidCreateView(BidMixin, CreateView):
 class BidUpdateView(BidMixin, UpdateView):
     pass
 
-class BidDeleteView(BidMixin, DeleteView):
+class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
     template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
         context = super(BidDeleteView, self).get_context_data(**kwargs)
@@ -675,12 +687,7 @@ class BidDeleteView(BidMixin, DeleteView):
             'dialig_title' : u'Удаление заявки...',
             'dialig_body'  : u'Подтвердите удаление заявки: %s' % self.object,
         })
-        return context 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted = True
-        self.object.save() 
-        return HttpResponseRedirect(self.get_success_url())
+        return context    
 
 class BidListView(ListView):    
     template_name = 'bid_list.html'
@@ -699,7 +706,7 @@ class BidListView(ListView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),           
-            'fields': list(bid_filter_form),                                   
+            'bid_filter_form': bid_filter_form,                                   
         })        
         return context    
 

@@ -2,9 +2,25 @@ from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
-    ExUser
+    ExUser, ClientType, Bid
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
+
+class SimpleIdLookup(ModelLookup):
+    search_fields = ('id__icontains',)
+    def get_item_label(self, item):
+        if hasattr(item,'name'):            
+            return u"%s, %s" % (item.pk, getattr(item,'name'))
+        else:
+            return u"%s" % item.pk        
+    def get_item_value(self, item):
+        return u"%s" % (item.pk,)
+
+class ClientIdLookup(SimpleIdLookup):
+    model = Client
+
+class BidIdLookup(SimpleIdLookup):
+    model = Bid
 
 class SimpleNameLookup(ModelLookup):
     search_fields = ('name__icontains',)
@@ -84,6 +100,9 @@ class DrivewayLookup(SimpleNameLookup):
 
 class ClientLookup(SimpleNameLookup):
     model = Client
+
+class ClientTypeLookup(SimpleNameLookup):
+    model = ClientType    
     
 class ContactLookup(ModelLookup):
     model = Contact
@@ -113,5 +132,8 @@ try:
     registry.register(ClientLookup)
     registry.register(ContactLookup)
     registry.register(ExUserLookup)
+    registry.register(ClientIdLookup)
+    registry.register(ClientTypeLookup)
+    registry.register(BidIdLookup)
 except LookupAlreadyRegistered:
     pass    

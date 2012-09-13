@@ -154,34 +154,39 @@ span.contact-inline label, .bidg-list label {
 }
 
 .base-table-list {
-	/*border: 1px solid #DFDFDF;*/
+	border: 1px solid #DFDFDF;
 	/*background-color: #F9F9F9;*/
 	/*border-radius: 4px;*/
 	/*color: #333;*/
-	/*border-spacing: 0 1px;*/
-	border-collapse: collapse;
+	border-spacing: 0;
+	/*border-collapse: collapse;*/
 	/*padding: 4px;*/
 }
 .base-table-list td, .base-table-list th {
 	/*border-top-color: white;
 	border-bottom: 1px solid #DFDFDF;*/
 	/*color: #555;*/
+	border: 1px solid white;
 }
 .base-table-list th {
 	/*color: #999;*/
 	text-align: left;
-	padding: 5px 5px;
+	padding: 4px 5px;
 	/*background-color: #e1e9ec;*/
 }
 .base-table-list td {
-	padding: 2px 5px 2px;
+	padding: 2px 5px;
 	vertical-align: top;
-	font-weight: normal !important;
-	border: 0 !important;	
+	font-weight: normal !important;	
 }
 
-.base-table-list tr:nth-child(even) {
-	background-color: #fff;
+.base-table-list td, .base-table-list th {
+	border-left: 0 !important;	
+	border-right: 0 !important;
+}
+
+.base-table-list tr:nth-child(odd) td {
+	background-color: #fff !important;
 }
 
 .base-table-list tfoot td {
@@ -193,8 +198,12 @@ span.contact-inline label, .bidg-list label {
 	background-color: white;
 }
 
-.base-table-list .ui-button-text {
-	/*	padding: 0.1em 1em;*/
+.base-table-list a {
+	text-decoration: underline !important;
+}
+
+.base-table-list a:hover {	
+	border-bottom: 1px dotted #C77405;
 }
 
 .inline-button a span {
@@ -410,10 +419,6 @@ legend {
 	padding: 0 5px;
 }
 
-.ui-button-text {
-	line-height: inherit !important;
-}
-
 .style-table {
 	border-collapse: separate;
 	border-spacing: 0 1px;
@@ -438,4 +443,8 @@ legend {
 
 .table-state-highlight {
 	background: #bcc6c9;
+}
+
+.topbar {
+	margin-bottom: 7px;
 }
