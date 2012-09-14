@@ -108,7 +108,7 @@ function showFilter(){
 
 Количество объектов: {{ total_count }}
 {% if request.GET.next %}
-<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>
+<div class="button" ><a href="{{ request.GET.next }}">Вернуться к прежнему виду</a></div>
 {% endif %}
 <div class="button" style="text-align: left; margin: 0 0 10px 3px">
     <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>

@@ -521,12 +521,7 @@ class Bidg(models.Model):
     def all_fields(self):
         fields = self.field_list[:]
         fields.extend(self.interior_list)        
-        return fields
-    @property
-    def inline_fields(self):
-        wrapper = get_wrapper(self)                          
-        return wrapper.inline_fields()
-                
+        return fields                
 
 class Shape(SimpleDict):
     '''
@@ -565,11 +560,7 @@ class Stead(models.Model):
     @property
     def field_list(self):
         wrapper = get_wrapper(self)                          
-        return wrapper.field_list()    
-    @property
-    def inline_fields(self):
-        wrapper = get_wrapper(self)                          
-        return wrapper.inline_fields()   
+        return wrapper.field_list()       
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
@@ -741,9 +732,7 @@ class BidgWrapper(ObjectWrapper):
         exclude_list.extend(['estate_type', 'basic'])                        
         return exclude_list    
     def interior_list(self):
-        return self.interior_set
-    def inline_fields(self):
-        return ['year_built', 'floor_count', 'room_count', 'interior', 'elevator', 'used_area', 'total_area' ]          
+        return self.interior_set              
 
 class ApartmentWrapper(BidgWrapper):
     def get_exclude_list(self):        
@@ -759,13 +748,7 @@ class HomeWrapper(BidgWrapper):
 
 class SteadWrapper(ObjectWrapper):
     queryset = Stead
-    land_type = u'Земля в элюминаторе'
-    def inline_fields(self):    
-        return ['total_area', 'face_area', 'shape', 'land_type' ]    
-    def get_exclude_list(self):        
-        exclude_list = super(SteadWrapper, self).get_exclude_list()[:]        
-        exclude_list.extend(['shape'])        
-        return exclude_list
+#    land_type = u'Земля ТЕСТ'    
     
 def get_polymorph_label(template, field):            
     wrapper = get_wrapper(template)    
@@ -784,6 +767,5 @@ WRAPPERS = {
 def get_wrapper(obj):
     if type(obj) == Bidg:
         return WRAPPERS[obj.estate_type.template][0]
-    elif type(obj) == Stead:
-        print "STEED DETECTED"
+    elif type(obj) == Stead:        
         return WRAPPERS[obj.estate.estate_type.template][1]

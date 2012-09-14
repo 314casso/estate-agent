@@ -8,7 +8,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView, \
     ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax, \
     BidgAppendView, BidgRemoveView, EstateListDetailsView, PlaceableTypeViewAjax,\
-    BidCreateView, BidUpdateView, BidListView, bid_json_list, BidDeleteView
+    BidCreateView, BidUpdateView, BidListView, bid_json_list, BidDeleteView,\
+    ClientDetailView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -19,7 +20,8 @@ urlpatterns = patterns('',
     url(r'^clients/(?P<estate_pk>\d+)$',ClientSelectView.as_view(), name='client_select'),
     url (r'^clientcreate/$', view=ClientCreateView.as_view(), name='client_create'),
     url (r'^clientupdate/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
-    url (r'^clientdelete/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),    
+    url (r'^clientdelete/(?P<pk>\d+)$', view=ClientDeleteView.as_view(), name='client_delete'),
+    url (r'^clientdetail/(?P<pk>\d+)$', view=ClientDetailView.as_view(), name='client_detail'),    
 )
 
 urlpatterns += patterns('',

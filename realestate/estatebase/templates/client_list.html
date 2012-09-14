@@ -26,10 +26,13 @@
 
 {% block left %}
 
+
 <div class="topbar button">
 	<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
     <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">    
 </div>
+
+{% block topbar %}{% endblock %}
 
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>

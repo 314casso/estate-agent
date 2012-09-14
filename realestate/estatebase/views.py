@@ -176,7 +176,7 @@ class EstateCreateView(HistoryMixin, CreateView):
         return context
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                                  
-        return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))
+        return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))           
 
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
@@ -714,4 +714,14 @@ def bid_json_list(request):
     querySet = Bid.objects.all()    
     columnIndexNameMap = { 0: 'id', 1 : 'client'}    
     jsonTemplatePath = 'json/bid.json'    
-    return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)        
+    return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)
+
+class ClientDetailView(DetailView):
+    model = Client
+    template_name = 'client_detail.html'
+    def get_context_data(self, **kwargs):
+        context = super(ClientDetailView, self).get_context_data(**kwargs)                
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })        
+        return context        

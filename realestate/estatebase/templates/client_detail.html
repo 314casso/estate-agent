@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% load paginator %}
+{% load query_string %}
+
+{% block head %}
+{% endblock %}
+
+{% block left %}
+{{ client }}
+
+{% endblock %}
+
+{% block right %}
+{% with bid_list=client.bids.all  %}
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Код</th>
+            <th>Вид недвижимости</th>
+            <th>Цена</th>
+            <th>Населенные пункты</th>
+            <th>Обновлено</th>                       
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bid_item in bid_list %}
+        <tr class="ui-widget-content">
+            <td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td>
+                {% for estate_type in bid_item.estate_types.all %}
+                    <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% endfor %}
+            </td>
+            <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
+            <td>
+                {% for locality in bid_item.localities.all %}
+                    {{ locality }}{% include 'comma.html' %}
+                {% endfor %}
+            </td>
+            <td>{{ bid_item.history.modificated|date:"d M Y" }} </td>                      
+            <td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endwith %}
+
+
+{% with estate_list=client.estates.all  %}
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Код</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for estate_item in estate_list %}
+        <tr class="ui-widget-content">
+            <td><a href="{% url estate_list_details estate_item.pk %}?pk_1={{ estate_item.pk }}&{{ next_url }}">{{ estate_item.pk }}</a></td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endwith %}
+
+{% endblock %}
