@@ -65,15 +65,19 @@ class DateRangeField(MultiValueField):
         return [None, None]
 
 class EstateCreateForm(ModelForm):
-    #estate_type = forms.ModelChoiceField(queryset=EstateType.objects.all(), widget=forms.HiddenInput())         
+    estate_type = AutoCompleteSelectField(
+            lookup_class=EstateTypeLookup,
+            label=_('Estate type'),            
+        )
     class Meta:                
         model = Estate
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'clients')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
+            'clients' : forms.MultipleHiddenInput()            
         }
 
 class EstateCommunicationForm(ModelForm):

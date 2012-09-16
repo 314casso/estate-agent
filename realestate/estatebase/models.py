@@ -10,7 +10,7 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, m2m_changed
 from picklefield.fields import PickledObjectField
 
 
@@ -233,8 +233,20 @@ def prepare_history(history, user_id):
         history.updated_by_id = user_id
         history.save()
     return history                 
+
+
+class BaseModelManager(models.Manager):
+    def get_query_set(self):
+        return super(BaseModelManager, self).get_query_set().filter(deleted=False)
+
+class ProcessDeletedModel(models.Model):
+    objects = BaseModelManager()
+    all_objects = models.Manager()
+    deleted = models.BooleanField(default=False)
+    class Meta:
+        abstract = True         
     
-class Estate(models.Model):
+class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
     '''
@@ -272,7 +284,7 @@ class Estate(models.Model):
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    valid = models.BooleanField(_('Valid'), default=False) 
+    valid = models.BooleanField(_('Valid'), default=False)    
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk])  
@@ -327,6 +339,13 @@ class Estate(models.Model):
         if self.estate_type.object_type in ('STEAD', 'MIX') and not self.basic_stead:
             stead = Stead(estate=self)
             stead.save()                                   
+
+def estate_client_handler(sender, instance, action, reverse, model, pk_set, **kwargs):
+    if action in ('post_add','post_remove'):
+        instance.set_contact()
+        instance.save()        
+
+m2m_changed.connect(estate_client_handler, sender=Estate.clients.through)
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)
@@ -501,7 +520,7 @@ class Bidg(models.Model):
     ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True, on_delete=models.PROTECT)
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     #param
-    basic = models.BooleanField(_('Basic'), default=False, editable=False)
+    basic = models.BooleanField(_('Basic'), default=False, editable=False)    
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
@@ -575,7 +594,7 @@ class Origin(SimpleDict):
         verbose_name = _('origin')
         verbose_name_plural = _('origins')
 
-class Client(models.Model):
+class Client(ProcessDeletedModel):
     """
     An client entity      
     """
@@ -584,8 +603,7 @@ class Client(models.Model):
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    deleted = models.BooleanField(default=False)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='clientbrokers', blank=True, null=True, on_delete=models.PROTECT)             
     def __unicode__(self):
         return u'%s %s' % (self.name, self.address)    
@@ -674,7 +692,7 @@ def update_estate(sender, instance, created, **kwargs):
 
 post_save.connect(update_estate, sender=Contact)
 
-class Bid(models.Model):
+class Bid(ProcessDeletedModel):
     '''
     Заявка
     '''      
@@ -687,8 +705,7 @@ class Bid(models.Model):
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
-    deleted = models.BooleanField(default=False)
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
     def __unicode__(self):
         return u'%s' % self.pk                          
     class Meta:      

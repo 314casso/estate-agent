@@ -43,9 +43,24 @@ function showFilter(){
 
 {% endblock %}
 
+
+{% block topbar %}
+<div class="topbar button">
+<div class="ui-widget ui-widget-content ui-corner-all user-info" style="float: none; margin-bottom: 3px">	
+Всего объектов: {{ total_count }}, 
+отобрано: {{ filter_count }}, 
+показано на странице: {{ estate_list.count }} 
+</div>
+<a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
+<button onclick="showFilter()">Показать фильтр</button>
+{% if request.GET.next %}
+<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>
+{% endif %}        
+</div>
+{% endblock topbar %}
+
 {% block left %}
 
-<input value="Показать фильтр" type="button" onclick="showFilter()">
 <!--  -->
 <div class="button table-form" id='filter'>
     <form method="get">        
@@ -106,13 +121,7 @@ function showFilter(){
 </div>
 <!--  -->
 
-Количество объектов: {{ total_count }}
-{% if request.GET.next %}
-<div class="button" ><a href="{{ request.GET.next }}">Вернуться к прежнему виду</a></div>
-{% endif %}
-<div class="button" style="text-align: left; margin: 0 0 10px 3px">
-    <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
-</div>
+
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
     <legend style="font-size: 11px;">

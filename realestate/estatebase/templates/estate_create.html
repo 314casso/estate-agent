@@ -32,7 +32,7 @@
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
 					{% block dialog_title %}
-					{{ estate_type }}
+					Объект недвижимости [{{ estate.id|default:"Новый" }}]
 					{% endblock %}
 					{% close_btn request.GET.next %}
 				</div></td>

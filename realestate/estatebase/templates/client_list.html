@@ -24,15 +24,14 @@
 
 {% endblock %}
 
-{% block left %}
-
-
+{% block topbar %}
 <div class="topbar button">
-	<a href="{% url client_create %}?{{ next_url }}">Добавить</a>
+    <a href="{% url client_create %}?{{ next_url }}">Добавить</a>
     <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">    
 </div>
+{% endblock %}
 
-{% block topbar %}{% endblock %}
+{% block left %}
 
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>
@@ -49,8 +48,8 @@
     <tbody>
         {% for client in clients %}
         <tr class="ui-widget-content">
-            <td>{{ client.pk }}</td>
-            <td><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+            <td><a title="Редактировать клиента" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
+            <td><a title="Показать карточку клиента" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.client_type }}</td>
             <td>{{ client.origin|default_if_none:"----" }}</td>
             <td>{{ client.address }}</td>

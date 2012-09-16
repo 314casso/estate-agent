@@ -2,7 +2,7 @@
 {% load link_helper %}
 {% load paginator %}
 {% load query_string %}
-
+{% load humanize %}
 {% block head %}
 {% endblock %}
 
@@ -12,6 +12,14 @@
 {% endblock %}
 
 {% block right %}
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Заявки на покупку и обмен</legend>    
+
+<div class="topbar button">
+    <a href="{% url bid_create client.pk %}?{{ next_url }}">Добавить</a>        
+</div>
+
 {% with bid_list=client.bids.all  %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
@@ -42,29 +50,65 @@
             <td>{{ bid_item.history.modificated|date:"d M Y" }} </td>                      
             <td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
+        {% empty %}
+        <tr>
+        	<td colspan="100%">
+                Заявки отсутствуют..
+            </td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
 {% endwith %}
+</fieldset>
 
 
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Объекты на продажу</legend>
+    
+<div class="topbar button">
+    <a href="{% url estate_create_client client.pk %}?{{ next_url }}">Добавить</a>        
+</div>    
+    
 {% with estate_list=client.estates.all  %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
             <th>Код</th>
-            
+            <th>Вид и адрес</th>
+            <th>Обновлено</th>
+            <th>Статус</th>            
+            <th>Цена, руб</th>
+            <th>Действие</th>
         </tr>
     </thead>
     <tbody>
         {% for estate_item in estate_list %}
         <tr class="ui-widget-content">
             <td><a href="{% url estate_list_details estate_item.pk %}?pk_1={{ estate_item.pk }}&{{ next_url }}">{{ estate_item.pk }}</a></td>
+            <td>
+            	<a href="{% url estate_list_details estate_item.pk %}?pk_1={{ estate_item.pk }}&{{ next_url }}">{{ estate_item.estate_type }}</a>
+            	<div style="font-size: 90%; font-style: italic">{% address estate_item %}</div>
+            </td>
+            <td>{{ estate_item.history.modificated|date:"d M Y" }} </td>
+            <td>{{ estate_item.estate_status }} {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}</td>
             
+            <td style="text-align: right">
+            	{{ estate_item.agency_price|default_if_none:''|intcomma }}
+            	<div class="ui-state-disabled" style="font-size: 90%; font-style: italic">{{ estate_item.saler_price|default_if_none:''|intcomma }}</div>
+            </td>
+            <td><a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
-        {% endfor %}
+        {% empty %}
+        <tr>
+            <td colspan="100%">
+                Объекты отсутствуют..
+            </td>
+        </tr>
+        {% endfor %}        
     </tbody>
 </table>
 {% endwith %}
+</fieldset>
 
 {% endblock %}

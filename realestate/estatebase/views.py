@@ -24,17 +24,18 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from estatebase.datatables import get_datatables_records
 
-class BaseMixin():
+class BaseMixin(object):
     def get_success_url(self):   
         if '_save' in self.request.POST:     
             return self.request.REQUEST.get('next', '')
         return ''    
 
-class HistoryMixin(BaseMixin, ModelFormMixin):
-    def form_valid(self, form):
-        self.object = form.save(commit=False)        
-        self.object.history = prepare_history(self.object.history, self.request.user.pk)        
-        return super(HistoryMixin, self).form_valid(form)
+class DeleteMixin(object):
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.deleted = True
+        self.object.save() 
+        return HttpResponseRedirect(self.get_success_url())
 
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
@@ -127,9 +128,6 @@ class EstateTypeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(EstateTypeView, self).get_context_data(**kwargs)                
         estate_categories = EstateTypeCategory.objects.all()
-        #TODO: пример фильтрации
-        #filtered = (x for x in Contact.objects.all() if x.state_css == 'available-state')
-
         context.update({
             'title': 'base',
             'estate_categories': estate_categories,
@@ -159,25 +157,33 @@ class PlaceableTypeViewAjax(TemplateView):
         })        
         return context
 
-class EstateCreateView(HistoryMixin, CreateView):
-    template_name = 'estate_create.html'     
-    model = Estate   
-    form_class = EstateCreateForm
+class EstateMixin(BaseMixin, ModelFormMixin):
+    model = Estate
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        self.object.history = prepare_history(self.object.history, self.request.user.pk)        
+        return super(EstateMixin, self).form_valid(form)
+
+class EstateCreateView(EstateMixin, CreateView):
+    template_name = 'estate_create.html'       
+    form_class = EstateCreateForm    
     def get_initial(self):        
-        initial = super(EstateCreateView, self).get_initial()                
-        initial['estate_type'] = self.kwargs['estate_type']
+        initial = super(EstateCreateView, self).get_initial()
+        if 'estate_type' in self.kwargs:                  
+            initial['estate_type'] = self.kwargs['estate_type']
+        if 'client' in self.kwargs:
+            initial['clients'] = [self.kwargs['client']]
         return initial
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
-        context.update({
-            'estate_type': EstateType.objects.get(pk=self.kwargs['estate_type']),
+        context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                                  
-        return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))           
-
+        return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))
+        
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
     def get_queryset(self):                        
@@ -194,7 +200,7 @@ class EstateDetailView(DetailView):
         })        
         return context
     
-class EstateUpdateView(HistoryMixin, UpdateView):
+class EstateUpdateView(EstateMixin, UpdateView):
     model = Estate
     template_name = 'estate_create.html'
     form_class = EstateCreateForm
@@ -204,7 +210,19 @@ class EstateUpdateView(HistoryMixin, UpdateView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'estate_type': self.object.estate_type,
         })        
-        return context    
+        return context       
+
+class EstateDeleteView(DeleteMixin, EstateMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление объекта...',
+            'dialig_body'  : u'Подтвердите удаление объекта: %s' % self.object,
+        })
+        return context
+    def get_success_url(self):   
+        return self.request.REQUEST.get('next', '')
 
 class EstateCommunicationUpdateView(EstateUpdateView):
     template_name = 'estate_comm.html'
@@ -217,19 +235,11 @@ class EstateParamUpdateView(EstateUpdateView):
 class EstateListView(ListView):    
     template_name = 'estate_list.html'
     paginate_by = 10    
-    def get_queryset(self):        
-        #q = Estate.objects.select_related()
+    def get_queryset(self):
         q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
-        #q.prefetch_related('bidgs')
-                
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         filter_dict.update({'locality__geo_group__userprofile__user__exact': self.request.user })
-#        Пример фильтра Q
-#        queries = []
-#        queries.append(Q(id__in=(25,29)) | Q(id=28))    
-#        queries.append(Q(estate_type_id__in=(13,17)))
-#        q = q.filter(*queries)                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
         return q
@@ -259,7 +269,8 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.estate.images.all(),
-            'estate': self.estate,                                             
+            'estate': self.estate,   
+            'filter_count' : self.get_queryset().count(),                                          
         })                
         return context        
 
@@ -287,15 +298,13 @@ class ClientUpdateEstateView(DetailView):
         '''
         Вынесена для переопределения в потомках класса
         '''        
-        self.object.estates.add(self.kwargs['estate_pk'])        
+        self.estate.clients.add(self.client.pk)        
     def post(self, request, *args, **kwargs):        
-        self.object = Client.objects.get(pk=self.kwargs['pk'])
+        self.client = Client.objects.get(pk=self.kwargs['pk'])
+        self.estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
         self.update_object()       
-        #Обновление истории и контакта у оъекта                
-        estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
-        estate.set_contact()
-        estate.save()            
-        prepare_history(estate.history, self.request.user.pk)      
+        #Обновление истории и контакта у оъекта                            
+        prepare_history(self.estate.history, self.request.user.pk)      
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 class ClientRemoveEstateView(ClientUpdateEstateView):    
@@ -307,7 +316,7 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
         })
         return context 
     def update_object(self):
-        self.object.estates.remove(self.kwargs['estate_pk'])            
+        self.estate.clients.remove(self.client.pk)                    
         
 class ObjectMixin(ModelFormMixin):    
     model = Bidg    
@@ -343,22 +352,12 @@ class ApartmentUpdateView(ObjectMixin, UpdateView):
     form_class = ApartmentForm   
     continue_url = 'apartment_update'        
 
-#TODO: Unused!!!
-class ApartmentDetailView(EstateDetailView):
-    template_name = 'apartment_detail.html'    
-    def get_context_data(self, **kwargs):
-        context = super(ApartmentDetailView, self).get_context_data(**kwargs)                
-        context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),
-        })        
-        return context
-
 class ClientListView(ListView):
     template_name = 'client_list.html'
     context_object_name = "clients"
     paginate_by = 5    
     def get_queryset(self):                        
-        q = Client.objects.filter(deleted=False).select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
+        q = Client.objects.select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
         search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if len(filter_dict):
@@ -449,13 +448,6 @@ class ClientUpdateView(ClientMixin, UpdateView):
             'dialig_title' : 'Редактирование клиента «%s»' % self.object 
         })        
         return context
-
-class DeleteMixin(object):
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted = True
-        self.object.save() 
-        return HttpResponseRedirect(self.get_success_url())
 
 class ClientDeleteView(DeleteMixin, ClientMixin, DeleteView):
     template_name = 'confirm.html'
@@ -693,7 +685,7 @@ class BidListView(ListView):
     template_name = 'bid_list.html'
     paginate_by = 5   
     def get_queryset(self):        
-        q = Bid.objects.filter(deleted=False).select_related().all()        
+        q = Bid.objects.select_related().all()        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
 #        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        
