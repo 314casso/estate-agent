@@ -28,6 +28,7 @@
 <div class="topbar button">
     <a href="{% url client_create %}?{{ next_url }}">Добавить</a>
     <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">    
+    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
 </div>
 {% endblock %}
 

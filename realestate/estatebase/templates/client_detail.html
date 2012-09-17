@@ -7,8 +7,54 @@
 {% endblock %}
 
 {% block left %}
-{{ client }}
 
+
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Карточка клиента</legend>
+<table>
+	<tr>
+		<th>Имя:</th>
+		<td style="font-weight: bold"><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+	</tr>
+	<tr>
+		<th>Вид:</th>
+		<td>{{ client.client_type }}</td>
+	</tr>
+	<tr>
+		<th>Источник:</th>
+		<td>{{ client.origin }}</td>
+	</tr>
+	<tr>
+		<th>Адрес:</th>
+		<td>{{ client.address }}</td>
+	</tr>
+	<tr>
+		<th>Риэлтор:</th>
+		<td>{{ client.broker }}</td>
+	</tr>
+	
+	<tr><th>Создано:</th><td>{{ client.history.created }} {{ client.history.created_by }}</td></tr>		
+	<tr><th>Обновлено:</th><td>{{ client.history.updated|default_if_none:'' }} {{ client.history.updated_by|default_if_none:'' }}</td></tr>
+	
+	<tr>
+		<th>Примечание:</th>
+		<td>{{ client.note }}</td>
+	</tr>
+</table>
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Контакты</legend>
+{% contact_list client next_url %}
+</fieldset>
+
+</fieldset>
+
+{% endblock %}
+
+{% block topbar %}
+<div class="topbar button">        
+    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+</div>
 {% endblock %}
 
 {% block right %}
@@ -17,7 +63,7 @@
     <legend style="font-size: 11px;">Заявки на покупку и обмен</legend>    
 
 <div class="topbar button">
-    <a href="{% url bid_create client.pk %}?{{ next_url }}">Добавить</a>        
+    <a href="{% url bid_create client.pk %}?{{ next_url }}">Добавить</a>          
 </div>
 
 {% with bid_list=client.bids.all  %}
