@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% load paginator %}
+{% load query_string %}
+{% load humanize %}
+{% block head %}
+{% endblock %}
+
+{% block topbar %}
+<div class="topbar button">        
+    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+</div>
+{% endblock %}
+
+{% block left %}
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Краткая информация о заявке</legend>
+<table>
+	<tr>
+		<th>Код:</th>
+		<td style="font-weight: bold"><a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
+	</tr>
+	<tr>
+		<th>Виды недвижимости:</th>
+		<td>
+                {% for estate_type in bid.estate_types.all %}
+                    <a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% endfor %}
+        </td>
+	</tr>
+	<tr>
+		<th>Источник:</th>
+		<td>{% two_num bid.agency_price_min bid.agency_price_max %}</td>            
+	</tr>
+	<tr>
+		<th>Адрес:</th>
+		<td>
+                {% for locality in bid.localities.all %}
+                    {{ locality }}{% include 'comma.html' %}
+                {% endfor %}
+            </td>
+	</tr>
+		
+	<tr><th>Создано:</th><td>{{ bid.history.created }} {{ bid.history.created_by }}</td></tr>		
+	<tr><th>Обновлено:</th><td>{{ bid.history.updated|default_if_none:'' }} {{ bid.history.updated_by|default_if_none:'' }}</td></tr>
+	
+	<tr>
+		<th>Примечание:</th>
+		<td>{{ bid.note }}</td>
+	</tr>
+</table>
+
+</fieldset>
+{% endblock %}
+
+
+
+{% block right %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 11px;">Реестры</legend>    
+
+<div class="topbar button">
+    <a href="{% url bid_create 30 %}?{{ next_url }}">Добавить</a>          
+</div>
+
+{% with bid_list=client.bids.all  %}
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Код</th>
+            <th>Вид недвижимости</th>
+            <th>Цена</th>
+            <th>Населенные пункты</th>
+            <th>Обновлено</th>                       
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bid in bid_list %}
+        <tr class="ui-widget-content">
+            <td><a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
+            <td>
+                {% for estate_type in bid.estate_types.all %}
+                    <a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% endfor %}
+            </td>
+            <td>{% two_num bid.agency_price_min bid.agency_price_max %}</td>
+            <td>
+                {% for locality in bid.localities.all %}
+                    {{ locality }}{% include 'comma.html' %}
+                {% endfor %}
+            </td>
+            <td>{{ bid.history.modificated|date:"d M Y" }} </td>                      
+            <td><a href="{% url bid_remove bid.pk %}?{{ next_url }}">Удалить</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+        	<td colspan="100%">
+                Заявки отсутствуют..
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endwith %}
+</fieldset>
+{% endblock %}

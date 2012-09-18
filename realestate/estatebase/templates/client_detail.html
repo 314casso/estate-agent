@@ -6,9 +6,13 @@
 {% block head %}
 {% endblock %}
 
+{% block topbar %}
+<div class="topbar button">        
+    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+</div>
+{% endblock %}
+
 {% block left %}
-
-
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 11px;">Карточка клиента</legend>
 <table>
@@ -48,17 +52,10 @@
 </fieldset>
 
 </fieldset>
-
 {% endblock %}
 
-{% block topbar %}
-<div class="topbar button">        
-    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
-</div>
-{% endblock %}
 
 {% block right %}
-
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 11px;">Заявки на покупку и обмен</legend>    
 
@@ -81,10 +78,12 @@
     <tbody>
         {% for bid_item in bid_list %}
         <tr class="ui-widget-content">
-            <td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td><a title="Редактировать заявку" href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
             <td>
                 {% for estate_type in bid_item.estate_types.all %}
-                    <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                    <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% empty %}
+                <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">---------</a>    
                 {% endfor %}
             </td>
             <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>

@@ -668,7 +668,7 @@ class BidCreateView(BidMixin, CreateView):
         initial['client'] = client_pk
         return initial
 
-class BidUpdateView(BidMixin, UpdateView):
+class BidUpdateView(BidMixin, UpdateView):    
     pass
 
 class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
@@ -680,6 +680,9 @@ class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
             'dialig_body'  : u'Подтвердите удаление заявки: %s' % self.object,
         })
         return context    
+
+class BidDetailView(BidMixin, DetailView):
+    template_name = 'bid_detail.html'
 
 class BidListView(ListView):    
     template_name = 'bid_list.html'
