@@ -744,5 +744,5 @@ class EstateRegisterMixin(ModelFormMixin):
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse('register_update', args=[self.object.id]), safe_next_link(next_url)) 
-        return next_url  
+        return next_url
         
