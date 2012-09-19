@@ -16,7 +16,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ClientTypeLookup, BidIdLookup
 from estatebase.models import Client, Contact, ClientType, Origin, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
-    get_polymorph_label
+    get_polymorph_label, EstateRegister
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField,\
@@ -198,7 +198,7 @@ class ComplexField(MultiValueField):
         return [None, None]
                
 class EstateFilterForm(BetterForm):
-    pk = AutoCompleteSelectMultipleField(
+    estates = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
             label=_('ID'),
             required=False,
@@ -281,8 +281,8 @@ class EstateFilterForm(BetterForm):
     
     def get_filter(self):
         f = {}   
-        if self['pk'].value():                                 
-            f['id__in'] = self['pk'].value()        
+        if self['estates'].value():                                 
+            f['id__in'] = self['estates'].value()        
         if self['estate_type'].value():
             f['bidgs__estate_type_id__in'] = self['estate_type'].value()
         if self['region'].value():
@@ -582,7 +582,11 @@ class BidFilterForm(BetterForm):
 
 class BidPicleForm(EstateFilterForm):    
     class Meta:        
-        fieldsets = [('left', {'fields': ['pk','estate_type','region','locality','microdistrict','estate_status','agency_price',], 'legend': ''}),
+        fieldsets = [('left', {'fields': ['estates','estate_type','region','locality','microdistrict','estate_status','agency_price',], 'legend': ''}),
                      ('center', {'fields': ['year_built','floor','floor_count','wall_construcion','total_area','used_area','room_count','stead_area',]}),
                      ('right', {'fields': ['created','updated','origin','beside','interior','face_area','electricity','watersupply','gassupply','sewerage','driveway']})
                      ]
+
+class EstateRegisterForm(BetterModelForm):
+    model = EstateRegister
+        

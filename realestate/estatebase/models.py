@@ -706,6 +706,7 @@ class Bid(ProcessDeletedModel):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
+    estate_registers = models.ManyToManyField('EstateRegister', verbose_name=_('EstateRegisters'), blank=True, null=True)
     def __unicode__(self):
         return u'%s' % self.pk                          
     class Meta:      
@@ -720,6 +721,23 @@ def update_localities(sender, instance, **kwargs):
                     instance.estate_filter.update({'locality_1' : locality.pk})                    
 
 pre_save.connect(update_localities, sender=Bid)
+
+class EstateRegister(ProcessDeletedModel):
+    '''
+    Подборка
+    '''
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='estate_registers', blank=True, null=True, on_delete=models.PROTECT)
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
+    estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
+    regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
+    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
+    agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
+    def __unicode__(self):
+        return u'%s' % self.pk                          
+    class Meta:      
+        ordering = ['-id']
     
 class ObjectWrapper(object):
     _field_list = None

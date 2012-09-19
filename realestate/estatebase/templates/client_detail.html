@@ -14,7 +14,7 @@
 
 {% block left %}
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Карточка клиента</legend>
+    <legend style="font-size: 14px;">Карточка клиента</legend>
 <table>
 	<tr>
 		<th>Имя:</th>
@@ -47,7 +47,7 @@
 </table>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Контакты</legend>
+    <legend style="font-size: 14px;">Контакты</legend>
 {% contact_list client next_url %}
 </fieldset>
 
@@ -57,7 +57,7 @@
 
 {% block right %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Заявки на покупку и обмен</legend>    
+    <legend style="font-size: 14px;">Заявки на покупку и обмен</legend>    
 
 <div class="topbar button">
     <a href="{% url bid_create client.pk %}?{{ next_url }}">Добавить</a>          
@@ -109,7 +109,7 @@
 
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Объекты на продажу</legend>
+    <legend style="font-size: 14px;">Объекты на продажу</legend>
     
 <div class="topbar button">
     <a href="{% url estate_create_client client.pk %}?{{ next_url }}">Добавить</a>        

@@ -8,9 +8,9 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     EstateCreateForm, EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
     SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
-    BidPicleForm
+    BidPicleForm, EstateRegisterForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
-    prepare_history, Stead, Bid, Region
+    prepare_history, Stead, Bid, Region, EstateRegister
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -644,7 +644,7 @@ class BidMixin(ModelFormMixin):
             # Запаковываем фильтр в поле
             self.object.estate_filter = estate_filter_form.data.copy()                        
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
-            self.object.estates = estate_filter_form['pk'].value()
+            self.object.estates = estate_filter_form['estates'].value()
             self.object.clients = estate_filter_form['clients'].value()
             self.object.contacts = estate_filter_form['contacts'].value()
             self.object.estate_types = estate_filter_form['estate_type'].value()
@@ -683,6 +683,14 @@ class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
 
 class BidDetailView(BidMixin, DetailView):
     template_name = 'bid_detail.html'
+#    def get_context_data(self, **kwargs):
+#        context = super(BidDetailView, self).get_context_data(**kwargs)
+#        form = BidPicleForm(self.object.estate_filter)
+#        if form.is_valid():         
+#            context.update({
+#                'picle_form' : form.cleaned_data            
+#            })
+#        return context 
 
 class BidListView(ListView):    
     template_name = 'bid_list.html'
@@ -691,6 +699,7 @@ class BidListView(ListView):
         q = Bid.objects.select_related().all()        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
+#        Если нужно и заявки только по гео-фактору показывать
 #        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
@@ -705,12 +714,6 @@ class BidListView(ListView):
         })        
         return context    
 
-def bid_json_list(request):        
-    querySet = Bid.objects.all()    
-    columnIndexNameMap = { 0: 'id', 1 : 'client'}    
-    jsonTemplatePath = 'json/bid.json'    
-    return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)
-
 class ClientDetailView(DetailView):
     model = Client
     template_name = 'client_detail.html'
@@ -719,4 +722,27 @@ class ClientDetailView(DetailView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
-        return context        
+        return context       
+    
+class EstateRegisterMixin(ModelFormMixin):
+    template_name = 'register_update.html'
+    form_class = EstateRegisterForm 
+    model = EstateRegister   
+    def get_initial(self):        
+        initial = super(EstateRegisterMixin, self).get_initial()                
+        initial['broker'] = self.request.user.pk
+        if 'bid' in self.kwargs:                  
+            initial['bids'] = [self.kwargs['bid']]
+        return initial
+    def get_context_data(self, **kwargs):                         
+        context = super(BidMixin, self).get_context_data(**kwargs)
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),            
+        })
+        return context
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('register_update', args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url  
+        

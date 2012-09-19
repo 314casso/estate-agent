@@ -13,8 +13,10 @@
 {% endblock %}
 
 {% block left %}
+
+
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Краткая информация о заявке</legend>
+    <legend style="font-size: 14px;">Краткая информация о заявке</legend>
 <table>
 	<tr>
 		<th>Код:</th>
@@ -57,13 +59,13 @@
 
 {% block right %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 11px;">Реестры</legend>    
+    <legend style="font-size: 14px;">Подборки</legend>    
 
 <div class="topbar button">
     <a href="{% url bid_create 30 %}?{{ next_url }}">Добавить</a>          
 </div>
 
-{% with bid_list=client.bids.all  %}
+{% with register_list=bid.estate_registers.all  %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
@@ -76,27 +78,27 @@
         </tr>
     </thead>
     <tbody>
-        {% for bid in bid_list %}
+        {% for register in register_list %}
         <tr class="ui-widget-content">
-            <td><a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
+            <td><a href="{% url bid_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
             <td>
-                {% for estate_type in bid.estate_types.all %}
-                    <a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% for estate_type in register.estate_types.all %}
+                    <a href="{% url bid_update register.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
                 {% endfor %}
             </td>
-            <td>{% two_num bid.agency_price_min bid.agency_price_max %}</td>
+            <td>{% two_num register.agency_price_min register.agency_price_max %}</td>
             <td>
-                {% for locality in bid.localities.all %}
+                {% for locality in register.localities.all %}
                     {{ locality }}{% include 'comma.html' %}
                 {% endfor %}
             </td>
-            <td>{{ bid.history.modificated|date:"d M Y" }} </td>                      
-            <td><a href="{% url bid_remove bid.pk %}?{{ next_url }}">Удалить</a></td>
+            <td>{{ register.history.modificated|date:"d M Y" }} </td>                      
+            <td><a href="{% url bid_remove register.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% empty %}
         <tr>
         	<td colspan="100%">
-                Заявки отсутствуют..
+                Подборки отсутствуют...
             </td>
         </tr>
         {% endfor %}

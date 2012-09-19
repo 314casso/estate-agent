@@ -109,7 +109,7 @@ body {
 }
 
 .inline-formset tbody td {
-	vertical-align: bottom;
+	/*vertical-align: bottom;*/
 }
 
 .errorlist {
@@ -398,12 +398,26 @@ legend {
 }
 
 .date-input, .number-input {
-	width: 75px;
-	margin: 0 3px 0 0;
+	width: 75px;	
+	margin-left: 2px;
+	
 }
 
 .filter-table td.top-align {
 	vertical-align: top;
+}
+
+.filter-table table {
+	border-spacing: 0 2px;
+}
+
+
+.filter-table table tr td, .filter-table table tr th{
+	border-top: 1px dotted #ddd;
+}
+
+.filter-table table tr:first-child td, .filter-table table tr:first-child th{
+	border-top: 0;
 }
 
 .detail-table td {
@@ -446,5 +460,9 @@ legend {
 }
 
 .topbar {
+	margin-bottom: 1px;
+}
+
+fieldset .topbar {
 	margin-bottom: 5px;
 }
