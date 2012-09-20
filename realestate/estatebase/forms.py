@@ -24,7 +24,7 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField, \
 from selectable.forms.widgets import AutoComboboxSelectWidget,\
     AutoComboboxSelectMultipleWidget
 import re
-from form_utils.forms import BetterForm
+from form_utils.forms import BetterForm, BetterModelForm
 
 
 class DateRangeWidget(forms.MultiWidget):
@@ -587,6 +587,19 @@ class BidPicleForm(EstateFilterForm):
                      ('right', {'fields': ['created','updated','origin','beside','interior','face_area','electricity','watersupply','gassupply','sewerage','driveway']})
                      ]
 
+
+
+#    broker
+#    estates    
+#    estate_types
+#    regions
+#    localities
+#    agency_price_min
+#    agency_price_max
+#    bids 
+
 class EstateRegisterForm(BetterModelForm):
-    model = EstateRegister
+    class Meta:
+        model = EstateRegister
+        fieldsets = [('main', {'fields': ['broker','estates','estate_types']}),]
         

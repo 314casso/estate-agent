@@ -62,7 +62,7 @@
     <legend style="font-size: 14px;">Подборки</legend>    
 
 <div class="topbar button">
-    <a href="{% url bid_create 30 %}?{{ next_url }}">Добавить</a>          
+    <a href="{% url register_create bid.pk %}?{{ next_url }}">Добавить</a>          
 </div>
 
 {% with register_list=bid.estate_registers.all  %}

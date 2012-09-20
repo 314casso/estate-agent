@@ -706,7 +706,7 @@ class Bid(ProcessDeletedModel):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
-    estate_registers = models.ManyToManyField('EstateRegister', verbose_name=_('EstateRegisters'), blank=True, null=True)
+    
     def __unicode__(self):
         return u'%s' % self.pk                          
     class Meta:      
@@ -734,6 +734,7 @@ class EstateRegister(ProcessDeletedModel):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
+    bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
     def __unicode__(self):
         return u'%s' % self.pk                          
     class Meta:      

@@ -735,7 +735,7 @@ class EstateRegisterMixin(ModelFormMixin):
             initial['bids'] = [self.kwargs['bid']]
         return initial
     def get_context_data(self, **kwargs):                         
-        context = super(BidMixin, self).get_context_data(**kwargs)
+        context = super(EstateRegisterMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),            
         })
@@ -745,4 +745,7 @@ class EstateRegisterMixin(ModelFormMixin):
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse('register_update', args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
-        
+
+class EstateRegisterCreate(EstateRegisterMixin, CreateView):
+    pass
+            
