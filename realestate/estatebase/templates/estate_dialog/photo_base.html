@@ -9,7 +9,7 @@
 {% for image in images %}
 
 {% thumbnail image.image "110x80" crop="center" as im %}
-{% thumbnail image.image "800x600" watermark="http://yandex.ru" crop="center" as bim %}
+{% thumbnail image.image "800x600" watermark="http://google.ru" crop="center" as bim %}
  <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
 {% endthumbnail %}
 {% endthumbnail %}
