@@ -7,5 +7,38 @@
 {% endblock head %}
 
 {% block left %}
-!!{{ form.as_p }}!!
+
+<form method="post" action="" class="table-form">
+	{% csrf_token %}	
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+        	<thead>
+			<tr>
+				<td colspan="100%">
+				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+					{% csrf_token %}
+					Подборка [{{ bid.id|default:'Новая' }}]
+					{% close_btn request.GET.next %}
+				</div></td>
+			</tr>
+			</thead>
+			<tbody>				
+			<tr>
+				<td colspan="100%">
+					<table>
+					{{ form.as_table }}
+					</table>
+				</td>					
+			</tr>
+            
+            </tbody>                                         
+            <tfoot class="button">
+			<tr>
+				<td colspan="100%" style="text-align: right"> {% block dialog_buttons %}
+				<input value="{% trans 'Save' %}" type="submit" name="_save"/>
+				{% endblock dialog_buttons %} </td>
+			</tr>
+			</tfoot>
+        </table>
+    </form>
+
 {% endblock %}

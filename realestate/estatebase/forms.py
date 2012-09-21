@@ -587,19 +587,13 @@ class BidPicleForm(EstateFilterForm):
                      ('right', {'fields': ['created','updated','origin','beside','interior','face_area','electricity','watersupply','gassupply','sewerage','driveway']})
                      ]
 
-
-
-#    broker
-#    estates    
-#    estate_types
-#    regions
-#    localities
-#    agency_price_min
-#    agency_price_max
-#    bids 
-
 class EstateRegisterForm(BetterModelForm):
+    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
     class Meta:
         model = EstateRegister
-        fieldsets = [('main', {'fields': ['broker','estates','estate_types']}),]
+        fieldsets = [('main', {'fields': ['bids', 'estates', 'broker','name']}),]
+        widgets = {         
+            'bids' : forms.MultipleHiddenInput(),
+#            'estates' : forms.MultipleHiddenInput()            
+        }
         

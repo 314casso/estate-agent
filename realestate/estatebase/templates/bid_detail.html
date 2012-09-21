@@ -62,7 +62,8 @@
     <legend style="font-size: 14px;">Подборки</legend>    
 
 <div class="topbar button">
-    <a href="{% url register_create bid.pk %}?{{ next_url }}">Добавить</a>          
+    <a href="{% url register_create bid.pk %}?{{ next_url }}&type=empty">Добавить пустую</a>          
+    <a href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Создать по заявке</a>
 </div>
 
 {% with register_list=bid.estate_registers.all  %}
@@ -70,9 +71,7 @@
     <thead>     
         <tr>
             <th>Код</th>
-            <th>Вид недвижимости</th>
-            <th>Цена</th>
-            <th>Населенные пункты</th>
+            <th>Название</th>            
             <th>Обновлено</th>                       
             <th>Действие</th>
         </tr>
@@ -82,16 +81,8 @@
         <tr class="ui-widget-content">
             <td><a href="{% url bid_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
             <td>
-                {% for estate_type in register.estate_types.all %}
-                    <a href="{% url bid_update register.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
-                {% endfor %}
-            </td>
-            <td>{% two_num register.agency_price_min register.agency_price_max %}</td>
-            <td>
-                {% for locality in register.localities.all %}
-                    {{ locality }}{% include 'comma.html' %}
-                {% endfor %}
-            </td>
+                {{ register.name }}
+            </td>            
             <td>{{ register.history.modificated|date:"d M Y" }} </td>                      
             <td><a href="{% url bid_remove register.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>

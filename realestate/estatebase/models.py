@@ -13,8 +13,6 @@ import os
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from picklefield.fields import PickledObjectField
 
-
-
 class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
@@ -708,7 +706,7 @@ class Bid(ProcessDeletedModel):
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
     
     def __unicode__(self):
-        return u'%s' % self.pk                          
+        return u'%s' % self.pk                                  
     class Meta:      
         ordering = ['-id']    
 
@@ -726,14 +724,10 @@ class EstateRegister(ProcessDeletedModel):
     '''
     Подборка
     '''
+    name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='estate_registers', blank=True, null=True, on_delete=models.PROTECT)
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
-    estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
-    regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
-    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
-    agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
     def __unicode__(self):
         return u'%s' % self.pk                          

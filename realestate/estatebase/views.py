@@ -745,7 +745,23 @@ class EstateRegisterMixin(ModelFormMixin):
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse('register_update', args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        self.object.history = prepare_history(self.object.history, self.request.user.pk)        
+        return super(EstateRegisterMixin, self).form_valid(form)
 
 class EstateRegisterCreate(EstateRegisterMixin, CreateView):
-    pass
+    def get_initial(self):        
+        initial = super(EstateRegisterCreate, self).get_initial()
+        rtype = self.request.REQUEST.get('type', None)
+        if rtype == 'empty':
+            initial['name'] = u'Ручная'
+        elif rtype == 'based':
+            initial['name'] = u'По заявке [%s]' % self.kwargs['bid']
+            bid = Bid.objects.get(pk=self.kwargs['bid'])
+            fltr = bid.estate_filter
+            if fltr:            
+                pickle_form = BidPicleForm(fltr)                             
+                initial['estates'] = Estate.objects.filter(**pickle_form.get_filter()).values_list('id', flat=True)                
+        return initial     
             
