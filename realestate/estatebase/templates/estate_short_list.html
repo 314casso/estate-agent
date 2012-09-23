@@ -7,118 +7,17 @@
 {% load humanize %}
 
 {% block head %}
-<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
-<script type="text/javascript" src="{{ STATIC_URL }}js/lightbox.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/simple-dialog.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
-<script type="text/javascript">
-	$(function() {
-		$(".selected").addClass('ui-state-highlight');
-		$("#tabs").tabs({
-            select: function(event, ui) {
-                localStorage.setItem('estate_id', '{{ estate.id }}');               
-                localStorage.setItem('saved_tab', ui.index);                
-            }, 
-            selected : getIndex('{{ estate.id }}','saved_tab')  
-        });
-
-		$("#filter").dialog({
-			modal : true,						
-			width : 1150,
-			title : 'Фильтр',
-			//position : ['center', 170],
-			autoOpen: false
-		});
-		        
-	}); 
-
-function showFilter(){
-	$('#filter').dialog('open');
-}
-
-</script>
-
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
-
+{% include 'estate_list_head.html' %}
 {% endblock %}
 
 
 {% block topbar %}
-<div class="topbar button">
-<div class="ui-widget ui-widget-content ui-corner-all user-info" style="float: none; margin-bottom: 3px">	
-Всего объектов: {{ total_count }}, 
-отобрано: {{ filter_count }}, 
-показано на странице: {{ estate_list.count }} 
-</div>
-<a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
-<button onclick="showFilter()">Показать фильтр</button>
-{% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}        
-</div>
+{% include 'estate_topbar.html' %}
 {% endblock topbar %}
 
 {% block left %}
 
-<!--  -->
-<div class="button table-form" id='filter'>
-    <form method="get">        
-        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
-        	<tr>
-        		<td class="top-align">
-        			<table>	                
-		            {% for field in fields|slice:":10" %}
-					    <tr>
-					    	<th>			        
-					        {{ field.label_tag }}
-					        </th>
-					        <td>
-					        {{ field.errors }}{{ field }}
-					        </td>
-					    </tr>
-					{% endfor %}
-					</table>
-				</td>
-				<td class="top-align">
-					<table>	                
-		            {% for field in fields|slice:"10:20" %}
-					    <tr>
-					    	<th>			        
-					        {{ field.label_tag }}
-					        </th>
-					        <td>
-					        {{ field.errors }}{{ field }}
-					        </td>
-					    </tr>
-					{% endfor %}
-				</table>				
-				</td>	
-				<td class="top-align">
-					<table>	                
-		            {% for field in fields|slice:"20:" %}
-					    <tr>
-					    	<th>			        
-					        {{ field.label_tag }}
-					        </th>
-					        <td>
-					        {{ field.errors }}{{ field }}
-					        </td>
-					    </tr>
-					{% endfor %}
-				</table>				
-				</td>	
-			</tr>                                          
-            <tfoot>
-                <tr>
-                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-                    <input type="submit" value="Применить"/>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </form>
-</div>
-<!--  -->
-
+{% include 'estate_filter_form.html' %}
 
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">

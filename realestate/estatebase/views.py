@@ -141,8 +141,7 @@ class EstateTypeViewAjax(TemplateView):
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
         estate_categories = EstateType.objects.all().order_by('estate_type_category')
         context.update({            
-            'estate_categories': estate_categories,
-            'estate': self.kwargs['estate'],                                   
+            'estate_categories': estate_categories,                                             
         })        
         return context
 
@@ -249,7 +248,7 @@ class EstateListView(ListView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
-#            'estate_filter_form' : estate_filter_form,
+            'filter_count' : self.get_queryset().count(),
             'fields': list(estate_filter_form),                                   
         })        
         return context
@@ -269,8 +268,7 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
             'images': self.estate.images.all(),
-            'estate': self.estate,   
-            'filter_count' : self.get_queryset().count(),                                          
+            'estate': self.estate,                                                      
         })                
         return context        
 
@@ -750,9 +748,9 @@ class EstateRegisterMixin(ModelFormMixin):
         self.object.history = prepare_history(self.object.history, self.request.user.pk)        
         return super(EstateRegisterMixin, self).form_valid(form)
 
-class EstateRegisterCreate(EstateRegisterMixin, CreateView):
+class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
     def get_initial(self):        
-        initial = super(EstateRegisterCreate, self).get_initial()
+        initial = super(EstateRegisterCreateView, self).get_initial()
         rtype = self.request.REQUEST.get('type', None)
         if rtype == 'empty':
             initial['name'] = u'Ручная'
@@ -764,4 +762,16 @@ class EstateRegisterCreate(EstateRegisterMixin, CreateView):
                 pickle_form = BidPicleForm(fltr)                             
                 initial['estates'] = Estate.objects.filter(**pickle_form.get_filter()).values_list('id', flat=True)                
         return initial     
-            
+
+class EstateRegisterUpdateView(EstateRegisterMixin, UpdateView):
+    pass
+
+class EstateRegisterDeleteView(DeleteMixin, EstateRegisterMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateRegisterDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление подборки...',
+            'dialig_body'  : u'Подтвердите удаление подборки: %s' % self.object,
+        })
+        return context            

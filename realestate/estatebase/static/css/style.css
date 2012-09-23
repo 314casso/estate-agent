@@ -164,7 +164,7 @@ span.contact-inline label, .bidg-list label {
 }
 .base-table-list td, .base-table-list th {
 	/*border-top-color: white;
-	border-bottom: 1px solid #DFDFDF;*/
+	 border-bottom: 1px solid #DFDFDF;*/
 	/*color: #555;*/
 	border: 1px solid white;
 }
@@ -177,11 +177,11 @@ span.contact-inline label, .bidg-list label {
 .base-table-list td {
 	padding: 2px 5px;
 	vertical-align: top;
-	font-weight: normal !important;	
+	font-weight: normal !important;
 }
 
 .base-table-list td, .base-table-list th {
-	border-left: 0 !important;	
+	border-left: 0 !important;
 	border-right: 0 !important;
 }
 
@@ -202,7 +202,7 @@ span.contact-inline label, .bidg-list label {
 	text-decoration: underline !important;
 }
 
-.base-table-list a:hover {	
+.base-table-list a:hover {
 	border-bottom: 1px dotted #C77405;
 }
 
@@ -398,9 +398,8 @@ legend {
 }
 
 .date-input, .number-input {
-	width: 75px;	
+	width: 75px;
 	margin-left: 2px;
-	
 }
 
 .filter-table td.top-align {
@@ -411,12 +410,11 @@ legend {
 	border-spacing: 0 2px;
 }
 
-
-.filter-table table tr td, .filter-table table tr th{
+.filter-table table tr td, .filter-table table tr th {
 	border-top: 1px dotted #ddd;
 }
 
-.filter-table table tr:first-child td, .filter-table table tr:first-child th{
+.filter-table table tr:first-child td, .filter-table table tr:first-child th {
 	border-top: 0;
 }
 
@@ -440,7 +438,7 @@ legend {
 .style-table td {
 	font-weight: normal !important;
 	padding: .2em .4em;
-	border-top-width: 1px !important;	
+	border-top-width: 1px !important;
 }
 .style-table th {
 	text-align: left;
@@ -451,8 +449,8 @@ legend {
 }
 
 .table-form table th {
-	font-weight: normal !important;	
-	color:#555;
+	font-weight: normal !important;
+	color: #555;
 }
 
 .table-state-highlight {
@@ -465,4 +463,10 @@ legend {
 
 fieldset .topbar {
 	margin-bottom: 5px;
+}
+
+.inline-span {
+	padding: 0 3px;
+	/*font-size: 12px;*/
+	margin-left: 1px	
 }

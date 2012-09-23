@@ -16,6 +16,8 @@ $(document).ready(function() {
 			$(this).children("td").removeClass("ui-state-hover");
 		}
 	});
+	
+	$('.active').addClass('ui-state-highlight');
 
 });
 

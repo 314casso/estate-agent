@@ -8,6 +8,7 @@
 
 {% block left %}
 
+
 <form method="post" action="" class="table-form">
 	{% csrf_token %}	
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
@@ -16,12 +17,24 @@
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
 					{% csrf_token %}
-					Подборка [{{ bid.id|default:'Новая' }}]
+					Подборка [{{ estateregister.id|default:'Новая' }}]
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
 			</thead>
-			<tbody>				
+			<tbody>
+			<tr>
+			     <th>
+			     	Состав:
+			     </th>
+			     <td>
+                    {% for estate_id in form.estates.value %}
+                        <a href="{% url estate_list_details estate_id %}?estates_1={{ estate_id }}&{{ next_url }}">{{ estate_id }}</a>{% include 'comma.html' %}
+                    {% empty %}
+                        Нет объектов подходящих для заявки...     
+                    {% endfor %}
+                 </td>
+			</tr>					
 			<tr>
 				<td colspan="100%">
 					<table>

@@ -1,0 +1,59 @@
+<!--  -->
+<div class="button table-form" id='filter'>
+    <form method="get">        
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+            <tr>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:":10" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </td>
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:"10:20" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>                
+                </td>   
+                <td class="top-align">
+                    <table>                 
+                    {% for field in fields|slice:"20:" %}
+                        <tr>
+                            <th>                    
+                            {{ field.label_tag }}
+                            </th>
+                            <td>
+                            {{ field.errors }}{{ field }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>                
+                </td>   
+            </tr>                                          
+            <tfoot>
+                <tr>
+                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <input type="submit" value="Применить"/>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<!--  -->

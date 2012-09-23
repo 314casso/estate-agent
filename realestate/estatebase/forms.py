@@ -69,6 +69,7 @@ class EstateCreateForm(ModelForm):
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),            
         )
+    clients = forms.ModelMultipleChoiceField(queryset=Client.objects.all(), widget=forms.MultipleHiddenInput(), required=False)
     class Meta:                
         model = Estate
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
@@ -76,8 +77,7 @@ class EstateCreateForm(ModelForm):
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
-            'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
-            'clients' : forms.MultipleHiddenInput()            
+            'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),            
         }
 
 class EstateCommunicationForm(ModelForm):
@@ -594,6 +594,6 @@ class EstateRegisterForm(BetterModelForm):
         fieldsets = [('main', {'fields': ['bids', 'estates', 'broker','name']}),]
         widgets = {         
             'bids' : forms.MultipleHiddenInput(),
-#            'estates' : forms.MultipleHiddenInput()            
+            'estates' : forms.MultipleHiddenInput()            
         }
         

@@ -9,7 +9,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     ImageDeleteView, EstateDetailView, SteadUpdateView, EstateTypeViewAjax, \
     BidgAppendView, BidgRemoveView, EstateListDetailsView, PlaceableTypeViewAjax,\
     BidCreateView, BidUpdateView, BidListView, BidDeleteView,\
-    ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreate
+    ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreateView,\
+    EstateRegisterUpdateView, EstateRegisterDeleteView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -68,14 +69,16 @@ urlpatterns += patterns('',
 ) 
 
 urlpatterns += patterns('',
-    url (r'^selectestatetype/(?P<estate>\d+)$', EstateTypeViewAjax.as_view(), name='select_estate_type'),
+    url (r'^selectestatetype/$', EstateTypeViewAjax.as_view(), name='select_estate_type'),
     url (r'^selectplaceabletype/(?P<estate>\d+)$', PlaceableTypeViewAjax.as_view(), name='select_placeable_type'),    
     url (r'^bidgappend/(?P<estate>\d+)/(?P<estate_type>\d+)$', BidgAppendView.as_view(), name='bidg_append'),    
     url (r'^bidgremove/(?P<pk>\d+)$', BidgRemoveView.as_view(), name='bidg_remove'),     
 )
 
 urlpatterns += patterns('',
-    url (r'^registercreate/(?P<bid>\d+)$', EstateRegisterCreate.as_view(), name='register_create'),      
+    url (r'^registercreate/(?P<bid>\d+)$', EstateRegisterCreateView.as_view(), name='register_create'),      
+    url (r'^registerupdate/(?P<pk>\d+)$', EstateRegisterUpdateView.as_view(), name='register_update'),
+    url (r'^registerdelete/(?P<pk>\d+)$', EstateRegisterDeleteView.as_view(), name='register_delete'),
 )
 
 urlpatterns += patterns('',    

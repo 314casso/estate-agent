@@ -79,12 +79,14 @@
     <tbody>
         {% for register in register_list %}
         <tr class="ui-widget-content">
-            <td><a href="{% url bid_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
+            <td><a href="{% url register_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
             <td>
-                {{ register.name }}
+               <a href="#">{{ register.name }}</a>
             </td>            
-            <td>{{ register.history.modificated|date:"d M Y" }} </td>                      
-            <td><a href="{% url bid_remove register.pk %}?{{ next_url }}">Удалить</a></td>
+            <td>{{ register.history.modificated|date:"d M Y" }} </td>
+            <td>
+                <a href="{% url register_delete register.pk %}?{{ next_url }}">Удалить</a>
+            </td>
         </tr>
         {% empty %}
         <tr>
