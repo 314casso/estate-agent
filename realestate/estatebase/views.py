@@ -23,6 +23,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from estatebase.datatables import get_datatables_records
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -777,4 +778,26 @@ class EstateRegisterDeleteView(DeleteMixin, EstateRegisterMixin, DeleteView):
             'dialig_title' : u'Удаление подборки...',
             'dialig_body'  : u'Подтвердите удаление подборки: %s' % self.object,
         })
-        return context            
+        return context
+    
+class EstateRegisterDetailView(EstateRegisterMixin, DetailView):
+    template_name = 'register_detail.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateRegisterDetailView, self).get_context_data(**kwargs)    
+        estate_list = self.object.estates.all()
+        paginator = Paginator(estate_list, 3)    
+        page = self.request.GET.get('page')
+        try:
+            estates = paginator.page(page)
+        except PageNotAnInteger:        
+            estates = paginator.page(1)
+        except EmptyPage:        
+            estates = paginator.page(paginator.num_pages)        
+        context.update({
+                'paginator': paginator,
+                'page_obj': estates,
+                'is_paginated': estates.has_other_pages(),
+                'object_list': estates.object_list
+            })  
+        return context  
+                        

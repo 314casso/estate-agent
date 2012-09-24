@@ -2,9 +2,8 @@
 {% load thumbnail %}
 
 {% load query_string %}
-{% load link_helper %}
+
 {% load paginator %}
-{% load humanize %}
 
 {% block head %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
@@ -58,53 +57,7 @@ function showFilter(){
 
 {% block left %}
 
-<table class="base-table-list ui-widget ui-widget-content">
-    <thead>     
-        <tr>
-        	<th> </th>
-            <th>Код</th>
-            <th>Тип</th>            
-            <th>Обновлено</th>                       
-            <th>Цена</th>
-            <th>Адрес</th>
-            <th>Контакт</th>            
-            <th>Действие</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for estate_item in estate_list %}
-    <tr class="ui-widget-content">
-    	<td>
-    		{% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %}
-    	</td>	
-        <td>        	
-        	<a href="{% url estate_update estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a>
-        </td>
-        <td><a href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={{ estate_item.pk }}"> {{ estate_item.estate_type }} </a></td>
-        <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
-        <td> {{ estate_item.agency_price|default_if_none:''|intcomma }}</td>
-        <td>
-        <span class="inline-span">
-        	<small>
-            {% with estate_item=estate_item %}
-            {% address estate_item %}
-            {% endwith %}
-            </small>
-        </span></td>
-
-        <td> {% with contact=estate_item.basic_contact  %}
-        {% if contact %}
-        <span class="inline-span ui-corner-all ui-widget-content">
-        <small>{{ contact.client.client_type }}</small>         
-         <a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
-         </span>
-         <span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span> {% endif %}
-        {% endwith %} </td>
-        <td>{% block lastcol %}<a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить</a>{% endblock lastcol %}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% include 'estate_table.html' %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load paginator %}
+
+
+{% block topbar %}
+<div class="topbar button">
+    {% include 'prev_view.html' %}
+</div>
+{% endblock %}
+
+{% block left %}
+
+{% include 'estate_table_register.html' with estate_list=object_list %}
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:10px">
+    {% digg_paginator %}
+</div>
+{% endif %}
+
+{% endblock left %}
+
