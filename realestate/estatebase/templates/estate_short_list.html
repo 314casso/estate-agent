@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "estate_list.html" %}
 {% load thumbnail %}
 
 {% load query_string %}
@@ -6,19 +6,7 @@
 {% load paginator %}
 {% load humanize %}
 
-{% block head %}
-{% include 'estate_list_head.html' %}
-{% endblock %}
-
-
-{% block topbar %}
-{% include 'estate_topbar.html' %}
-{% endblock topbar %}
-
 {% block left %}
-
-{% include 'estate_filter_form.html' %}
-
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
     <legend style="font-size: 11px;">

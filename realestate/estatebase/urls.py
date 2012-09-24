@@ -10,11 +10,12 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     BidgAppendView, BidgRemoveView, EstateListDetailsView, PlaceableTypeViewAjax,\
     BidCreateView, BidUpdateView, BidListView, BidDeleteView,\
     ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreateView,\
-    EstateRegisterUpdateView, EstateRegisterDeleteView
+    EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectListView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_list'),
+    url(r'^estateselectlist/$',EstateSelectListView.as_view(), name='estate_select_list'),
     url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),

@@ -253,6 +253,9 @@ class EstateListView(ListView):
         })        
         return context
 
+class EstateSelectListView(EstateListView):
+    template_name = 'estate_select_list.html'
+
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_short_list.html'        

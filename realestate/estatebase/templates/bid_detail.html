@@ -81,7 +81,7 @@
         <tr class="ui-widget-content">
             <td><a href="{% url register_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
             <td>
-               <a href="#">{{ register.name }}</a>
+               <a href="{% url estate_select_list %}?{{ next_url }}">{{ register.name }}</a>
             </td>            
             <td>{{ register.history.modificated|date:"d M Y" }} </td>
             <td>
