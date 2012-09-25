@@ -10,7 +10,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
     BidPicleForm, EstateRegisterForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
-    prepare_history, Stead, Bid, Region, EstateRegister
+    prepare_history, Stead, Bid, EstateRegister
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -22,7 +22,6 @@ from estatebase.helpers.functions import safe_next_link
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
-from estatebase.datatables import get_datatables_records
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 class BaseMixin(object):
@@ -256,7 +255,18 @@ class EstateListView(ListView):
 
 class EstateSelectListView(EstateListView):
     template_name = 'estate_select_list.html'
-
+    def get_queryset(self):                  
+        q = super(EstateSelectListView, self).get_queryset()
+        #q = q.exclude(estates__id=self.kwargs['estate_pk']) 
+        #TODO: фильтр по уже отобранным       
+        return q
+    def get_context_data(self, **kwargs):
+        context = super(EstateSelectListView, self).get_context_data(**kwargs)
+        context.update({            
+            'selected': self.kwargs['selected'],                                               
+        })
+        return context
+        
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_short_list.html'        
@@ -800,4 +810,31 @@ class EstateRegisterDetailView(EstateRegisterMixin, DetailView):
                 'object_list': estates.object_list
             })  
         return context  
-                        
+
+class AddEstateToRegisterView(DetailView):   
+    model = EstateRegister
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(AddEstateToRegisterView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Привязка...',
+            'dialig_body'  : u'Привязать объект %s к подборке [%s]?' % (self.kwargs['estate_pk'], self.object),
+        })
+        return context
+    def action(self, register, estate_pk):                
+        register.estates.add(estate_pk)        
+    def post(self, request, *args, **kwargs):
+        register = self.model.objects.get(pk=self.kwargs['pk'])         
+        self.action(register, self.kwargs['estate_pk'])              
+        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))
+
+class RemoveEstateFromRegisterView(AddEstateToRegisterView):
+    def get_context_data(self, **kwargs):
+        context = super(RemoveEstateFromRegisterView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Отвязка...',
+            'dialig_body'  : u'Отвязать объект %s от подборки [%s]?' % (self.kwargs['estate_pk'], self.object),
+        })
+        return context
+    def action(self, register, estate_pk):                
+        register.estates.remove(estate_pk)

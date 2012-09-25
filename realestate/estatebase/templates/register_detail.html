@@ -6,6 +6,7 @@
 {% block topbar %}
 <div class="topbar button">
     {% include 'prev_view.html' %}
+    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Подобрать</a>    	
 </div>
 {% endblock %}
 

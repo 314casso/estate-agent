@@ -1,0 +1,2 @@
+{% extends "estate_table.html" %}
+{% block lastcol %}<a href="{% url register_add_estate selected estate_item.pk %}?{{ next_url }}">Привязать</a>{% endblock lastcol %}

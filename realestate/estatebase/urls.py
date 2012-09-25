@@ -11,12 +11,13 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     BidCreateView, BidUpdateView, BidListView, BidDeleteView,\
     ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreateView,\
     EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectListView,\
-    EstateRegisterDetailView
+    EstateRegisterDetailView, AddEstateToRegisterView,\
+    RemoveEstateFromRegisterView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
     url(r'^estatelist/$',EstateListView.as_view(), name='estate_list'),
-    url(r'^estateselectlist/$',EstateSelectListView.as_view(), name='estate_select_list'),
+    url(r'^estateselectlist/(?P<selected>\d+)$',EstateSelectListView.as_view(), name='estate_select_list'),
     url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client_list'),
@@ -82,6 +83,8 @@ urlpatterns += patterns('',
     url (r'^registerupdate/(?P<pk>\d+)$', EstateRegisterUpdateView.as_view(), name='register_update'),
     url (r'^registerdelete/(?P<pk>\d+)$', EstateRegisterDeleteView.as_view(), name='register_delete'),
     url (r'^registerdetail/(?P<pk>\d+)$', EstateRegisterDetailView.as_view(), name='register_detail'),
+    url (r'^registeraddestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', AddEstateToRegisterView.as_view(), name='register_add_estate'),
+    url (r'^registerremoveestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', RemoveEstateFromRegisterView.as_view(), name='register_remove_estate'),    
 )
 
 urlpatterns += patterns('',    

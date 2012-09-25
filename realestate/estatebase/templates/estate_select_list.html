@@ -1,2 +1,13 @@
 {% extends "estate_list.html" %}
-{% block lastcol %}<a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить1</a>{% endblock lastcol %}
+{% load paginator %}
+{% block left %}
+
+{% include 'estate_table_select.html' %}
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:6px">
+    {% digg_paginator %}
+</div>
+{% endif %}
+
+{% endblock left %}
