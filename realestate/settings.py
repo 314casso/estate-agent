@@ -9,11 +9,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-#from local_settings import * #@UnusedWildImport
-try:
-    from local_settings import * #@UnusedWildImport
-except ImportError:
-    pass
+from local_settings import * #@UnusedWildImport
 
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    
