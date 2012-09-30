@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Знакомый"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Показывает"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Покупатель"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Продавец"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Родственник"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.estateclientstatus",
+    "fields": {
+        "name": "Сосед"
+    }
+}
+]

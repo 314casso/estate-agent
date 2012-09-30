@@ -22,19 +22,7 @@
 				</div></td>
 			</tr>
 			</thead>
-			<tbody>
-			<tr>
-			     <th>
-			     	Состав:
-			     </th>
-			     <td>
-                    {% for estate_id in form.estates.value %}
-                        <a href="{% url estate_list_details estate_id %}?estates_1={{ estate_id }}&{{ next_url }}">{{ estate_id }}</a>{% include 'comma.html' %}
-                    {% empty %}
-                        Нет объектов подходящих для заявки...     
-                    {% endfor %}
-                 </td>
-			</tr>					
+			<tbody>								
 			<tr>
 				<td colspan="100%">
 					<table>

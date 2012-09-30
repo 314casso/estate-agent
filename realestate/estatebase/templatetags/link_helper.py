@@ -3,7 +3,7 @@ from django import template
 from django.core.urlresolvers import reverse
 import base64
 from django.contrib.humanize.templatetags.humanize import intcomma
-from estatebase.models import get_polymorph_label
+from estatebase.models import get_polymorph_label, EstateClient
 
 register = template.Library()
 
@@ -53,11 +53,14 @@ def address(estate):
     items = []
     if estate.region:
         items.append(estate.region.name)
-    items.append(estate.locality.name)
+    if estate.locality:     
+        items.append(estate.locality.name)
     if estate.microdistrict:         
         items.append(estate.microdistrict.name)
-    items.append(estate.street.name)                 
-    items.append(estate.estate_number)        
+    if estate.street:     
+        items.append(estate.street.name)
+    if estate.estate_number:                      
+        items.append(estate.estate_number)        
     basic_bidg = estate.basic_bidg     
     if basic_bidg and basic_bidg.room_number:
         items.append(u'кв. %s' % basic_bidg.room_number)        
@@ -93,4 +96,7 @@ def two_num(n_min, n_max):
         result = 'менее %s' % (intcomma(n_max))
     return result             
 
-
+@register.simple_tag
+def estate_client_status(estate_pk,client_pk):
+    return EstateClient.objects.get(estate_id=estate_pk,client_id=client_pk).estate_client_status
+    

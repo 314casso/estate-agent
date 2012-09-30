@@ -26,6 +26,8 @@
 
 <div class="topbar button">
 <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">
+<a href="{% url bid_create %}?{{ next_url }}">Добавить</a>
+{% include 'prev_view.html' %}
 </div>
 
 <table class="base-table-list ui-widget ui-widget-content">
@@ -47,8 +49,10 @@
             <td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
             <td>
                 {% for estate_type in bid_item.estate_types.all %}
-                    <a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
-                {% endfor %}
+                    <a href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                {% empty %}
+                    <a href="{% url bid_detail bid_item.pk %}?{{ next_url }}">---------</a>    
+                {% endfor %}                
             </td>
             <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
             <td>
@@ -78,16 +82,7 @@
             <tr>
                 <td class="top-align">
                     <table>                 
-                    {% for field in bid_filter_form %}
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
-                    {% endfor %}
+                        {{ bid_filter_form.as_table }}                      
                     </table>
                 </td>                   
             </tr>                                          

@@ -10,8 +10,10 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-from django.db.models.signals import post_save, pre_save, m2m_changed
+from django.db.models.signals import post_save, pre_save, m2m_changed,\
+    post_delete
 from picklefield.fields import PickledObjectField
+from local_settings import CORRECT_DELTA
 
 class ExUser(User):
     def __unicode__(self):
@@ -45,6 +47,7 @@ class Region(SimpleDict):
     '''
     Районы
     '''
+    geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
         verbose_name_plural = _('regions')
@@ -53,8 +56,7 @@ class Locality(SimpleDict):
     '''
     Населенные пункты
     '''
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
-    geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)    
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
         verbose_name_plural = _('localities')    
@@ -166,6 +168,14 @@ class EstateStatus(SimpleDict):
         verbose_name = _('estate status')
         verbose_name_plural = _('estate statuses')         
 
+class EstateClientStatus(SimpleDict):
+    '''
+    EstateClientStatus    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Estate client status')
+        verbose_name_plural = _('Estate client statuss')
+
 class EstateTypeCategory(OrderedModel):
     name = models.CharField(_('Name'), max_length=100)
     def __unicode__(self):
@@ -212,13 +222,14 @@ class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
     created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators',on_delete=models.PROTECT)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)    
-    @property
-    def modificated(self):
-        return self.updated or self.created
+    updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)
+    modificated = models.DateTimeField(_('Modificated'),)     
     @property
     def user_id(self):
         return self.updated_by and self.updated_by.pk or self.created_by.pk                                        
+    def save(self, *args, **kwargs):             
+        self.modificated = self.updated or self.created                                                    
+        super(HistoryMeta, self).save(*args, **kwargs)
     
 def prepare_history(history, user_id):
     if not history:
@@ -232,6 +243,10 @@ def prepare_history(history, user_id):
         history.save()
     return history                 
 
+class EstateClient(models.Model):
+    client = models.ForeignKey('Client')
+    estate = models.ForeignKey('Estate')    
+    estate_client_status = models.ForeignKey(EstateClientStatus,verbose_name=_('EstateClientStatus'))
 
 class BaseModelManager(models.Manager):
     def get_query_set(self):
@@ -250,31 +265,31 @@ class Estate(ProcessDeletedModel):
     '''
     #Базовые
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT) 
-    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
+    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)
     microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.PROTECT)
-    street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT)    
-    estate_number = models.CharField(_('Estate number'), max_length=10)
-    clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates')
+    street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)    
+    estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)
+    clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates', through=EstateClient)
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.PROTECT)
-    beside_distance = models.PositiveIntegerField('Beside distance', blank=True, null=True)
-    saler_price = models.PositiveIntegerField('Saler price', blank=True, null=True)
-    agency_price = models.PositiveIntegerField('Agency price', blank=True, null=True)
+    beside_distance = models.PositiveIntegerField(_('Beside distance'), blank=True, null=True)
+    saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
+    agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)     
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
     watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True, on_delete=models.PROTECT) 
-    watersupply_distance = models.PositiveIntegerField('Watersupply distance', blank=True, null=True)
+    watersupply_distance = models.PositiveIntegerField(_('Watersupply distance'), blank=True, null=True)
     gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True, on_delete=models.PROTECT)
-    gassupply_distance = models.PositiveIntegerField('Gassupply distance', blank=True, null=True)
+    gassupply_distance = models.PositiveIntegerField(_('Gassupply distance'), blank=True, null=True)
     sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True, on_delete=models.PROTECT)
-    sewerage_distance = models.PositiveIntegerField('Sewerage distance', blank=True, null=True)
+    sewerage_distance = models.PositiveIntegerField(_('Sewerage distance'), blank=True, null=True)
     telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True, on_delete=models.PROTECT)
     internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True, on_delete=models.PROTECT)
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.PROTECT)
-    driveway_distance = models.PositiveIntegerField('Driveway distance', blank=True, null=True)
+    driveway_distance = models.PositiveIntegerField(_('Driveway distance'), blank=True, null=True)
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
@@ -304,7 +319,7 @@ class Estate(ProcessDeletedModel):
             return None    
     @property
     def correct(self):
-        return self.valid and (datetime.datetime.now() - self.history.modificated < datetime.timedelta(minutes=2))
+        return self.valid and (self.history.modificated > CORRECT_DELTA)
     @property
     def basic_contact(self):
         return self.contact 
@@ -325,25 +340,27 @@ class Estate(ProcessDeletedModel):
     def set_contact(self):
         self.contact = self.get_best_contact()
         self.valid = self.contact and self.contact.contact_state_id == 1 or False       
-    def save(self, *args, **kwargs):                                                                        
-        super(Estate, self).save(*args, **kwargs)
-        basic_bidg = self.basic_bidg        
-        if self.estate_type.object_type in ('BIDG', 'MIX') and not basic_bidg:
-            bidg = Bidg(estate=self, estate_type=self.estate_type, basic=True)
-            bidg.save()
-        elif basic_bidg and basic_bidg.estate_type != self.estate_type:            
-            basic_bidg.estate_type = self.estate_type
-            basic_bidg.save()        
-        if self.estate_type.object_type in ('STEAD', 'MIX') and not self.basic_stead:
-            stead = Stead(estate=self)
-            stead.save()                                   
+                                           
+def prepare_estate_childs(sender, instance, created, **kwargs):
+    basic_bidg = instance.basic_bidg        
+    if instance.estate_type.object_type in ('BIDG', 'MIX') and not basic_bidg:
+        bidg = Bidg(estate=instance, estate_type=instance.estate_type, basic=True)
+        bidg.save()
+    elif basic_bidg and basic_bidg.estate_type != instance.estate_type:            
+        basic_bidg.estate_type = instance.estate_type
+        basic_bidg.save()        
+    if instance.estate_type.object_type in ('STEAD', 'MIX') and not instance.basic_stead:
+        stead = Stead(estate=instance)
+        stead.save()                                    
 
-def estate_client_handler(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action in ('post_add','post_remove'):
-        instance.set_contact()
-        instance.save()        
+post_save.connect(prepare_estate_childs, sender=Estate)
 
-m2m_changed.connect(estate_client_handler, sender=Estate.clients.through)
+def estate_client_handler(sender, instance, **kwargs):    
+    instance.estate.set_contact()
+    instance.estate.save()        
+
+post_save.connect(estate_client_handler, sender=EstateClient)
+post_delete.connect(estate_client_handler, sender=EstateClient)
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)
@@ -724,7 +741,7 @@ class EstateRegister(ProcessDeletedModel):
     '''
     Подборка
     '''
-    name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
+    name = models.CharField(_('Name'), db_index=True, max_length=255)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='estate_registers', blank=True, null=True, on_delete=models.PROTECT)
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    

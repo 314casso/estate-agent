@@ -81,14 +81,16 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-Вакантно
-Новый
-Продано
-Снят с продажи
+Продавец
+Покупатель
+Сосед
+Знакомый
+Родственник
+Показывает
 '''
 
-"""
-MODEL = 'EstateStatus'
+
+MODEL = 'EstateClientStatus'
 
 import settings
 import os
@@ -103,7 +105,7 @@ if not os.path.isfile(fixfile):
 else:
     print 'Fixture already exists!'     
 
-"""
 
-mm = ModelMaker('SimpleDict', 'geo_group')
+
+mm = ModelMaker('SimpleDict', 'estate_client_status')
 print mm.get_model_code()

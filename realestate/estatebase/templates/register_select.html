@@ -1,0 +1,14 @@
+{% extends "register_list.html" %}
+{% load paginator %}
+{% block left %}
+
+{% include "register_table_select.html" %}
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:6px">
+    {% digg_paginator %}
+</div>
+{% endif %}
+
+{% endblock left %}
+

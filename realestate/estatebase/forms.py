@@ -13,18 +13,19 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup,\
-    ClientTypeLookup, BidIdLookup
-from estatebase.models import Client, Contact, ClientType, Origin, \
+    ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup
+from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
-    get_polymorph_label, EstateRegister
+    get_polymorph_label, EstateRegister, EstateClient, EstateClientStatus
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField,\
     AutoCompleteSelectField
-from selectable.forms.widgets import AutoComboboxSelectWidget,\
-    AutoComboboxSelectMultipleWidget
+from selectable.forms.widgets import AutoComboboxSelectWidget    
 import re
 from form_utils.forms import BetterForm, BetterModelForm
+from local_settings import CORRECT_DELTA
+from django.db.models.query_utils import Q
 
 
 class DateRangeWidget(forms.MultiWidget):
@@ -64,21 +65,24 @@ class DateRangeField(MultiValueField):
             return data_list
         return [None, None]
 
-class EstateCreateForm(ModelForm):
+class EstateForm(ModelForm):
     estate_type = AutoCompleteSelectField(
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),            
-        )
-    clients = forms.ModelMultipleChoiceField(queryset=Client.objects.all(), widget=forms.MultipleHiddenInput(), required=False)
+        )        
     class Meta:                
         model = Estate
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'clients')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type')
         widgets = {
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),            
         }
+
+class EstateCreateForm(EstateForm):
+    client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())    
 
 class EstateCommunicationForm(ModelForm):
     class Meta:                
@@ -197,7 +201,14 @@ class ComplexField(MultiValueField):
             return data_list
         return [None, None]
                
+VALID_CHOICES = (
+    ('ALL', 'Все'),             
+    ('CORRECT', 'Корректные'),
+    ('UNCORRECT', 'Не корректные'),        
+)              
+               
 class EstateFilterForm(BetterForm):
+    valid = forms.BooleanField(label=_('Valid'), required=False)
     estates = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
             label=_('ID'),
@@ -278,13 +289,18 @@ class EstateFilterForm(BetterForm):
     gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
     sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
     driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
-    
+    next = forms.CharField(required=False, widget=forms.HiddenInput())
     def get_filter(self):
         f = {}   
+        #TODO: нужно добавить или для bids
+        if self['estate_type'].value():
+            q = Q(estate_type_id__in=self['estate_type'].value()) | Q(bidgs__estate_type_id__in=self['estate_type'].value()) 
+            f['Q'] = q 
+        if self['valid'].value():
+            f['valid__exact'] = True
+            f['history__modificated__gt'] = CORRECT_DELTA
         if self['estates'].value():                                 
             f['id__in'] = self['estates'].value()        
-        if self['estate_type'].value():
-            f['bidgs__estate_type_id__in'] = self['estate_type'].value()
         if self['region'].value():
             f['region_id__in'] = self['region'].value()
         if self['locality'].value():
@@ -481,7 +497,7 @@ class ApartmentForm(BidgForm):
         for field in self.fields:            
             if field not in fields:
                 self.field_to_delete.append(field)                
-            else:                                
+            elif get_polymorph_label(self.instance, field):                                       
                 self.fields[field].label = get_polymorph_label(self.instance, field)                           
         for field in self.field_to_delete:
             del self.fields[field]                                                  
@@ -539,7 +555,7 @@ class BidFilterForm(BetterForm):
         )
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))    
-    created_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Создано',required=False)
+    created_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем создано',required=False)
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор',required=False)    
     clients = AutoCompleteSelectMultipleField(
             lookup_class=ClientLookup,
@@ -551,7 +567,7 @@ class BidFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
-    
+    next = forms.CharField(required=False, widget=forms.HiddenInput())
     def get_filter(self):
         f = {}
         if self['pk'].value():
@@ -580,6 +596,44 @@ class BidFilterForm(BetterForm):
             f['estate_types__id__in'] = self['estate_type'].value()                        
         return f
 
+class EstateRegisterFilterForm(BidFilterForm):
+    def __init__(self, *args, **kwargs):
+        super(EstateRegisterFilterForm, self).__init__(*args, **kwargs)
+        exclude = ['clients', 'contacts']
+        for field in exclude:
+            del self.fields[field]        
+    pk = AutoCompleteSelectMultipleField(
+            lookup_class=EstateRegisterIdLookup,
+            label=_('ID'),
+            required=False,
+        )
+    name = forms.CharField(required=False, label=_('Name'))    
+    def get_filter(self):
+        f = {}
+        if self['pk'].value():
+            f['id__in'] = self['pk'].value()
+        if self['region'].value():
+            f['bids__regions__id__in'] = self['region'].value()
+        if self['locality'].value():
+            f['bids__localities__id__in'] = self['locality'].value()
+        if self['created'].value():            
+            value = from_to_values(self['created'].field.clean(self['created'].value()), 'history__created')            
+            if value:                 
+                f.update(value)        
+        if self['updated'].value():            
+            value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
+            if value:                 
+                f.update(value)
+        if self['created_by'].value():
+            f['history__created_by_id'] = self['created_by'].value()
+        if self['broker'].value():
+            f['broker_id'] = self['broker'].value()            
+        if self['estate_type'].value():
+            f['bids__estate_types__id__in'] = self['estate_type'].value()
+        if self['name'].value():
+            f['name__icontains'] = self['name'].value()                            
+        return f
+
 class BidPicleForm(EstateFilterForm):    
     class Meta:        
         fieldsets = [('left', {'fields': ['estates','estate_type','region','locality','microdistrict','estate_status','agency_price',], 'legend': ''}),
@@ -588,7 +642,7 @@ class BidPicleForm(EstateFilterForm):
                      ]
 
 class EstateRegisterForm(BetterModelForm):
-    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
+    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')    
     class Meta:
         model = EstateRegister
         fieldsets = [('main', {'fields': ['bids', 'estates', 'broker','name']}),]

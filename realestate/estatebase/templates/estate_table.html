@@ -1,13 +1,14 @@
 {% load humanize %}
 {% load link_helper %}
+{% load sorting_tags %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
             <th> </th>
-            <th>Код</th>
-            <th>Тип</th>            
-            <th>Обновлено</th>                       
-            <th>Цена</th>
+            <th>{% anchor id 'Код' %}</th>
+            <th>{% anchor estate_type__name 'Тип' %}</th>
+            <th>{% anchor history__modificated 'Обновлено' %}</th>
+            <th>{% anchor agency_price 'Цена' %}</th>
             <th>Адрес</th>
             <th>Контакт</th>            
             <th>Действие</th>

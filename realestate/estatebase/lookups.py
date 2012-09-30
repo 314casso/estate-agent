@@ -2,7 +2,7 @@ from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
-    ExUser, ClientType, Bid
+    ExUser, ClientType, Bid, EstateRegister
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -18,6 +18,9 @@ class SimpleIdLookup(ModelLookup):
 
 class ClientIdLookup(SimpleIdLookup):
     model = Client
+
+class EstateRegisterIdLookup(SimpleIdLookup):
+    model = EstateRegister    
 
 class BidIdLookup(SimpleIdLookup):
     model = Bid
@@ -135,5 +138,6 @@ try:
     registry.register(ClientIdLookup)
     registry.register(ClientTypeLookup)
     registry.register(BidIdLookup)
+    registry.register(EstateRegisterIdLookup)
 except LookupAlreadyRegistered:
     pass    

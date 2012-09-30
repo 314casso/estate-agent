@@ -12,7 +12,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreateView,\
     EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectListView,\
     EstateRegisterDetailView, AddEstateToRegisterView,\
-    RemoveEstateFromRegisterView
+    RemoveEstateFromRegisterView, EstateRegisterListView,\
+    EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -83,12 +84,18 @@ urlpatterns += patterns('',
     url (r'^registerupdate/(?P<pk>\d+)$', EstateRegisterUpdateView.as_view(), name='register_update'),
     url (r'^registerdelete/(?P<pk>\d+)$', EstateRegisterDeleteView.as_view(), name='register_delete'),
     url (r'^registerdetail/(?P<pk>\d+)$', EstateRegisterDetailView.as_view(), name='register_detail'),
+    url (r'^registerlist/$', EstateRegisterListView.as_view(), name='register_list'),
     url (r'^registeraddestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', AddEstateToRegisterView.as_view(), name='register_add_estate'),
-    url (r'^registerremoveestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', RemoveEstateFromRegisterView.as_view(), name='register_remove_estate'),    
+    url (r'^registerremoveestate/(?P<pk>\d+)/(?P<estate_pk>\d+)$', RemoveEstateFromRegisterView.as_view(), name='register_remove_estate'),
+    url (r'^registerselect/(?P<bid_pk>\d+)$', EstateRegisterSelectView.as_view(), name='register_select'),
+    url (r'^registeraddbid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', AddRegisterToBid.as_view(), name='register_add_bid'),
+    url (r'^registerremovebid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', RemoveRegisterFromBid.as_view(), name='register_remove_bid'),
+        
 )
 
 urlpatterns += patterns('',    
     url (r'^bidcreate/(?P<client>\d+)$', BidCreateView.as_view(), name='bid_create'),    
+    url (r'^bidcreate/$', BidCreateView.as_view(), name='bid_create'),
     url (r'^bidupdate/(?P<pk>\d+)$', BidUpdateView.as_view(), name='bid_update'),
     url (r'^bidremove/(?P<pk>\d+)$', BidDeleteView.as_view(), name='bid_remove'),
     url (r'^bidlist/$', BidListView.as_view(), name='bid_list'),       

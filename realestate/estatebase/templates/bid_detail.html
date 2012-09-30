@@ -8,7 +8,7 @@
 
 {% block topbar %}
 <div class="topbar button">        
-    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+    {% include 'prev_view.html' %}
 </div>
 {% endblock %}
 
@@ -64,39 +64,8 @@
 <div class="topbar button">
     <a href="{% url register_create bid.pk %}?{{ next_url }}&type=empty">Добавить пустую</a>          
     <a href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Создать по заявке</a>
+    <a href="{% url register_select bid.pk %}?{{ next_url }}">Подобрать</a>
 </div>
-
-{% with register_list=bid.estate_registers.all  %}
-<table class="base-table-list ui-widget ui-widget-content">
-    <thead>     
-        <tr>
-            <th>Код</th>
-            <th>Название</th>            
-            <th>Обновлено</th>                       
-            <th>Действие</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for register in register_list %}
-        <tr class="ui-widget-content">
-            <td><a href="{% url register_update register.pk %}?{{ next_url }}">{{ register.pk }}</a></td>
-            <td>
-               <a href="{% url register_detail register.pk %}?{{ next_url }}">{{ register.name }}</a>
-            </td>            
-            <td>{{ register.history.modificated|date:"d M Y" }} </td>
-            <td>
-                <a href="{% url register_delete register.pk %}?{{ next_url }}">Удалить</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-        	<td colspan="100%">
-                Подборки отсутствуют...
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endwith %}
+{% include 'register_table.html' %}
 </fieldset>
 {% endblock %}
