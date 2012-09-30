@@ -10,6 +10,10 @@ ADMINS = (
 )
 
 #from local_settings import * #@UnusedWildImport
+try:
+    from local_settings import * #@UnusedWildImport
+except ImportError:
+    pass
 
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    
