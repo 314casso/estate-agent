@@ -75,6 +75,10 @@ class EstateForm(ModelForm):
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
                   'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type')
         widgets = {
+            'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),       
+            'beside':AutoComboboxSelectWidget(BesideLookup),       
+            'region': AutoComboboxSelectWidget(RegionLookup),
+            'origin': AutoComboboxSelectWidget(OriginLookup),       
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),            

@@ -408,6 +408,7 @@ legend {
 
 .filter-table table {
 	border-spacing: 0 2px;
+	width: 97%;
 }
 
 .filter-table table tr td, .filter-table table tr th {

@@ -1,0 +1,906 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Абрау-Дюрсо",
+        "region": "3"        
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Адербиевка",
+        "region": "2"        
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Анапа",
+        "region": "1"        
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Анапская",
+        "region": "1"        
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Артющенко",
+        "region": "4"        
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Архипо-Осиповка",
+        "region": "2"        
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Афонка",
+        "region": "2"        
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Ахтанизовская",
+        "region": "4"        
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Батарейка",
+        "region": "4"        
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Белый",
+        "region": "4"        
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Береговое",
+        "region": "2"        
+    }
+},{
+    "pk": 12,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Береговой",
+        "region": "4"        
+    }
+},{
+    "pk": 13,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Бетта",
+        "region": "2"        
+    }
+},{
+    "pk": 14,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Благовещенская",
+        "region": "1"        
+    }
+},{
+    "pk": 15,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Большие Хутора",
+        "region": "3"        
+    }
+},{
+    "pk": 16,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Борисовка",
+        "region": "3"        
+    }
+},{
+    "pk": 17,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Бужор",
+        "region": "1"        
+    }
+},{
+    "pk": 18,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Варваровка",
+        "region": "1"        
+    }
+},{
+    "pk": 19,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Васильевка",
+        "region": "3"        
+    }
+},{
+    "pk": 20,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Верхнебаканский",
+        "region": "3"        
+    }
+},{
+    "pk": 21,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Верхнее Джемете",
+        "region": "1"        
+    }
+},{
+    "pk": 22,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Верхний Ханчакрак",
+        "region": "1"        
+    }
+},{
+    "pk": 23,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Верхний Чекон",
+        "region": "1"        
+    }
+},{
+    "pk": 24,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Веселая горка",
+        "region": "1"        
+    }
+},{
+    "pk": 25,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Веселовка (Янтарь)",
+        "region": "4"        
+    }
+},{
+    "pk": 26,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Вестник",
+        "region": "1"        
+    }
+},{
+    "pk": 27,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Виноградное",
+        "region": "2"        
+    }
+},{
+    "pk": 28,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Виноградный",
+        "region": "1"        
+    }
+},{
+    "pk": 29,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Виноградный",
+        "region": "4"        
+    }
+},{
+    "pk": 30,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Витязево",
+        "region": "1"        
+    }
+},{
+    "pk": 31,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Владимировка",
+        "region": "3"        
+    }
+},{
+    "pk": 32,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Возрождение",
+        "region": "2"        
+    }
+},{
+    "pk": 33,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Волна Революции",
+        "region": "4"        
+    }
+},{
+    "pk": 34,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Волна",
+        "region": "4"        
+    }
+},{
+    "pk": 35,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Воскресенский",
+        "region": "1"        
+    }
+},{
+    "pk": 36,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Вышестеблиевская",
+        "region": "4"        
+    }
+},{
+    "pk": 37,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Гайдук",
+        "region": "3"        
+    }
+},{
+    "pk": 38,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Гайкодзор",
+        "region": "1"        
+    }
+},{
+    "pk": 39,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Гаркуша",
+        "region": "4"        
+    }
+},{
+    "pk": 40,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Геленджик",
+        "region": "2"        
+    }
+},{
+    "pk": 41,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Глебовское",
+        "region": "3"        
+    }
+},{
+    "pk": 42,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Голубицкая",
+        "region": "4"        
+    }
+},{
+    "pk": 43,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Горный",
+        "region": "3"        
+    }
+},{
+    "pk": 44,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Гостагаевская",
+        "region": "1"        
+    }
+},{
+    "pk": 45,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Джанхот",
+        "region": "2"        
+    }
+},{
+    "pk": 46,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Джемете",
+        "region": "1"        
+    }
+},{
+    "pk": 47,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Джигинка",
+        "region": "1"        
+    }
+},{
+    "pk": 48,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Дивноморское",
+        "region": "2"        
+    }
+},{
+    "pk": 49,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Дюрсо",
+        "region": "3"        
+    }
+},{
+    "pk": 50,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "За Родину",
+        "region": "4"        
+    }
+},{
+    "pk": 51,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Запорожская",
+        "region": "4"        
+    }
+},{
+    "pk": 52,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Заря",
+        "region": "1"        
+    }
+},{
+    "pk": 53,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Иваново",
+        "region": "1"        
+    }
+},{
+    "pk": 54,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Ильич",
+        "region": "4"        
+    }
+},{
+    "pk": 55,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Кабардинка",
+        "region": "2"        
+    }
+},{
+    "pk": 56,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Капустино",
+        "region": "1"        
+    }
+},{
+    "pk": 57,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Киблерово",
+        "region": "1"        
+    }
+},{
+    "pk": 58,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Кирилловка",
+        "region": "3"        
+    }
+},{
+    "pk": 59,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красная Горка",
+        "region": "1"        
+    }
+},{
+    "pk": 60,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красная Скала",
+        "region": "1"        
+    }
+},{
+    "pk": 61,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красноармейский",
+        "region": "4"        
+    }
+},{
+    "pk": 62,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красный Курган",
+        "region": "1"        
+    }
+},{
+    "pk": 63,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красный Октябрь",
+        "region": "4"        
+    }
+},{
+    "pk": 64,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Красный",
+        "region": "1"        
+    }
+},{
+    "pk": 65,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Криница",
+        "region": "2"        
+    }
+},{
+    "pk": 66,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Куматырь",
+        "region": "1"        
+    }
+},{
+    "pk": 67,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Курбацкий",
+        "region": "1"        
+    }
+},{
+    "pk": 68,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Курчанская",
+        "region": "4"        
+    }
+},{
+    "pk": 69,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Кучугуры",
+        "region": "4"        
+    }
+},{
+    "pk": 70,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Ленинский Путь",
+        "region": "3"        
+    }
+},{
+    "pk": 71,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Лесничество Абрау-Дюрсо",
+        "region": "3"        
+    }
+},{
+    "pk": 72,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Лиманный",
+        "region": "1"        
+    }
+},{
+    "pk": 73,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Малый Разнокол",
+        "region": "1"        
+    }
+},{
+    "pk": 74,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Малый Чекон",
+        "region": "1"        
+    }
+},{
+    "pk": 75,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Марьина Роща",
+        "region": "2"        
+    }
+},{
+    "pk": 76,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Михайловский Перевал",
+        "region": "2"        
+    }
+},{
+    "pk": 77,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Мысхако",
+        "region": "3"        
+    }
+},{
+    "pk": 78,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Натухаевская",
+        "region": "3"        
+    }
+},{
+    "pk": 79,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Нижняя Гостагайка",
+        "region": "1"        
+    }
+},{
+    "pk": 80,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Новороссийск",
+        "region": "3"        
+    }
+},{
+    "pk": 81,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Павловка",
+        "region": "1"        
+    }
+},{
+    "pk": 82,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Пересыпь",
+        "region": "4"        
+    }
+},{
+    "pk": 83,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Песчаный",
+        "region": "1"        
+    }
+},{
+    "pk": 84,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Победа",
+        "region": "3"        
+    }
+},{
+    "pk": 85,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Прасковеевка",
+        "region": "2"        
+    }
+},{
+    "pk": 86,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Приазовский",
+        "region": "4"        
+    }
+},{
+    "pk": 87,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Приморский",
+        "region": "4"        
+    }
+},{
+    "pk": 88,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Прогресс",
+        "region": "4"        
+    }
+},{
+    "pk": 89,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Просторный",
+        "region": "1"        
+    }
+},{
+    "pk": 90,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Пшада",
+        "region": "2"        
+    }
+},{
+    "pk": 91,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Пятихатки",
+        "region": "1"        
+    }
+},{
+    "pk": 92,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Раевская",
+        "region": "3"        
+    }
+},{
+    "pk": 93,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Разнокол",
+        "region": "1"        
+    }
+},{
+    "pk": 94,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Рассвет",
+        "region": "1"        
+    }
+},{
+    "pk": 95,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Светлый Путь",
+        "region": "4"        
+    }
+},{
+    "pk": 96,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Светлый",
+        "region": "2"        
+    }
+},{
+    "pk": 97,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Северная Озереевка",
+        "region": "3"        
+    }
+},{
+    "pk": 98,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Семигорский",
+        "region": "3"        
+    }
+},{
+    "pk": 99,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Сенной",
+        "region": "4"        
+    }
+},{
+    "pk": 100,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Соленый",
+        "region": "4"        
+    }
+},{
+    "pk": 101,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Старотитаровская",
+        "region": "4"        
+    }
+},{
+    "pk": 102,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Стрелка",
+        "region": "4"        
+    }
+},{
+    "pk": 103,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Суворово-Черкесский",
+        "region": "1"        
+    }
+},{
+    "pk": 104,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Сукко",
+        "region": "1"        
+    }
+},{
+    "pk": 105,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Супсех",
+        "region": "1"        
+    }
+},{
+    "pk": 106,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Таманский",
+        "region": "4"        
+    }
+},{
+    "pk": 107,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Тамань",
+        "region": "4"        
+    }
+},{
+    "pk": 108,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Тарусино",
+        "region": "1"        
+    }
+},{
+    "pk": 109,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Текос",
+        "region": "2"        
+    }
+},{
+    "pk": 110,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Темрюк",
+        "region": "4"        
+    }
+},{
+    "pk": 111,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Тешебс",
+        "region": "2"        
+    }
+},{
+    "pk": 112,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Убых",
+        "region": "3"        
+    }
+},{
+    "pk": 113,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Усатова Балка",
+        "region": "1"        
+    }
+},{
+    "pk": 114,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Уташ",
+        "region": "1"        
+    }
+},{
+    "pk": 115,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Утриш",
+        "region": "1"        
+    }
+},{
+    "pk": 116,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Фадеево",
+        "region": "1"        
+    }
+},{
+    "pk": 117,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Федотовка",
+        "region": "3"        
+    }
+},{
+    "pk": 118,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Фонталовская",
+        "region": "4"        
+    }
+},{
+    "pk": 119,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Цемдолина",
+        "region": "3"        
+    }
+},{
+    "pk": 120,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Цыбанобалка",
+        "region": "1"        
+    }
+},{
+    "pk": 121,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Чекон",
+        "region": "1"        
+    }
+},{
+    "pk": 122,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Чембурка",
+        "region": "1"        
+    }
+},{
+    "pk": 123,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Черный",
+        "region": "1"        
+    }
+},{
+    "pk": 124,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Широкая Балка",
+        "region": "3"        
+    }
+},{
+    "pk": 125,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Широкая Пшадская Щель",
+        "region": "2"        
+    }
+},{
+    "pk": 126,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Широкая Щель",
+        "region": "2"        
+    }
+},{
+    "pk": 127,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Юбилейный",
+        "region": "4"        
+    }
+},{
+    "pk": 128,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Южная Озереевка",
+        "region": "3"        
+    }
+},{
+    "pk": 129,
+    "model": "estatebase.locality",
+    "fields": {
+        "name": "Юровка",
+        "region": "1"        
+    }
+}
+]

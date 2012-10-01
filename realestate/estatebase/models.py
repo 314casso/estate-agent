@@ -52,14 +52,21 @@ class Region(SimpleDict):
         verbose_name = _('region')
         verbose_name_plural = _('regions')
 
-class Locality(SimpleDict):
+class Locality(models.Model):
     '''
     Населенные пункты
     '''
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)    
+    name = models.CharField(_('Name'), db_index=True, max_length=255)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
+    def __unicode__(self):
+        return u'%s' % self.name
+    def natural_key(self):
+        return self.__unicode__()
     class Meta(SimpleDict.Meta):
         verbose_name = _('locality')
-        verbose_name_plural = _('localities')    
+        verbose_name_plural = _('localities')
+        unique_together = ('name', 'region')
+        ordering = ['name']  
 
 class Microdistrict(SimpleDict):
     '''
