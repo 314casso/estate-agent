@@ -1,0 +1,27 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.geogroup",
+    "fields": {
+        "name": "Анапа"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.geogroup",
+    "fields": {
+        "name": "Геленджик"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.geogroup",
+    "fields": {
+        "name": "Новороссийск"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.geogroup",
+    "fields": {
+        "name": "Темрюкск"
+    }
+}
+]

@@ -23,7 +23,8 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from local_settings import CORRECT_DELTA, ESTATE_CLIENT_STATUS
+from settings import ESTATE_CLIENT_STATUS, CORRECT_DELTA
+
 
 class BaseMixin(object):
     def get_success_url(self):   

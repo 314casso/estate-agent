@@ -1,0 +1,31 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.region",
+    "fields": {
+        "name": "Анапский",
+        "geo_group": "1"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.region",
+    "fields": {
+        "name": "Геленджикский",
+        "geo_group": "2"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.region",
+    "fields": {
+        "name": "Новороссийский",
+        "geo_group": "3"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.region",
+    "fields": {
+        "name": "Темрюкский",
+        "geo_group": "4"
+    }
+}
+]

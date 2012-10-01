@@ -1,4 +1,5 @@
 import os
+import datetime
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -8,6 +9,9 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
+
+CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
+ESTATE_CLIENT_STATUS = 3
 
 from local_settings import * #@UnusedWildImport
 

@@ -10,10 +10,10 @@ from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-from django.db.models.signals import post_save, pre_save, m2m_changed,\
-    post_delete
+from django.db.models.signals import post_save, pre_save, post_delete
 from picklefield.fields import PickledObjectField
-from local_settings import CORRECT_DELTA
+from settings import CORRECT_DELTA
+
 
 class ExUser(User):
     def __unicode__(self):

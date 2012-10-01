@@ -51,7 +51,7 @@ class FixtureSimpleMaker(object):
     "pk": %(pk)s,
     "model": "%(model)s",
     "fields": {
-        "name": "%(name)s"
+        "name": "%(name)s"        
     }
 }'''
     def __init__(self,app_name,model_name,name_list):
@@ -81,16 +81,14 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-Продавец
-Покупатель
-Сосед
-Знакомый
-Родственник
-Показывает
+Анапа
+Геленджик
+Новороссийск
+Темрюкск
 '''
 
 
-MODEL = 'EstateClientStatus'
+MODEL = 'Region'
 
 import settings
 import os

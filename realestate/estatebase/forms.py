@@ -24,7 +24,7 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField, \
 from selectable.forms.widgets import AutoComboboxSelectWidget    
 import re
 from form_utils.forms import BetterForm, BetterModelForm
-from local_settings import CORRECT_DELTA
+from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
 
 
