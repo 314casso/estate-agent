@@ -84,7 +84,7 @@ class EstateForm(ModelForm):
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),            
         }
 
-class EstateCreateForm(EstateForm):
+class EstateCreateClientForm(EstateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())    
 

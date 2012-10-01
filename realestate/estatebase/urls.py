@@ -13,7 +13,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectListView,\
     EstateRegisterDetailView, AddEstateToRegisterView,\
     RemoveEstateFromRegisterView, EstateRegisterListView,\
-    EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid
+    EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid,\
+    EstateCreateClientView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -41,7 +42,7 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
     url (r'^estatecreate/(?P<estate_type>\d+)$', view=EstateCreateView.as_view(), name='estate_create'),
-    url (r'^estatecreateclient/(?P<client>\d+)$', view=EstateCreateView.as_view(), name='estate_create_client'),
+    url (r'^estatecreateclient/(?P<client>\d+)$', view=EstateCreateClientView.as_view(), name='estate_create_client'),
     url (r'^estateupdate/(?P<pk>\d+)$', view=EstateUpdateView.as_view(), name='estate_update'),        
     url (r'^estatedelete/(?P<pk>\d+)$', view=EstateDeleteView.as_view(), name='estate_delete'),
     url (r'^estatecommupdate/(?P<pk>\d+)$', view=EstateCommunicationUpdateView.as_view(), name='estate_comm_update'),    

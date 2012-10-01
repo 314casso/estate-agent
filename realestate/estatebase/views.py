@@ -5,10 +5,11 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView 
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
-    EstateCreateForm, EstateCommunicationForm, \
+    EstateCommunicationForm, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
     SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
-    BidPicleForm, EstateRegisterForm, EstateRegisterFilterForm, EstateForm
+    BidPicleForm, EstateRegisterForm, EstateRegisterFilterForm, EstateForm,\
+    EstateCreateClientForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead, Bid, EstateRegister, EstateClient
 from django.core.urlresolvers import reverse
@@ -167,15 +168,12 @@ class EstateMixin(BaseMixin, ModelFormMixin):
 
 class EstateCreateView(EstateMixin, CreateView):
     template_name = 'estate_create.html'       
-    form_class = EstateCreateForm    
+    form_class = EstateForm    
     def get_initial(self):        
         initial = super(EstateCreateView, self).get_initial()
         if 'estate_type' in self.kwargs:                  
-            initial['estate_type'] = self.kwargs['estate_type']
-        if 'client' in self.kwargs:
-            initial['client_pk'] = self.kwargs['client']
-        initial['estate_status'] = 2
-        initial['client_status'] = ESTATE_CLIENT_STATUS    
+            initial['estate_type'] = self.kwargs['estate_type']        
+        initial['estate_status'] = 2            
         return initial
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
@@ -186,17 +184,26 @@ class EstateCreateView(EstateMixin, CreateView):
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')                                  
         return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))
+    
+class EstateCreateClientView(EstateCreateView):
+    template_name = 'estate_create.html'       
+    form_class = EstateCreateClientForm    
+    def get_initial(self):        
+        initial = super(EstateCreateClientView, self).get_initial()      
+        initial['client_pk'] = self.kwargs['client']        
+        initial['client_status'] = ESTATE_CLIENT_STATUS    
+        return initial    
     def form_valid(self, form):
         self.object = form.save(commit=False)        
         self.object.history = prepare_history(self.object.history, self.request.user.pk)
         self.object.save()
         client_pk = form.cleaned_data.get('client_pk') or ESTATE_CLIENT_STATUS
-        estate_client_status = form.cleaned_data.get('estate_client_status') or None
+        estate_client_status = form.cleaned_data.get('client_status') or None
         if client_pk:
             EstateClient.objects.create(client_id=client_pk,
                                         estate_client_status=estate_client_status,
                                         estate=self.object)
-        return HttpResponseRedirect(self.get_success_url())        
+        return HttpResponseRedirect(self.get_success_url())    
             
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
