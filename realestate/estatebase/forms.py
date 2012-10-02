@@ -16,7 +16,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
-    get_polymorph_label, EstateRegister, EstateClient, EstateClientStatus
+    EstateRegister, EstateClient, EstateClientStatus
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField,\
@@ -26,6 +26,7 @@ import re
 from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
+from estatebase.wrapper import get_polymorph_label
 
 
 class DateRangeWidget(forms.MultiWidget):

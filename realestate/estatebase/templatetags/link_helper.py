@@ -3,7 +3,8 @@ from django import template
 from django.core.urlresolvers import reverse
 import base64
 from django.contrib.humanize.templatetags.humanize import intcomma
-from estatebase.models import get_polymorph_label, EstateClient
+from estatebase.models import EstateClient
+from estatebase.wrapper import get_polymorph_label
 
 register = template.Library()
 

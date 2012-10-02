@@ -61,6 +61,8 @@ WRAPPERS = {
            }
    
 def get_wrapper(obj):
+    if not obj.estate_type.template:
+        raise Exception(u'Не указан шаблон для вида недвижимости %s!' % obj.estate_type)
     if type(obj).__name__ == 'Bidg':
         return WRAPPERS[obj.estate_type.template][0]
     elif type(obj).__name__ == 'Stead':        

@@ -13,6 +13,7 @@ import os
 from django.db.models.signals import post_save, pre_save, post_delete
 from picklefield.fields import PickledObjectField
 from settings import CORRECT_DELTA
+from estatebase.wrapper import get_wrapper
 
 
 class ExUser(User):
@@ -757,69 +758,3 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
-    
-class ObjectWrapper(object):
-    _field_list = None
-    exclude_set = ['id', 'estate']
-    queryset = None      
-    def __init__(self):
-        self.populate_field_list()        
-    def get_exclude_list(self):       
-        return self.exclude_set                     
-    def field_list(self):                
-        return self._field_list          
-    def populate_field_list(self):                
-        fields = [field.name for field in self.queryset._meta.fields]              
-        for f in self.get_exclude_list():
-            try:             
-                fields.remove(f)
-            except:
-                pass            
-        self._field_list = fields
-
-class BidgWrapper(ObjectWrapper):
-    queryset = Bidg      
-    interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']  
-    def get_exclude_list(self):        
-        exclude_list = super(BidgWrapper, self).get_exclude_list()[:]
-        exclude_list.extend(self.interior_list())
-        exclude_list.extend(['estate_type', 'basic'])                        
-        return exclude_list    
-    def interior_list(self):
-        return self.interior_set              
-
-class ApartmentWrapper(BidgWrapper):
-    def get_exclude_list(self):        
-        exclude_list = super(ApartmentWrapper, self).get_exclude_list()[:]        
-        exclude_list.extend(['roof'])        
-        return exclude_list    
-
-class NewapartWrapper(ApartmentWrapper):
-    year_built = u'Год сдачи'    
-
-class HomeWrapper(BidgWrapper):
-    pass
-
-class SteadWrapper(ObjectWrapper):
-    queryset = Stead
-#    land_type = u'Земля ТЕСТ'    
-    
-def get_polymorph_label(template, field):            
-    wrapper = get_wrapper(template)    
-    try:
-        return getattr(wrapper, field)
-    except AttributeError:
-        return None
-
-WRAPPERS = {
-           'APARTMENT':(ApartmentWrapper(), None),
-           'NEWAPART':(NewapartWrapper(), None),
-           'HOME':(HomeWrapper(), SteadWrapper()),
-           'STEAD':(None, SteadWrapper()),
-           }
-   
-def get_wrapper(obj):
-    if type(obj) == Bidg:
-        return WRAPPERS[obj.estate_type.template][0]
-    elif type(obj) == Stead:        
-        return WRAPPERS[obj.estate.estate_type.template][1]
