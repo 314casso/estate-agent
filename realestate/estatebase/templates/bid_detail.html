@@ -12,11 +12,13 @@
 </div>
 {% endblock %}
 
+{% block page_header %}
+	Подробная информация о заявке [{{ bid.id }}]
+{% endblock %}
+
 {% block left %}
-
-
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 14px;">Краткая информация о заявке</legend>
+    <legend style="font-size: 14px;">Информация о заявке</legend>
 <table>
 	<tr>
 		<th>Код:</th>

@@ -34,7 +34,7 @@ class EstateLookup(ModelLookup):
     def get_query(self, request, term):
         results = super(EstateLookup, self).get_query(request, term)        
         if request.user:
-            results = results.filter(locality__geo_group__userprofile__user__exact = request.user)
+            results = results.filter(region__geo_group__userprofile__user__exact = request.user)
         return results        
     
 class EstateStatusLookup(ModelLookup):

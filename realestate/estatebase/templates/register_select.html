@@ -1,5 +1,10 @@
 {% extends "register_list.html" %}
 {% load paginator %}
+
+{% block page_header %}
+	Список выбора подборок	
+{% endblock %}
+
 {% block left %}
 
 {% include "register_table_select.html" %}

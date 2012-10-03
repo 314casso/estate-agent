@@ -24,6 +24,9 @@
 
 {% endblock %}
 
+{% block page_header %}
+	Список заказчиков	
+{% endblock %}
 {% block topbar %}
 <div class="topbar button">
     <a href="{% url client_create %}?{{ next_url }}">Добавить</a>

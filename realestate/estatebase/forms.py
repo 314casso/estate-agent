@@ -572,6 +572,7 @@ class BidFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
+    agency_price = forms.CharField(required=False, label=_('Price'))
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def get_filter(self):
         f = {}
@@ -598,7 +599,13 @@ class BidFilterForm(BetterForm):
         if self['contacts'].value():
             f['client__contacts__id__in'] = self['contacts'].value()    
         if self['estate_type'].value():
-            f['estate_types__id__in'] = self['estate_type'].value()                        
+            f['estate_types__id__in'] = self['estate_type'].value()    
+        if self['agency_price'].value():
+            prices = from_to(self['agency_price'].value())                                   
+            if prices['max']:
+                f['agency_price_max__lte'] = prices['max']
+            if prices['min']:                                                                              
+                f['agency_price_min__gte'] = prices['min']                                        
         return f
 
 class EstateRegisterFilterForm(BidFilterForm):
@@ -636,7 +643,13 @@ class EstateRegisterFilterForm(BidFilterForm):
         if self['estate_type'].value():
             f['bids__estate_types__id__in'] = self['estate_type'].value()
         if self['name'].value():
-            f['name__icontains'] = self['name'].value()                            
+            f['name__icontains'] = self['name'].value()
+        if self['agency_price'].value():
+            prices = from_to(self['agency_price'].value())                        
+            if prices['max']:
+                f['bids__agency_price_max__lte'] = prices['max']
+            if prices['min']:                                                                              
+                f['bids__agency_price_min__gte'] = prices['min']                                
         return f
 
 class BidPicleForm(EstateFilterForm):    

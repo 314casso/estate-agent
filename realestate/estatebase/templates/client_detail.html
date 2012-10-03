@@ -6,6 +6,10 @@
 {% block head %}
 {% endblock %}
 
+{% block page_header %}
+	Подробная информация о клиенте {{ client.name }}
+{% endblock %}
+
 {% block topbar %}
 <div class="topbar button">        
     {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}

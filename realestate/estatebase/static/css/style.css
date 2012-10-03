@@ -71,7 +71,7 @@ body {
 .table-form table th {
 	text-align: left;
 	padding-left: 10px;
-	/*vertical-align: bottom;*/
+	vertical-align: top;
 	/*padding-bottom: 0.5em;*/
 }
 
@@ -407,8 +407,11 @@ legend {
 }
 
 .filter-table table {
-	border-spacing: 0 2px;
-	width: 97%;
+	border-spacing: 0 2px;	
+}
+
+.filter-table table td {
+	white-space: nowrap;
 }
 
 .filter-table table tr td, .filter-table table tr th {
@@ -470,4 +473,11 @@ fieldset .topbar {
 	padding: 0 3px;
 	/*font-size: 12px;*/
 	margin-left: 1px	
+}
+
+.page-header {
+	margin: 4px 0;
+	padding: 0;
+	color: #999;	
+	font-size: 22px;		 	
 }

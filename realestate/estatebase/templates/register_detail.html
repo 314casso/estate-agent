@@ -2,16 +2,48 @@
 
 {% load paginator %}
 
+{% block page_header %}
+	Подробная информация о подборке [{{ estateregister.id }}] 
+{% endblock %}
 
 {% block topbar %}
 <div class="topbar button">
     {% include 'prev_view.html' %}
-    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Подобрать</a>    	
 </div>
 {% endblock %}
 
 {% block left %}
 
+<!-- -->
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="max-width:350px; margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Информация о подборке</legend>
+<table>
+	<tr>
+		<th>Код:</th>
+		<td style="font-weight: bold"><a href="{% url register_update estateregister.pk %}?{{ next_url }}">{{ estateregister.pk }}</a></td>
+	</tr>
+	<tr>
+		<th>Название:</th>
+		<td>{{ estateregister.name }}</td>
+	</tr>	
+	<tr><th>Создано:</th><td>{{ estateregister.history.created }}<br />{{ estateregister.history.created_by }}</td></tr>		
+	<tr><th>Обновлено:</th><td>{{ estateregister.history.updated|default_if_none:'' }}<br />{{ estateregister.history.updated_by|default_if_none:'' }}</td></tr>
+		
+</table>
+
+</fieldset>
+<!-- -->
+{% endblock left %}
+
+{% block right %}
+
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Объекты в подборке</legend>
+
+<div class="topbar button">
+    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Подобрать</a>    	
+</div>
+    
 {% include 'estate_table_register.html' with estate_list=object_list %}
 
 {% if is_paginated %}
@@ -19,6 +51,6 @@
     {% digg_paginator %}
 </div>
 {% endif %}
+</fieldset>
 
-{% endblock left %}
-
+{% endblock right %}

@@ -211,10 +211,7 @@ class EstateType(OrderedModel):
     object_type = models.CharField(_('Object type'), max_length=50, choices=OBJECT_TYPE_CHOICES)
     template = models.CharField(_('View prefix'), max_length=50, choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    placeable = models.BooleanField(_('Placeable'), default=False)
-    @property
-    def object_type_template(self):        
-        return 'object_type/%s.html' % self.object_type.lower()
+    placeable = models.BooleanField(_('Placeable'), default=False)    
     @property
     def detail_template(self):
         raise Exception('Property EstateType.detail_template is deprecated')             

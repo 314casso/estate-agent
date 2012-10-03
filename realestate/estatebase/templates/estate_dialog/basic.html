@@ -51,8 +51,8 @@
 			<th>Агенства</th>
 		</tr>
 		<tr>
-			<td>{{ estate.saler_price|intcomma }}</td>
-			<td>{{ estate.agency_price|intcomma }}</td>
+			<td>{{ estate.saler_price|default:'--------'|intcomma }}</td>
+			<td>{{ estate.agency_price|default:'--------'|intcomma }}</td>
 			<td class="ui-state-highlight">{{ margin }}</td>
 		</tr>
 	</table>

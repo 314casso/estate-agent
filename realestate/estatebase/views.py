@@ -253,6 +253,20 @@ class EstateParamUpdateView(EstateUpdateView):
     template_name = 'estate_params.html'
     form_class = EstateParamForm
 
+def set_estate_filter(q, filter_dict, force_valid=False, user=None):
+    if 'Q' in filter_dict:
+        q = q.filter(filter_dict.pop('Q'))
+    if force_valid:
+        filter_dict.update({
+           'valid__exact' : True,
+           'history__modificated__gt' : CORRECT_DELTA
+        })
+    if user:
+        filter_dict.update({'region__geo_group__userprofile__user__exact': user })  
+    if len(filter_dict):
+        q = q.filter(**filter_dict)
+    return q
+
 class EstateListView(ListView):    
     template_name = 'estate_list.html'
     paginate_by = 25   
@@ -260,11 +274,7 @@ class EstateListView(ListView):
         q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()        
-        if 'Q' in filter_dict:
-            q = q.filter(filter_dict.pop('Q'))            
-        filter_dict.update({'region__geo_group__userprofile__user__exact': self.request.user })
-        if len(filter_dict):
-            q = q.filter(**filter_dict)
+        q = set_estate_filter(q, filter_dict, user=self.request.user)
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))    
@@ -810,10 +820,10 @@ class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
             fltr = bid.estate_filter
             if fltr:            
                 pickle_form = BidPicleForm(fltr)
-                f = pickle_form.get_filter()                 
-                f['valid__exact'] = True
-                f['history__modificated__gt'] = CORRECT_DELTA
-                initial['estates'] = Estate.objects.filter(**f).values_list('id', flat=True)                                
+                f = pickle_form.get_filter()
+                q = Estate.objects.all()                 
+                q = set_estate_filter(q, f, True)                
+                initial['estates'] = q.values_list('id', flat=True)                                
         return initial     
 
 class EstateRegisterUpdateView(EstateRegisterMixin, UpdateView):

@@ -6,6 +6,10 @@
 {% load paginator %}
 {% load humanize %}
 
+{% block page_header %}
+	Список объектов недвижимости	
+{% endblock %}
+
 {% block left %}
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
@@ -49,9 +53,9 @@
         <li>
             <a href="#tab-basic">Основная информация</a>
         </li>
-        {% if estate.basic_bidg %}
+        {% if estate.basic_bidg and estate.estate_type.object_type != 'STEAD' %}
         <li>
-            <a href="#tab-bidgs">Детали</a>
+            <a href="#tab-bidgs">Строения</a>
         </li>
         {% endif %}
         <li>
@@ -76,7 +80,11 @@
         <br style="clear: both" />
     </div>
     <div id="tab-bidgs">
-        {% include estate.estate_type.object_type_template %}
+        {% if estate.estate_type.object_type == 'BIDG' %}
+			{% include 'object_type/bidg.html' %}
+		{% elif estate.estate_type.object_type == 'MIX' %}
+			{% include 'object_type/mix.html' %}
+		{% endif %}
     </div>
     <div id="tab-photos">
         {% include "estate_dialog/photo_base.html" %}

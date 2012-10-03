@@ -15,7 +15,11 @@
 
 <!-- Этот блок только для строений, если объект участок, то включится пустой шаблон -->
 {% block right %}
-{% include estate.estate_type.object_type_template %}
+{% if estate.estate_type.object_type == 'BIDG' %}
+{% include 'object_type/bidg.html' %}
+{% elif estate.estate_type.object_type == 'MIX' %}
+{% include 'object_type/mix.html' %}
+{% endif %}
 {% endblock right %}
 
 {% block extra %}
