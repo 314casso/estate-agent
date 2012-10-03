@@ -11,7 +11,9 @@ ADMINS = (
 )
 
 CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
-ESTATE_CLIENT_STATUS = 3
+ESTATE_CLIENT_STATUS = 4
+MAX_CREDIT_MONTHS = 360
+INTEREST_RATE = 9.5 
 
 from local_settings import * #@UnusedWildImport
 

@@ -1,8 +1,8 @@
 <ul class="no-margin-list">
 	{% for contact in contacts %}
 	<li style="display: inline; margin: 0 1px">
-		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_type }}. {{ contact.contact_state }} ({{ contact.updated }})">
-			<a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a> 
+		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_type }}. {{ contact.contact_state }} ({{ contact.updated }})">			
+			<a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a>			 
 		</span>
 	</li>
 	{% endfor %}

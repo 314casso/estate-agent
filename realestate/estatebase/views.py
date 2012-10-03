@@ -955,3 +955,15 @@ class RemoveRegisterFromBid(AddRegisterToBid):
         return context
     def action(self, register, bid_pk):                
         register.bids.remove(bid_pk) 
+
+class RegisterReportView(EstateRegisterMixin, DetailView):
+    def get_context_data(self, **kwargs):
+        context = super(RegisterReportView, self).get_context_data(**kwargs)        
+        estate_list = self.object.estates.all()  
+        order_by = self.request.fields
+        if order_by:      
+            estate_list = estate_list.order_by(','.join(order_by))       
+        context.update({
+                'estate_list': estate_list
+            })  
+        return context

@@ -14,7 +14,7 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     EstateRegisterDetailView, AddEstateToRegisterView,\
     RemoveEstateFromRegisterView, EstateRegisterListView,\
     EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid,\
-    EstateCreateClientView
+    EstateCreateClientView, RegisterReportView
 
 urlpatterns = patterns('',    
     url(r'^cat/$', EstateTypeView.as_view(), name='estate_list'),        
@@ -101,4 +101,8 @@ urlpatterns += patterns('',
     url (r'^bidremove/(?P<pk>\d+)$', BidDeleteView.as_view(), name='bid_remove'),
     url (r'^bidlist/$', BidListView.as_view(), name='bid_list'),       
     url (r'^biddetail/(?P<pk>\d+)$', BidDetailView.as_view(), name='bid_detail'),             
+)
+
+urlpatterns += patterns('',    
+    url (r'^privateshortreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_short.html'), name='private_short_report'),
 )
