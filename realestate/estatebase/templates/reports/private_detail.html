@@ -11,7 +11,12 @@
 
 <tr>
 	<th>Риэлтор</th>
-	<td>ДОБАВИТЬ В МОДЕЛЬ</td>
+	<td>{{ estate_item.broker|default:'' }}</td>
+</tr>
+
+<tr>
+    <th>Риэлтор</th>
+    <td>{{ estate_item.broker|default:'' }}</td>
 </tr>
 
 Характеристика:

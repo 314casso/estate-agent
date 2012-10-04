@@ -27,6 +27,7 @@ from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
 from estatebase.wrapper import get_polymorph_label
+from estatebase.fields import ComplexField
 
 
 class DateRangeWidget(forms.MultiWidget):
@@ -71,10 +72,11 @@ class EstateForm(ModelForm):
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),            
         )        
+    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)    
     class Meta:                
         model = Estate
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type','broker')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),       
             'beside':AutoComboboxSelectWidget(BesideLookup),       
@@ -82,8 +84,11 @@ class EstateForm(ModelForm):
             'origin': AutoComboboxSelectWidget(OriginLookup),       
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
-            'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),            
+            'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
+            'broker': AutoComboboxSelectWidget(ExUserLookup),             
         }
+        
+            
 
 class EstateCreateClientForm(EstateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -179,33 +184,7 @@ class ClientFilterForm(Form):
             f['note__icontains'] = self['note'].value()    
         return f   
            
-
-class ComplexFieldWidget(forms.MultiWidget):
-    def __init__(self, lookup_class, attrs=None):                
-        widgets = (AutoComboboxSelectWidget(lookup_class), TextInput(attrs={'class':'number-input'}))
-        super(ComplexFieldWidget, self).__init__(widgets, attrs)
-    def decompress(self, value):
-        if value:            
-            return value
-        return [None, None] 
-
-class ComplexField(MultiValueField):    
-    def __init__(self, lookup_class, *args, **kwargs):
-        self.widget = ComplexFieldWidget(lookup_class=lookup_class)        
-        fields = []
-        fields.append(AutoComboboxSelectMultipleField(
-            lookup_class=lookup_class,            
-            required=False,
-            )
-         )        
-        fields.append(CharField())        
-        super(ComplexField, self).__init__(fields, *args, **kwargs)
-
-    def compress(self, data_list):
-        if data_list:                        
-            return data_list
-        return [None, None]
-               
+              
 VALID_CHOICES = (
     ('ALL', 'Все'),             
     ('CORRECT', 'Корректные'),

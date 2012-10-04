@@ -173,7 +173,8 @@ class EstateCreateView(EstateMixin, CreateView):
         initial = super(EstateCreateView, self).get_initial()
         if 'estate_type' in self.kwargs:                  
             initial['estate_type'] = self.kwargs['estate_type']        
-        initial['estate_status'] = 2            
+        initial['estate_status'] = 2
+        initial['broker'] = self.request.user            
         return initial
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        

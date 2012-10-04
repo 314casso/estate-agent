@@ -302,7 +302,8 @@ class Estate(ProcessDeletedModel):
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    valid = models.BooleanField(_('Valid'), default=False)    
+    valid = models.BooleanField(_('Valid'), default=False)
+    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)    
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk])  
