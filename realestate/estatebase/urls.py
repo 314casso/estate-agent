@@ -105,4 +105,6 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',    
     url (r'^privateshortreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_short.html'), name='private_short_report'),
+    url (r'^privatedetailreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_detail.html'), name='private_detail_report'),
+    
 )

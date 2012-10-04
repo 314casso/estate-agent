@@ -1,92 +1,50 @@
-<!DOCTYPE html>
+{% extends "reports/private_base.html" %}
+
 {% load humanize %}
 {% load link_helper %}
-<html lang="ru">
-    <head>
-        <meta charset="utf-8" />
-        <title>Краткий реестр для своих</title>
-        <style type="text/css" media="screen">
-            body {
-            	font-family: Tahoma, sans-serif;
-            }
-            
-            td, th {
-            	padding: 1px 3px;
-            }
-            
-            .report-table, .report-table table {            	
-            	border-collapse: collapse;                  
-            }
-            
-            .report-table{                
-            	border: 1px solid #e6e0d3;
-                margin-top: 10px;  
-            }
-            
-            .report-table th {
-            	text-align: left; 
-            	font-weight: normal;           	            	
-            }
-            
-            .report-table th, .report-table td {
-            	font-size: 13px;
-            }
-            
-            .report-table table td {
-                font-weight: bold;
-            }
-            
-            .report-table table tr:nth-child(odd) {
-            	background: #eeebe4;            	
-            }
-            
-            .report-table thead td{
-            	background: #e6e0d3;            	            	
-            }
-            
-        </style>
-    </head>
-    <body>
-    	{% for estate_item in estate_list %}
-        <table class="report-table">
-            <thead>
-                <tr>
-                    <td><strong>{{ estate_item.id }}</strong> / {{ estate_item.history.modificated|date:"d M Y H:s" }} /
-                    <strong>{{ estate_item.estate_type }}</strong> </td>
-                    <td><strong>{{ estate_item.estate_status }}</strong></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                    <table>
-                        <tr>
-                            <th>Адрес</th>
-                            <td>{% address estate_item %}</td>
-                        </tr>
-                        <tr>
-                            <th>{% estate_client_status estate_item.pk estate_item.contact.client_id %}</th>
-                            <td> {{ estate_item.contact.client }}
-                            {% for contact in estate_item.contact.client.contacts.all %}
-                            {{ contact.contact }}{% include 'comma.html' %}
-                            {% endfor %} </td>
-                        </tr>
-                        <tr>
-                            <th>Цена собственника</th>
-                            <td>{{ estate_item.saler_price|default:'--------'|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>Цена агентства</th>
-                            <td>{{ estate_item.agency_price|default:'--------'|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>Комментарий</th>
-                            <td>{{ estate_item.comment|default:'' }}</td>
-                        </tr>
-                    </table></td>
-                </tr>
-            </tbody>
-        </table>
-        {% endfor %}
-    </body>
-</html>
+
+{% block content %}
+<h1>{% block title %}Краткий реестр для своих: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
+{% endblock content %}
+
+{% block tbody %}
+<tr>
+	<td colspan="4">
+	<table>
+		<col width="140" />
+   		<col />
+		<tr>
+			<th>Адрес</th>
+			<td>{% address estate_item %}</td>
+		</tr>
+		<tr>
+			<th>Продавцы</th>
+			<td>
+				{% for client in estate_item.clients.all %}				
+					{{ client }} ({% estate_client_status estate_item.pk client.id %}):
+					{% for contact in client.contacts.all %}
+					{{ contact.contact }}{% include 'comma.html' %}			
+					{% endfor %}
+				{% if not forloop.last %}; {% endif %}											
+				{% endfor %}		 
+			</td>
+		</tr>
+		{% block more_detail %}{% endblock more_detail %}
+		<tr>
+			<th>Цена собственника</th>
+			<td>{{ estate_item.saler_price|default:''|intcomma }}</td>
+		</tr>
+		<tr>
+			<th>Цена агентства</th>
+			<td>{{ estate_item.agency_price|default:''|intcomma }}</td>
+		</tr>
+		<tr>
+			<th>Комментарий</th>
+			<td>{{ estate_item.comment|default:'' }}</td>
+		</tr>
+	</table></td>
+</tr>
+<tr>
+	<td colspan="4" class="separator"> </td>
+</tr>
+{% endblock tbody %}
