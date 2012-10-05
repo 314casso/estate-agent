@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "На расстоянии"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "По меже"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "Подведено"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "Подключение оплачено"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "Подключено"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.sewerage",
+    "fields": {
+        "name": "Технические условия"                
+    }
+}
+]

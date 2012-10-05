@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "На расстоянии"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "По меже"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "Подведено"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "Подключение оплачено"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "Подключено"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.electricity",
+    "fields": {
+        "name": "Технические условия"                
+    }
+}
+]

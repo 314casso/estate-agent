@@ -1,0 +1,57 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Водопровод"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Колодец"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "На расстоянии"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "По меже"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Подведено"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Подключение оплачено"                
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Подключено"                
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Скважина"                
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.watersupply",
+    "fields": {
+        "name": "Технические условия"                
+    }
+}
+]

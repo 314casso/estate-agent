@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "На расстоянии"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "По меже"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "Подведено"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "Подключение оплачено"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "Подключено"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.gassupply",
+    "fields": {
+        "name": "Технические условия"                
+    }
+}
+]

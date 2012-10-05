@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.forms.fields import DateField, MultiValueField,\
-    CharField
+    CharField, IntegerField
 from django.forms.forms import Form
 from django.forms.models import inlineformset_factory
 from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
@@ -71,8 +71,8 @@ class EstateForm(ModelForm):
     estate_type = AutoCompleteSelectField(
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),            
-        )        
-    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)    
+        )           
+    beside_distance = IntegerField(label='')
     class Meta:                
         model = Estate
         fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
@@ -87,8 +87,6 @@ class EstateForm(ModelForm):
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),             
         }
-        
-            
 
 class EstateCreateClientForm(EstateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)

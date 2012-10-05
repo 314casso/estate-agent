@@ -1,0 +1,21 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.internet",
+    "fields": {
+        "name": "Есть возможность"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.internet",
+    "fields": {
+        "name": "Нет"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.internet",
+    "fields": {
+        "name": "Подключено"                
+    }
+}
+]

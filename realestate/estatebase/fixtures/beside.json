@@ -1,0 +1,75 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Абрау озеро"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Азовское море"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Ахтанизовский лиман"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Витязевский лиман"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Динской залив"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Кизилташский лиман"                
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Кубань река"                
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Курчанский лиман"                
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Старотитаровский лиман"                
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Таманский залив"                
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Цокур лиман"                
+    }
+},{
+    "pk": 12,
+    "model": "estatebase.beside",
+    "fields": {
+        "name": "Черное море"                
+    }
+}
+]

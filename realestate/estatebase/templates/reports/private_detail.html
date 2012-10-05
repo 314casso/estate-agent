@@ -1,4 +1,5 @@
 {% extends "reports/private_short.html" %}
+{% load report %}
 
 <h1>{% block title %}Реестр для своих без фото: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
 
@@ -15,22 +16,27 @@
 </tr>
 
 <tr>
-    <th>Риэлтор</th>
-    <td>{{ estate_item.broker|default:'' }}</td>
+    <th>Характеристики</th>
+    <td>{{ estate_item.beside|default:'' }}, {{ estate_item.beside_distance|default:'' }}</td>
 </tr>
 
-Характеристика:
-Таманский залив, 400м, земельный участок 15 соток, квадратный формы
-Коммуникации:
-вода - подведено
-газ - по меже
-свет - по меже
-подъезд - гравийный
-Описание:
-фундамент 9х10, 2 блочных помещения по 14 кв м не оштукатурены 
-Документы:
-кадастровый номер
-свидетельство на участок
-межевой план
+<tr>
+    <th>Коммуникации</th>
+    <td>{% communication estate_item %}</td>
+</tr>
+
+<tr>
+    <th>Описание</th>
+    <td>{{ estate_item.description|default:'' }}</td>
+</tr>
+
+<tr>
+    <th>Документы</th>
+    <td>
+    	{% for doc in estate_item.documents %}
+    	{{ doc }} {% include 'comma.html' %}
+    	{% endfor %}
+    </td>
+</tr>
 
 {% endblock more_detail %}

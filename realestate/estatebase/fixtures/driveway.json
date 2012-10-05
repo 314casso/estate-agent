@@ -1,0 +1,33 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.driveway",
+    "fields": {
+        "name": "Асфальт"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.driveway",
+    "fields": {
+        "name": "Гравийный"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.driveway",
+    "fields": {
+        "name": "Грунтовый"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.driveway",
+    "fields": {
+        "name": "Нет"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.driveway",
+    "fields": {
+        "name": "Хороший"                
+    }
+}
+]
