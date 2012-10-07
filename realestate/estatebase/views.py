@@ -279,7 +279,7 @@ class EstateListView(ListView):
     paginate_by = 25   
     def get_queryset(self):
         #q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
-        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type','history')        
+        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type__estate_type_category','history')        
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()        
         q = set_estate_filter(q, filter_dict, user=self.request.user)
