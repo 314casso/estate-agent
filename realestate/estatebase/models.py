@@ -337,8 +337,8 @@ class Estate(ProcessDeletedModel):
             return contacts[0]
     @property
     def estate_type(self):
-        if self.estate_category == Stead.STEAD_CATEGORY_ID:
-            return self.stead.estate_type
+        if self.estate_category_id == Stead.STEAD_CATEGORY_ID:
+            return self.stead.estate_type.name
         else:
             result = []
             for bidg in self.bidgs.all():
