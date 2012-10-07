@@ -1,0 +1,67 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Гараж",
+        "independent" : "1", 
+        "order": "1"                
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Дом",
+        "independent" : "1",
+        "order": "2"                
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Дом с коммерческой недвижимостью",
+        "independent" : "1",
+        "order": "3"                
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Квартира",
+        "independent" : "1",
+        "order": "4"                
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Квартира с участком",
+        "independent" : "1",
+        "order": "5"                
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Коммерческая недвижимость",
+        "independent" : "1",
+        "order": "6"                
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Строения и сооружения",
+        "independent" : "0",
+        "order": "7"                
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.estatetypecategory",
+    "fields": {
+        "name": "Участок",
+        "independent" : "1",
+        "order": "8"                
+    }
+}
+]

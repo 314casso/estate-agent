@@ -7,17 +7,25 @@
 {{ form.media.js }}
 <script type="text/javascript">
 	function localityParam(query) {
-		query.locality = $('#id_locality_1').val();
+		query.locality = $('#id_locality_1').val();		
 	}
 	function regionParam(query) {
-		query.region = $('#id_region_1').val();
+		query.region = $('#id_region_1').val();		
 	}
+	
+	function categoryParam(query) {
+        query.category = $('#id_estate_category_1').val();     
+    }
 		
 	$(document).ready(function() {
 		$('#id_street_0').djselectable('option', 'prepareQuery', localityParam);
 		$('#id_locality_0').djselectable('option', 'prepareQuery', regionParam);
 		$('#id_microdistrict_0').djselectable('option', 'prepareQuery', localityParam);
-	});
+		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);		// $("#id_region_0").bind('autocompleteselect', function(event, ui) {                       
+            // $("#id_locality_1").val('');        
+            // $("#id_locality_0").val('');
+        // });	});
+	
 </script>
 
 {% endblock %}

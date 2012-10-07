@@ -2,7 +2,7 @@ from selectable.base import ModelLookup
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
-    ExUser, ClientType, Bid, EstateRegister
+    ExUser, ClientType, Bid, EstateRegister, EstateTypeCategory
 from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
 
@@ -71,8 +71,19 @@ class LocalityLookup(ModelLookup):
     def get_item_label(self, item):
         return u"%s, %s" % (item.name, item.region or '')
 
-class EstateTypeLookup(SimpleNameLookup):
-    model = EstateType
+class EstateTypeCategoryLookup(SimpleNameLookup):
+    model = EstateTypeCategory
+
+class EstateTypeLookup(SimpleNameLookup):   
+    model = EstateType 
+    def get_query(self, request, term):
+        results = super(EstateTypeLookup, self).get_query(request, term)
+        category = request.GET.get('category', '')        
+        if category:
+            results = results.filter(estate_type_category_id = category)
+        return results
+    def get_item_label(self, item):
+        return u"%s, %s" % (item.name, item.estate_type_category or '')
 
 class WallConstrucionLookup(SimpleNameLookup):
     model = WallConstrucion       
@@ -139,5 +150,6 @@ try:
     registry.register(ClientTypeLookup)
     registry.register(BidIdLookup)
     registry.register(EstateRegisterIdLookup)
+    registry.register(EstateTypeCategoryLookup)
 except LookupAlreadyRegistered:
     pass    

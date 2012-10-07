@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+
+APARTMENT = 0
+NEWAPART = 1
+HOUSE = 2 
+STEAD = 3
+OUTBUILDINGS = 4
+
 class FieldWrapper():
     def __init__(self, name, label, value=None):
         self.name = name
@@ -25,7 +32,7 @@ class BidgWrapper(BaseWrapper):
     def get_exclude_set(self):        
         exclude_set = super(BidgWrapper, self).get_exclude_set()[:]
         exclude_set.extend(self.interior_list())
-        exclude_set.extend(['estate_type', 'basic'])                        
+        exclude_set.extend(['basic'])                        
         return exclude_set    
 
 class ApartmentWrapper(BidgWrapper):
@@ -54,14 +61,15 @@ def get_polymorph_label(template, field):
         return None
 
 WRAPPERS = {
-           'APARTMENT':(ApartmentWrapper(), None),
-           'NEWAPART':(NewapartWrapper(), None),
-           'HOME':(HomeWrapper(), SteadWrapper()),
-           'STEAD':(None, SteadWrapper()),
+           APARTMENT:(ApartmentWrapper(), None),
+           NEWAPART:(NewapartWrapper(), None),
+           HOUSE:(HomeWrapper(), SteadWrapper()),
+           STEAD:(None, SteadWrapper()),
+           OUTBUILDINGS:(None, SteadWrapper()),
            }
    
-def get_wrapper(obj):
-    if not obj.estate_type.template:
+def get_wrapper(obj):    
+    if obj.estate_type.template is None:
         raise Exception(u'Не указан шаблон для вида недвижимости %s!' % obj.estate_type)
     if type(obj).__name__ == 'Bidg':
         return WRAPPERS[obj.estate_type.template][0]

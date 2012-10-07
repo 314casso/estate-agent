@@ -13,10 +13,11 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup,\
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup,\
-    ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup
+    ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup,\
+    EstateTypeCategoryLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
-    EstateRegister, EstateClient, EstateClientStatus
+    EstateRegister, EstateClient, EstateClientStatus, EstateType
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField,\
@@ -67,16 +68,12 @@ class DateRangeField(MultiValueField):
             return data_list
         return [None, None]
 
-class EstateForm(ModelForm):
-    estate_type = AutoCompleteSelectField(
-            lookup_class=EstateTypeLookup,
-            label=_('Estate type'),            
-        )           
-    beside_distance = IntegerField(label='')
+class EstateForm(ModelForm):              
+    beside_distance = IntegerField(label='', required=False)
     class Meta:                
         model = Estate
-        fields = ('estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type','broker')
+        fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'broker')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),       
             'beside':AutoComboboxSelectWidget(BesideLookup),       
@@ -88,7 +85,21 @@ class EstateForm(ModelForm):
             'broker': AutoComboboxSelectWidget(ExUserLookup),             
         }
 
-class EstateCreateClientForm(EstateForm):
+class EstateCreateForm(EstateForm):
+    estate_category = AutoComboboxSelectField(
+            lookup_class=EstateTypeCategoryLookup,
+            label=_('EstateTypeCategory'),
+        )
+    estate_type = AutoComboboxSelectField(
+            lookup_class=EstateTypeLookup,
+            label=_('Estate type'),
+            required=False
+        )
+    class Meta(EstateForm.Meta):        
+        fields = ('estate_category', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type','broker')
+
+class EstateCreateClientForm(EstateCreateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())    
 
@@ -460,6 +471,7 @@ class BidgForm(ModelForm):
             self.field_to_delete.append('room_number')        
         if self.instance.pk:
             self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
+            self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
         self.fields['documents'].help_text = ''
     estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
     class Meta:
@@ -473,8 +485,8 @@ class ApartmentForm(BidgForm):
         super(ApartmentForm, self).__init__(*args, **kwargs)        
         fields = self.instance.all_fields[:] 
         extra = ['documents']
-        if not self.instance.basic:
-            extra.append('estate_type')            
+#        if not self.instance.basic:
+#            extra.append('estate_type')            
         fields.extend(extra)        
         for field in self.fields:            
             if field not in fields:

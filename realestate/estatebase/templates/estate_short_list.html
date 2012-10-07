@@ -52,7 +52,7 @@
         <li>
             <a href="#tab-basic">Основная информация</a>
         </li>
-        {% if estate.basic_bidg and estate.estate_type.object_type != 'STEAD' %}
+        {% if estate.basic_bidg %}
         <li>
             <a href="#tab-bidgs">Строения</a>
         </li>
@@ -79,11 +79,7 @@
         <br style="clear: both" />
     </div>
     <div id="tab-bidgs">
-        {% if estate.estate_type.object_type == 'BIDG' %}
-			{% include 'object_type/bidg.html' %}
-		{% elif estate.estate_type.object_type == 'MIX' %}
-			{% include 'object_type/mix.html' %}
-		{% endif %}
+		{% include 'object_type/mix.html' %}
     </div>
     <div id="tab-photos">
         {% include "estate_dialog/photo_base.html" %}

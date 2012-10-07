@@ -9,7 +9,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
     SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
     BidPicleForm, EstateRegisterForm, EstateRegisterFilterForm, EstateForm,\
-    EstateCreateClientForm
+    EstateCreateClientForm, EstateCreateForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
     prepare_history, Stead, Bid, EstateRegister, EstateClient
 from django.core.urlresolvers import reverse
@@ -162,13 +162,13 @@ class PlaceableTypeViewAjax(TemplateView):
 class EstateMixin(BaseMixin, ModelFormMixin):
     model = Estate
     def form_valid(self, form):
-        self.object = form.save(commit=False)        
+        self.object = form.save(commit=False)         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)        
         return super(EstateMixin, self).form_valid(form)
 
 class EstateCreateView(EstateMixin, CreateView):
     template_name = 'estate_create.html'       
-    form_class = EstateForm    
+    form_class = EstateCreateForm    
     def get_initial(self):        
         initial = super(EstateCreateView, self).get_initial()
         if 'estate_type' in self.kwargs:                  
@@ -186,6 +186,14 @@ class EstateCreateView(EstateMixin, CreateView):
         next_url = self.request.REQUEST.get('next', '')                                  
         return '%s?%s' % (self.object.detail_link, safe_next_link(next_url))
     
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object._estate_type_id = form.cleaned_data['estate_type'].pk         
+        self.object.history = prepare_history(self.object.history, self.request.user.pk)       
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+    
+    
 class EstateCreateClientView(EstateCreateView):
     template_name = 'estate_create.html'       
     form_class = EstateCreateClientForm    
@@ -195,9 +203,7 @@ class EstateCreateClientView(EstateCreateView):
         initial['client_status'] = ESTATE_CLIENT_STATUS    
         return initial    
     def form_valid(self, form):
-        self.object = form.save(commit=False)        
-        self.object.history = prepare_history(self.object.history, self.request.user.pk)
-        self.object.save()
+        super(EstateCreateClientView, self).form_valid(form) 
         client_pk = form.cleaned_data.get('client_pk') or ESTATE_CLIENT_STATUS
         estate_client_status = form.cleaned_data.get('client_status') or None
         if client_pk:
@@ -272,7 +278,8 @@ class EstateListView(ListView):
     template_name = 'estate_list.html'
     paginate_by = 25   
     def get_queryset(self):
-        q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
+        #q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
+        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type','history')        
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()        
         q = set_estate_filter(q, filter_dict, user=self.request.user)

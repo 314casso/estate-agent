@@ -1,0 +1,603 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "База отдыха",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "1"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Баня",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "2"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Ветхий дом",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "3"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Винзавод",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "4"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Времянка",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "5"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Вторичка",
+        "estate_type_category": "4",
+        "has_bidg": "2",
+        "has_stead": "0",
+        "template": "0",
+        "placeable": "0",        
+        "order": "6"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гараж",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "7"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гараж лодочный",
+        "estate_type_category": "1",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "4",
+        "placeable": "1",        
+        "order": "8"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гараж",
+        "estate_type_category": "1",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "4",
+        "placeable": "1",        
+        "order": "9"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гостевой дом",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "10"
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гостевые комнаты",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "11"
+    }
+},{
+    "pk": 12,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Гостиница",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "12"
+    }
+},{
+    "pk": 13,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Дача",
+        "estate_type_category": "2",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "2",
+        "placeable": "0",        
+        "order": "13"
+    }
+},{
+    "pk": 14,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Дачный",
+        "estate_type_category": "8",
+        "has_bidg": "0",
+        "has_stead": "1",
+        "template": "3",
+        "placeable": "0",        
+        "order": "14"
+    }
+},{
+    "pk": 15,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Для строительства жилого дома",
+        "estate_type_category": "8",
+        "has_bidg": "0",
+        "has_stead": "1",
+        "template": "3",
+        "placeable": "0",        
+        "order": "15"
+    }
+},{
+    "pk": 16,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Дом",
+        "estate_type_category": "2",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "2",
+        "placeable": "1",        
+        "order": "16"
+    }
+},{
+    "pk": 17,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Забор",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "17"
+    }
+},{
+    "pk": 18,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Квартира с участком",
+        "estate_type_category": "5",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "0",
+        "placeable": "1",        
+        "order": "18"
+    }
+},{
+    "pk": 19,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Колодец",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "19"
+    }
+},{
+    "pk": 20,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Коммерческого назначения",
+        "estate_type_category": "8",
+        "has_bidg": "0",
+        "has_stead": "1",
+        "template": "3",
+        "placeable": "0",        
+        "order": "20"
+    }
+},{
+    "pk": 21,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Комната",
+        "estate_type_category": "4",
+        "has_bidg": "2",
+        "has_stead": "0",
+        "template": "0",
+        "placeable": "0",        
+        "order": "21"
+    }
+},{
+    "pk": 22,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Коттедж",
+        "estate_type_category": "5",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "0",
+        "placeable": "1",        
+        "order": "22"
+    }
+},{
+    "pk": 23,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Летний дом",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "23"
+    }
+},{
+    "pk": 24,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Летний душ",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "24"
+    }
+},{
+    "pk": 25,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Летняя кухня",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "25"
+    }
+},{
+    "pk": 26,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Летняя кухня",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "26"
+    }
+},{
+    "pk": 27,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Магазин",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "27"
+    }
+},{
+    "pk": 28,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Малосемейка",
+        "estate_type_category": "4",
+        "has_bidg": "2",
+        "has_stead": "0",
+        "template": "0",
+        "placeable": "0",        
+        "order": "28"
+    }
+},{
+    "pk": 29,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Мастерская",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "29"
+    }
+},{
+    "pk": 30,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Минигостиница",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "30"
+    }
+},{
+    "pk": 31,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Навес",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "31"
+    }
+},{
+    "pk": 32,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Недострой",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "32"
+    }
+},{
+    "pk": 33,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Нежилое помещение",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "0",
+        "placeable": "1",        
+        "order": "33"
+    }
+},{
+    "pk": 34,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Новостройка",
+        "estate_type_category": "4",
+        "has_bidg": "2",
+        "has_stead": "0",
+        "template": "1",
+        "placeable": "0",        
+        "order": "34"
+    }
+},{
+    "pk": 35,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Офис",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "35"
+    }
+},{
+    "pk": 36,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Пансионат",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "36"
+    }
+},{
+    "pk": 37,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Погреб",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "37"
+    }
+},{
+    "pk": 38,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Подвал",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "38"
+    }
+},{
+    "pk": 39,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Полдома",
+        "estate_type_category": "2",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "2",
+        "placeable": "1",        
+        "order": "39"
+    }
+},{
+    "pk": 40,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Производственная база",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "40"
+    }
+},{
+    "pk": 41,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Сад",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "41"
+    }
+},{
+    "pk": 42,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Сельскохозяйственного назначения",
+        "estate_type_category": "8",
+        "has_bidg": "0",
+        "has_stead": "1",
+        "template": "3",
+        "placeable": "0",        
+        "order": "42"
+    }
+},{
+    "pk": 43,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Стоянка",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "43"
+    }
+},{
+    "pk": 44,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Строение для отдыхающих",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "44"
+    }
+},{
+    "pk": 45,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Таунхаус",
+        "estate_type_category": "5",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "0",
+        "placeable": "1",        
+        "order": "45"
+    }
+},{
+    "pk": 46,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Торговый павильон",
+        "estate_type_category": "6",
+        "has_bidg": "1",
+        "has_stead": "2",
+        "template": "2",
+        "placeable": "1",        
+        "order": "46"
+    }
+},{
+    "pk": 47,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Уборная",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "47"
+    }
+},{
+    "pk": 48,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Фундамент",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "48"
+    }
+},{
+    "pk": 49,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Хозблок",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "49"
+    }
+},{
+    "pk": 50,
+    "model": "estatebase.estatetype",
+    "fields": {
+        "name": "Хозяйственные постройки",
+        "estate_type_category": "7",
+        "has_bidg": "1",
+        "has_stead": "1",
+        "template": "4",
+        "placeable": "1",        
+        "order": "50"
+    }
+}
+]

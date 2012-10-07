@@ -46,14 +46,30 @@ class %(cname)s(SimpleDict):
 
 
 class FixtureSimpleMaker(object):
+    c_template = \
+'''{
+    "pk": %(pk)s,
+    "model": "%(model)s",
+    "fields": {
+        "name": "%(name)s",
+        "order": "%(pk)s"                
+    }
+}'''
     template = \
 '''{
     "pk": %(pk)s,
     "model": "%(model)s",
     "fields": {
-        "name": "%(name)s"                
+        "name": "%(0)s",
+        "estate_type_category": "%(1)s",
+        "has_bidg": "%(2)s",
+        "has_stead": "%(3)s",
+        "template": "%(4)s",
+        "placeable": "%(5)s",        
+        "order": "%(pk)s"
     }
-}'''
+}'''    
+    
     def __init__(self,app_name,model_name,name_list):
         self.model_name = '%s.%s' % (app_name.lower(), model_name.lower())        
         self.name_list = name_list
@@ -63,14 +79,20 @@ class FixtureSimpleMaker(object):
         result = []
         lines = self.name_list.splitlines()
         lines = sorted(lines)
-        name, fk = ('', '')
-        for line in lines:
-            try:
-                name, fk = line.split(';')
-            except:
-                name = line    
-            if len(name):            
-                result.append(self.template % {'model':self.model_name,'pk':pk,'name':capfirst(name.strip()),'fk':fk})
+        fields = None
+        json_fields ={}        
+        for line in lines:            
+            try:                
+                if line: 
+                    fields = line.split(';')                    
+                    for ind, val in enumerate(fields):
+                        json_fields['%s' % ind] = ind == 0 and capfirst(val.strip()) or val.strip()                  
+            except:                
+                pass    
+            if len(json_fields):                
+                template_dict = {'model':self.model_name,'pk':pk}
+                template_dict.update(json_fields)                             
+                result.append(self.template % template_dict)
                 pk += 1   
         return result
 
@@ -86,15 +108,60 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-асфальт
-гравийный
-грунтовый
-нет
-хороший
+дом;2;1;1;2;1
+полдома;2;1;1;2;1
+дача;2;1;1;2;0
+сельскохозяйственного назначения;8;0;1;3;0
+дачный;8;0;1;3;0
+коммерческого назначения;8;0;1;3;0
+для строительства жилого дома;8;0;1;3;0
+комната;4;2;0;0;0
+малосемейка;4;2;0;0;0
+новостройка;4;2;0;1;0
+вторичка;4;2;0;0;0
+квартира с участком;5;1;1;0;1
+коттедж;5;1;1;0;1
+таунхаус;5;1;1;0;1
+гостевой дом;6;1;2;2;1
+минигостиница;6;1;2;2;1
+гостиница;6;1;2;2;1
+строение для отдыхающих;6;1;2;2;1
+магазин;6;1;2;2;1
+торговый павильон;6;1;2;2;1
+пансионат;6;1;2;2;1
+база отдыха;6;1;2;2;1
+производственная база;6;1;2;2;1
+офис;6;1;2;2;1
+нежилое помещение;6;1;2;0;1
+гостевые комнаты;6;1;2;2;1
+винзавод;6;1;2;2;1
+хозяйственные постройки;7;1;1;4;1
+баня;7;1;1;4;1
+летняя кухня;7;1;1;4;1
+гараж ;7;1;1;4;1
+летний дом;7;1;1;4;1
+времянка;7;1;1;4;1
+мастерская;7;1;1;4;1
+хозблок;7;1;1;4;1
+летняя кухня;7;1;1;4;1
+фундамент;7;1;1;4;1
+подвал;7;1;1;4;1
+погреб;7;1;1;4;1
+ветхий дом;7;1;1;4;1
+недострой;7;1;1;4;1
+забор;7;1;1;4;1
+навес;7;1;1;4;1
+стоянка;7;1;1;4;1
+летний душ;7;1;1;4;1
+уборная;7;1;1;4;1
+колодец;7;1;1;4;1
+сад;7;1;1;4;1
+гараж;1;1;2;4;1
+гараж лодочный;1;1;2;4;1
 '''
 
 
-MODEL = 'Driveway'
+MODEL = 'EstateType'
 
 import settings
 import os
@@ -107,6 +174,7 @@ if not os.path.isfile(fixfile):
     open(fixfile, 'wb').write('[\n%s\n]' % ','.join(fm.get_json()))
     print './manage.py loaddata %s' % fm.fixfile 
 else:
+    print ','.join(fm.get_json())
     print 'Fixture already exists!'     
 
 
