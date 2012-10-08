@@ -186,6 +186,7 @@ class EstateClientStatus(SimpleDict):
         verbose_name_plural = _('Estate client statuss')
 
 class EstateTypeCategory(OrderedModel):
+    COMM_TYPE_ID = 6
     name = models.CharField(_('Name'), max_length=100)
     independent = models.BooleanField(_('Placeable'), default=True)
     def __unicode__(self):
@@ -272,8 +273,8 @@ class Estate(ProcessDeletedModel):
     Базовая модель объектов недвижимости
     '''
     COMMERCIAL_CHOICES = (
-        (YES, u'С комм. недвижимостью'),
-        (MAYBE, u'Возможно комм. использование'),        
+        (YES, u'С комм. недв.'),
+        (MAYBE, u'Возможно комм. исп.'),        
     )      
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
@@ -354,7 +355,6 @@ class Estate(ProcessDeletedModel):
                 return ', '.join(result)
             else:
                 return self.estate_category               
-                             
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')

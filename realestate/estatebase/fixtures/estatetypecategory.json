@@ -16,14 +16,6 @@
         "order": "2"                
     }
 },{
-    "pk": 3,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Дом с коммерческой недвижимостью",
-        "independent" : "1",
-        "order": "3"                
-    }
-},{
     "pk": 4,
     "model": "estatebase.estatetypecategory",
     "fields": {

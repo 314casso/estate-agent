@@ -126,7 +126,10 @@ MIDDLEWARE_CLASSES = (
     'django_sorting.middleware.SortingMiddleware',
 #    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+#INTERNAL_IPS = ('127.0.0.1',)
 
 PROFILE_LOG_BASE = MEDIA_ROOT
 
@@ -142,7 +145,7 @@ CACHES = {
     'default': dict(
         BACKEND = 'django.core.cache.backends.memcached.MemcachedCache',
         LOCATION = ['127.0.0.1:11211'],
-        JOHNNY_CACHE = True,
+        #JOHNNY_CACHE = True,
     )
 }
 
@@ -164,7 +167,8 @@ INSTALLED_APPS = (
     'django_sorting',
     'django.contrib.humanize',
     'sorl.thumbnail',  
-    'form_utils'  
+    'form_utils',
+    #'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

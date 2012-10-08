@@ -11,7 +11,7 @@ from estatebase.forms import ClientForm, ContactFormSet, \
     BidPicleForm, EstateRegisterForm, EstateRegisterFilterForm, EstateForm,\
     EstateCreateClientForm, EstateCreateForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
-    prepare_history, Stead, Bid, EstateRegister, EstateClient
+    prepare_history, Stead, Bid, EstateRegister, EstateClient, YES
 from django.core.urlresolvers import reverse
 from estatebase.models import Estate, Client
 from django.utils import simplejson as json
@@ -189,7 +189,9 @@ class EstateCreateView(EstateMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.estate_category_id = form.cleaned_data['estate_type'].estate_type_category.pk 
-        self.object._estate_type_id = form.cleaned_data['estate_type'].pk         
+        self.object._estate_type_id = form.cleaned_data['estate_type'].pk
+        if self.object.estate_category_id == EstateTypeCategory.COMM_TYPE_ID:
+            self.object.com_status = YES         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)       
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
