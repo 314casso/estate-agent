@@ -73,7 +73,7 @@ class EstateForm(ModelForm):
     class Meta:                
         model = Estate
         fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'broker')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'broker','com_status')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),       
             'beside':AutoComboboxSelectWidget(BesideLookup),       
@@ -86,18 +86,18 @@ class EstateForm(ModelForm):
         }
 
 class EstateCreateForm(EstateForm):
-    estate_category = AutoComboboxSelectField(
+    estate_category_filter = AutoComboboxSelectField(
             lookup_class=EstateTypeCategoryLookup,
             label=_('EstateTypeCategory'),
+            required=False
         )
     estate_type = AutoComboboxSelectField(
             lookup_class=EstateTypeLookup,
-            label=_('Estate type'),
-            required=False
+            label=_('Estate type')
         )
     class Meta(EstateForm.Meta):        
-        fields = ('estate_category', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type','broker')
+        fields = ('estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type','broker','com_status')
 
 class EstateCreateClientForm(EstateCreateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)

@@ -15,22 +15,16 @@
     "pk": 3,
     "model": "estatebase.estateclientstatus",
     "fields": {
-        "name": "Покупатель"
+        "name": "Собственник"
     }
 },{
     "pk": 4,
     "model": "estatebase.estateclientstatus",
     "fields": {
-        "name": "Продавец"
-    }
-},{
-    "pk": 5,
-    "model": "estatebase.estateclientstatus",
-    "fields": {
         "name": "Родственник"
     }
 },{
-    "pk": 6,
+    "pk": 5,
     "model": "estatebase.estateclientstatus",
     "fields": {
         "name": "Сосед"

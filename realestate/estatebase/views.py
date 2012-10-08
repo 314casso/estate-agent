@@ -24,7 +24,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from settings import ESTATE_CLIENT_STATUS, CORRECT_DELTA
+from settings import CORRECT_DELTA
 
 
 class BaseMixin(object):
@@ -142,7 +142,7 @@ class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
     def get_context_data(self, **kwargs):
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
-        estate_categories = EstateType.objects.all().order_by('estate_type_category')
+        estate_categories = EstateType.objects.filter(estate_type_category__independent = True).order_by('estate_type_category')
         context.update({            
             'estate_categories': estate_categories,                                             
         })        
@@ -188,11 +188,11 @@ class EstateCreateView(EstateMixin, CreateView):
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.estate_category_id = form.cleaned_data['estate_type'].estate_type_category.pk 
         self.object._estate_type_id = form.cleaned_data['estate_type'].pk         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)       
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
-    
     
 class EstateCreateClientView(EstateCreateView):
     template_name = 'estate_create.html'       
@@ -200,11 +200,11 @@ class EstateCreateClientView(EstateCreateView):
     def get_initial(self):        
         initial = super(EstateCreateClientView, self).get_initial()      
         initial['client_pk'] = self.kwargs['client']        
-        initial['client_status'] = ESTATE_CLIENT_STATUS    
+        initial['client_status'] = EstateClient.ESTATE_CLIENT_STATUS    
         return initial    
     def form_valid(self, form):
         super(EstateCreateClientView, self).form_valid(form) 
-        client_pk = form.cleaned_data.get('client_pk') or ESTATE_CLIENT_STATUS
+        client_pk = form.cleaned_data.get('client_pk') or EstateClient.ESTATE_CLIENT_STATUS
         estate_client_status = form.cleaned_data.get('client_status') or None
         if client_pk:
             EstateClient.objects.create(client_id=client_pk,
@@ -356,7 +356,7 @@ class ClientUpdateEstateView(DetailView):
         Вынесена для переопределения в потомках класса
         '''        
         EstateClient.objects.create(client_id=client_pk,estate_id=estate_pk,
-                                    estate_client_status_id=ESTATE_CLIENT_STATUS)                
+                                    estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS)                
     def post(self, request, *args, **kwargs):       
         self.update_object(self.kwargs['pk'],self.kwargs['estate_pk'])       
         #Обновление истории и контакта у оъекта                            

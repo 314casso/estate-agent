@@ -78,11 +78,14 @@ class EstateTypeLookup(SimpleNameLookup):
     model = EstateType 
     def get_query(self, request, term):
         results = super(EstateTypeLookup, self).get_query(request, term)
-        category = request.GET.get('category', '')        
-        if category:
-            results = results.filter(estate_type_category_id = category)
+        results = results.filter(estate_type_category__independent = True)        
+        self.category = request.GET.get('category', '')        
+        if self.category:
+            results = results.filter(estate_type_category_id = self.category)
         return results
     def get_item_label(self, item):
+        if self.category:
+            return u"%s" % (item.name)
         return u"%s, %s" % (item.name, item.estate_type_category or '')
 
 class WallConstrucionLookup(SimpleNameLookup):

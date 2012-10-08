@@ -223,7 +223,7 @@ class EstateType(OrderedModel):
     class Meta(OrderedModel.Meta):
         verbose_name = _('estate type')
         verbose_name_plural = _('estate types')
-        ordering = ['name']    
+        ordering = ['estate_type_category__order', 'name']    
     
 class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
@@ -251,6 +251,7 @@ def prepare_history(history, user_id):
     return history                 
 
 class EstateClient(models.Model):
+    ESTATE_CLIENT_STATUS = 3
     client = models.ForeignKey('Client')
     estate = models.ForeignKey('Estate')    
     estate_client_status = models.ForeignKey(EstateClientStatus,verbose_name=_('EstateClientStatus'))
@@ -270,6 +271,10 @@ class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
     '''
+    COMMERCIAL_CHOICES = (
+        (YES, u'С комм. недвижимостью'),
+        (MAYBE, u'Возможно комм. использование'),        
+    )      
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -283,7 +288,8 @@ class Estate(ProcessDeletedModel):
     beside_distance = models.PositiveIntegerField(_('Beside distance'), blank=True, null=True)
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
     agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
-    estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)     
+    estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
+    com_status = models.IntegerField(_('Commercial'), choices=COMMERCIAL_CHOICES, blank=True, null=True,)     
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
@@ -305,7 +311,7 @@ class Estate(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
     valid = models.BooleanField(_('Valid'), default=False)
-    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)    
+    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)        
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk]) 
@@ -343,8 +349,11 @@ class Estate(ProcessDeletedModel):
             result = []
             for bidg in self.bidgs.all():
                 if bidg.estate_type.estate_type_category.independent:
-                    result.append(bidg.estate_type.name)  
-            return ', '.join(result)               
+                    result.append(bidg.estate_type.name)
+            if len(result):          
+                return ', '.join(result)
+            else:
+                return self.estate_category               
                              
     class Meta:
         verbose_name = _('estate')
@@ -359,11 +368,11 @@ class Estate(ProcessDeletedModel):
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
         estate_type = getattr(instance,'_estate_type_id', None) and EstateType.objects.get(pk=instance._estate_type_id) or None                
-        if estate_type: 
+        if estate_type:             
             if estate_type.has_bidg == YES:
                 Bidg.objects.create(estate=instance, estate_type=estate_type, basic=True)
             if estate_type.has_stead == YES:
-                stead_type_id = instance.estate_category == Stead.STEAD_CATEGORY_ID and estate_type.pk or Stead.DEFAULT_TYPE_ID 
+                stead_type_id = instance.estate_category_id == Stead.STEAD_CATEGORY_ID and estate_type.pk or Stead.DEFAULT_TYPE_ID 
                 Stead.objects.create(estate=instance, estate_type_id=stead_type_id)          
 
 post_save.connect(prepare_estate_childs, sender=Estate)
