@@ -1,5 +1,6 @@
 {% extends "dialog_block.html" %}
 {% load i18n %}
+{% load report %}
 {% load link_helper %}
 
 {% block title_left %}
@@ -10,9 +11,7 @@
 {% block content %}
 
 <table class="detail-table">
-    {% for field_name in stead.field_list %}    
-    {% table_row stead field_name %}
-    {% endfor %}
+        {% wrapper_fieldset_tr stead 'field_list' %}    
 </table>
 
 {% endblock %}

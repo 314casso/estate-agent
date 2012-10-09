@@ -1,15 +1,14 @@
 {% extends "dialog_block.html" %}
 {% load i18n %}
 {% load link_helper %}
+{% load report %}
 {% block title_left %}
 <a href="{% url apartment_update bidg.pk %}?{{ next_url }}">Детали и оттелка</a>
 {% endblock %}
 {% block content %}
 
 <table class="detail-table">
-    {% for field_name in bidg.field_list %}    
-    {% table_row bidg field_name %}
-    {% endfor %}
+    {% wrapper_fieldset_tr bidg 'exterior_list' %}
 </table>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
@@ -24,9 +23,7 @@
         Внешняя отделка
     </legend>
     <table class="detail-table">
-        {% for field_name in bidg.interior_list %}
-        {% table_row bidg field_name %}
-        {% endfor %}
+    	{% wrapper_fieldset_tr bidg 'interior_list' %}
     </table>
 </fieldset>
 
