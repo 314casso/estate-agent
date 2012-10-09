@@ -186,7 +186,7 @@ class EstateClientStatus(SimpleDict):
         verbose_name_plural = _('Estate client statuss')
 
 class EstateTypeCategory(OrderedModel):
-    COMM_TYPE_ID = 6
+    COMM_TYPE_ID = 6 #Комм. недвижжимость
     name = models.CharField(_('Name'), max_length=100)
     independent = models.BooleanField(_('Placeable'), default=True)
     def __unicode__(self):
@@ -252,7 +252,7 @@ def prepare_history(history, user_id):
     return history                 
 
 class EstateClient(models.Model):
-    ESTATE_CLIENT_STATUS = 3
+    ESTATE_CLIENT_STATUS = 3 #Собственник
     client = models.ForeignKey('Client')
     estate = models.ForeignKey('Estate')    
     estate_client_status = models.ForeignKey(EstateClientStatus,verbose_name=_('EstateClientStatus'))
@@ -273,8 +273,8 @@ class Estate(ProcessDeletedModel):
     Базовая модель объектов недвижимости
     '''
     COMMERCIAL_CHOICES = (
-        (YES, u'С комм. недв.'),
-        (MAYBE, u'Возможно комм. исп.'),        
+        (YES, u'Используется'),
+        (MAYBE, u'Возможно'),        
     )      
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)

@@ -1,4 +1,4 @@
-from selectable.base import ModelLookup
+from selectable.base import ModelLookup, LookupBase
 from estatebase.models import Street, Locality, Microdistrict, EstateType,\
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
@@ -129,6 +129,18 @@ class ExUserLookup(ModelLookup):
     model = ExUser
     search_fields = ('username__icontains', 'first_name__icontains', 'last_name__icontains', 'email__icontains')
     
+class ComChoiceLookup(LookupBase):
+    def get_query(self, request, term):        
+        return filter(lambda x: x[1].startswith(term), Estate.COMMERCIAL_CHOICES)    
+    def get_item_id(self, item):
+        return item[0]
+    def get_item_label(self, item):
+        return item[1]
+    def get_item_value(self, item):
+        return item[1]
+    def get_item(self, value):
+        return filter(lambda x: x[0] == value, Estate.COMMERCIAL_CHOICES)[0]
+    
 try:
     registry.register(StreetLookup)
     registry.register(LocalityLookup)
@@ -154,5 +166,6 @@ try:
     registry.register(BidIdLookup)
     registry.register(EstateRegisterIdLookup)
     registry.register(EstateTypeCategoryLookup)
+    registry.register(ComChoiceLookup)
 except LookupAlreadyRegistered:
     pass    

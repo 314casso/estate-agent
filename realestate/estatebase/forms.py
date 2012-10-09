@@ -14,7 +14,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup,\
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup,\
-    EstateTypeCategoryLookup
+    EstateTypeCategoryLookup, ComChoiceLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
     EstateRegister, EstateClient, EstateClientStatus, EstateType
@@ -82,7 +82,8 @@ class EstateForm(ModelForm):
             'street': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
-            'broker': AutoComboboxSelectWidget(ExUserLookup),             
+            'broker': AutoComboboxSelectWidget(ExUserLookup),
+            'com_status': AutoComboboxSelectWidget(ComChoiceLookup),             
         }
 
 class EstateCreateForm(EstateForm):
