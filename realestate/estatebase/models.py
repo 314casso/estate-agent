@@ -186,9 +186,12 @@ class EstateClientStatus(SimpleDict):
         verbose_name_plural = _('Estate client statuss')
 
 class EstateTypeCategory(OrderedModel):
-    COMM_TYPE_ID = 6 #Комм. недвижжимость
+    COMM_TYPE_ID = 6 #Комм. недвижжимость 
     name = models.CharField(_('Name'), max_length=100)
     independent = models.BooleanField(_('Placeable'), default=True)
+    @property
+    def is_stead(self):
+        return self.pk == Stead.STEAD_CATEGORY_ID
     def __unicode__(self):
         return u'%s' % self.name
     class Meta(OrderedModel.Meta):

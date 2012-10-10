@@ -45,7 +45,7 @@ class BaseWrapper(object):
                    
 class BidgWrapper(BaseWrapper):
     def __init__(self):                
-        self.exterior_set = ['estate_type', 'room_number', 'year_built', 'floor', 'floor_count', 'elevator', 'wall_construcion', 'exterior_finish', 'window_type', 'roof', 'heating', 'ceiling_height', 'room_count', 'total_area', 'used_area', 'wall_finish', 'flooring', 'ceiling', 'interior']    
+        self.exterior_set = ['estate_type', 'room_number', 'year_built', 'floor', 'floor_count', 'elevator', 'wall_construcion', 'exterior_finish', 'window_type', 'roof', 'heating', 'ceiling_height', 'room_count', 'total_area', 'used_area']    
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
         self.extra_set = ['documents']      
 
@@ -68,9 +68,9 @@ class HomeWrapper(BidgWrapper):
     pass
 class OutbuildingsWrapper(BidgWrapper):
     def __init__(self):
-        self.exterior_set = ['year_built', 'floor_count', 'wall_construcion', 'exterior_finish', 'room_count', 'total_area', 'wall_finish', 'flooring', 'interior']
-        self.interior_set = []
-        self.extra_set = []
+        self.exterior_set = ['year_built', 'floor_count', 'wall_construcion', 'exterior_finish', 'room_count', 'total_area']
+        self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
+        self.extra_set = ['documents']
     
 class SteadWrapper(BaseWrapper):
     field_set = ['estate_type', 'total_area', 'face_area', 'shape', 'land_type', 'purpose']

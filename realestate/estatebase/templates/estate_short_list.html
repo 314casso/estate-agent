@@ -5,6 +5,45 @@
 {% load paginator %}
 {% load humanize %}
 
+{% block extra_head %}
+<style>
+    .ui-accordion-content {
+        padding: 3px !important;
+    }
+    #estate-accordion h3 {
+        font-size: 16px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function() { 
+    	$("#tabs").tabs({
+            select: function(event, ui) {
+                localStorage.setItem('estate_id', '{{ estate.id }}');               
+                localStorage.setItem('saved_tab', ui.index);                
+            }, 
+            selected : getIndex('{{ estate.id }}','saved_tab')  
+        });   
+        $("#bidg-accordion").accordion({
+            change : function(event, ui) {              
+                localStorage.setItem('estate_id', '{{ estate.id }}');
+                localStorage.setItem('bidg_index', ui.options.active);             
+            },
+            active : getIndex('{{ estate.id }}','bidg_index'),
+            autoHeight : false
+        });        
+        $("#outbuildings-accordion").accordion({
+            change : function(event, ui) {              
+                localStorage.setItem('estate_id', '{{ estate.id }}');
+                localStorage.setItem('outbuildings_index', ui.options.active);             
+            },
+            active : getIndex('{{ estate.id }}','outbuildings_index'),
+            autoHeight : false
+        });
+    });     
+</script>
+{% endblock extra_head %}
+
 {% block page_header %}
 	Список объектов недвижимости	
 {% endblock %}
@@ -52,11 +91,16 @@
         <li>
             <a href="#tab-basic">Основная информация</a>
         </li>
-        {% if estate.basic_bidg %}
+        {% if not estate.estate_category.is_stead %}
         <li>
             <a href="#tab-bidgs">Объекты</a>
         </li>
-        {% endif %}        
+        {% endif %}
+        
+        <li>
+            <a href="#tab-outbuildings">Постройки</a>
+        </li>
+                
         <li>
             <a href="#tab-photos">Фотографии</a>
         </li>
@@ -78,8 +122,23 @@
         </div>
         <br style="clear: both" />
     </div>
+    {% if not estate.estate_category.is_stead %}
     <div id="tab-bidgs">
-		{% include 'object_type/mix.html' %}
+    	<div id="bidg-accordion">
+    		{% include 'object_type/mix.html' with bidgs=estate.bidg_objects %}   
+        </div>
+		<div class="button" style="text-align: right; margin: 10px 0">
+            <a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить объект</a>
+        </div>
+    </div>
+    {% endif %}
+    <div id="tab-outbuildings">
+        <div id="outbuildings-accordion">
+            {% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}   
+        </div>
+        <div class="button" style="text-align: right; margin: 10px 0">
+            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить постройку или сооружение</a>
+        </div>
     </div>
     <div id="tab-photos">
         {% include "estate_dialog/photo_base.html" %}

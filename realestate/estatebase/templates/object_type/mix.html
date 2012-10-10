@@ -1,50 +1,16 @@
-<style>
-	.ui-accordion-content {
-		padding: 3px !important;
-	}
-	#estate-accordion h3 {
-		font-size: 16px;
-	}
-</style>
-
-<script type="text/javascript">
-    $(function() {    
-        $("#estate-accordion").accordion({
-            change : function(event, ui) {              
-                localStorage.setItem('estate_id', '{{ estate.id }}');
-                localStorage.setItem('saved_index', ui.options.active);             
-            },
-            active : getIndex('{{ estate.id }}','saved_index'),
-            autoHeight : false
-        });        
-    });     
-</script>
-
-<div id="estate-accordion">
-
-    {% for bidg in estate.bidg_objects %}
-    <h3><a href="#tab-{{ bidg.pk }}">{{ bidg.estate_type }}</a></h3>
-    <div id="tab-{{ bidg.pk }}">
-        <div style="float: left;">
-            {% include "bidg_dialog/description.html" %}
-        </div>
-        <div style="float: left; margin-left: 10px">
-            {% include "bidg_dialog/layout.html" %}
-        </div>
-        <br style="clear: both" />
-        {% if not bidg.basic %}
-        <div class="button" style="float: left">
-            <a href="{% url bidg_remove bidg.pk %}?{{ next_url }}"><strong>Удалить строение "{{ bidg.estate_type }}"</strong></a>
-        </div>
-        {% endif %}
+{% for bidg in bidgs %} <h3><a href="#tab-{{ bidg.pk }}">{{ bidg.estate_type }}</a></h3>
+<div id="tab-{{ bidg.pk }}">
+    <div style="float: left;">
+        {% include "bidg_dialog/description.html" %}
     </div>
-    {% empty %}
-    Нет ни одного сооружения.
-    {% endfor %}
-        
+    <div style="float: left; margin-left: 10px">
+        {% include "bidg_dialog/layout.html" %}
+    </div>
+    <br style="clear: both" />
+    {% if not bidg.basic %}
+    <div class="button" style="float: left">
+        <a href="{% url bidg_remove bidg.pk %}?{{ next_url }}"><strong>Удалить "{{ bidg.estate_type }}"</strong></a>
+    </div>
+    {% endif %}
 </div>
-
-<div class="button" style="text-align: right; margin: 10px 0">
-    <a data-width="450" title="Добавление строения на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить строение</a>
-</div>
-
+{% endfor %}
