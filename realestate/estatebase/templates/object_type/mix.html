@@ -22,7 +22,7 @@
 
 <div id="estate-accordion">
 
-    {% for bidg in estate.bidgs.all %}
+    {% for bidg in estate.bidg_objects %}
     <h3><a href="#tab-{{ bidg.pk }}">{{ bidg.estate_type }}</a></h3>
     <div id="tab-{{ bidg.pk }}">
         <div style="float: left;">
@@ -41,7 +41,7 @@
     {% empty %}
     Нет ни одного сооружения.
     {% endfor %}
-
+        
 </div>
 
 <div class="button" style="text-align: right; margin: 10px 0">

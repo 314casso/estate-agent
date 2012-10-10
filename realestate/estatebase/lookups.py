@@ -1,10 +1,10 @@
+from estatebase.models import Street, Locality, Microdistrict, EstateType, \
+    Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior, \
+    Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact, ExUser, \
+    ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony
 from selectable.base import ModelLookup, LookupBase
-from estatebase.models import Street, Locality, Microdistrict, EstateType,\
-    Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior,\
-    Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact,\
-    ExUser, ClientType, Bid, EstateRegister, EstateTypeCategory
-from selectable.registry import registry
 from selectable.exceptions import LookupAlreadyRegistered
+from selectable.registry import registry
 
 class SimpleIdLookup(ModelLookup):
     search_fields = ('id__icontains',)
@@ -140,6 +140,13 @@ class ComChoiceLookup(LookupBase):
         return item[1]
     def get_item(self, value):
         return filter(lambda x: x[0] == value, Estate.COMMERCIAL_CHOICES)[0]
+
+class InternetLookup(SimpleNameLookup):
+    model = Internet 
+
+class TelephonyLookup(SimpleNameLookup):
+    model = Telephony
+
     
 try:
     registry.register(StreetLookup)
@@ -167,5 +174,7 @@ try:
     registry.register(EstateRegisterIdLookup)
     registry.register(EstateTypeCategoryLookup)
     registry.register(ComChoiceLookup)
+    registry.register(InternetLookup)
+    registry.register(TelephonyLookup)   
 except LookupAlreadyRegistered:
     pass    

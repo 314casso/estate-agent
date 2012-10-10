@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 from django import template
-from django.core.urlresolvers import reverse
-import base64
 from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.models import EstateClient
-from estatebase.wrapper import get_polymorph_label
+import base64
 
 register = template.Library()
 
-@register.simple_tag
-def reverse_link(name, *args):
-    return reverse(name, args=args)
+#@register.simple_tag
+#def reverse_link(name, *args):
+#    return reverse(name, args=args)
 
-@register.simple_tag
-def next_from_request(next_url):    
-    return next_url and ('?next=%s' % next_url.urlencode()) or ''  
+#@register.simple_tag
+#def next_from_request(next_url):    
+#    return next_url and ('?next=%s' % next_url.urlencode()) or ''  
 
 @register.simple_tag
 def im_source(im):
@@ -28,15 +26,15 @@ def selected_css(list_pk,item_pk):
 def close_btn(url):        
     return {'url': url or ''}
 
-@register.inclusion_tag('inclusion/table_row.html')
-def table_row(queryset,field_name):         
-    label = get_label(queryset,field_name)    
-    value = get_value(queryset,field_name)           
-    return {'field': value, 'label':label }
+#@register.inclusion_tag('inclusion/table_row.html')
+#def table_row(queryset,field_name):         
+#    label = get_label(queryset,field_name)    
+#    value = get_value(queryset,field_name)           
+#    return {'field': value, 'label':label }
 
-@register.inclusion_tag('inclusion/inline_field.html')
-def inline_field(queryset,field_name):
-    return table_row(queryset,field_name)
+#@register.inclusion_tag('inclusion/inline_field.html')
+#def inline_field(queryset,field_name):
+#    return table_row(queryset,field_name)
 
 @register.inclusion_tag('inclusion/contact_list_tag.html')
 def contact_list(client, next_url, first=None):
@@ -68,20 +66,20 @@ def address(estate):
     address = ', '.join(items)
     return {'address': address}
 
-@register.simple_tag
-def get_label(queryset,field_name):
-    return get_polymorph_label(queryset,field_name) or get_field(queryset, field_name).verbose_name
+#@register.simple_tag
+#def get_label(queryset,field_name):
+#    return get_polymorph_label(queryset,field_name) or get_field(queryset, field_name).verbose_name
 
-@register.simple_tag
-def get_value(queryset,field_name):
-    field = get_field(queryset, field_name)
-    value = getattr(queryset,field_name)
-    if field.get_internal_type() == 'BooleanField' and value:
-        value = u'Есть'
-    return value
+#@register.simple_tag
+#def get_value(queryset,field_name):
+#    field = get_field(queryset, field_name)
+#    value = getattr(queryset,field_name)
+#    if field.get_internal_type() == 'BooleanField' and value:
+#        value = u'Есть'
+#    return value
 
-def get_field(queryset, field_name):
-    return queryset._meta.get_field(field_name)
+#def get_field(queryset, field_name):
+#    return queryset._meta.get_field(field_name)
 
 @register.simple_tag
 def two_num(n_min, n_max):

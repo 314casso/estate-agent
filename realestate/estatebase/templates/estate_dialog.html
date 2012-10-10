@@ -2,6 +2,11 @@
 {% load i18n %}
 {% load link_helper %}
 
+{% block head %}
+{{ form.media.css }}
+{{ form.media.js }}
+{% endblock head %}
+
 {% block linkback %}
 {% include 'back2estate.html' %}
 {% endblock linkback %}

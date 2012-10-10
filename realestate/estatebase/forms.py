@@ -14,7 +14,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup,\
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup,\
-    EstateTypeCategoryLookup, ComChoiceLookup
+    EstateTypeCategoryLookup, ComChoiceLookup, InternetLookup, TelephonyLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
     EstateRegister, EstateClient, EstateClientStatus, EstateType
@@ -27,7 +27,7 @@ import re
 from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
-from estatebase.wrapper import get_polymorph_label
+from estatebase.wrapper import get_polymorph_label, get_wrapper
 from estatebase.fields import ComplexField
 
 
@@ -110,6 +110,15 @@ class EstateCommunicationForm(ModelForm):
         fields = ('electricity', 'electricity_distance', 'watersupply', 'watersupply_distance',
                   'gassupply', 'gassupply_distance', 'sewerage', 'sewerage_distance', 'telephony',
                   'internet', 'driveway', 'driveway_distance',)
+        widgets = {
+                   'electricity':AutoComboboxSelectWidget(ElectricityLookup),
+                   'gassupply':AutoComboboxSelectWidget(GassupplyLookup),
+                   'watersupply':AutoComboboxSelectWidget(WatersupplyLookup),
+                   'sewerage':AutoComboboxSelectWidget(SewerageLookup),
+                   'internet':AutoComboboxSelectWidget(InternetLookup),
+                   'telephony':AutoComboboxSelectWidget(TelephonyLookup),
+                   'driveway':AutoComboboxSelectWidget(DrivewayLookup),
+                  }
 
 
 class EstateParamForm(ModelForm):
@@ -483,19 +492,17 @@ class BidgForm(ModelForm):
 
 class ApartmentForm(BidgForm):    
     def __init__(self, *args, **kwargs):
-        super(ApartmentForm, self).__init__(*args, **kwargs)        
-        fields = self.instance.all_fields[:] 
-        extra = ['documents']
-#        if not self.instance.basic:
-#            extra.append('estate_type')            
-        fields.extend(extra)        
+        super(ApartmentForm, self).__init__(*args, **kwargs)
+        wrapper = get_wrapper(self.instance)        
+        fields = wrapper.full_set            
         for field in self.fields:            
             if field not in fields:
                 self.field_to_delete.append(field)                
             elif get_polymorph_label(self.instance, field):                                       
                 self.fields[field].label = get_polymorph_label(self.instance, field)                           
         for field in self.field_to_delete:
-            del self.fields[field]                                                  
+            if field in self.fields:
+                del self.fields[field]                                                  
     class Meta(BidgForm.Meta):
         pass        
         

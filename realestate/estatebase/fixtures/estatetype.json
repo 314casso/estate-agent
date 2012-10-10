@@ -65,7 +65,7 @@
     "fields": {
         "name": "Вторичка",
         "estate_type_category": "4",
-        "has_bidg": "2",
+        "has_bidg": "1",
         "has_stead": "0",
         "template": "0",
         "placeable": "0",        
@@ -245,7 +245,7 @@
     "fields": {
         "name": "Комната",
         "estate_type_category": "4",
-        "has_bidg": "2",
+        "has_bidg": "1",
         "has_stead": "0",
         "template": "0",
         "placeable": "0",        
@@ -329,7 +329,7 @@
     "fields": {
         "name": "Малосемейка",
         "estate_type_category": "4",
-        "has_bidg": "2",
+        "has_bidg": "1",
         "has_stead": "0",
         "template": "0",
         "placeable": "0",        
@@ -401,7 +401,7 @@
     "fields": {
         "name": "Новостройка",
         "estate_type_category": "4",
-        "has_bidg": "2",
+        "has_bidg": "1",
         "has_stead": "0",
         "template": "1",
         "placeable": "0",        

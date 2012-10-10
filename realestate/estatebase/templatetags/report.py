@@ -41,7 +41,7 @@ def wrapper_fieldset_tr(bidg, fieldset_name):
 def wrapper_fieldset(bidg, fieldset_name):
     details = OrderedDict()
     wrapper = get_wrapper(bidg)
-    field_list = getattr(wrapper, fieldset_name)()    
+    field_list = getattr(wrapper, fieldset_name)    
     for field in field_list:
         bidg_field = bidg._meta.get_field(field)
         value = getattr(bidg,field)

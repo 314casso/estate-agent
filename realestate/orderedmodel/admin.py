@@ -20,11 +20,12 @@ class OrderedModelAdmin(admin.ModelAdmin):
         return my_urls + super(OrderedModelAdmin, self).get_urls()
 
     def reorder(self, item):
-        button = '<a href="{{0}}/move_{{1}}"><img src="{0}img/admin/arrow-{{1}}.gif" alt="{{1}}" /></a>'.format(settings.ADMIN_MEDIA_PREFIX)
-
+        DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP' , u'&uarr; вверх')
+        DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN' , u'&darr; вниз')
+        button = '<a href="{0}/move_{1}">{2}</a>'
         html = ''
-        html += button.format(item.pk, 'down')
-        html += '&nbsp;' + button.format(item.pk, 'up')
+        html += button.format(item.pk, 'down', DEFAULT_SORT_DOWN)
+        html += '&nbsp;' + button.format(item.pk, 'up', DEFAULT_SORT_UP)
         return html    
     reorder.allow_tags = True
     reorder.short_description = _('Order')

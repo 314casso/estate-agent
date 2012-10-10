@@ -354,7 +354,14 @@ class Estate(ProcessDeletedModel):
             if len(result):          
                 return ', '.join(result)
             else:
-                return self.estate_category               
+                return self.estate_category
+    @property
+    def bidg_objects(self):
+        return self.bidgs.filter(estate_type__estate_type_category__independent = True) 
+    @property
+    def bidg_outbuildings(self):
+        return self.bidgs.filter(estate_type__estate_type_category__independent = False)                               
+                                   
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -565,20 +572,8 @@ class Bidg(models.Model):
     @property    
     def layout_area(self):
         return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
-    @property
-    def field_list(self):
-        wrapper = get_wrapper(self)                            
-        return wrapper.field_list() 
-    @property
-    def interior_list(self):
-        wrapper = get_wrapper(self)                          
-        return wrapper.interior_list()    
-    @property
-    def all_fields(self):
-        fields = self.field_list[:]
-        fields.extend(self.interior_list)        
-        return fields                
-
+    
+    
 class Shape(SimpleDict):
     '''
     Shape    
