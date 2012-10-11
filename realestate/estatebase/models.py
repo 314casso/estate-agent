@@ -153,7 +153,7 @@ class Document(SimpleDict):
     '''
     Документы
     '''
-    estate_type = models.ManyToManyField('EstateType', verbose_name=_('EstateType'),)
+    estate_type_category = models.ManyToManyField('EstateTypeCategory', verbose_name=_('EstateTypeCategory'),)
     class Meta(SimpleDict.Meta):
         verbose_name = _('document')
         verbose_name_plural = _('documents')                      
@@ -543,7 +543,8 @@ class Layout(models.Model):
     area = models.DecimalField(_('Area'), blank=True, null=True, max_digits=7, decimal_places=2)
     furniture = models.ForeignKey(Furniture, verbose_name=_('Furniture'), blank=True, null=True, on_delete=models.PROTECT)
     layout_feature = models.ForeignKey(LayoutFeature, verbose_name=_('LayoutFeature'), blank=True, null=True, on_delete=models.PROTECT)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)   
     class Meta:
         verbose_name = _('layout')
         verbose_name_plural = _('layouts')             
@@ -614,7 +615,8 @@ class Stead(models.Model):
     face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True, on_delete=models.PROTECT)
-    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)    
+    purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)    
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')

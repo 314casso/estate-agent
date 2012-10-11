@@ -45,7 +45,7 @@
     "pk": 8,
     "model": "estatebase.levelname",
     "fields": {
-        "name": "цокольный"
+        "name": "Цокольный"
     }
 }
 ]

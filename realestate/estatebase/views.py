@@ -141,7 +141,7 @@ class EstateTypeView(TemplateView):
 class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
     def get_context_data(self, **kwargs):                
-        context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
+        context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)   
         estate_categories = EstateType.objects.filter(estate_type_category__independent = True).order_by('estate_type_category','order')
         context.update({            
             'estate_categories': estate_categories,                                             

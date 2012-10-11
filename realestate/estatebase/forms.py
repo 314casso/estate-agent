@@ -14,7 +14,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup,\
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup,\
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup,\
-    EstateTypeCategoryLookup, ComChoiceLookup, InternetLookup, TelephonyLookup
+    EstateTypeCategoryLookup, ComChoiceLookup, InternetLookup, TelephonyLookup,\
+    LayoutTypeLookup, LevelNameLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid,\
     EstateRegister, EstateClient, EstateClientStatus, EstateType
@@ -294,8 +295,7 @@ class EstateFilterForm(BetterForm):
     driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def get_filter(self):
-        f = {}   
-        #TODO: нужно добавить или для bids
+        f = {}  
         if self['estate_type'].value():
             q = Q(estate_type_id__in=self['estate_type'].value()) | Q(bidgs__estate_type_id__in=self['estate_type'].value()) 
             f['Q'] = q 
@@ -480,14 +480,15 @@ class BidgForm(ModelForm):
         if not self.instance.basic:            
             self.field_to_delete.append('room_number')        
         if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type__id=self.instance.estate_type_id)
+            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
             self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
         self.fields['documents'].help_text = ''
     estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Bidg
         widgets = {
-           'documents' : forms.CheckboxSelectMultiple()        
+           'documents' : forms.CheckboxSelectMultiple(),        
+           'interior' : AutoComboboxSelectWidget(InteriorLookup),
         }
 
 class ApartmentForm(BidgForm):    
@@ -508,7 +509,12 @@ class ApartmentForm(BidgForm):
         
 class LayoutForm(ModelForm):
     class Meta:
-        model = Layout        
+        model = Layout  
+        widgets = {
+           'layout_type' : AutoComboboxSelectWidget(LayoutTypeLookup),        
+           'interior' : AutoComboboxSelectWidget(InteriorLookup),
+        }    
+          
 
 LevelFormSet = inlineformset_factory(Level, Layout, extra=1, form=LayoutForm)
 
@@ -516,6 +522,9 @@ class LevelForm(ModelForm):
     bidg = forms.ModelChoiceField(queryset=Bidg.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Level
+        widgets = {
+            'level_name' : AutoComboboxSelectWidget(LevelNameLookup),       
+        }   
 
 class ImageUpdateForm(ModelForm):
     class Meta:
@@ -523,9 +532,18 @@ class ImageUpdateForm(ModelForm):
         fields = ('name', 'note', 'image')     
 
 class SteadUpdateForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SteadUpdateForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
+        self.fields['documents'].help_text = ''    
     class Meta:
         model = Stead   
         exclude = ('estate',)
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple()        
+        }
+        
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Клиент')

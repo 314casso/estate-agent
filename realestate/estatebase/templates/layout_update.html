@@ -36,6 +36,10 @@
     });
     
 </script>
+
+<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+
 {% endblock %}
 
 {% block linkback %}
@@ -76,6 +80,7 @@
                     <th>{% trans 'Area' %}</th>
                     <th>{% trans 'Furniture' %}</th>
                     <th>{% trans 'LayoutFeature' %}</th>
+                    <th>{% trans 'Interior' %}</th>
                     <th>{% trans 'Note' %}</th>
                     <th> </th>
                 </tr>
@@ -87,8 +92,9 @@
                     <td>{{ layout.layout_type.errors }}{{ layout.layout_type }}</td>                    
                     <td class="layout-area">{{ layout.area.errors }}{{ layout.area }}</td>                    
                     <td>{{ layout.furniture.errors }}{{ layout.furniture }}</td>                    
-                    <td>{{ layout.layout_feature.errors }}{{ layout.layout_feature }}</td>                    
-                    <td>{{ layout.note.errors }}{{ layout.note }}</td>                                        
+                    <td>{{ layout.layout_feature.errors }}{{ layout.layout_feature }}</td>
+                    <td>{{ layout.interior.errors }}{{ layout.interior }}</td>                    
+                    <td>{{ layout.note.errors }}{{ layout.note }}</td>                                       
                     <td>{% if layout.instance.pk %}{{ layout.DELETE }} {% endif %}</td>                
                 </tr>
                 {% endfor %}
