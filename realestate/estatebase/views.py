@@ -140,7 +140,7 @@ class EstateTypeView(TemplateView):
 
 class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):                
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)                
         estate_categories = EstateType.objects.filter(estate_type_category__independent = True).order_by('estate_type_category','order')
         context.update({            
@@ -151,8 +151,18 @@ class EstateTypeViewAjax(TemplateView):
 class PlaceableTypeViewAjax(TemplateView):
     template_name = 'ajax/placeable_select.html'
     def get_context_data(self, **kwargs):
-        context = super(PlaceableTypeViewAjax, self).get_context_data(**kwargs)                
-        estate_categories = EstateType.objects.filter(estate_type_category__independent = False).select_related().order_by('estate_type_category','order')
+        filter_dict = {}
+        category = self.request.GET.get('category', None)
+        if category == 'commerce':
+            filter_dict.update({
+            'estate_type_category__is_commerce' : True
+            })
+        elif category == 'independent':
+            filter_dict.update({
+            'estate_type_category__independent' : False
+            })             
+        estate_categories = EstateType.objects.filter(**filter_dict).select_related().order_by('estate_type_category','order')
+        context = super(PlaceableTypeViewAjax, self).get_context_data(**kwargs)
         context.update({            
             'estate_categories': estate_categories,
             'estate': self.kwargs['estate'],                                   
@@ -188,9 +198,10 @@ class EstateCreateView(EstateMixin, CreateView):
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.estate_category_id = form.cleaned_data['estate_type'].estate_type_category.pk 
+        category = form.cleaned_data['estate_type'].estate_type_category
+        self.object.estate_category_id = category.pk 
         self.object._estate_type_id = form.cleaned_data['estate_type'].pk
-        if self.object.estate_category_id == EstateTypeCategory.COMM_TYPE_ID:
+        if category.is_commerce:
             self.object.com_status = YES         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)       
         self.object.save()

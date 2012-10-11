@@ -185,19 +185,6 @@ class EstateClientStatus(SimpleDict):
         verbose_name = _('Estate client status')
         verbose_name_plural = _('Estate client statuss')
 
-class EstateTypeCategory(OrderedModel):
-    COMM_TYPE_ID = 6 #Комм. недвижжимость 
-    name = models.CharField(_('Name'), max_length=100)
-    independent = models.BooleanField(_('Placeable'), default=True)
-    @property
-    def is_stead(self):
-        return self.pk == Stead.STEAD_CATEGORY_ID
-    def __unicode__(self):
-        return u'%s' % self.name
-    class Meta(OrderedModel.Meta):
-        verbose_name = _('estate type category')
-        verbose_name_plural = _('estate type categories')        
-
 YES = 1
 NO = 0
 MAYBE =2
@@ -205,7 +192,25 @@ AVAILABILITY_CHOICES = (
     (YES, u'Да'),
     (NO, u'Нет'),
     (MAYBE, u'Возможно'),
-)  
+)
+
+class EstateTypeCategory(OrderedModel):
+    name = models.CharField(_('Name'), max_length=100)
+    independent = models.BooleanField(_('Independent'), default=True)
+    has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)
+    has_stead = models.IntegerField(_('HasStead'), choices=AVAILABILITY_CHOICES)
+    is_commerce =  models.BooleanField(_('Commerce'), default=False)
+    @property
+    def is_stead(self):
+        return self.has_bidg == NO 
+    @property
+    def can_has_stead(self):
+        return self.has_stead != NO
+    def __unicode__(self):
+        return u'%s' % self.name
+    class Meta(OrderedModel.Meta):
+        verbose_name = _('estate type category')
+        verbose_name_plural = _('estate type categories')        
 
 class EstateType(OrderedModel):     
     TEMPLATE_CHOICES = (
@@ -216,9 +221,7 @@ class EstateType(OrderedModel):
         (OUTBUILDINGS, u'Постройка'),
         )    
     name = models.CharField(_('Name'), max_length=100)
-    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT)    
-    has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)
-    has_stead = models.IntegerField(_('HasStead'), choices=AVAILABILITY_CHOICES)
+    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT)   
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     placeable = models.BooleanField(_('Placeable'), default=True)        
@@ -346,8 +349,8 @@ class Estate(ProcessDeletedModel):
         if contacts:
             return contacts[0]
     @property
-    def estate_type(self):
-        if self.estate_category_id == Stead.STEAD_CATEGORY_ID:
+    def estate_type(self):        
+        if self.estate_category.is_stead:
             return self.stead.estate_type.name
         else:
             result = []
@@ -364,7 +367,9 @@ class Estate(ProcessDeletedModel):
     @property
     def bidg_outbuildings(self):
         return self.bidgs.filter(estate_type__estate_type_category__independent = False)                               
-                                   
+    @property
+    def is_commerce(self):
+        return self.com_status == YES                                           
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -379,10 +384,10 @@ def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
         estate_type = getattr(instance,'_estate_type_id', None) and EstateType.objects.get(pk=instance._estate_type_id) or None                
         if estate_type:             
-            if estate_type.has_bidg == YES:
+            if estate_type.estate_type_category.has_bidg == YES:
                 Bidg.objects.create(estate=instance, estate_type=estate_type, basic=True)
-            if estate_type.has_stead == YES:
-                stead_type_id = instance.estate_category_id == Stead.STEAD_CATEGORY_ID and estate_type.pk or Stead.DEFAULT_TYPE_ID 
+            if estate_type.estate_type_category.has_stead == YES:
+                stead_type_id = instance.estate_category.is_stead and estate_type.pk or Stead.DEFAULT_TYPE_ID 
                 Stead.objects.create(estate=instance, estate_type_id=stead_type_id)          
 
 post_save.connect(prepare_estate_childs, sender=Estate)
@@ -601,11 +606,10 @@ class Purpose(SimpleDict):
         verbose_name = _('Purpose')
         verbose_name_plural = _('Purposes')
 
-class Stead(models.Model):
-    STEAD_CATEGORY_ID = 8 
+class Stead(models.Model):     
     DEFAULT_TYPE_ID = 15   
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')
-    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'estate_type_category_id':STEAD_CATEGORY_ID}, default=DEFAULT_TYPE_ID, on_delete=models.PROTECT)  
+    estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'estate_type_category__has_bidg': False}, default=DEFAULT_TYPE_ID, on_delete=models.PROTECT)  
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)      
     face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)

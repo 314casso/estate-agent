@@ -1,32 +1,4 @@
-{% load link_helper %}
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#estate_nav").accordion({
-			autoHeight : false,
-			active : 0
-		});
-	}); 
-</script>
-
-<div id="estate_nav">
-	{% regroup estate_categories by estate_type_category as estate_bidgs %}
-	{% for estate_category in estate_bidgs %}
-	<h3><a href="#">{{ estate_category.grouper }}</a></h3>
-	<div>
-		<ul>
-			{% for estate_type in estate_category.list %}
-			<li>
-				<table>
-					<td>
-					<div>
-						<a href="{% url bidg_append estate estate_type.pk  %}?next={{ request.GET.next|urlencode }}">{{ estate_type.name }}</a>
-					</div></td>
-				</table>
-			</li>
-			{% endfor %}
-		</ul>
-	</div>
-	{% endfor %}
-</div>
-
+{% extends 'ajax/estate_type_select.html' %}
+{% block action %}
+<a href="{% url bidg_append estate estate_type.pk  %}?next={{ request.GET.next|urlencode }}">{{ estate_type.name }}</a>
+{% endblock action %}

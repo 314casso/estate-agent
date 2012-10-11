@@ -7,12 +7,12 @@
 
 {% block extra_head %}
 <style>
-    .ui-accordion-content {
-        padding: 3px !important;
-    }
-    #estate-accordion h3 {
-        font-size: 16px;
-    }
+	.ui-accordion-content {
+		padding: 3px !important;
+	}
+	#estate-accordion h3 {
+		font-size: 16px;
+	}
 </style>
 
 <script type="text/javascript">
@@ -42,44 +42,45 @@
         });
     });     
 </script>
+
 {% endblock extra_head %}
 
 {% block page_header %}
-	Список объектов недвижимости	
+Список объектов недвижимости
 {% endblock %}
 
 {% block left %}
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
-    <legend style="font-size: 11px;">
-        <a href="{% url estate_list_details estate_item.pk %}?{{ request.GET.urlencode }}">[{{ estate_item.pk }}]</a>
-        <a title="{{ estate_item.estate_type }}" href="{% url estate_list_details estate_item.pk %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:19 }}</a>
-        <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
-        {% if estate_item.agency_price %}
-        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
-        {% endif %}
+	<legend style="font-size: 11px;">
+		<a href="{% url estate_list_details estate_item.pk %}?{{ request.GET.urlencode }}">[{{ estate_item.pk }}]</a>
+		<a title="{{ estate_item.estate_type }}" href="{% url estate_list_details estate_item.pk %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:19 }}</a>
+		<span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
+		{% if estate_item.agency_price %}
+		<span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
+		{% endif %}
 
-        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url estate_update estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
-    </legend>
-    <div style="border-bottom: 0px solid #ddd; font-style: italic">
-        {% address estate_item %}
-    </div>
-    <div style="margin-top: 2px">
-        {% with contact=estate_item.basic_contact  %}
-        {% if contact %}
-        {{ contact.client.client_type }}
-        <a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
-        <span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <label>{{ contact.contact_type }}:</label> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
-        {% endif %}
-        {% endwith %}
-    </div>
+		{% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url estate_update estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
+	</legend>
+	<div style="border-bottom: 0px solid #ddd; font-style: italic">
+		{% address estate_item %}
+	</div>
+	<div style="margin-top: 2px">
+		{% with contact=estate_item.basic_contact  %}
+		{% if contact %}
+		{{ contact.client.client_type }}
+		<a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
+		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <label>{{ contact.contact_type }}:</label> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+		{% endif %}
+		{% endwith %}
+	</div>
 </fieldset>
 
 {% endfor %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">
-    {% digg_paginator %}
+	{% digg_paginator %}
 </div>
 {% endif %}
 
@@ -87,61 +88,68 @@
 
 {% block right %}
 <div id="tabs">
-    <ul>
-        <li>
-            <a href="#tab-basic">Основная информация</a>
-        </li>
-        {% if not estate.estate_category.is_stead %}
-        <li>
-            <a href="#tab-bidgs">Объекты</a>
-        </li>
-        {% endif %}
-        
-        <li>
-            <a href="#tab-outbuildings">Постройки</a>
-        </li>
-                
-        <li>
-            <a href="#tab-photos">Фотографии</a>
-        </li>
-    </ul>
+	<ul>
+		<li>
+			<a href="#tab-basic">Основная информация</a>
+		</li>
+		{% if not estate.estate_category.is_stead %}
+		<li>
+			<a href="#tab-bidgs">Объекты</a>
+		</li>
+		{% endif %}
+		{% if estate.stead %}
+		<li>
+			<a href="#tab-outbuildings">Постройки</a>
+		</li>
+		{% endif %}
+		<li>
+			<a href="#tab-photos">Фотографии</a>
+		</li>
+	</ul>
 
-    <div id="tab-basic">
-        <div style="float: left">
-            {% include "estate_dialog/basic.html" %}
-            {% include "estate_dialog/salers.html" %}
-        </div>
-        <div style="float: left; margin-left: 10px">
-            {% include "estate_dialog/comm.html" %}
-            {% include "estate_dialog/marks.html" %}
-            {% if estate.stead %}
-            {% with stead=estate.basic_stead %}
-            {% include "details/stead.html" %}
-            {% endwith %}
-            {% endif %}
-        </div>
-        <br style="clear: both" />
-    </div>
-    {% if not estate.estate_category.is_stead %}
-    <div id="tab-bidgs">
-    	<div id="bidg-accordion">
-    		{% include 'object_type/mix.html' with bidgs=estate.bidg_objects %}   
-        </div>
+	<div id="tab-basic">
+		<div style="float: left">
+			{% include "estate_dialog/basic.html" %}
+			{% include "estate_dialog/salers.html" %}
+		</div>
+		<div style="float: left; margin-left: 10px">
+			{% include "estate_dialog/comm.html" %}
+			{% include "estate_dialog/marks.html" %}
+			{% if estate.stead %}			
+			{% include "details/stead.html" with stead=estate.basic_stead %}
+			{% elif estate.estate_category.can_has_stead %}
+				<div class="button" style="text-align: right; margin: 10px 0">
+					<a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=commerce" class="ajax-dialog">Добавить объект</a>
+				</div>	
+			{% endif %}			
+			
+		</div>
+		<br style="clear: both" />
+	</div>
+	{% if not estate.estate_category.is_stead %}
+	<div id="tab-bidgs">
+		<div id="bidg-accordion">
+			{% include 'object_type/mix.html' with bidgs=estate.bidg_objects %}
+		</div>
+		{% if estate.stead and estate.is_commerce %}
 		<div class="button" style="text-align: right; margin: 10px 0">
-            <a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить объект</a>
-        </div>
-    </div>
-    {% endif %}
-    <div id="tab-outbuildings">
-        <div id="outbuildings-accordion">
-            {% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}   
-        </div>
-        <div class="button" style="text-align: right; margin: 10px 0">
-            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}" class="ajax-dialog">Добавить постройку или сооружение</a>
-        </div>
-    </div>
-    <div id="tab-photos">
-        {% include "estate_dialog/photo_base.html" %}
-    </div>
+			<a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=commerce" class="ajax-dialog">Добавить ком. недвижимость</a>
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+	{% if estate.stead %}
+	<div id="tab-outbuildings">
+		<div id="outbuildings-accordion">
+			{% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}
+		</div>
+		<div class="button" style="text-align: right; margin: 10px 0">
+			<a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить постройку или сооружение</a>
+		</div>
+	</div>
+	{% endif %}
+	<div id="tab-photos">
+		{% include "estate_dialog/photo_base.html" %}
+	</div>
 </div>
 {% endblock right %}
