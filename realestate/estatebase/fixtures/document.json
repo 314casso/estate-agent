@@ -1,0 +1,38 @@
+[
+	{
+		"pk": 6,
+		"model": "estatebase.document",
+		"fields": {
+			"name": "Кадастровый номер",
+			"estate_type_category": [2, 4, 8, 5, 6, 1]
+		}
+	}, {
+		"pk": 8,
+		"model": "estatebase.document",
+		"fields": {
+			"name": "Межевой план",
+			"estate_type_category": [8]
+		}
+	}, {
+		"pk": 4,
+		"model": "estatebase.document",
+		"fields": {
+			"name": "Свидетельство",
+			"estate_type_category": [2, 4, 5, 6, 1]
+		}
+	}, {
+		"pk": 7,
+		"model": "estatebase.document",
+		"fields": {
+			"name": "Свидетельство на участок",
+			"estate_type_category": [8]
+		}
+	}, {
+		"pk": 5,
+		"model": "estatebase.document",
+		"fields": {
+			"name": "Технический паспорт",
+			"estate_type_category": [2, 4, 5, 6, 1]
+		}
+	}
+]
