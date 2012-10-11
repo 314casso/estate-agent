@@ -1,59 +1,80 @@
 [
-{
-    "pk": 1,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Гараж",
-        "independent" : "1", 
-        "order": "1"                
-    }
-},{
-    "pk": 2,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Дом",
-        "independent" : "1",
-        "order": "2"                
-    }
-},{
-    "pk": 4,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Квартира",
-        "independent" : "1",
-        "order": "4"                
-    }
-},{
-    "pk": 5,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Квартира с участком",
-        "independent" : "1",
-        "order": "5"                
-    }
-},{
-    "pk": 6,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Коммерческая недвижимость",
-        "independent" : "1",
-        "order": "6"                
-    }
-},{
-    "pk": 7,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Строения и сооружения",
-        "independent" : "0",
-        "order": "7"                
-    }
-},{
-    "pk": 8,
-    "model": "estatebase.estatetypecategory",
-    "fields": {
-        "name": "Участок",
-        "independent" : "1",
-        "order": "8"                
-    }
-}
+	{
+		"pk": 2,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Дом",
+			"is_commerce": false,
+			"has_stead": 1,
+			"order": 1,
+			"has_bidg": 1
+		}
+	}, {
+		"pk": 4,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Квартира",
+			"is_commerce": false,
+			"has_stead": 0,
+			"order": 2,
+			"has_bidg": 1
+		}
+	}, {
+		"pk": 8,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Участок",
+			"is_commerce": false,
+			"has_stead": 1,
+			"order": 4,
+			"has_bidg": 0
+		}
+	}, {
+		"pk": 5,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Квартира с участком",
+			"is_commerce": false,
+			"has_stead": 1,
+			"order": 5,
+			"has_bidg": 1
+		}
+	}, {
+		"pk": 6,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Коммерческая недвижимость",
+			"is_commerce": true,
+			"has_stead": 2,
+			"order": 6,
+			"has_bidg": 1
+		}
+	}, {
+		"pk": 1,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": true,
+			"name": "Гараж",
+			"is_commerce": false,
+			"has_stead": 2,
+			"order": 7,
+			"has_bidg": 1
+		}
+	}, {
+		"pk": 7,
+		"model": "estatebase.estatetypecategory",
+		"fields": {
+			"independent": false,
+			"name": "Строения и сооружения",
+			"is_commerce": false,
+			"has_stead": 0,
+			"order": 8,
+			"has_bidg": 1
+		}
+	}
 ]

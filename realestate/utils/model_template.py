@@ -98,6 +98,11 @@ class FixtureSimpleMaker(object):
 
 
 '''
+
+path = 'c://Users//picasso//My Documents//Aptana Studio 3 Workspace//estate-agent//realestate//'
+f = open("%stemp.json" % path, 'rb').read().decode("unicode_escape").encode("utf8")
+open("%stemp.json" % path, 'wb').write(f)
+
 Загрузить все файлы
 find . -name "*.json" -exec manage.py loaddata {} \;
 
