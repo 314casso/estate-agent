@@ -3,6 +3,7 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.wrapper import get_wrapper
 from collections import OrderedDict
+from copy import deepcopy
 
 register = template.Library()
 
@@ -31,22 +32,43 @@ def communication(estate):
     return {'comms': comms}
 
 @register.inclusion_tag('inclusion/comma_from_details.html')
-def wrapper_fieldset_comma(bidg, fieldset_name):
-    return wrapper_fieldset(bidg, fieldset_name)
+def wrapper_fieldset_comma(obj, fieldset_name):
+    return wrapper_fieldset(obj, fieldset_name)
 
 @register.inclusion_tag('inclusion/tr_from_details.html')
-def wrapper_fieldset_tr(bidg, fieldset_name):
-    return wrapper_fieldset(bidg, fieldset_name)
+def wrapper_fieldset_tr(obj, fieldset_name):
+    return wrapper_fieldset(obj, fieldset_name)
 
-def wrapper_fieldset(bidg, fieldset_name):
+def wrapper_fieldset(obj, fieldset_name):
     details = OrderedDict()
-    wrapper = get_wrapper(bidg)
-    field_list = getattr(wrapper, fieldset_name)    
+    wrapper = get_wrapper(obj)
+    field_list = getattr(wrapper, fieldset_name)
     for field in field_list:
-        bidg_field = bidg._meta.get_field(field)
-        value = getattr(bidg,field)
-        if bidg_field.get_internal_type() == 'BooleanField' and value:
+        obj_field = obj._meta.get_field(field)
+        value = getattr(obj,field)
+        if obj_field.get_internal_type() == 'BooleanField' and value:
             value = u'Есть'
         if value:
-            details[wrapper.get_label(field) or bidg_field.verbose_name] = value            
-    return {'details': details}    
+            details[wrapper.get_label(field) or obj_field.verbose_name] = value            
+    return {'details': details}
+
+@register.inclusion_tag('inclusion/simple_layout.html')
+def bidg_layout(level):
+    layout_fieldset = OrderedDict([
+                       ('area', u'площадь кв.м.'), 
+                       ('furniture', u'мебель'), 
+                       ('layout_feature', 'расположение'), 
+                       ('interior', 'внутр. отделка'),
+                       ('note', 'коммент')
+                       ])   
+    layout_dict = OrderedDict()       
+    for layout in level.layout_set.all():
+        layout_row = OrderedDict()
+        for field, label in layout_fieldset.items():
+            value = getattr(layout, field)
+            if value:
+                layout_row[label] = value
+        layout_dict[layout.layout_type] = deepcopy(layout_row)         
+    return {'layouts': layout_dict}            
+            
+                

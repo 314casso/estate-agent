@@ -547,7 +547,8 @@ class Layout(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)   
     class Meta:
         verbose_name = _('layout')
-        verbose_name_plural = _('layouts')             
+        verbose_name_plural = _('layouts')        
+        ordering = ['layout_type']     
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')

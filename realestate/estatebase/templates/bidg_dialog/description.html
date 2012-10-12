@@ -1,6 +1,4 @@
 {% extends "dialog_block.html" %}
-{% load i18n %}
-{% load link_helper %}
 {% load report %}
 {% block title_left %}
 <a href="{% url apartment_update bidg.pk %}?{{ next_url }}">Детали и оттелка</a>
@@ -8,7 +6,7 @@
 {% block content %}
 
 <table class="detail-table">
-    {% wrapper_fieldset_tr bidg 'exterior_set' %}
+    {% wrapper_fieldset_tr bidg 'exterior_report_set' %}
 </table>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
