@@ -1,0 +1,67 @@
+body {
+	font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
+}
+
+h1 {
+	font-size: 20px;
+	color: #999;
+	/*border-bottom: 1px solid #999;*/	
+	font-weight: normal;
+}
+
+td, th {
+	padding: 1px 3px;
+}
+
+
+.report-table, .report-table table {
+	border-collapse: collapse;
+}
+
+.report-table {
+	margin-top: 0;
+	width: 100%;
+}
+
+.report-table th {
+	text-align: left;
+	font-weight: normal;
+}
+
+.report-table th, .report-table td {
+	font-size: 13px;
+}
+
+.report-table table{
+	width: 100%;
+}
+
+.report-table table td {
+	font-weight: bold;
+}
+
+.report-table table tr {
+	border-bottom: 1px dotted #ccc;
+}
+
+.report-table table tr:last-child {
+	border-bottom: 0;
+}
+
+.report-table thead td {
+	/*background: #eee;*/
+	border: 1px solid #ccc;
+}
+
+.report-table thead td:first-child, .report-table thead td:last-child{
+	background: #eee;
+}
+
+.report-table {
+	border: 1px solid #ccc;
+}
+
+.separator {
+	height: 15px;
+	border-top: 1px double #ccc;
+}
