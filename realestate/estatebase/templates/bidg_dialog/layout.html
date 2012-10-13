@@ -1,9 +1,6 @@
 {% extends "dialog_block.html" %}
-{% block title_left %}
 {% load report %}
-
-<a href="{% url level_create bidg.id %}?{{ next_url }}">Планировка</a>
-{% endblock %}
+{% block title_left %}Планировка{% endblock %}
 
 {% block content %}
 
@@ -15,6 +12,10 @@
 	{% bidg_layout level %}	
 </fieldset>
 {% endfor %}
+
+<div class="button" style="text-align: right">
+<a href="{% url level_create bidg.id %}?{{ next_url }}">Добавить планировку</a>
+</div>
 {% endblock content %}
 
 {% block title_right %}

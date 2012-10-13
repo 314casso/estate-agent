@@ -24,21 +24,7 @@
 		<th>Источник:</th>
 		<td colspan="100%">{{ estate.origin }}</td>
 	</tr>
-
-	<tr>
-		<th>Добавил:</th>
-		<td colspan="100%">{{ estate.history.created_by }}
-		<br />
-		{{ estate.history.created }}</td>
-	</tr>
-	{% if estate.history.updated %}
-	<tr>
-		<th>Обновил:</th>
-		<td colspan="100%">{{ estate.history.updated_by }}
-		<br />
-		{{ estate.history.updated }}</td>
-	</tr>
-	{% endif %}
+	{% history estate.history %}   
 </table>
 <div style="margin-top: 3px">
 	<table class="detail-table all-borders" style="font-size: 14px">

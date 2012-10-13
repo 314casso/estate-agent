@@ -202,7 +202,7 @@ class EstateCreateView(EstateMixin, CreateView):
         self.object.estate_category_id = category.pk 
         self.object._estate_type_id = form.cleaned_data['estate_type'].pk
         if category.is_commerce:
-            self.object.com_status = YES         
+            self.object.com_status_id = YES         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)       
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
@@ -638,12 +638,14 @@ class SteadUpdateView(ObjectMixin, UpdateView):
     continue_url = 'stead_update'
 
 class BidgAppendView(TemplateView):    
-    template_name = 'confirm.html'    
+    template_name = 'confirm.html'
+    dialig_title = u'Добавление строения...'
+    dialig_body = u'Добавить строение на участок?'    
     def get_context_data(self, **kwargs):        
         context = super(BidgAppendView, self).get_context_data(**kwargs)
         context.update({
-            'dialig_title' : u'Добавление строения...',
-            'dialig_body'  : u'Добавить строение на участок объекта [%s]?' % (self.kwargs['estate']),
+            'dialig_title' : self.dialig_title,
+            'dialig_body'  : self.dialig_body,
         })
         return context
     def update_object(self):
@@ -661,17 +663,28 @@ class BidgAppendView(TemplateView):
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))      
     
 class BidgRemoveView(BidgAppendView):
+    dialig_title = u'Удаление строения...'
+    dialig_body = u'Удалить строение из лота?'
     def update_object(self):                        
         bidg = Bidg.objects.get(pk=self.kwargs['pk'])
         self.estate = bidg.estate
-        bidg.delete();
-    def get_context_data(self, **kwargs):        
-        context = super(BidgAppendView, self).get_context_data(**kwargs)
-        context.update({
-            'dialig_title' : u'Удаление строения...',
-            'dialig_body'  : u'Удалить строение из объекта?'
-        })
-        return context    
+        bidg.delete();        
+
+class SteadAppendView(BidgAppendView):
+    dialig_title = u'Добавление участка...'
+    dialig_body = u'Добавить участок к лоту?'
+    def update_object(self):   
+        stead = Stead(estate_id=self.kwargs['estate'])
+        stead.save()
+        self.estate = stead.estate
+
+class SteadRemoveView(BidgAppendView):
+    dialig_title = u'Удаление участка...'
+    dialig_body = u'Удалить участок из лота?'
+    def update_object(self):   
+        stead = Stead.objects.get(pk=self.kwargs['pk'])
+        self.estate = stead.estate
+        stead.delete();
 
 class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'

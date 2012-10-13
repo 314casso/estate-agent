@@ -1,0 +1,12 @@
+{% if history %}
+{% if history.created %}
+<tr>
+    <th>Создано:</th><td>{{ history.created_by }} {{ history.created|date:"d M Y H:i" }}</td>
+</tr>
+{% endif %}
+{% if history.updated %}
+<tr>
+    <th>Обновлено:</th><td>{{ history.updated_by }} {{ history.updated|date:"d M Y H:i" }}</td>
+</tr>
+{% endif %}
+{% endif %}

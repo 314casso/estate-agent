@@ -2,7 +2,7 @@ from estatebase.models import Street, Locality, Microdistrict, EstateType, \
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior, \
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact, ExUser, \
     ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony,\
-    LayoutType, LevelName
+    LayoutType, LevelName, ComStatus
 from selectable.base import ModelLookup, LookupBase
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
@@ -130,17 +130,8 @@ class ExUserLookup(ModelLookup):
     model = ExUser
     search_fields = ('username__icontains', 'first_name__icontains', 'last_name__icontains', 'email__icontains')
     
-class ComChoiceLookup(LookupBase):
-    def get_query(self, request, term):        
-        return filter(lambda x: x[1].startswith(term), Estate.COMMERCIAL_CHOICES)    
-    def get_item_id(self, item):
-        return item[0]
-    def get_item_label(self, item):
-        return item[1]
-    def get_item_value(self, item):
-        return item[1]
-    def get_item(self, value):
-        return filter(lambda x: x[0] == value, Estate.COMMERCIAL_CHOICES)[0]
+class ComChoiceLookup(SimpleNameLookup):
+    model = ComStatus
 
 class InternetLookup(SimpleNameLookup):
     model = Internet 

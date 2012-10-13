@@ -184,5 +184,5 @@ else:
 
 
 
-mm = ModelMaker('SimpleDict', 'estate_client_status')
+mm = ModelMaker('SimpleDict', 'com_status')
 print mm.get_model_code()

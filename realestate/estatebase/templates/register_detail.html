@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load link_helper %}
 {% load paginator %}
 
 {% block page_header %}
@@ -26,9 +26,7 @@
 		<th>Название:</th>
 		<td>{{ estateregister.name }}</td>
 	</tr>	
-	<tr><th>Создано:</th><td>{{ estateregister.history.created }}<br />{{ estateregister.history.created_by }}</td></tr>		
-	<tr><th>Обновлено:</th><td>{{ estateregister.history.updated|default_if_none:'' }}<br />{{ estateregister.history.updated_by|default_if_none:'' }}</td></tr>
-		
+	{% history estateregister.history %}   
 </table>
 
 </fieldset>

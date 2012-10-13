@@ -29,9 +29,7 @@
 			</tr>
 		</thead>		
 		{{ form.as_table }}{% csrf_token %}		
-		<tr><th>Создано:</th><td>{{ client.history.created }} {{ client.history.created_by }}</td></tr>		
-		<tr><th>Обновлено:</th><td>{{ client.history.updated|default_if_none:'' }} {{ client.history.updated_by|default_if_none:'' }}</td></tr>
-		
+		{% history client.history %}  		
 		<tr>
 			<td colspan="100%"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">

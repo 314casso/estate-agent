@@ -201,6 +201,9 @@ class EstateTypeCategory(OrderedModel):
     has_stead = models.IntegerField(_('HasStead'), choices=AVAILABILITY_CHOICES)
     is_commerce =  models.BooleanField(_('Commerce'), default=False)
     @property
+    def maybe_stead(self):
+        return self.has_stead == MAYBE
+    @property
     def is_stead(self):
         return self.has_bidg == NO 
     @property
@@ -273,15 +276,20 @@ class ProcessDeletedModel(models.Model):
     deleted = models.BooleanField(default=False)
     class Meta:
         abstract = True         
+
+class ComStatus(SimpleDict):
+    '''
+    ComStatus    
+    '''    
+    status = models.IntegerField(_('Status'), choices=AVAILABILITY_CHOICES)
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Com status')
+        verbose_name_plural = _('Com statuses')
     
 class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
     '''
-    COMMERCIAL_CHOICES = (
-        (YES, u'Используется'),
-        (MAYBE, u'Возможно'),        
-    )      
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -296,7 +304,7 @@ class Estate(ProcessDeletedModel):
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
     agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
-    com_status = models.IntegerField(_('Commercial'), choices=COMMERCIAL_CHOICES, blank=True, null=True,)     
+    com_status = models.ForeignKey(ComStatus,verbose_name=_('ComStatus'),blank=True,null=True)         
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
@@ -369,7 +377,7 @@ class Estate(ProcessDeletedModel):
         return self.bidgs.filter(estate_type__estate_type_category__independent = False)                               
     @property
     def is_commerce(self):
-        return self.com_status == YES                                           
+        return self.com_status.status == YES                                           
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')

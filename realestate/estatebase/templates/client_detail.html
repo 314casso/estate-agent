@@ -39,11 +39,8 @@
 	<tr>
 		<th>Риэлтор:</th>
 		<td>{{ client.broker }}</td>
-	</tr>
-	
-	<tr><th>Создано:</th><td>{{ client.history.created }} {{ client.history.created_by }}</td></tr>		
-	<tr><th>Обновлено:</th><td>{{ client.history.updated|default_if_none:'' }} {{ client.history.updated_by|default_if_none:'' }}</td></tr>
-	
+	</tr>	
+    {% history client.history %}	
 	<tr>
 		<th>Примечание:</th>
 		<td>{{ client.note }}</td>

@@ -24,12 +24,7 @@
 			<tr>
 				<td colspan="100%">
 					<table>
-						<tr>
-							<th>Создано:</th><td>{{ bid.history.created_by }} {{ bid.history.created }}</td>												
-						</tr>						
-						<tr>
-							<th>Обновлено:</th><td>{{ bid.history.updated_by }} {{ bid.history.updated }}</td>
-						</tr>							
+					{% history bid.history %}
 					</table>
 				</td>					
 			</tr>	

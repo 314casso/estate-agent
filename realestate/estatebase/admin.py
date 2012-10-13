@@ -5,7 +5,8 @@ from orderedmodel.admin import OrderedModelAdmin
 from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
-    Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup, Bid
+    Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup, Bid,\
+    ComStatus
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -76,3 +77,4 @@ admin.site.register(Stead)
 admin.site.register(UserProfile)
 admin.site.register(GeoGroup)
 admin.site.register(Bid)
+admin.site.register(ComStatus)

@@ -3,35 +3,35 @@
 		"pk": 6,
 		"model": "estatebase.document",
 		"fields": {
-			"name": "Кадастровый номер",
+			"name": "ÐÐ°Ð´Ð°ÑÑÑÐ¾Ð²ÑÐ¹ Ð½Ð¾Ð¼ÐµÑ",
 			"estate_type_category": [2, 4, 8, 5, 6, 1]
 		}
 	}, {
 		"pk": 8,
 		"model": "estatebase.document",
 		"fields": {
-			"name": "Межевой план",
+			"name": "ÐÐµÐ¶ÐµÐ²Ð¾Ð¹ Ð¿Ð»Ð°Ð½",
 			"estate_type_category": [8]
 		}
 	}, {
 		"pk": 4,
 		"model": "estatebase.document",
 		"fields": {
-			"name": "Свидетельство",
+			"name": "Ð¡Ð²Ð¸Ð´ÐµÑÐµÐ»ÑÑÑÐ²Ð¾",
 			"estate_type_category": [2, 4, 5, 6, 1]
 		}
 	}, {
 		"pk": 7,
 		"model": "estatebase.document",
 		"fields": {
-			"name": "Свидетельство на участок",
+			"name": "Ð¡Ð²Ð¸Ð´ÐµÑÐµÐ»ÑÑÑÐ²Ð¾ Ð½Ð° ÑÑÐ°ÑÑÐ¾Ðº",
 			"estate_type_category": [8]
 		}
 	}, {
 		"pk": 5,
 		"model": "estatebase.document",
 		"fields": {
-			"name": "Технический паспорт",
+			"name": "Ð¢ÐµÑÐ½Ð¸ÑÐµÑÐºÐ¸Ð¹ Ð¿Ð°ÑÐ¿Ð¾ÑÑ",
 			"estate_type_category": [2, 4, 5, 6, 1]
 		}
 	}

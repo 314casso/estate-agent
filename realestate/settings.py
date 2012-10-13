@@ -168,7 +168,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'sorl.thumbnail',  
     'form_utils',
-    #'debug_toolbar'
+#    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

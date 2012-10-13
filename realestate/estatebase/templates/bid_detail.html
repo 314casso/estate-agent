@@ -44,10 +44,7 @@
                 {% endfor %}
             </td>
 	</tr>
-		
-	<tr><th>Создано:</th><td>{{ bid.history.created }} {{ bid.history.created_by }}</td></tr>		
-	<tr><th>Обновлено:</th><td>{{ bid.history.updated|default_if_none:'' }} {{ bid.history.updated_by|default_if_none:'' }}</td></tr>
-	
+	{% history bid.history %}
 	<tr>
 		<th>Примечание:</th>
 		<td>{{ bid.note }}</td>

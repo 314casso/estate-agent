@@ -98,4 +98,9 @@ def two_num(n_min, n_max):
 @register.simple_tag
 def estate_client_status(estate_pk,client_pk):
     return EstateClient.objects.get(estate_id=estate_pk,client_id=client_pk).estate_client_status
-    
+
+@register.inclusion_tag('inclusion/history.html')
+def history(history):        
+    if history:
+        return {'history': history}
+           
