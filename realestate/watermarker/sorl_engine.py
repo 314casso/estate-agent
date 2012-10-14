@@ -8,7 +8,7 @@ from sorl.thumbnail.engines.pil_engine import Engine
 __author__ = 'zeus'
 
 WATERMARK_OPTIONS = getattr(settings, 'WATERMARK_OPTIONS', {
-    'font_path': 'ubuntu.ttf',
+    'font_path': 'verdana.ttf',
     'font_scale': 0.05,
 })
 
