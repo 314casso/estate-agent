@@ -6,9 +6,11 @@ import base64
 
 register = template.Library()
 
-#@register.simple_tag
-#def reverse_link(name, *args):
-#    return reverse(name, args=args)
+#@register.inclusion_tag('inclusion/menu.html')
+#def reverse_link(path, next_url):    
+#    if path:
+#        url_name = resolve(path).url_name
+#    return {'menu_items': menu_items, 'url_name': url_name, 'next_url': next_url}  
 
 #@register.simple_tag
 #def next_from_request(next_url):    

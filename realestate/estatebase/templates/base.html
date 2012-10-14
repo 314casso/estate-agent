@@ -8,21 +8,25 @@
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"></script>
         {% block head %}{% endblock %}
+        {% load sitetree %}
     </head>
     <body>
         <div id="wrapper">
             <div id="header">
                 {% block header %}{% endblock %}                                
                 <div style="float: left">       
+                	<div class="maintree" id="nav">
+                       {% sitetree_menu from "maintree" include "trunk,topmenu" %}
+                    </div>
                 	<div class="page-header ui-widget">
                 		{% block page_header %}{% endblock %}
-                	</div>         	               	
+                	</div>        
                     {% block linkback %}{% endblock %}
                     {% block topbar %}{% endblock %}                    
                 </div>
                 {% if user.is_authenticated %}
                 <div class="ui-widget ui-widget-content ui-corner-all user-info">
-                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> / <a href="{% url logout %}">Выйти</a>
+                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> ({{ request.user.userprofile.office }}) / <a href="{% url logout %}">Выйти</a>
                 </div>
                 {% endif %}
                 <br style="clear: both" />                

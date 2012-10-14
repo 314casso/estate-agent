@@ -25,7 +25,8 @@ class ExUser(User):
 
 class UserProfile(models.Model):    
     user = models.OneToOneField(User)    
-    geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)                
+    geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)
+    office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)                
 
 class SimpleDict(models.Model):
     name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
@@ -47,16 +48,26 @@ class GeoGroup(SimpleDict):
 
 class Region(SimpleDict):
     '''
-    Районы
+    Район
     '''
     geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
         verbose_name_plural = _('regions')
 
+class Office(SimpleDict):
+    '''
+    Офис
+    '''
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'))
+    address = models.TextField(_('Address'))
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Office')
+        verbose_name_plural = _('Offices')
+
 class Locality(models.Model):
     '''
-    Населенные пункты
+    Населенный пункт
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
