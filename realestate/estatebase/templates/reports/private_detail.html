@@ -16,27 +16,73 @@
 </tr>
 
 <tr>
-    <th>Характеристики</th>
-    <td>{{ estate_item.beside|default:'' }}, {{ estate_item.beside_distance|default:'' }}</td>
+	<th>Характеристики</th>
+	<td>{{ estate_item.beside|default:'' }} {{ estate_item.beside_distance|default:'' }}
+	{% for bidg in estate_item.bidgs.all %}
+	<div>
+		<fieldset>
+			<legend>
+				<span class="item">{{ bidg.estate_type }}</span>
+			</legend>
+			{% wrapper_fieldset_comma bidg 'exterior_report_set' %}
+			<div class="layout">
+				{% for level in bidg.levels.all %}
+				<fieldset>
+					<legend>
+						<span class="item">Планировка: {{ level }}</span>
+					</legend>
+					{% bidg_layout level %}
+				</fieldset>
+				{% endfor %}
+			</div>
+			{% if bidg.documents.all %}
+			Документы:
+			{% endif %}
+			{% for doc in bidg.documents.all %}
+			{{ doc }} {% include 'comma.html' %}
+			{% endfor %}
+		</fieldset>
+	</div> {% endfor %} </td>
 </tr>
 
 <tr>
-    <th>Коммуникации</th>
-    <td>{% communication estate_item %}</td>
+	<th>Коммуникации</th>
+	<td>{% communication estate_item %}</td>
 </tr>
 
+{% with stead=estate_item.stead %}
+{% if stead %}
 <tr>
-    <th>Описание</th>
-    <td>{{ estate_item.description|default:'' }}</td>
+	<th>Участок</th>
+	<td> {% wrapper_fieldset_comma stead 'field_report_set' %}
+	{% if stead.documents.all %}
+	Документы:
+	{% endif %}
+	{% for doc in stead.documents.all %}
+	{{ doc }} {% include 'comma.html' %}
+	{% endfor %} </td>
 </tr>
+{% endif %}
+{% endwith %}
 
 <tr>
-    <th>Документы</th>
-    <td>
-    	{% for doc in estate_item.documents %}
-    	{{ doc }} {% include 'comma.html' %}
-    	{% endfor %}
-    </td>
+	<th>Описание</th>
+	<td>{{ estate_item.description|default:'' }}</td>
 </tr>
+
 
 {% endblock more_detail %}
+
+{% block foto %}
+<tr>
+	<td colspan="2"> {% if request.GET.foto %}
+	{% load thumbnail %}
+	{% for image in estate_item.images.all %}
+
+	{% thumbnail image.image "110x80" crop="center" as im %}
+	{% thumbnail image.image "800x600" crop="center" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
+	{% endthumbnail %}
+	{% endfor %}
+	{% endif %} </td>
+</tr>
+{% endblock foto %}

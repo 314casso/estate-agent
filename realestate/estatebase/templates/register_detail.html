@@ -15,7 +15,7 @@
 {% block left %}
 
 <!-- -->
-<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="max-width:350px; margin-top: 2px; padding: 4px 2px 3px 2px;">
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; display: inline-block">
     <legend style="font-size: 14px;">Информация о подборке</legend>
 <table>
 	<tr>
@@ -29,11 +29,14 @@
 	{% history estateregister.history %}   
 </table>
 
+<div class="topbar button">
+    <a href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
+    <a href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
+    <a href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
+</div>
+    
 </fieldset>
 <!-- -->
-{% endblock left %}
-
-{% block right %}
 
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Объекты в подборке</legend>
@@ -51,4 +54,4 @@
 {% endif %}
 </fieldset>
 
-{% endblock right %}
+{% endblock left %}

@@ -65,3 +65,16 @@ td, th {
 	height: 15px;
 	border-top: 1px double #ccc;
 }
+
+.report-table label, .report-table .layout {
+	font-weight: normal;
+}
+
+.report-table fieldset {
+	display: inline-block;
+	border: 1px solid #ccc;
+}
+
+.report-table img {
+	border: 3px solid #CCCCCC;
+}
