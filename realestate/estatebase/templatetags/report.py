@@ -57,7 +57,7 @@ def bidg_layout(level):
     layout_fieldset = OrderedDict([
                        ('area', u'площадь кв.м.'), 
                        ('furniture', u'мебель'), 
-                       ('layout_feature', 'расположение'), 
+                       ('layout_feature', 'изоляция'), 
                        ('interior', 'внутр. отделка'),
                        ('note', 'коммент')
                        ])   

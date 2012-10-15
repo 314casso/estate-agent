@@ -993,7 +993,16 @@ class RemoveRegisterFromBid(AddRegisterToBid):
 class RegisterReportView(EstateRegisterMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(RegisterReportView, self).get_context_data(**kwargs)        
-        estate_list = self.object.estates.all()  
+        estate_list = self.object.estates.prefetch_related('beside', 'estate_category' , 'contact' , 'bidgs__wall_construcion', 'history', 
+                                                           'clients__contacts','bidgs__estate_type__estate_type_category', 
+                                                           'stead__estate_type__estate_type_category',
+                                                           'bidgs__documents','bidgs__levels__layout_set',
+                                                           'bidgs__exterior_finish','bidgs__roof','bidgs__window_type','bidgs__heating',
+                                                           'bidgs__levels__level_name','bidgs__levels__layout_set__furniture',
+                                                           'bidgs__levels__layout_set__interior','bidgs__levels__layout_set__layout_feature',
+                                                           'bidgs__levels__layout_set__layout_type', 'estate_status', 'origin',
+                                                           'region','locality')
+        
         order_by = self.request.fields
         if order_by:      
             estate_list = estate_list.order_by(','.join(order_by))       

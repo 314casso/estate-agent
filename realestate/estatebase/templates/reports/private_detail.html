@@ -18,13 +18,14 @@
 <tr>
 	<th>Характеристики</th>
 	<td>{{ estate_item.beside|default:'' }} {{ estate_item.beside_distance|default:'' }}
-	{% for bidg in estate_item.bidgs.all %}
+	{% for bidg in estate_item.bidgs.all %}	
 	<div>
 		<fieldset>
 			<legend>
 				<span class="item">{{ bidg.estate_type }}</span>
 			</legend>
-			{% wrapper_fieldset_comma bidg 'exterior_report_set' %}
+			
+			{% wrapper_fieldset_comma bidg 'exterior_report_set' %}			
 			<div class="layout">
 				{% for level in bidg.levels.all %}
 				<fieldset>
@@ -54,7 +55,7 @@
 {% if stead %}
 <tr>
 	<th>Участок</th>
-	<td> {% wrapper_fieldset_comma stead 'field_report_set' %}
+	<td> {% wrapper_fieldset_comma stead 'field_report_set' %}<br />		
 	{% if stead.documents.all %}
 	Документы:
 	{% endif %}
