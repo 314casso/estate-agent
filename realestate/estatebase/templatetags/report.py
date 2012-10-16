@@ -71,4 +71,15 @@ def bidg_layout(level):
         layout_dict[layout.layout_type] = deepcopy(layout_row)         
     return {'layouts': layout_dict}            
             
-                
+@register.simple_tag            
+def estate_details(estate_item):
+    result = ''
+    sep = ', '
+    if estate_item.beside:
+        result = u'расстояние до "%s": %s м' % (estate_item.beside, estate_item.beside_distance or '')
+    if estate_item.com_status:
+        if result:            
+            result += sep
+        result += u'коммерч. использование: ' % estate_item.com_status
+    return result
+                    

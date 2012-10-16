@@ -12,10 +12,10 @@ import datetime
 import os
 from django.db.models.signals import post_save, pre_save, post_delete
 from picklefield.fields import PickledObjectField
-from settings import CORRECT_DELTA
+from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
     OUTBUILDINGS
-
+import caching.base
 
 class ExUser(User):
     def __unicode__(self):
@@ -28,7 +28,8 @@ class UserProfile(models.Model):
     geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)
     office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)                
 
-class SimpleDict(models.Model):
+class SimpleDict(caching.base.CachingMixin, models.Model):
+    objects = caching.base.CachingManager()
     name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
     def __unicode__(self):
         return u'%s' % self.name
@@ -388,7 +389,11 @@ class Estate(ProcessDeletedModel):
         return self.bidgs.filter(estate_type__estate_type_category__independent = False)                               
     @property
     def is_commerce(self):
-        return self.com_status.status == YES                                           
+        return self.com_status.status == YES
+    @property
+    def credit_sum(self):
+#TODO: Исправить!               
+        return (self.agency_price *INTEREST_RATE/12/(1-(1+INTEREST_RATE/12)^(-MAX_CREDIT_MONTHS)))                                           
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')

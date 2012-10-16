@@ -17,7 +17,8 @@
 
 <tr>
 	<th>Характеристики</th>
-	<td>{{ estate_item.beside|default:'' }} {{ estate_item.beside_distance|default:'' }}
+	<td>
+		{% estate_details estate_item %}		
 	{% for bidg in estate_item.bidgs.all %}	
 	<div>
 		<fieldset>
