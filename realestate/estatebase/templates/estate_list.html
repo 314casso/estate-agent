@@ -50,6 +50,7 @@ Cписок лотов
     </button>
     {% include 'prev_view.html' %}
 </div>
+{% include 'estate_filter_form.html' %}
 {% endblock topbar %}
 
 {% block left %}
@@ -61,5 +62,4 @@ Cписок лотов
     {% digg_paginator %}
 </div>
 {% endif %}
-{% include 'estate_filter_form.html' %}
 {% endblock left %}
