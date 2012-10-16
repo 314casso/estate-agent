@@ -420,6 +420,9 @@ legend {
 	padding-top: 3px;	
 }
 
+#filter {
+	display: none;
+}
 
 .filter-table table tr:first-child td, .filter-table table tr:first-child th {
 	border-top: 0;
