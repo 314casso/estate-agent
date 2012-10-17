@@ -1,8 +1,15 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-    <head>        
-        <title>{{ title }}</title> 
-        <script type="text/javascript"> </script>       
+    <head>
+        <title>{{ title }}</title>
+        <script type="text/javascript">
+			$(document).ready(function() {
+				$('body').hide();
+				$(window).load(function() {
+					$('body').show();
+				});
+			});
+        </script>
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css">
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
         {% block css %}{% endblock css %}
@@ -15,25 +22,25 @@
     <body>
         <div id="wrapper">
             <div id="header">
-                {% block header %}{% endblock %}                                
-                <div style="float: left">       
-                	{% if user.is_authenticated %}
-                	<div class="maintree" id="nav">
-                       {% sitetree_menu from "maintree" include "trunk,topmenu" %}
+                {% block header %}{% endblock %}
+                <div style="float: left">
+                    {% if user.is_authenticated %}
+                    <div class="maintree" id="nav">
+                        {% sitetree_menu from "maintree" include "trunk,topmenu" %}
                     </div>
                     {% endif %}
-                	<div class="page-header ui-widget">
-                		{% block page_header %}{% endblock %}
-                	</div>        
+                    <div class="page-header ui-widget">
+                        {% block page_header %}{% endblock %}
+                    </div>
                     {% block linkback %}{% endblock %}
-                    {% block topbar %}{% endblock %}                    
+                    {% block topbar %}{% endblock %}
                 </div>
                 {% if user.is_authenticated %}
                 <div class="ui-widget ui-widget-content ui-corner-all user-info">
                     Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> ({{ request.user.userprofile.office }}) / <a href="{% url logout %}">Выйти</a>
                 </div>
                 {% endif %}
-                <br style="clear: both" />                
+                <br style="clear: both" />
             </div>
             <div id="content">
                 <div id="left">
