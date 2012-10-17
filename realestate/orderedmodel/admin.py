@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.defaults import patterns
@@ -20,8 +18,8 @@ class OrderedModelAdmin(admin.ModelAdmin):
         return my_urls + super(OrderedModelAdmin, self).get_urls()
 
     def reorder(self, item):
-        DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP' , u'&uarr; вверх')
-        DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN' , u'&darr; вниз')
+        DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP' , '&uarr; up')
+        DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN' , '&darr; down')
         button = '<a href="{0}/move_{1}">{2}</a>'
         html = ''
         html += button.format(item.pk, 'down', DEFAULT_SORT_DOWN)
