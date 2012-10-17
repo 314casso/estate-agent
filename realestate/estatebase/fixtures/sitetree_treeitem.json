@@ -1,0 +1,91 @@
+[
+	{
+		"pk": 1,
+		"model": "sitetree.treeitem",
+		"fields": {
+			"parent": null,
+			"access_restricted": false,
+			"access_permissions": [],
+			"description": "",
+			"insitetree": true,
+			"hint": "",
+			"url": "estate-list",
+			"inbreadcrumbs": true,
+			"title": "Лоты",
+			"tree": 1,
+			"access_perm_type": 1,
+			"alias": null,
+			"sort_order": 1,
+			"inmenu": true,
+			"access_loggedin": false,
+			"hidden": false,
+			"urlaspattern": true
+		}
+	}, {
+		"pk": 2,
+		"model": "sitetree.treeitem",
+		"fields": {
+			"parent": null,
+			"access_restricted": false,
+			"access_permissions": [],
+			"description": "",
+			"insitetree": true,
+			"hint": "",
+			"url": "client-list",
+			"inbreadcrumbs": true,
+			"title": "Заказчики",
+			"tree": 1,
+			"access_perm_type": 1,
+			"alias": null,
+			"sort_order": 2,
+			"inmenu": true,
+			"access_loggedin": false,
+			"hidden": false,
+			"urlaspattern": true
+		}
+	}, {
+		"pk": 3,
+		"model": "sitetree.treeitem",
+		"fields": {
+			"parent": null,
+			"access_restricted": false,
+			"access_permissions": [],
+			"description": "",
+			"insitetree": true,
+			"hint": "",
+			"url": "bid-list",
+			"inbreadcrumbs": true,
+			"title": "Заявки",
+			"tree": 1,
+			"access_perm_type": 1,
+			"alias": null,
+			"sort_order": 3,
+			"inmenu": true,
+			"access_loggedin": false,
+			"hidden": false,
+			"urlaspattern": true
+		}
+	}, {
+		"pk": 4,
+		"model": "sitetree.treeitem",
+		"fields": {
+			"parent": null,
+			"access_restricted": false,
+			"access_permissions": [],
+			"description": "",
+			"insitetree": true,
+			"hint": "",
+			"url": "register-list",
+			"inbreadcrumbs": true,
+			"title": "Подборки",
+			"tree": 1,
+			"access_perm_type": 1,
+			"alias": null,
+			"sort_order": 4,
+			"inmenu": true,
+			"access_loggedin": false,
+			"hidden": false,
+			"urlaspattern": true
+		}
+	}
+]

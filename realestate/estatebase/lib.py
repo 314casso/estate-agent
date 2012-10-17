@@ -1,4 +1,9 @@
-def expt(b, n):
-    if n == 0:
-        return 1
-    return b * expt(b, n - 1)
+def first_last(iterable):
+    i = iter(iterable)
+    f = next(i)
+    yield f, "first"
+    n = next(i)
+    for another in i:
+        yield n, None
+        n = another
+    yield n, "last"

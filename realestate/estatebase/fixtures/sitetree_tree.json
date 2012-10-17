@@ -1,0 +1,10 @@
+[
+	{
+		"pk": 1,
+		"model": "sitetree.tree",
+		"fields": {
+			"alias": "maintree",
+			"title": "Главное древо"
+		}
+	}
+]

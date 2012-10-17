@@ -4,6 +4,8 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.wrapper import get_wrapper
 from collections import OrderedDict
 from copy import deepcopy
+from estatebase.models import MAYBE
+from estatebase.lib import first_last
 
 register = template.Library()
 
@@ -75,13 +77,23 @@ def bidg_layout(level):
             
 @register.simple_tag            
 def estate_details(estate_item):
-    result = ''
-    sep = ', '
+    result = []    
     if estate_item.beside:
-        result = u'расстояние до "%s": %s м' % (estate_item.beside, estate_item.beside_distance or '')
-    if estate_item.com_status:
-        if result:            
-            result += sep
-        result += u'коммерч. использование: ' % estate_item.com_status
-    return result
-                    
+        result.append(u'расстояние до "%s": %s м' % (estate_item.beside, estate_item.beside_distance or ''))
+    if estate_item.com_status and estate_item.com_status.id == MAYBE:                    
+        status = u'коммерч. использование: %s' % estate_item.com_status
+        result.append(status.lower())     
+    return ', '.join(result) 
+
+@register.filter
+def to_comma_sep(iterval):
+    result = []
+    for doc in iterval:
+        result.append(doc.name.lower())
+    if result:
+        return ', '.join(result)
+    return u'не готовы'
+            
+        
+        
+                            
