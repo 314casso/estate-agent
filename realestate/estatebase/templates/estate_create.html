@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-{% block head %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"> </script>
+{% block css %}
 {{ form.media.css }}
+{% endblock css %}
+{% block js %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"> </script>
 {{ form.media.js }}
 <script type="text/javascript">
 	function localityParam(query) {
@@ -27,8 +29,7 @@
         // });	});
 	
 </script>
-
-{% endblock %}
+{% endblock js %}
 
 {% block left %}
 

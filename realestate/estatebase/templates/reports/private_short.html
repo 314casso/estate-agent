@@ -4,7 +4,7 @@
 {% load link_helper %}
 
 {% block content %}
-<h1>{% block title %}Краткий реестр для своих: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
+<h1>{% block title %}Краткий реестр № {{ estateregister.pk }} для своих: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
 {% endblock content %}
 
 {% block tbody %}
@@ -32,11 +32,11 @@
 		{% block more_detail %}{% endblock more_detail %}
 		<tr>
 			<th>Цена собственника</th>
-			<td>{{ estate_item.saler_price|default:''|intcomma }}</td>
+			<td>{{ estate_item.saler_price|rubble }}</td>
 		</tr>
 		<tr>
 			<th>Цена агентства</th>
-			<td>{{ estate_item.agency_price|default:''|intcomma }}</td>
+			<td>{{ estate_item.agency_price|rubble }}</td>
 		</tr>
 		<tr>
 			<th>Комментарий</th>

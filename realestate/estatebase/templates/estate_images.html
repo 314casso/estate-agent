@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load thumbnail %}
-{% block head %}
+
+{% block css %}
 <link href="{{ STATIC_URL }}css/lightbox.css" rel="stylesheet" />
+{% endblock css %}
+
+{% block js %}
 <script src="{{ STATIC_URL }}js/lightbox.js"> </script>
 <style>
 	.thumb {
@@ -15,7 +19,7 @@
 		border: 4px solid white;
 	}
 </style>
-{% endblock %}
+{% endblock js %}
 
 {% block linkback %}
 {% include 'back2estate.html' %}

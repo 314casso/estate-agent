@@ -3,11 +3,13 @@
 {% load query_string %}
 {% load paginator %}
 {% load humanize %}
-{% block head %}
 
+{% block css %}
 {{ bid_filter_form.media.css }}
-{{ bid_filter_form.media.js }}
+{% endblock css %}
 
+{% block js %}
+{{ bid_filter_form.media.js }}
 <script type="text/javascript">
     $(function() {
         $("#filter").dialog({
@@ -19,8 +21,7 @@
         });                        
     }); 
 </script>
-
-{% endblock %}
+{% endblock js %}
 
 {% block page_header %}
 	Список заявок

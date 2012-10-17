@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load humanize %}
+{% load link_helper %}
+{% load report %}
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<title> {% block title %}{% endblock title %} </title>
+		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/report.css">
+	</head>
+	<body>
+		{% block content %}{% endblock content %}
+		<table class="report-table">
+			{% for estate_item in estate_list %}
+			<thead>
+				<tr>
+					<th><span class="list-title">{{ estate_item.estate_type }}.  Цена {{ estate_item.agency_price|rubble }} {% no_street_address estate_item %}. Код {{ estate_item.id }}</span></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+					<div>
+						{% estate_details estate_item %}, {% communication estate_item %}
+						<div class="wrapper-0">
+							{% for bidg in estate_item.bidgs.all %}
+							<strong>{{ bidg.estate_type }}:</strong>
+							{% wrapper_fieldset_comma bidg 'exterior_report_set' %};
+							документы:
+							<strong>				
+							{% for doc in bidg.documents.all %}
+							{{ doc }} {% include 'comma.html' %}
+							{% empty %}
+							не готовы
+							{% endfor %}
+							</strong>
+							<div class="wrapper-1">
+								{% for level in bidg.levels.all %}
+								<strong>Планировка:</strong> {{ level }} {% bidg_layout level %}{% if not forloop.last %}; {% endif %}
+								{% endfor %}
+							</div>
+							{% endfor %}							
+						</div>
+						
+					</div></td>
+				</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+
+	</body>
+</html>
+

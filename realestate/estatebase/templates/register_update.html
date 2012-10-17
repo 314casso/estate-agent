@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-{% block head %}
+
+{% block css %}
 <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+{% endblock css %}
+
+{% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
-{% endblock head %}
+{% endblock js %}
 
 {% block left %}
-
-
 <form method="post" action="" class="table-form">
 	{% csrf_token %}	
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
@@ -41,5 +43,4 @@
 			</tfoot>
         </table>
     </form>
-
 {% endblock %}

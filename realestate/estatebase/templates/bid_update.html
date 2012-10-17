@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-{% block head %}
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
-{% endblock head %}
+
+{% block css %}
+{{ bid_filter_form.media.css }}
+{% endblock css %}
+{% block js %}
+{{ bid_filter_form.media.js }}
+{% endblock js %}
 
 {% block left %}
 <form method="post" action="" class="table-form">

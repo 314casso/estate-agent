@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% load link_helper %}
-{% block head %}
+{% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"> </script>
 
 <script type="text/javascript">
@@ -13,7 +13,7 @@ $(document).ready(function() {
 });
 </script>
 
-{% endblock %}
+{% endblock js %}
 
 {% block left %}
 

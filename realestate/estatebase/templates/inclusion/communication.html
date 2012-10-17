@@ -1,1 +1,1 @@
-{% for comm in comms %}{{ comm }}{% include 'comma.html' %}{% endfor %}
+{% for comm in comms %}{{ comm|safe }}{% include 'comma.html' %}{% endfor %}

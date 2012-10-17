@@ -3,6 +3,7 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.models import EstateClient
 import base64
+from copy import deepcopy
 
 register = template.Library()
 
@@ -49,15 +50,19 @@ def contact_list(client, next_url, first=None):
 def client_list(estate, next_url):        
     return {'estate': estate, 'next_url': next_url}
 
-@register.inclusion_tag('inclusion/address_tag.html')
-def address(estate):    
+def base_address(estate):    
     items = []
     if estate.region:
-        items.append(estate.region.name)
+        items.append(u'%s район' % estate.region.name)
     if estate.locality:     
         items.append(estate.locality.name)
     if estate.microdistrict:         
         items.append(estate.microdistrict.name)
+    return items
+
+@register.simple_tag
+def address(estate):    
+    items = deepcopy(base_address(estate))
     if estate.street:     
         items.append(estate.street.name)
     if estate.estate_number:                      
@@ -65,8 +70,16 @@ def address(estate):
     basic_bidg = estate.basic_bidg     
     if basic_bidg and basic_bidg.room_number:
         items.append(u'кв. %s' % basic_bidg.room_number)        
-    address = ', '.join(items)
-    return {'address': address}
+    return ', '.join(items)
+
+@register.simple_tag
+def no_street_address(estate):
+    items = deepcopy(base_address(estate))
+    return ', '.join(items)
+
+@register.filter()
+def rubble(value):    
+    return value and u'%s руб.' % intcomma(value) or ''
 
 #@register.simple_tag
 #def get_label(queryset,field_name):

@@ -2,17 +2,15 @@
 {% load i18n %}
 {% load link_helper %}
 
-{% block head %}
+{% block js %}
 <script>
 	$(function() {
 		$(".table-grid tbody").find('#contact-list-{{ contact.pk }}').addClass('ui-state-highlight')
-	});
+	});
 </script>
-{% endblock %}
+{% endblock js %}
 
 {% block left %}
-{% load query_string %}
-
 <form action="" method="post" class="table-form">
 	<table class="ui-widget ui-widget-content ui-corner-all">
 		<thead>

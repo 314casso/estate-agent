@@ -1,7 +1,7 @@
 {% extends "reports/private_short.html" %}
 {% load report %}
 
-<h1>{% block title %}Реестр для своих без фото: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
+<h1>{% block title %}Реестр № {{ estateregister.pk }} для своих {% if request.GET.foto %} с {% else %} без {% endif %} фото: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
 
 {% block more_detail %}
 

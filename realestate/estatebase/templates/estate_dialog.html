@@ -2,10 +2,13 @@
 {% load i18n %}
 {% load link_helper %}
 
-{% block head %}
+{% block css %}
 {{ form.media.css }}
+{% endblock css %}
+
+{% block js %}
 {{ form.media.js }}
-{% endblock head %}
+{% endblock js %}
 
 {% block linkback %}
 {% include 'back2estate.html' %}

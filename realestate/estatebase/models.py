@@ -391,9 +391,8 @@ class Estate(ProcessDeletedModel):
     def is_commerce(self):
         return self.com_status.status == YES
     @property
-    def credit_sum(self):
-#TODO: Исправить!               
-        return (self.agency_price *INTEREST_RATE/12/(1-(1+INTEREST_RATE/12)^(-MAX_CREDIT_MONTHS)))                                           
+    def credit_sum(self):        
+        return int(self.agency_price * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))                                           
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')

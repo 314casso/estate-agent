@@ -1,27 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-{% block head %}
-<style>
- #level-layouts tbody td {
- 	border-bottom: 1px solid #DDDDDD;
- }
+{% block css %}
+<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
+{% endblock css %}
 
-#level-layouts td{
-    padding: 2px 0 2px 8px;
-}
-
-#level-layouts { 
-    border-spacing: 0;
-    border-collapse: collapse;
-    border: 0;
-}
-
-.layout-area input{
-	width: 50px;
-}
-</style>
+{% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
+<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
 <script type="text/javascript">
     $(function() {
         $('#level-layouts tbody tr').formset({
@@ -32,15 +18,11 @@
     })
     
     $(function() {
-        $(".table-grid tbody").find('.level-list-{{ object.id }}').addClass('ui-state-highlight')
+        $(".table-grid tbody").find('.level-list-{{ object.id }}').addClass('ui-state-highlight');
     });
     
 </script>
-
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
-
-{% endblock %}
+{% endblock js %}
 
 {% block linkback %}
 {% include 'back2estate.html' with estate=bidg.estate %}

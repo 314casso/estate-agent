@@ -5,14 +5,13 @@ body {
 h1 {
 	font-size: 20px;
 	color: #999;
-	/*border-bottom: 1px solid #999;*/	
+	/*border-bottom: 1px solid #999;*/
 	font-weight: normal;
 }
 
 td, th {
 	padding: 1px 3px;
 }
-
 
 .report-table, .report-table table {
 	border-collapse: collapse;
@@ -32,7 +31,7 @@ td, th {
 	font-size: 13px;
 }
 
-.report-table table{
+.report-table table {
 	width: 100%;
 }
 
@@ -53,7 +52,7 @@ td, th {
 	border: 1px solid #ccc;
 }
 
-.report-table thead td:first-child, .report-table thead td:last-child{
+.report-table thead td:first-child, .report-table thead td:last-child {
 	background: #eee;
 }
 
@@ -77,4 +76,20 @@ td, th {
 
 .report-table img {
 	border: 3px solid #CCCCCC;
+}
+
+.wrapper-0 {
+	border-top: 1px dotted #ccc;	
+}
+
+.wrapper-1 {
+	border-bottom: 1px dotted #ccc;
+	margin-bottom: 10px;	
+	font-size: 90%;
+}
+
+.list-title {
+	font-weight: bold;
+	font-size: 115%;
+	background: #eee;		
 }

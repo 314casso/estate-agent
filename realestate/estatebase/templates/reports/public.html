@@ -1,0 +1,4 @@
+{% extends "reports/public_base.html" %}
+{% block content %}
+<h1>{% block title %}Реестр № {{ estateregister.pk }} {% if request.GET.foto %} с {% else %} без {% endif %} фото от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
+{% endblock content %}

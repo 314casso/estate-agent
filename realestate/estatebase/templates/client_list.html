@@ -4,11 +4,11 @@
 {% load query_string %}
 {% load sorting_tags %}
 
-{% block head %}
-
+{% block css %}
 {{ client_filter_form.media.css }}
+{% endblock css %}
+{% block js %}
 {{ client_filter_form.media.js }}
-
 <script type="text/javascript">
 	$(function() {
 
@@ -21,8 +21,7 @@
 		
 	});
 </script>
-
-{% endblock %}
+{% endblock js %}
 
 {% block page_header %}
 	Список заказчиков	
