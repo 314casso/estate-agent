@@ -16,9 +16,11 @@
             <div id="header">
                 {% block header %}{% endblock %}                                
                 <div style="float: left">       
+                	{% if user.is_authenticated %}
                 	<div class="maintree" id="nav">
                        {% sitetree_menu from "maintree" include "trunk,topmenu" %}
                     </div>
+                    {% endif %}
                 	<div class="page-header ui-widget">
                 		{% block page_header %}{% endblock %}
                 	</div>        
