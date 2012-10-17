@@ -1,21 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <head>
-        <title>{{ title }}</title>
-        <script type="text/javascript">
-			$(document).ready(function() {
-				$('body').hide();
-				$(window).load(function() {
-					$('body').show();
-				});
-			});
-        </script>
+        <title>{{ title }}</title>        
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css">
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
         {% block css %}{% endblock css %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('body').hide();
+                $(window).load(function() {
+                    $('body').show();
+                });
+            });
+        </script>
         {% block js %}{% endblock js %}
         {% load sitetree %}
     </head>
