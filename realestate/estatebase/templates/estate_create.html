@@ -6,8 +6,6 @@
 {% endblock css %}
 {% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/ajax_dialog.js"> </script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/autoNumeric-1.7.5.js"> </script>
-
 {{ form.media.js }}
 <script type="text/javascript">
 	function localityParam(query) {
@@ -29,10 +27,6 @@
             // $("#id_locality_1").val('');        
             // $("#id_locality_0").val('');
         // });
-        
-         jQuery(function($) {
-    		$('[name=agency_price]').autoNumeric({aSep: ' ', aDec: ',', mDec: 0});
-  		}); 
         	});
 	
 </script>

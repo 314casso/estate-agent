@@ -29,7 +29,7 @@ from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
 from estatebase.wrapper import get_polymorph_label, get_wrapper
-from estatebase.fields import ComplexField, SepNumberWidget
+from estatebase.fields import ComplexField, SepNumberWidget, LocalIntegerField
 
 
 class DateRangeWidget(forms.MultiWidget):
@@ -70,7 +70,9 @@ class DateRangeField(MultiValueField):
         return [None, None]
 
 class EstateForm(ModelForm):              
-    beside_distance = IntegerField(label='', required=False)
+    beside_distance = LocalIntegerField(label='')
+    agency_price = LocalIntegerField(label=_('Agency price'))
+    saler_price = LocalIntegerField(label=_('Saler price'))
     class Meta:                
         model = Estate
         fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',

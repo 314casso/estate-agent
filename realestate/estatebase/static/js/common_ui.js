@@ -17,8 +17,8 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('.active').addClass('ui-state-highlight');
-
+	$('.active').addClass('ui-state-highlight');	
+    $('.local-int').autoNumeric({aSep: String.fromCharCode(160), aDec: ',', mDec: 0});
 });
 
 function getIndex(id, item) {

@@ -4,7 +4,7 @@ from south.modelsinspector import add_introspection_rules
 from django import forms
 from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.widgets import TextInput
-from django.forms.fields import MultiValueField, CharField
+from django.forms.fields import MultiValueField, CharField, IntegerField
 from selectable.forms.fields import AutoComboboxSelectMultipleField
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.utils.safestring import mark_safe
@@ -43,7 +43,7 @@ class ComplexField(MultiValueField):
         self.widget = ComplexFieldWidget(lookup_class=lookup_class)        
         fields = []
         fields.append(AutoComboboxSelectMultipleField(
-            lookup_class=lookup_class,            
+            lookup_class=lookup_class,
             required=False,
             )
          )        
@@ -54,3 +54,8 @@ class ComplexField(MultiValueField):
         if data_list:                        
             return data_list
         return [None, None]
+
+class LocalIntegerField(IntegerField):
+    widget = TextInput(attrs={'class':'local-int'})
+    def __init__(self, max_value=None, min_value=None, required=False, *args, **kwargs):
+        super(LocalIntegerField, self).__init__(max_value, min_value, required, localize=True, *args, **kwargs)
