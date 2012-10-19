@@ -101,7 +101,7 @@ def two_num(n_min, n_max):
     result = ''
     if n_min and n_max:
         if n_min != n_max:     
-            result = 'от %s до %s' % (intcomma(n_min),intcomma(n_max))
+            result = u'от %s до %s' % (intcomma(n_min),intcomma(n_max))
         else:
             result = '%s' % intcomma(n_max)    
     elif n_min and not n_max:
