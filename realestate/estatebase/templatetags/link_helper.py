@@ -105,9 +105,9 @@ def two_num(n_min, n_max):
         else:
             result = '%s' % intcomma(n_max)    
     elif n_min and not n_max:
-        result = 'более %s' % (intcomma(n_min))
+        result = u'более %s' % (intcomma(n_min))
     elif n_max and not n_min:
-        result = 'менее %s' % (intcomma(n_max))
+        result = u'менее %s' % (intcomma(n_max))
     return result             
 
 @register.simple_tag

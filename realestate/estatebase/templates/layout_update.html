@@ -7,21 +7,23 @@
 
 {% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
 <script type="text/javascript">
     $(function() {
         $('#level-layouts tbody tr').formset({
             prefix : '{{ layout_formset.prefix }}',
             addText : 'Добавить элемент планировки',
-            deleteText : 'Удалить'
+            deleteText : 'Удалить',
+            added: function(row) {
+                        bindSelectables($(row));
+                } 
         });
     })
     
     $(function() {
         $(".table-grid tbody").find('.level-list-{{ object.id }}').addClass('ui-state-highlight');
-    });
-    
+    });        
 </script>
+<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
 {% endblock js %}
 
 {% block linkback %}

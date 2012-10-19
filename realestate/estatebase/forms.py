@@ -29,7 +29,7 @@ from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
 from estatebase.wrapper import get_polymorph_label, get_wrapper
-from estatebase.fields import ComplexField
+from estatebase.fields import ComplexField, SepNumberWidget
 
 
 class DateRangeWidget(forms.MultiWidget):
@@ -84,7 +84,7 @@ class EstateForm(ModelForm):
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),
-            'com_status': AutoComboboxSelectWidget(ComChoiceLookup),
+            'com_status': AutoComboboxSelectWidget(ComChoiceLookup),                        
         }
 
 class EstateCreateForm(EstateForm):

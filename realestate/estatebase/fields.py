@@ -6,6 +6,14 @@ from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.widgets import TextInput
 from django.forms.fields import MultiValueField, CharField
 from selectable.forms.fields import AutoComboboxSelectMultipleField
+from django.contrib.humanize.templatetags.humanize import intcomma
+from django.utils.safestring import mark_safe
+from django.forms import widgets
+
+class SepNumberWidget(widgets.TextInput):
+    def render(self, name, value, attrs=None):
+        val = (super(SepNumberWidget, self).render(name, value, attrs))
+        return mark_safe(intcomma(val))
 
 class MinMaxField(models.CharField):
     def __init__(self, *args, **kwargs):
