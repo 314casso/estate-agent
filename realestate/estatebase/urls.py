@@ -17,7 +17,7 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     EstateCreateClientView, RegisterReportView, SteadAppendView, SteadRemoveView
 
 urlpatterns = patterns('',   
-    url(r'^estatelist/$',EstateListView.as_view(), name='estate-list'),
+    url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
     url(r'^estateselectlist/(?P<selected>\d+)$',EstateSelectListView.as_view(), name='estate_select_list'),
     url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
     url(r'^selectable/', include('selectable.urls')),    

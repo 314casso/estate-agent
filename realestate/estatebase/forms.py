@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms import ModelForm
-from django.forms.fields import DateField, MultiValueField, \
-    CharField, IntegerField
 from django.forms.forms import Form
 from django.forms.models import inlineformset_factory
 from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
-    CheckboxInput, DateInput
+    CheckboxInput
 from django.utils.translation import ugettext_lazy as _
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
@@ -18,56 +16,20 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LayoutTypeLookup, LevelNameLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid, \
-    EstateRegister, EstateClient, EstateClientStatus, EstateType
+    EstateRegister, EstateClientStatus, EstateType
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
     AutoCompleteSelectField
 from selectable.forms.widgets import AutoComboboxSelectWidget    
-import re
 from form_utils.forms import BetterForm, BetterModelForm
 from settings import CORRECT_DELTA
 from django.db.models.query_utils import Q
 from estatebase.wrapper import get_polymorph_label, get_wrapper
-from estatebase.fields import ComplexField, SepNumberWidget, LocalIntegerField
-
-
-class DateRangeWidget(forms.MultiWidget):
-    """
-    A Widget that splits datetime input into two <input type="text"> boxes.
-    """
-
-    def __init__(self, attrs=None, date_format=None):
-        date_input = DateInput(attrs={'class':'date-input', 'pattern':'(((0[1-9]|[12]\d|3[01])\.(0[13578]|1[02])\.((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\.(0[13456789]|1[012])\.((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\.02\.((19|[2-9]\d)\d{2}))|(29\.02\.((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))'}, format=date_format)
-        widgets = (date_input, date_input)
-        super(DateRangeWidget, self).__init__(widgets, attrs)
-
-    def decompress(self, value):
-        if value:            
-            return value
-        return [None, None]    
-
-class DateRangeField(MultiValueField):
-    widget = DateRangeWidget    
-    default_error_messages = {
-        'invalid_date': _(u'Enter a valid date.'),
-    }
-
-    def __init__(self, input_date_formats=None, input_time_formats=None, *args, **kwargs):
-        errors = self.default_error_messages.copy()
-        if 'error_messages' in kwargs:
-            errors.update(kwargs['error_messages'])
-        localize = kwargs.get('localize', False)
-        field = DateField(input_formats=input_date_formats,
-                      error_messages={'invalid': errors['invalid_date']},
-                      localize=localize)
-        fields = (field, field,)
-        super(DateRangeField, self).__init__(fields, *args, **kwargs)
-
-    def compress(self, data_list):
-        if data_list:                        
-            return data_list
-        return [None, None]
+from estatebase.fields import ComplexField, LocalIntegerField, \
+    DateRangeField, IntegerRangeField, DecimalRangeField, LocalDecimalField
+from estatebase.field_utils import from_to_values, split_string, from_to, \
+    complex_field_parser, check_value_list
 
 class EstateForm(ModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -86,7 +48,7 @@ class EstateForm(ModelForm):
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),
-            'com_status': AutoComboboxSelectWidget(ComChoiceLookup),                        
+            'com_status': AutoComboboxSelectWidget(ComChoiceLookup),
         }
 
 class EstateCreateForm(EstateForm):
@@ -123,7 +85,6 @@ class EstateCommunicationForm(ModelForm):
                    'driveway':AutoComboboxSelectWidget(DrivewayLookup),
                   }
 
-
 class EstateParamForm(ModelForm):
     class Meta:                
         model = Estate
@@ -131,7 +92,6 @@ class EstateParamForm(ModelForm):
         widgets = {
            'estate_params' : forms.CheckboxSelectMultiple()        
         }
-    
 
 class ClientForm(ModelForm):   
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
@@ -266,7 +226,7 @@ class EstateFilterForm(BetterForm):
             label=_('Estate status'),
             required=False,
         )         
-    agency_price = forms.CharField(required=False, label=_('Price'))    
+    agency_price = IntegerRangeField(label=_('Price'), required=False)    
     clients = AutoCompleteSelectMultipleField(
             lookup_class=ClientLookup,
             label=_('Client'),
@@ -277,18 +237,18 @@ class EstateFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )    
-    year_built = forms.CharField(required=False, label=_('Year built'))
-    floor = forms.CharField(required=False, label=_('Floor'))        
-    floor_count = forms.CharField(required=False, label=_('Floor count'))
+    year_built = IntegerRangeField(required=False, label=_('Year built'))
+    floor = IntegerRangeField(required=False, label=_('Floor'))        
+    floor_count = IntegerRangeField(required=False, label=_('Floor count'))
     wall_construcion = AutoComboboxSelectMultipleField(
             lookup_class=WallConstrucionLookup,
             label=_('Wall Construcion'),
             required=False,
         )
-    total_area = forms.CharField(required=False, label=_('Total area'))
-    used_area = forms.CharField(required=False, label=_('Used area'))   
-    room_count = forms.CharField(required=False, label=_('Room count'))
-    stead_area = forms.CharField(required=False, label=_('Stead area'))
+    total_area = DecimalRangeField(required=False, label=_('Total area'))
+    used_area = DecimalRangeField(required=False, label=_('Used area'))   
+    room_count = IntegerRangeField(required=False, label=_('Room count'))
+    stead_area = DecimalRangeField(required=False, label=_('Stead area'))
     
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))
@@ -303,7 +263,7 @@ class EstateFilterForm(BetterForm):
             label=_('Interior'),
             required=False,
         )
-    face_area = forms.CharField(required=False, label=_('Face area'))
+    face_area = DecimalRangeField(required=False, label=_('Face area'))
     electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
     watersupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=WatersupplyLookup)    
     gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
@@ -344,46 +304,24 @@ class EstateFilterForm(BetterForm):
         if self['clients'].value():
             f['clients__id__in'] = self['clients'].value()    
         if self['contacts'].value():
-            f['clients__contacts__id__in'] = self['contacts'].value()    
-        if self['agency_price'].value():
-            value = from_to(self['agency_price'].value(), 'agency_price')
-            if value:
-                f.update(value)    
-        if self['year_built'].value():
-            value = from_to(self['year_built'].value(), 'bidgs__year_built')
-            if value:
-                f.update(value)
-        if self['floor'].value():
-            value = from_to(self['floor'].value(), 'bidgs__floor')
-            if value:
-                f.update(value)        
-        if self['floor_count'].value():
-            value = from_to(self['floor_count'].value(), 'bidgs__floor_count')
-            if value:
-                f.update(value)                
+            f['clients__contacts__id__in'] = self['contacts'].value()
+        two_number_fields = {'agency_price':'agency_price', 'year_built':'bidgs__year_built',
+                             'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
+                             'total_area':'bidgs__total_area', 'used_area':'bidgs__used_area',
+                             'room_count':'bidgs__room_count', 'stead_area':'stead__total_area',
+                             'face_area':'stead__face_area'}
+        for fld, fld_name in two_number_fields.iteritems():
+            if check_value_list(self[fld].value()):
+                result = from_to_values(self[fld].field.clean(self[fld].value()), fld_name)
+                if result: 
+                    f.update(result)
         if self['wall_construcion'].value():
             f['bidgs__wall_construcion_id__in'] = self['wall_construcion'].value()            
-        if self['total_area'].value():
-            value = from_to(self['total_area'].value(), 'bidgs__total_area')
-            if value:
-                f.update(value)            
-        if self['used_area'].value():
-            value = from_to(self['used_area'].value(), 'bidgs__used_area')
-            if value:
-                f.update(value)        
-        if self['room_count'].value():
-            value = from_to(self['room_count'].value(), 'bidgs__room_count')
-            if value:
-                f.update(value)        
-        if self['stead_area'].value():
-            value = from_to(self['stead_area'].value(), 'stead__total_area')
-            if value:
-                f.update(value)        
-        if self['created'].value():            
+        if check_value_list(self['created'].value()):            
             value = from_to_values(self['created'].field.clean(self['created'].value()), 'history__created')            
             if value:                 
                 f.update(value)        
-        if self['updated'].value():            
+        if check_value_list(self['updated'].value()):            
             value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
             if value:                 
                 f.update(value)
@@ -391,10 +329,6 @@ class EstateFilterForm(BetterForm):
             f['origin_id__in'] = self['origin'].value()                    
         if self['interior'].value():
             f['bidgs__interior_id__in'] = self['interior'].value()
-        if self['face_area'].value():
-            value = from_to(self['face_area'].value(), 'stead__face_area')
-            if value:
-                f.update(value)        
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
         for fld in complex_fields:
@@ -409,75 +343,9 @@ class EstateFilterForm(BetterForm):
                      ('right', {'fields': ['created', 'updated', 'origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
     
-'''
-Для формирование поля от до
-'''
-def from_to(value, field_name=None):
-    f = {}
-    if not value:
-        return None    
-    a = ''.join(value.split())
-    matchobjs = re.match(r"^(?P<oper>\>|\<)(?P<n>\d+)$", a)
-    if matchobjs:         
-        if matchobjs.group('oper') == '>':
-            if field_name:
-                f['%s__gte' % field_name] = matchobjs.group('n')
-            else:
-                f['min'] = matchobjs.group('n')
-                f['max'] = None    
-        else:
-            if field_name:
-                f['%s__lte' % field_name] = matchobjs.group('n')
-            else:
-                f['max'] = matchobjs.group('n')
-                f['min'] = None    
-    else:
-        matchobjs = re.match(r"^(?P<n1>\d+)\-(?P<n2>\d+)$", a)
-        if matchobjs:
-            if field_name:
-                f['%s__range' % field_name] = (matchobjs.group('n1'), matchobjs.group('n2'))
-            else:
-                f['min'] = matchobjs.group('n1')
-                f['max'] = matchobjs.group('n2')                
-        else:
-            matchobjs = re.match(r"^(?P<n>\d+)$", a)
-            if matchobjs:
-                if field_name:
-                    f['%s__exact' % field_name] = matchobjs.group('n')
-                else:
-                    f['min'] = f['max'] = matchobjs.group('n')                            
-    return f or None    
 
-'''
-Для формирование поля от до по двум значениям
-'''
-def from_to_values(values, field_name):    
-    f = {}    
-    if values[0] and not values[1]:
-        f['%s__gte' % field_name] = values[0]
-    elif not values[0] and values[1]:
-        f['%s__lte' % field_name] = values[1]
-    elif values[0] and values[1]:
-        f['%s__range' % field_name] = values             
-    return f or None    
-
-'''
-Обработка составного поля
-'''
-def complex_field_parser(value, field_name):    
-    if not value[0]:
-        return None    
-    f = {'%s_id__exact' % field_name : value[0]}    
-    if value[1]:            
-        num = from_to(value[1], '%s_distance' % field_name)
-        if num:
-            f.update(num)                    
-    return f or None    
-
-def split_string(value):                 
-    return [int(x.strip()) for x in value.split(',')]     
         
-class ContactHistoryForm(ModelForm):
+class ContactHistoryForm(ModelForm):    
     class Meta:        
         model = ContactHistory
         widgets = {
@@ -497,6 +365,13 @@ class ContactForm(ModelForm):
         model = Contact
 
 class BidgForm(ModelForm):
+    total_area = LocalDecimalField(label=_('Total area'))
+    used_area = LocalDecimalField(label=_('Used area'))
+    ceiling_height = LocalDecimalField(label=_('Ceiling height'))
+    year_built = LocalIntegerField(label=_('Year built'))
+    floor = LocalIntegerField(label=_('Floor'))
+    floor_count = LocalIntegerField(label=_('Floor count'))
+    room_count = LocalIntegerField(label=_('Room count'))
     def __init__(self, *args, **kwargs):
         super(BidgForm, self).__init__(*args, **kwargs)
         self.field_to_delete = []        
@@ -555,6 +430,8 @@ class ImageUpdateForm(ModelForm):
         fields = ('name', 'note', 'image')     
 
 class SteadUpdateForm(ModelForm):
+    total_area = LocalDecimalField(label=_('Total area'))
+    face_area = LocalDecimalField(label=_('Face area'))
     def __init__(self, *args, **kwargs):
         super(SteadUpdateForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
@@ -691,8 +568,9 @@ class EstateRegisterFilterForm(BidFilterForm):
         return f
 
 class BidPicleForm(EstateFilterForm):    
+    #num = IntegerRangeField(label='')
     class Meta:        
-        fieldsets = [('left', {'fields': ['estates', 'estate_type', 'region', 'locality', 'microdistrict', 'estate_status', 'agency_price', ], 'legend': ''}),
+        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_type', 'region', 'locality', 'microdistrict', 'estate_status', 'agency_price', ], 'legend': ''}),
                      ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 'room_count', 'stead_area', ]}),
                      ('right', {'fields': ['origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]

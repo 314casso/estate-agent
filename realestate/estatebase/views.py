@@ -25,6 +25,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from settings import CORRECT_DELTA
+from estatebase.field_utils import check_value_list
 
 
 class BaseMixin(object):
@@ -328,9 +329,14 @@ class EstateSelectListView(EstateListView):
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_short_list.html'        
-    def get_queryset(self):        
-        self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])          
-        q = super(EstateListDetailsView, self).get_queryset()        
+    def get_queryset(self):
+        q = super(EstateListDetailsView, self).get_queryset() 
+        if 'pk' in self.kwargs:                     
+            self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])
+        else:              
+            r = list(q[:1])
+            if r:
+                self.estate = r[0]        
         return q
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)     
@@ -732,11 +738,11 @@ class BidMixin(ModelFormMixin):
             self.object.contacts = estate_filter_form['contacts'].value()
             self.object.estate_types = estate_filter_form['estate_type'].value()
             self.object.regions = estate_filter_form['region'].value()            
-            self.object.localities = estate_filter_form['locality'].value()                                  
-            prices = from_to(estate_filter_form['agency_price'].value())            
-            if prices:
-                self.object.agency_price_min = prices['min']                        
-                self.object.agency_price_max = prices['max']
+            self.object.localities = estate_filter_form['locality'].value()
+            if check_value_list(estate_filter_form['agency_price'].value()):                
+                values = estate_filter_form['agency_price'].field.clean(estate_filter_form['agency_price'].value())                                  
+                self.object.agency_price_min = values[0]                        
+                self.object.agency_price_max = values[1]
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:

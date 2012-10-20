@@ -19,6 +19,7 @@ $(document).ready(function() {
 	
 	$('.active').addClass('ui-state-highlight');	
     $('.local-int').autoNumeric({aSep: String.fromCharCode(160), aDec: ',', mDec: 0});
+    $('.local-decimal').autoNumeric({aSep: String.fromCharCode(160), aDec: ',', mDec: 2});
 });
 
 function getIndex(id, item) {

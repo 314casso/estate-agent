@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
 encoding//realestate/django_sorting/templatetags/sorting_tags.py=utf-8
+encoding//realestate/estatebase/field_utils.py=utf-8
+encoding//realestate/estatebase/fields.py=utf-8
 encoding//realestate/estatebase/forms.py=utf-8
 encoding//realestate/estatebase/menus.py=utf-8
 encoding//realestate/estatebase/models.py=utf-8

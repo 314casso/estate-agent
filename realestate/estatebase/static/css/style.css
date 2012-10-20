@@ -551,3 +551,15 @@ input[type=text] {
 .layout-area input {
 	width: 50px;
 }
+
+.local-int, .local-decimal{
+	width: 6em;
+	margin-right: 2px;	
+}
+
+.help-text {
+	color : #999;
+	font-size: 90%;
+	margin: 0;
+	padding: 0;
+}

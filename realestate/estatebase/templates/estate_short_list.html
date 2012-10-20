@@ -71,12 +71,11 @@
 		{% if contact %}
 		{{ contact.client.client_type }}
 		<a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
-		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <label>{{ contact.contact_type }}:</label> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
 		{% endif %}
 		{% endwith %}
-	</div>
+	</div>	
 </fieldset>
-
 {% endfor %}
 
 {% if is_paginated %}

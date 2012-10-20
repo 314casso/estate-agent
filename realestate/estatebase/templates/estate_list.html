@@ -19,9 +19,15 @@
         $(".selected").addClass('ui-state-highlight');
         $("#filter").dialog({
             modal : true,                       
-            width : 1150,
+            width: 1100,               
+            height: 'auto',         
             title : 'Фильтр',            
-            autoOpen: false
+            autoOpen: false,
+  
+  
+  open: function (event, ui) {
+    $('#filters').css('overflow', 'hidden');
+  }                       
         });
                 
     }); 
