@@ -47,7 +47,9 @@
 {% endblock extra_js %}
 
 {% block page_header %}
+{% if estate %}
 Просмотр лота «{{ estate.estate_type }}» [{{ estate.pk }}]
+{% endif %}
 {% endblock %}
 
 {% block left %}
@@ -74,8 +76,10 @@
 		<span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
 		{% endif %}
 		{% endwith %}
-	</div>	
+	</div>
 </fieldset>
+{% empty %}
+Объектов, подходящих под критерии фильтра не обнаружено...
 {% endfor %}
 
 {% if is_paginated %}
@@ -87,6 +91,7 @@
 {% endblock left %}
 
 {% block right %}
+{% if estate %}
 <div id="tabs">
 	<ul>
 		<li>
@@ -115,19 +120,19 @@
 		<div style="float: left; margin-left: 10px">
 			{% include "estate_dialog/comm.html" %}
 			{% include "estate_dialog/marks.html" %}
-			{% if estate.stead %}		
+			{% if estate.stead %}
 			{% include "details/stead.html" with stead=estate.basic_stead %}
 			{% if estate.estate_category.maybe_stead %}
 			<div class="button" style="text-align: right; margin: 10px 0">
-                    <a title="Удаление участка из лота..." href="{% url stead_remove estate.basic_stead.pk %}?{{ next_url }}">Удалить участок</a>
-            </div>
-            {% endif %}
+				<a title="Удаление участка из лота..." href="{% url stead_remove estate.basic_stead.pk %}?{{ next_url }}">Удалить участок</a>
+			</div>
+			{% endif %}
 			{% elif estate.estate_category.can_has_stead %}
-				<div class="button" style="text-align: right; margin: 10px 0">
-					<a title="Добавление участка к лоту..." href="{% url stead_append estate.pk %}?{{ next_url }}">Добавить участок</a>
-				</div>	
-			{% endif %}			
-			
+			<div class="button" style="text-align: right; margin: 10px 0">
+				<a title="Добавление участка к лоту..." href="{% url stead_append estate.pk %}?{{ next_url }}">Добавить участок</a>
+			</div>
+			{% endif %}
+
 		</div>
 		<br style="clear: both" />
 	</div>
@@ -157,4 +162,5 @@
 		{% include "estate_dialog/photo_base.html" %}
 	</div>
 </div>
+{% endif %}
 {% endblock right %}

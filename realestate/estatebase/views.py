@@ -330,7 +330,8 @@ class EstateListDetailsView(EstateListView):
     paginate_by = 10 
     template_name = 'estate_short_list.html'        
     def get_queryset(self):
-        q = super(EstateListDetailsView, self).get_queryset() 
+        q = super(EstateListDetailsView, self).get_queryset()
+        self.estate = None 
         if 'pk' in self.kwargs:                     
             self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])
         else:              
@@ -339,13 +340,15 @@ class EstateListDetailsView(EstateListView):
                 self.estate = r[0]        
         return q
     def get_context_data(self, **kwargs):        
-        context = super(EstateListDetailsView, self).get_context_data(**kwargs)     
-        r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
-        p = float(r) / (self.estate.saler_price or 1) * 100                                           
+        context = super(EstateListDetailsView, self).get_context_data(**kwargs)
+        r = p = 0
+        if self.estate:      
+            r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
+            p = float(r) / (self.estate.saler_price or 1) * 100                                           
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
-            'images': self.estate.images.all(),
+            'images': self.estate and self.estate.images.all() or None,
             'estate': self.estate,                                                      
         })                
         return context        
