@@ -9,12 +9,14 @@
     {% wrapper_fieldset_tr bidg 'exterior_report_set' %}
 </table>
 
+{% if bidg.estate_type.estate_type_category.independent %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>
         Документы
     </legend>
     <span class="descr"> {% for doc in bidg.documents.all %} <span class="item"> {{ doc.name }}{% include "comma.html" %} </span> {% endfor %} </span>
 </fieldset>
+{% endif %}
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>

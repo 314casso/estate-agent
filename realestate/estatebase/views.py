@@ -26,6 +26,7 @@ from django.views.generic.base import View
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from settings import CORRECT_DELTA
 from estatebase.field_utils import check_value_list
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 
 class BaseMixin(object):
@@ -347,8 +348,8 @@ class EstateListDetailsView(EstateListView):
             p = float(r) / (self.estate.saler_price or 1) * 100                                           
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'margin': '%d (%d%%)' % (r, p),
-            'images': self.estate and self.estate.images.all() or None,
+            'margin': '%s (%s%%)' % (intcomma(r), intcomma(p)),
+            'images': self.estate and self.estate.images.all()[:6] or None,
             'estate': self.estate,                                                      
         })                
         return context        

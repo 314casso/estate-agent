@@ -1,9 +1,9 @@
 {% for key, val in layouts.items %}
-<span class="layout-details">
-	<strong>{{ key|lower }}: </strong>
+<div class="layout-details">
+	<strong>{{ key.layout_type|lower }}: </strong>
 	{% for key, val in val.items %}
-	{{ key|lower }} - <strong>{{ val|lower }}</strong>{% include 'comma.html' %}
+	{{ val|lower }}{% include 'comma.html' %}
 	{% endfor %}
-</span>
+</div>
 {% endfor %}
 

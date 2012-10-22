@@ -43,7 +43,7 @@ def wrapper_fieldset_comma(obj, fieldset_name):
 def wrapper_fieldset_tr(obj, fieldset_name):
     return wrapper_fieldset(obj, fieldset_name)
 
-def wrapper_fieldset(obj, fieldset_name):
+def wrapper_fieldset(obj, fieldset_name):    
     details = OrderedDict()
     wrapper = get_wrapper(obj)
     field_list = getattr(wrapper, fieldset_name)
@@ -58,12 +58,12 @@ def wrapper_fieldset(obj, fieldset_name):
 
 @register.inclusion_tag('inclusion/simple_layout.html')
 def bidg_layout(level):
-    layout_fieldset = OrderedDict([
-                       ('area', u'площадь кв.м.'), 
-                       ('furniture', u'мебель'), 
-                       ('layout_feature', 'изоляция'), 
-                       ('interior', 'внутр. отделка'),
-                       ('note', 'коммент')
+    layout_fieldset = OrderedDict([                       
+                       ('area', u'%s кв.м.'),                         
+                       ('layout_feature', '%s'), 
+                       ('interior', '%s'),
+                       ('furniture', u'мебель - %s'),
+                       ('note', '%s')
                        ])   
     layout_dict = OrderedDict()       
     for layout in level.layout_set.all():
@@ -71,8 +71,8 @@ def bidg_layout(level):
         for field, label in layout_fieldset.items():
             value = getattr(layout, field)
             if value:
-                layout_row[label] = value
-        layout_dict[layout.layout_type] = deepcopy(layout_row)         
+                layout_row[field] = label % value
+        layout_dict[layout] = deepcopy(layout_row)         
     return {'layouts': layout_dict}            
             
 @register.simple_tag            

@@ -106,20 +106,20 @@
 		<li>
 			<a href="#tab-outbuildings">Постройки</a>
 		</li>
-		{% endif %}
-		<li>
-			<a href="#tab-photos">Фотографии</a>
-		</li>
+		{% endif %}		
 	</ul>
 
 	<div id="tab-basic">
 		<div style="float: left">
-			{% include "estate_dialog/basic.html" %}
+			{% include "estate_dialog/basic.html" %}						
 			{% include "estate_dialog/salers.html" %}
+			{% if estate.basic_bidg %}
+			{% include "estate_dialog/basic_bidg_summary.html" with basic_bidg=estate.basic_bidg %}
+			{% endif %}
 		</div>
 		<div style="float: left; margin-left: 10px">
-			{% include "estate_dialog/comm.html" %}
-			{% include "estate_dialog/marks.html" %}
+			{% include "estate_dialog/photo_base.html" %}
+			{% include "estate_dialog/comm.html" %}		
 			{% if estate.stead %}
 			{% include "details/stead.html" with stead=estate.basic_stead %}
 			{% if estate.estate_category.maybe_stead %}
@@ -132,7 +132,7 @@
 				<a title="Добавление участка к лоту..." href="{% url stead_append estate.pk %}?{{ next_url }}">Добавить участок</a>
 			</div>
 			{% endif %}
-
+            {% include "estate_dialog/marks.html" %}
 		</div>
 		<br style="clear: both" />
 	</div>
@@ -157,10 +157,7 @@
 			<a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить постройку или сооружение</a>
 		</div>
 	</div>
-	{% endif %}
-	<div id="tab-photos">
-		{% include "estate_dialog/photo_base.html" %}
-	</div>
+	{% endif %}	
 </div>
 {% endif %}
 {% endblock right %}

@@ -1,0 +1,12 @@
+{% extends "dialog_block.html" %}
+{% load report %}
+{% block title_left %}
+<a href="{% url apartment_update basic_bidg.pk %}?{{ next_url }}">{{ basic_bidg.estate_type }}</a> - сводка
+{% endblock %}
+{% block content %}
+
+<table class="detail-table">
+    {% wrapper_fieldset_tr basic_bidg 'exterior_report_set' %}
+</table>
+
+{% endblock %}

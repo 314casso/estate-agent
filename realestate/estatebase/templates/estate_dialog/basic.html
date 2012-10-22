@@ -8,15 +8,18 @@
 
 <div class="ui-state-highlight ui-corner-all descr">
 	<strong>{{ estate.estate_type }} [{{ estate.pk }}]</strong>
+	<span style="float: right; padding: 0 4px" class="ui-widget-content ui-corner-all {{ estate.state_css }}">
+        <strong>{{ estate.estate_status }}</strong>
+    </span>
 </div>
 
 <div title="Адрес" class="ui-widget-content descr">
 	{% address estate %}
 	{% if estate.beside %}
 	<div>
-		Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance }}</strong> м
+		Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance|default:'' }}</strong> м
 	</div>
-	{% endif %}
+	{% endif %}	
 </div>
 
 <table class="detail-table">
@@ -24,13 +27,16 @@
 		<th>Источник:</th>
 		<td colspan="100%">{{ estate.origin }}</td>
 	</tr>
-	{% history estate.history %}   
+	{% history estate.history %}
+	{% if estate.com_status.status %}
+    <tr><th title="Коммерческое использование" style="white-space: nowrap">Ком. статус:</th> <td>{{ estate.com_status }}</td></tr>
+    {% endif %}   
 </table>
 <div style="margin-top: 3px">
-	<table class="detail-table all-borders" style="font-size: 14px">
+	<table class="detail-table all-borders">
 		<tr>
 			<th colspan="2">Цена</th>
-			<th rowspan="2" valign="top">Маржа</th>
+			<th rowspan="2" valign="top">%</th>
 		</tr>
 		<tr>
 			<th>Продавца</th>
@@ -47,5 +53,7 @@
 {% endblock %}
 
 {% block title_right %}
-{{ estate.estate_status }}
+{% if estate.correct %}
+Корректно
+{% endif %}
 {% endblock %}

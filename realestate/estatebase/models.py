@@ -571,7 +571,7 @@ class Layout(models.Model):
     class Meta:
         verbose_name = _('layout')
         verbose_name_plural = _('layouts')        
-        ordering = ['layout_type']     
+        ordering = ['id']     
 
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')

@@ -1,19 +1,20 @@
+{% extends "dialog_block.html" %}
 {% load thumbnail %}
-
-<div style="width: 690px">
+{% block title_left %}
 <a href="{% url estate_images estate.pk %}?{{ next_url }}">Редактирование фотографий</a>
-
-{% include 'estate_dialog/photo_form.html' %}
+{% endblock %}
+{% block content %}
 
 <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px 1px 0px 1px; margin: 0">
-{% for image in images %}
+    {% for image in images %}
 
-{% thumbnail image.image "110x80" crop="center" as im %}
-{% thumbnail image.image "800x600" crop="center" as bim %}
- <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
-{% endthumbnail %}
-{% endthumbnail %}
+    {% thumbnail image.image "110x80" crop="center" as im %}
+    {% thumbnail image.image "800x600" crop="center" as bim %}
+    <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+    {% endthumbnail %}
+    {% endthumbnail %}
 
-{% endfor %}
+    {% endfor %}
 </div>
-</div>  
+{% endblock %}
+
