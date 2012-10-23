@@ -51,8 +51,8 @@
     <tbody>
         {% for client in clients %}
         <tr class="ui-widget-content">
-            <td><a title="Редактировать клиента" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
-            <td><a title="Показать карточку клиента" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+            <td><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
+            <td><a title="Показать карточку заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.client_type }}</td>
             <td>{{ client.origin|default_if_none:"----" }}</td>
             <td>{{ client.address }}</td>

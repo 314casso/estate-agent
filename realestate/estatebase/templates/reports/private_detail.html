@@ -82,7 +82,7 @@
 	{% for image in estate_item.images.all %}
 
 	{% thumbnail image.image "110x80" crop="center" as im %}
-	{% thumbnail image.image "800x600" crop="center" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
+	{% thumbnail image.image "800x600" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
 	{% endthumbnail %}
 	{% endfor %}
 	{% endif %} </td>

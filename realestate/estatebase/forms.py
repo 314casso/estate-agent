@@ -374,9 +374,7 @@ class BidgForm(ModelForm):
     room_count = LocalIntegerField(label=_('Room count'))
     def __init__(self, *args, **kwargs):
         super(BidgForm, self).__init__(*args, **kwargs)
-        self.field_to_delete = []        
-        if not self.instance.basic:            
-            self.field_to_delete.append('room_number')        
+        self.field_to_delete = []       
         if self.instance.pk:
             self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
             self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
@@ -412,7 +410,6 @@ class LayoutForm(ModelForm):
            'layout_type' : AutoComboboxSelectWidget(LayoutTypeLookup),
            'interior' : AutoComboboxSelectWidget(InteriorLookup),
         }    
-          
 
 LevelFormSet = inlineformset_factory(Level, Layout, extra=1, form=LayoutForm)
 
@@ -429,24 +426,23 @@ class ImageUpdateForm(ModelForm):
         model = EstatePhoto   
         fields = ('name', 'note', 'image')     
 
-class SteadUpdateForm(ModelForm):
+class SteadUpdateForm(ApartmentForm):
     total_area = LocalDecimalField(label=_('Total area'))
     face_area = LocalDecimalField(label=_('Face area'))
     def __init__(self, *args, **kwargs):
-        super(SteadUpdateForm, self).__init__(*args, **kwargs)
+        super(SteadUpdateForm, self).__init__(*args, **kwargs)        
         if self.instance.pk:
             self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
         self.fields['documents'].help_text = ''    
     class Meta:
-        model = Stead   
-        exclude = ('estate',)
+        model = Stead  
         widgets = {
            'documents' : forms.CheckboxSelectMultiple()        
         }
         
 
 class BidForm(ModelForm):
-    client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Клиент')
+    client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')    
     class Meta:
         model = Bid    
@@ -487,7 +483,7 @@ class BidFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
-    agency_price = forms.CharField(required=False, label=_('Price'))
+    agency_price = IntegerRangeField(label=_('Price'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def get_filter(self):
         f = {}
@@ -514,13 +510,13 @@ class BidFilterForm(BetterForm):
         if self['contacts'].value():
             f['client__contacts__id__in'] = self['contacts'].value()    
         if self['estate_type'].value():
-            f['estate_types__id__in'] = self['estate_type'].value()    
-        if self['agency_price'].value():
-            prices = from_to(self['agency_price'].value())                                   
-            if prices['max']:
-                f['agency_price_max__lte'] = prices['max']
-            if prices['min']:                                                                              
-                f['agency_price_min__gte'] = prices['min']                                        
+            f['estate_types__id__in'] = self['estate_type'].value()   
+        if check_value_list(self['agency_price'].value()):
+            values = self['agency_price'].field.clean(self['agency_price'].value())                              
+            if values[1]:
+                f['agency_price_max__lte'] = values[1]
+            if values[0]:                                                                              
+                f['agency_price_min__gte'] = values[0]                                        
         return f
 
 class EstateRegisterFilterForm(BidFilterForm):

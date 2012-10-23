@@ -12,9 +12,9 @@ class MenuItem(object):
 
 def create_menu():
     result = []
-    result.append(MenuItem(u'Лоты','estate-list'))
+    result.append(MenuItem(u'Недвижимость','estate-list'))
     result.append(MenuItem(u'Заявки','bid-list'))
-    result.append(MenuItem(u'Добавить лот','select_estate_type','ajax-dialog'))
+    result.append(MenuItem(u'Добавить недвижимость','select_estate_type','ajax-dialog'))
     
     return result
 

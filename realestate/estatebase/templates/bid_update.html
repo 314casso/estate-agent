@@ -18,7 +18,7 @@
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
 					{% csrf_token %}
-					Заявка клиента [{{ bid.id|default:'Новая' }}]
+					Заявка заказчика [{{ bid.id|default:'Новая' }}]
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>

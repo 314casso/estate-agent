@@ -27,7 +27,7 @@
 				<td colspan="100%">
 				<table>
 					<tr>
-						<th>Клиент:</th><td><a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a></td>
+						<th>Заказчик:</th><td><a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a></td>
 					</tr>
 					<tr>
 						<th>Вид:</th><td>{{ contact.client.client_type }}</td>

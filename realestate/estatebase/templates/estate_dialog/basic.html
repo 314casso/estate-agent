@@ -54,6 +54,12 @@
 
 {% block title_right %}
 {% if estate.correct %}
-Корректно
+<span style="float: right; padding: 0 4px" class="ui-widget-content ui-corner-all available-state">
+  <strong>Корректно</strong>
+</span>
+{% else %}
+<span style="float: right; padding: 0 4px" class="ui-widget-content ui-corner-all sold-state">
+  <strong>Не корректно</strong>
+</span>
 {% endif %}
 {% endblock %}

@@ -44,10 +44,10 @@ class BaseWrapper(object):
         return getattr(self, field, None)
                    
 class BidgWrapper(BaseWrapper):
+    summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built']
     def __init__(self):                
         self.exterior_set = ['estate_type', 'room_number', 'year_built', 'floor', 'floor_count', 'elevator', 'wall_construcion', 'exterior_finish', 'window_type', 'roof', 'heating', 'ceiling_height', 'room_count', 'total_area', 'used_area']    
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
-        self.summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built']
         self.extra_set = ['documents']
     @property    
     def exterior_report_set(self):
@@ -90,12 +90,14 @@ class OutbuildingsWrapper(BidgWrapper):
         self.exterior_set = ['year_built', 'floor_count', 'wall_construcion', 'exterior_finish', 'room_count', 'total_area']
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
         self.extra_set = ['documents']
-        self.summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built']
     
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'
-    def __init__(self):
-        self._field_set = ['estate_type', 'total_area', 'face_area', 'shape', 'land_type', 'purpose']   
+    full_set = []
+    def __init__(self):        
+        self._field_set = ['total_area', 'face_area', 'shape', 'land_type' ]
+        self.full_set = ['documents']
+        self.full_set.extend(self._field_set)   
     @property
     def field_set(self):
         return self._field_set

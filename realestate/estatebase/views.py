@@ -371,7 +371,7 @@ class ClientUpdateEstateView(DetailView):
         context = super(ClientUpdateEstateView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Привязка...',
-            'dialig_body'  : u'Привязать клиента %s к объекту [%s]?' % (self.object, self.kwargs['estate_pk']),
+            'dialig_body'  : u'Привязать заказчика %s к объекту [%s]?' % (self.object, self.kwargs['estate_pk']),
         })
         return context
     def update_object(self,client_pk,estate_pk):
@@ -391,7 +391,7 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
         context = super(ClientRemoveEstateView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Отвязка...',
-            'dialig_body'  : u'Отвязать клиента %s от объекта [%s]?' % (self.object, self.kwargs['estate_pk']),
+            'dialig_body'  : u'Отвязать заказчика %s от объекта [%s]?' % (self.object, self.kwargs['estate_pk']),
         })
         return context 
     def update_object(self,client_pk,estate_pk):
@@ -512,7 +512,7 @@ class ClientCreateView(ClientMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ClientCreateView, self).get_context_data(**kwargs)
         context.update({
-            'dialig_title' : 'Добавление нового клиента'
+            'dialig_title' : u'Добавление нового заказчика'
         })        
         return context    
     def get_initial(self):        
@@ -524,7 +524,7 @@ class ClientUpdateView(ClientMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ClientUpdateView, self).get_context_data(**kwargs)
         context.update({
-            'dialig_title' : 'Редактирование клиента «%s»' % self.object 
+            'dialig_title' : u'Редактирование заказчика «%s»' % self.object 
         })        
         return context
 
@@ -533,8 +533,8 @@ class ClientDeleteView(DeleteMixin, ClientMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(ClientDeleteView, self).get_context_data(**kwargs)
         context.update({
-            'dialig_title' : u'Удаление клиента...',
-            'dialig_body'  : u'Подтвердите удаление клиента: %s' % self.object,
+            'dialig_title' : u'Удаление заказчика...',
+            'dialig_body'  : u'Подтвердите удаление заказчика: %s' % self.object,
         })
         return context     
     
@@ -758,7 +758,7 @@ class BidCreateView(BidMixin, CreateView):
         if 'client' in self.kwargs:
             client_pk = self.kwargs['client']
             if not Client.objects.filter(pk=client_pk).exists():
-                raise Exception(u'Клиент с id %s не найден!' % client_pk)                
+                raise Exception(u'Заказчик с id %s не найден!' % client_pk)                
             initial['client'] = client_pk
         return initial
 
@@ -796,7 +796,7 @@ class BidDetailView(BidMixin, DetailView):
 
 class BidListView(ListView):    
     template_name = 'bid_list.html'
-    paginate_by = 5   
+    paginate_by = 20   
     def get_queryset(self):        
         q = Bid.objects.select_related().all()        
         search_form = BidFilterForm(self.request.GET)

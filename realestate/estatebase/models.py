@@ -277,6 +277,8 @@ class EstateClient(models.Model):
     client = models.ForeignKey('Client')
     estate = models.ForeignKey('Estate')    
     estate_client_status = models.ForeignKey(EstateClientStatus,verbose_name=_('EstateClientStatus'))
+    class Meta:
+        unique_together = ('client', 'estate')
 
 class BaseModelManager(models.Manager):
     def get_query_set(self):
@@ -719,7 +721,9 @@ class Contact(models.Model):
     def state_css(self):
         css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
-    def clean(self):                  
+    def clean(self):                
+        if not self.contact_type_id:
+            raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator(verify_exists=False)
         validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')        
         if self.contact_type.id == 1:
