@@ -90,6 +90,7 @@ class OutbuildingsWrapper(BidgWrapper):
         self.exterior_set = ['year_built', 'floor_count', 'wall_construcion', 'exterior_finish', 'room_count', 'total_area']
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
         self.extra_set = ['documents']
+        self.summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built']
     
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'
