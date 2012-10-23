@@ -125,7 +125,7 @@ span.contact-inline {
 	padding: 0px 3px;
 	margin-right: 0;
 	background-color: #fffdec;
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 span.contact-inline label, .bidg-list label {
@@ -237,17 +237,16 @@ span.contact-inline label, .bidg-list label {
 
 .available-state, .free-state {
 	background: #e3fdd5 !important;
+	border: 1px solid #b8d7a7 !important;
 }
 
 .non-available-state {
-	background: #dfdfdf !important;
+	background: #dfdfdf !important;	
 }
 
-.ban-state, .exclude-state {
-	background: #ffd9ee !important;
-}
-.not-responded-state, .sold-state {
-	background: #fdfadf !important;
+.not-responded-state, .sold-state, .ban-state, .exclude-state {
+	background: #ffdbe1 !important;
+	border: 1px solid #ffb4c1 !important;
 }
 
 .not-checked-state, .new-state {
