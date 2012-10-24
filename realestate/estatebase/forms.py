@@ -364,7 +364,7 @@ class ContactForm(ModelForm):
         fields = ('contact', 'contact_state')
         model = Contact
 
-class BidgForm(ModelForm):
+class ObjectForm(ModelForm):
     total_area = LocalDecimalField(label=_('Total area'))
     used_area = LocalDecimalField(label=_('Used area'))
     ceiling_height = LocalDecimalField(label=_('Ceiling height'))
@@ -373,23 +373,8 @@ class BidgForm(ModelForm):
     floor_count = LocalIntegerField(label=_('Floor count'))
     room_count = LocalIntegerField(label=_('Room count'))
     def __init__(self, *args, **kwargs):
-        super(BidgForm, self).__init__(*args, **kwargs)
-        self.field_to_delete = []       
-        if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
-            self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
-        self.fields['documents'].help_text = ''
-    estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
-    class Meta:
-        model = Bidg
-        widgets = {
-           'documents' : forms.CheckboxSelectMultiple(),
-           'interior' : AutoComboboxSelectWidget(InteriorLookup),
-        }
-
-class ApartmentForm(BidgForm):    
-    def __init__(self, *args, **kwargs):
-        super(ApartmentForm, self).__init__(*args, **kwargs)
+        super(ObjectForm, self).__init__(*args, **kwargs)
+        self.field_to_delete = []
         wrapper = get_wrapper(self.instance)        
         fields = wrapper.full_set            
         for field in self.fields:            
@@ -399,10 +384,35 @@ class ApartmentForm(BidgForm):
                 self.fields[field].label = get_polymorph_label(self.instance, field)                           
         for field in self.field_to_delete:
             if field in self.fields:
-                del self.fields[field]                                                  
-    class Meta(BidgForm.Meta):
+                del self.fields[field]       
+        if self.instance.pk:
+            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)            
+        self.fields['documents'].help_text = ''
+    estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
+    class Meta:
+        model = Bidg
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple(),
+           'interior' : AutoComboboxSelectWidget(InteriorLookup),
+        }
+
+class BidgForm(ObjectForm):    
+    def __init__(self, *args, **kwargs):
+        super(BidgForm, self).__init__(*args, **kwargs)
+        if self.instance.pk and 'estate_type' in self.fields:            
+            self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)                                                          
+    class Meta(ObjectForm.Meta):
         pass        
         
+class SteadForm(ObjectForm):
+    total_area = LocalDecimalField(label=_('Total area'))
+    face_area = LocalDecimalField(label=_('Face area'))        
+    class Meta:
+        model = Stead  
+        widgets = {
+           'documents' : forms.CheckboxSelectMultiple()        
+        }
+               
 class LayoutForm(ModelForm):
     class Meta:
         model = Layout  
@@ -425,21 +435,6 @@ class ImageUpdateForm(ModelForm):
     class Meta:
         model = EstatePhoto   
         fields = ('name', 'note', 'image')     
-
-class SteadUpdateForm(ApartmentForm):
-    total_area = LocalDecimalField(label=_('Total area'))
-    face_area = LocalDecimalField(label=_('Face area'))
-    def __init__(self, *args, **kwargs):
-        super(SteadUpdateForm, self).__init__(*args, **kwargs)        
-        if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
-        self.fields['documents'].help_text = ''    
-    class Meta:
-        model = Stead  
-        widgets = {
-           'documents' : forms.CheckboxSelectMultiple()        
-        }
-        
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')

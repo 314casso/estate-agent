@@ -6,8 +6,8 @@ from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
 from estatebase.forms import ClientForm, ContactFormSet, \
     ClientFilterForm, ContactHistoryFormSet, ContactForm, \
     EstateCommunicationForm, \
-    EstateParamForm, ApartmentForm, LevelForm, LevelFormSet, ImageUpdateForm, \
-    SteadUpdateForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
+    EstateParamForm, BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, \
+    SteadForm, EstateFilterForm, BidForm, from_to, BidFilterForm,\
     BidPicleForm, EstateRegisterForm, EstateRegisterFilterForm, EstateForm,\
     EstateCreateClientForm, EstateCreateForm
 from estatebase.models import EstateType, Contact, Level, EstatePhoto, \
@@ -419,7 +419,7 @@ class ObjectMixin(ModelFormMixin):
 
 class ApartmentCreateView(ObjectMixin, CreateView):
     template_name = 'bidg_form.html'        
-    form_class = ApartmentForm   
+    form_class = BidgForm   
     continue_url = 'apartment_update'
     def get_initial(self):        
         initial = super(ApartmentCreateView, self).get_initial()                
@@ -428,7 +428,7 @@ class ApartmentCreateView(ObjectMixin, CreateView):
 
 class ApartmentUpdateView(ObjectMixin, UpdateView):
     template_name = 'bidg_form.html'        
-    form_class = ApartmentForm   
+    form_class = BidgForm   
     continue_url = 'apartment_update'        
 
 class ClientListView(ListView):
@@ -644,7 +644,7 @@ class LevelDeleteView(LevelMixin, DeleteView):
 class SteadUpdateView(ObjectMixin, UpdateView):
     model = Stead
     template_name = 'stead_form.html'        
-    form_class = SteadUpdateForm   
+    form_class = SteadForm   
     continue_url = 'stead_update'
 
 class BidgAppendView(TemplateView):    

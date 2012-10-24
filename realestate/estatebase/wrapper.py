@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 
 APARTMENT = 0
 NEWAPART = 1
@@ -36,9 +37,12 @@ class BaseWrapper(object):
     @property        
     def full_set(self):
         result = []
-        result.extend(self.exterior_set)
-        result.extend(self.extra_set)
-        result.extend(self.interior_set)        
+        if self.exterior_set:         
+            result.extend(self.exterior_set)
+        if self.extra_set:     
+            result.extend(self.extra_set)
+        if self.interior_set:    
+            result.extend(self.interior_set)        
         return result
     def get_label(self, field):
         return getattr(self, field, None)
@@ -92,24 +96,18 @@ class OutbuildingsWrapper(BidgWrapper):
         self.extra_set = ['documents']
     
 class SteadWrapper(BaseWrapper):
-    #    land_type = u'Земля ТЕСТ'
-    full_set = []
+    #    land_type = u'Земля ТЕСТ'    
     def __init__(self):        
         self._field_set = ['total_area', 'face_area', 'shape', 'land_type' ]
-        self.full_set = ['documents']
-        self.full_set.extend(self._field_set)   
+        self.extra_set = ['documents']
+        self.exterior_set = deepcopy(self._field_set)   
     @property
     def field_set(self):
         return self._field_set
     @property
     def field_report_set(self):
-        result = self.field_set[:]
-        try: 
-            result.remove('estate_type')
-        except:
-            pass
-        return result
-    
+        return self.field_set
+            
 def get_polymorph_label(template, field):            
     wrapper = get_wrapper(template)    
     try:
