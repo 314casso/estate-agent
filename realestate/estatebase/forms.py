@@ -550,16 +550,15 @@ class EstateRegisterFilterForm(BidFilterForm):
             f['bids__estate_types__id__in'] = self['estate_type'].value()
         if self['name'].value():
             f['name__icontains'] = self['name'].value()
-        if self['agency_price'].value():
-            prices = from_to(self['agency_price'].value())                        
-            if prices['max']:
-                f['bids__agency_price_max__lte'] = prices['max']
-            if prices['min']:                                                                              
-                f['bids__agency_price_min__gte'] = prices['min']                                
+        if check_value_list(self['agency_price'].value()):
+            values = self['agency_price'].field.clean(self['agency_price'].value())                              
+            if values[1]:
+                f['agency_price_max__lte'] = values[1]
+            if values[0]:                                                                              
+                f['agency_price_min__gte'] = values[0]                                
         return f
 
-class BidPicleForm(EstateFilterForm):    
-    #num = IntegerRangeField(label='')
+class BidPicleForm(EstateFilterForm):   
     class Meta:        
         fieldsets = [('left', {'fields': ['num', 'estates', 'estate_type', 'region', 'locality', 'microdistrict', 'estate_status', 'agency_price', ], 'legend': ''}),
                      ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 'room_count', 'stead_area', ]}),
