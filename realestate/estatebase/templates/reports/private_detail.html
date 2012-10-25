@@ -6,85 +6,55 @@
 {% block more_detail %}
 
 <tr>
-	<th>Источник</th>
-	<td>{{ estate_item.origin|default:'' }}</td>
+    <th>Источник</th>
+    <td>{{ estate_item.origin|default:'' }}</td>
 </tr>
 
 <tr>
-	<th>Риэлтор</th>
-	<td>{{ estate_item.broker|default:'' }}</td>
+    <th>Риэлтор</th>
+    <td>{{ estate_item.broker|default:'' }}</td>
 </tr>
 
 <tr>
-	<th>Характеристики</th>
-	<td>
-		{% estate_details estate_item %}		
-	{% for bidg in estate_item.bidgs.all %}	
-	<div>
-		<fieldset>
-			<legend>
-				<span class="item">{{ bidg.estate_type }}</span>
-			</legend>
-			
-			{% wrapper_fieldset_comma bidg 'exterior_report_set' %}			
-			<div class="layout">
-				{% for level in bidg.levels.all %}
-				<fieldset>
-					<legend>
-						<span class="item">Планировка: {{ level }}</span>
-					</legend>
-					{% bidg_layout level %}
-				</fieldset>
-				{% endfor %}
-			</div>
-			{% if bidg.documents.all %}
-			Документы:
-			{% endif %}
-			{% for doc in bidg.documents.all %}
-			{{ doc }} {% include 'comma.html' %}
-			{% endfor %}
-		</fieldset>
-	</div> {% endfor %} </td>
+    <th>Характеристики</th>
+    <td> {% estate_details estate_item %}
+    {% with bidg=estate_item.basic_bidg %}
+    <div>
+        {% wrapper_fieldset_comma bidg 'summary_set' %}
+    </div> {% endwith %} </td>
 </tr>
 
 <tr>
-	<th>Коммуникации</th>
-	<td>{% communication estate_item %}</td>
+    <th>Коммуникации</th>
+    <td>{% communication estate_item %}</td>
 </tr>
 
 {% with stead=estate_item.stead %}
 {% if stead %}
 <tr>
-	<th>Участок</th>
-	<td> {% wrapper_fieldset_comma stead 'field_report_set' %}<br />		
-	{% if stead.documents.all %}
-	Документы:
-	{% endif %}
-	{% for doc in stead.documents.all %}
-	{{ doc }} {% include 'comma.html' %}
-	{% endfor %} </td>
+    <th>Участок</th>
+    <td> {% wrapper_fieldset_comma stead 'field_report_set' %}</td>
 </tr>
 {% endif %}
 {% endwith %}
 
 <tr>
-	<th>Описание</th>
-	<td>{{ estate_item.description|default:'' }}</td>
+    <th>Описание</th>
+    <td>{{ estate_item.description|default:'' }}</td>
 </tr>
-
 
 {% endblock more_detail %}
 
 {% block foto %}
 <tr>
-	<td colspan="2"> {% if request.GET.foto %}
-	{% load thumbnail %}
-	{% for image in estate_item.images.all %}
+    <td colspan="2"> {% if request.GET.foto %}
+    {% load thumbnail %}
+    {% for image in estate_item.images.all %}
 
-	{% thumbnail image.image "110x80" crop="center" as im %}
-	{% thumbnail image.image "800x600" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
-	{% endthumbnail %}
-	{% endfor %}
-	{% endif %} </td>
+    {% thumbnail image.image "110x80" crop="center" as im %}
+    {% thumbnail image.image "800x600" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
+    {% endthumbnail %}
+    {% endfor %}
+    {% endif %} </td>
 </tr>
 {% endblock foto %}

@@ -55,12 +55,14 @@ class BidgWrapper(BaseWrapper):
         self.extra_set = ['documents']
     @property    
     def exterior_report_set(self):
-        result = self.exterior_set[:]
-        try: 
-            result.remove('estate_type')
-        except:
-            pass
-        return result  
+        result = self.exterior_set[:]        
+        exclude_set = ('estate_type','room_number')
+        for f in exclude_set:
+            try:             
+                result.remove(f)
+            except:
+                pass               
+        return result
 
 class ApartmentWrapper(BidgWrapper):
     @BidgWrapper.exterior_set.getter

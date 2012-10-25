@@ -91,5 +91,10 @@ td, th {
 .list-title {
 	font-weight: bold;
 	font-size: 115%;
-	background: #eee;		
+}
+
+.public-thead th{
+	padding-top: 15px;		
+	border: 1px solid #ccc;
+	background: #eee;
 }

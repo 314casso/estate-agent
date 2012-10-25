@@ -5,7 +5,6 @@ from estatebase.wrapper import get_wrapper
 from collections import OrderedDict
 from copy import deepcopy
 from estatebase.models import MAYBE
-from estatebase.lib import first_last
 
 register = template.Library()
 
@@ -51,7 +50,7 @@ def wrapper_fieldset(obj, fieldset_name):
         obj_field = obj._meta.get_field(field)
         value = getattr(obj,field)
         if obj_field.get_internal_type() == 'BooleanField' and value:
-            value = u'Есть'
+            value = u'Есть'             
         if value:
             details[wrapper.get_label(field) or obj_field.verbose_name] = value            
     return {'details': details}
@@ -79,9 +78,9 @@ def bidg_layout(level):
 def estate_details(estate_item):
     result = []    
     if estate_item.beside:
-        result.append(u'расстояние до "%s": %s м' % (estate_item.beside, estate_item.beside_distance or ''))
+        result.append(u'<label>расстояние до</label> "%s": %s м' % (estate_item.beside, estate_item.beside_distance and intcomma(estate_item.beside_distance) or '---'))
     if estate_item.com_status and estate_item.com_status.id == MAYBE:                    
-        status = u'коммерч. использование: %s' % estate_item.com_status
+        status = u'<label>коммерч. использование:</label> %s' % estate_item.com_status
         result.append(status.lower())     
     return ', '.join(result) 
 
@@ -94,6 +93,8 @@ def to_comma_sep(iterval):
         return ', '.join(result)
     return u'не готовы'
             
-        
+#@register.simple_tag            
+#def office_address(region):
+            
         
                             

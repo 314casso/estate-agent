@@ -12,24 +12,18 @@
         {% block content %}{% endblock content %}
         <table class="report-table">
             {% for estate_item in estate_list %}
-            <thead>
+            <thead class='public-thead'>
                 <tr>
-                    <th><span class="list-title">{{ estate_item.estate_type }}.  Цена {{ estate_item.agency_price|rubble }} {% no_street_address estate_item %}. Код {{ estate_item.id }}</span></th>
+                    <th><span class="list-title">{{ estate_item.estate_type }}.  Цена {{ estate_item.agency_price|rubble }} {% no_street_address estate_item %}</span></th>
+                    <th style="width: 100px; background-color:#dedede"><span class="list-title">Код: {{ estate_item.id }}</span></th>                        
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
+                    <td colspan="2">
                     <div>
                         {% estate_details estate_item %} {% communication estate_item %}                        
-                        {% with stead=estate_item.stead %}
-                        {% if stead %}<br />                                                
-                        Участок:
-                        {% wrapper_fieldset_comma stead 'field_report_set' %};
-                        документы: {{ stead.documents.all|to_comma_sep }}
-                        {% endif %}
-                        {% endwith %}
-                        
+                                               
                         <div class="wrapper-0">
                             {% for bidg in estate_item.bidgs.all %}
                             <strong>{{ bidg.estate_type }}:</strong>
@@ -43,7 +37,19 @@
                             </div>
                             {% endfor %}
                         </div>
-                        
+                        {% with stead=estate_item.stead %}
+                        {% if stead %}                                                
+                        Участок:
+                        {% wrapper_fieldset_comma stead 'field_report_set' %};
+                        документы: {{ stead.documents.all|to_comma_sep }}
+                        {% endif %}
+                        {% endwith %}
+                        <div>{{ estate_item.credit_sum }}</div>
+                        <div>
+                        	{% for office in estate_item.region.office_set.all %}
+                        	   {{ office.address|safe }}
+                        	{% endfor %}
+                        </div>
                     </div></td>
                 </tr>
             </tbody>
