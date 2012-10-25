@@ -553,9 +553,9 @@ class EstateRegisterFilterForm(BidFilterForm):
         if check_value_list(self['agency_price'].value()):
             values = self['agency_price'].field.clean(self['agency_price'].value())                              
             if values[1]:
-                f['agency_price_max__lte'] = values[1]
+                f['bids__agency_price_max__lte'] = values[1]
             if values[0]:                                                                              
-                f['agency_price_min__gte'] = values[0]                                
+                f['bids__agency_price_min__gte'] = values[0]                                
         return f
 
 class BidPicleForm(EstateFilterForm):   
