@@ -14,6 +14,7 @@ CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
 
 MAX_CREDIT_MONTHS = 360
 INTEREST_RATE = 9.5/100 
+MAX_CREDIT_SUM = 0.1
 
 from local_settings import * #@UnusedWildImport
 

@@ -63,6 +63,6 @@
     <a href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Создать по заявке</a>
     <a href="{% url register_select bid.pk %}?{{ next_url }}">Подобрать</a>
 </div>
-{% include 'register_table.html' %}
+{% include 'registers/register_table.html' %}
 </fieldset>
 {% endblock %}

@@ -79,13 +79,17 @@ td, th {
 }
 
 .wrapper-0 {
-	border-top: 1px dotted #ccc;	
+	border-top: 1px dotted #ccc;
+	padding: 2px 15px;
 }
 
 .wrapper-1 {
-	border-bottom: 1px dotted #ccc;
-	margin-bottom: 10px;	
-	font-size: 90%;
+	border-bottom: 1px dotted #ccc;		
+	padding: 2px 15px;
+}
+
+.wrapper-1 div {
+	padding: 0 15px;
 }
 
 .list-title {

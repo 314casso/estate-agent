@@ -827,12 +827,11 @@ class ClientDetailView(DetailView):
         return context       
     
 class EstateRegisterMixin(ModelFormMixin):
-    template_name = 'register_update.html'
+    template_name = 'registers/register_update.html'
     form_class = EstateRegisterForm 
     model = EstateRegister   
     def get_initial(self):        
-        initial = super(EstateRegisterMixin, self).get_initial()                
-        initial['broker'] = self.request.user.pk
+        initial = super(EstateRegisterMixin, self).get_initial()        
         if 'bid' in self.kwargs:                  
             initial['bids'] = [self.kwargs['bid']]
         return initial
@@ -884,7 +883,7 @@ class EstateRegisterDeleteView(DeleteMixin, EstateRegisterMixin, DeleteView):
         return context
     
 class EstateRegisterDetailView(EstateRegisterMixin, DetailView):
-    template_name = 'register_detail.html'
+    template_name = 'registers/register_detail.html'
     def get_context_data(self, **kwargs):
         context = super(EstateRegisterDetailView, self).get_context_data(**kwargs)        
         estate_list = self.object.estates.all()  
@@ -937,7 +936,7 @@ class RemoveEstateFromRegisterView(AddEstateToRegisterView):
         
 class  EstateRegisterListView(ListView):
     context_object_name = 'register_list'
-    template_name = 'register_list.html'    
+    template_name = 'registers/register_list.html'    
     paginate_by = 5   
     def get_queryset(self):        
         q = EstateRegister.objects.select_related()       
@@ -960,7 +959,7 @@ class  EstateRegisterListView(ListView):
         return context
 
 class EstateRegisterSelectView(EstateRegisterListView):
-    template_name = 'register_select.html'                
+    template_name = 'registers/register_select.html'                
     def get_context_data(self, **kwargs):         
         context = super(EstateRegisterSelectView, self).get_context_data(**kwargs)                    
         context.update ({            

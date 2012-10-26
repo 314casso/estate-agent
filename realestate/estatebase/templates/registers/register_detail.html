@@ -20,7 +20,7 @@
 <table>
 	<tr>
 		<th>Код:</th>
-		<td style="font-weight: bold"><a href="{% url register_update estateregister.pk %}?{{ next_url }}">{{ estateregister.pk }}</a></td>
+		<td style="font-weight: bold"><a title="Переименовать подборку" href="{% url register_update estateregister.pk %}?{{ next_url }}">{{ estateregister.pk }}</a></td>
 	</tr>
 	<tr>
 		<th>Название:</th>
@@ -28,13 +28,13 @@
 	</tr>	
 	{% history estateregister.history %}   
 </table>
-
 <div class="topbar button">
-    <a href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
-    <a href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
-    <a href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
-</div>
-    
+    <a target="_blaank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
+    <a target="_blaank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
+    <a target="_blaank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
+    <a target="_blaank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Для покупателей без фото</a>
+    <a target="_blaank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">Для покупателей с фото</a>
+</div>  
 </fieldset>
 <!-- -->
 
@@ -45,7 +45,7 @@
     <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Подобрать</a>    	
 </div>
     
-{% include 'estate_table_register.html' with estate_list=object_list %}
+{% include 'registers/estate_table_register.html' with estate_list=object_list %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:10px">

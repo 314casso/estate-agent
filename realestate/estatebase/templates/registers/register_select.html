@@ -1,4 +1,4 @@
-{% extends "register_list.html" %}
+{% extends "registers/register_list.html" %}
 {% load paginator %}
 
 {% block page_header %}
@@ -7,7 +7,7 @@
 
 {% block left %}
 
-{% include "register_table_select.html" %}
+{% include "registers/register_table_select.html" %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">

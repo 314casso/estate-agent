@@ -48,13 +48,7 @@
 {% block foto %}
 <tr>
     <td colspan="2"> {% if request.GET.foto %}
-    {% load thumbnail %}
-    {% for image in estate_item.images.all %}
-
-    {% thumbnail image.image "110x80" crop="center" as im %}
-    {% thumbnail image.image "800x600" as bim %} <a target="_blank" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a> {% endthumbnail %}
-    {% endthumbnail %}
-    {% endfor %}
+    {% include 'reports/foto.html' with estate_item=estate_item %}
     {% endif %} </td>
 </tr>
 {% endblock foto %}

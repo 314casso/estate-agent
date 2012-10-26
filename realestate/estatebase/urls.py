@@ -82,6 +82,7 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
+    url (r'^registercreatefree/$', EstateRegisterCreateView.as_view(), name='register_create_free'),
     url (r'^registercreate/(?P<bid>\d+)$', EstateRegisterCreateView.as_view(), name='register_create'),      
     url (r'^registerupdate/(?P<pk>\d+)$', EstateRegisterUpdateView.as_view(), name='register_update'),
     url (r'^registerdelete/(?P<pk>\d+)$', EstateRegisterDeleteView.as_view(), name='register_delete'),

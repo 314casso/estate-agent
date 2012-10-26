@@ -2,10 +2,10 @@
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
-            <th>{% anchor id 'Код' %}</th>
-            <th>{% anchor name 'Название' %}</th>                       
+            <th>{% anchor id 'Код' %}</th>                                   
             <th>{% anchor history__modificated 'Обновлено' %}</th>
-            <th>Риэлтор</th>
+            <th>Пользователь</th>
+            <th>{% anchor name 'Название' %}</th>
             <th>Заявки</th>           
             <th>Действие</th>
         </tr>
@@ -13,14 +13,14 @@
     <tbody>
         {% for register_item in register_list %}
         <tr class="ui-widget-content">          
-            <td><a title="Правка подборки" href="{% url register_update register_item.pk %}?{{ next_url }}">{{ register_item.pk }}</a></td>
-            <td><a title="Состав и детали подборки" href="{% url register_detail register_item.pk %}?{{ next_url }}">{{ register_item.name }}</a></td>
+            <td><a title="Переименовать подборку" href="{% url register_update register_item.pk %}?{{ next_url }}">{{ register_item.pk }}</a></td>            
             <td>{{ register_item.history.modificated|date:"d M Y" }}</td>
-            <td>{{ register_item.broker }} </td>
+            <td>{{ register_item.history.created_by }} </td>
+            <td><a title="Состав и детали подборки" href="{% url register_detail register_item.pk %}?{{ next_url }}">{{ register_item.name }}</a></td>
             <td>            	
                 {% for bid_item in register_item.bids.all %}
                 {% if bid.pk != bid_item.pk %}                
-                    <a href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ bid_item }}</a>{% include 'comma.html' %}
+                    <a title="Подробная информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ bid_item }}</a> <small>(<a title="Показать карточку заказчика" href="{% url client_detail bid_item.client.pk %}?{{ next_url }}">{{ bid_item.client.name }}</a>)</small> {% include 'comma.html' %}
                 {% else %}
                     {{ bid_item }}
                 {% endif %}    

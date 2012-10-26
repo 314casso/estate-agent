@@ -12,7 +12,8 @@ import datetime
 import os
 from django.db.models.signals import post_save, pre_save, post_delete
 from picklefield.fields import PickledObjectField
-from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS
+from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS,\
+    MAX_CREDIT_SUM
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
     OUTBUILDINGS
 import caching.base
@@ -393,8 +394,11 @@ class Estate(ProcessDeletedModel):
     def is_commerce(self):
         return self.com_status.status == YES
     @property
+    def max_credit_sum(self):
+        return int(self.agency_price - self.agency_price * MAX_CREDIT_SUM)
+    @property
     def credit_sum(self):        
-        return int(self.agency_price * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))                                           
+        return int(self.max_credit_sum * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))                                           
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
@@ -799,8 +803,7 @@ class EstateRegister(ProcessDeletedModel):
     Подборка
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='estate_registers', blank=True, null=True, on_delete=models.PROTECT)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
     bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
     def __unicode__(self):
