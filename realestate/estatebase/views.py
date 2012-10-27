@@ -309,39 +309,23 @@ class EstateListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
             'filter_count' : self.get_queryset().count(),
-            'fields': list(estate_filter_form),                                   
+            'fields': list(estate_filter_form),
+            'filter_action': reverse('estate-list'),                                   
         })        
         return context
-
-class EstateSelectListView(EstateListView):
-    template_name = 'estate_select_list.html'
-    def get_queryset(self):                  
-        q = super(EstateSelectListView, self).get_queryset()
-        selected = get_object_or_404(EstateRegister, pk=self.kwargs['selected'])
-        q = q.exclude(id__in = selected.estates.all().values_list('id', flat=True))        
-        return q
-    def get_context_data(self, **kwargs):
-        context = super(EstateSelectListView, self).get_context_data(**kwargs)
-        context.update({            
-            'selected': self.kwargs['selected'],                                               
-        })
-        return context
-        
+       
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
-    template_name = 'estate_list.html'        
-    def get_queryset(self):
-        q = super(EstateListDetailsView, self).get_queryset()
-        self.estate = None 
+    template_name = 'estate_list.html'
+    estate = None        
+    def get_context_data(self, **kwargs):        
+        context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         if 'pk' in self.kwargs:                     
             self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])
         else:              
-            r = list(q[:1])
-            if r:
-                self.estate = r[0]        
-        return q
-    def get_context_data(self, **kwargs):        
-        context = super(EstateListDetailsView, self).get_context_data(**kwargs)
+            estates = list(self.get_queryset()[:1])
+            if estates:
+                self.estate = estates[0]
         r = p = 0
         if self.estate:      
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
@@ -350,9 +334,24 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%s (%s%%)' % (intcomma(r), intcomma(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
-            'estate': self.estate,                                                      
+            'estate': self.estate, 
         })                
         return context        
+
+class EstateSelectListView(EstateListDetailsView):    
+    def get_queryset(self):                  
+        q = super(EstateSelectListView, self).get_queryset()
+        selected = get_object_or_404(EstateRegister, pk=self.kwargs['selected'])
+        q = q.exclude(id__in = selected.estates.all().values_list('id', flat=True))        
+        return q
+    def get_context_data(self, **kwargs):
+        context = super(EstateSelectListView, self).get_context_data(**kwargs)
+        selected = self.kwargs['selected']
+        context.update({            
+            'selected': selected,  
+            'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),                                             
+        })
+        return context
 
 class EstateImagesView(TemplateView): 
     template_name = 'estate_images.html'

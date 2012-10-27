@@ -1,0 +1,8 @@
+{% extends "estate_list.html" %}
+{% block lastcol %}
+<a href="{% url register_add_estate selected estate.pk %}?{{ next_url }}">Добавить в подборку</a>
+{% endblock lastcol %}
+
+{% block navlink  %}
+{% url estate_select_list estate_item.pk selected %}
+{% endblock navlink  %}

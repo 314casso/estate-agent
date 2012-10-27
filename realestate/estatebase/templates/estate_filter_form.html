@@ -1,6 +1,6 @@
 <!--  -->
 <div class="button table-form" id='filter'>
-    <form method="get" action="{% url estate-list %}">        
+    <form method="get" action="{{ filter_action }}">        
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
             <tr>
                 <td class="top-align">
@@ -49,7 +49,7 @@
             </tr>                                          
             <tfoot>
                 <tr>
-                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <td colspan=3><a href="{{ filter_action }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
                     <input type="submit" value="Применить"/>
                     </td>
                 </tr>
