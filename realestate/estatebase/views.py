@@ -329,7 +329,7 @@ class EstateSelectListView(EstateListView):
         
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
-    template_name = 'estate_short_list.html'        
+    template_name = 'estate_list.html'        
     def get_queryset(self):
         q = super(EstateListDetailsView, self).get_queryset()
         self.estate = None 
