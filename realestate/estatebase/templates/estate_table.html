@@ -6,11 +6,11 @@
         <tr>
             <th> </th>
             <th>{% anchor id 'Код' %}</th>
-            <th>{% anchor estate_type__name 'Тип' %}</th>
-            <th>{% anchor history__modificated 'Обновлено' %}</th>
-            <th>{% anchor agency_price 'Цена' %}</th>
+            <th>{% anchor estate_type__name 'Вид' %}</th>
             <th>Адрес</th>
-            <th>Контакт</th>            
+            <th>{% anchor agency_price 'Цена' %}</th>            
+            <th>Контакт</th>
+            <th>{% anchor history__modificated 'Обновлено' %}</th>            
             <th>Действие</th>
         </tr>
     </thead>
@@ -24,8 +24,6 @@
             <a href="{% url estate_update estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a>
         </td>
         <td><a href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={{ estate_item.pk }}"> {{ estate_item.estate_type }} </a></td>
-        <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
-        <td> {{ estate_item.agency_price|default_if_none:''|intcomma }}</td>
         <td>
         <span class="inline-span">
             <small>
@@ -34,6 +32,9 @@
             {% endwith %}
             </small>
         </span></td>
+        
+        <td> {{ estate_item.agency_price|default_if_none:''|intcomma }}</td>
+           
 
         <td> {% with contact=estate_item.basic_contact  %}
         {% if contact %}
@@ -43,6 +44,7 @@
          </span>
          <span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span> {% endif %}
         {% endwith %} </td>
+        <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
         <td>{% block lastcol %}<a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить</a>{% endblock lastcol %}</td>
     </tr>
     {% endfor %}

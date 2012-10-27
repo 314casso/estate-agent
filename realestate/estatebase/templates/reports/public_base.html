@@ -32,7 +32,7 @@
 							<strong> {{ bidg.documents.all|to_comma_sep }} </strong>
 							<div class="wrapper-1">
 								{% for level in bidg.levels.all %}
-								<strong>{{ level }}:</strong><i>{% bidg_layout level %}{% if not forloop.last %}; {% endif %}</i>
+								<strong>{{ level }}:</strong><i>{% bidg_layout level %}{% if not forloop.last %} {% endif %}</i>
 								{% endfor %}
 							</div>
 							{% endfor %}
