@@ -21,7 +21,7 @@ body {
 }
 
 #right {
-	float: left;
+	float: left;	
 }
 
 #extra {
@@ -496,6 +496,7 @@ input[type=text] {
 	display: inline-block;
 	/*border-radius: 4px;*/
 	/*border: 1px solid #333;*/
+	font-weight: bold;
 }
 
 #nav .current_item {
