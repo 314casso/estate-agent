@@ -347,9 +347,13 @@ class EstateSelectListView(EstateListDetailsView):
     def get_context_data(self, **kwargs):
         context = super(EstateSelectListView, self).get_context_data(**kwargs)
         selected = self.kwargs['selected']
+        in_register = False
+        if self.estate and self.estate.estate_registers.filter(pk=selected):
+            in_register = True
         context.update({            
             'selected': selected,  
-            'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),                                             
+            'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),
+            'in_register': in_register,                                              
         })
         return context
 
