@@ -17,13 +17,15 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     ContactHistoryFormSet, ContactForm, EstateCommunicationForm, EstateParamForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
     BidForm, from_to, BidFilterForm, BidPicleForm, EstateRegisterForm, \
-    EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm
+    EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm,\
+    ClientStatusUpdateForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
     ExUser, Bidg
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class BaseMixin(object):
@@ -829,6 +831,23 @@ class ClientDetailView(DetailView):
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
         return context       
+    
+class ClientStatusUpdateView(BaseMixin,UpdateView):
+    model = EstateClient
+    form_class = ClientStatusUpdateForm
+    template_name = 'client_status_update.html'
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        client = self.kwargs.get('client', None)
+        estate = self.kwargs.get('estate', None)
+        queryset = queryset.filter(client=client, estate=estate)
+        try:
+            obj = queryset.get()
+        except ObjectDoesNotExist:
+            raise Http404(_(u"No %(verbose_name)s found matching the query") %
+                          {'verbose_name': queryset.model._meta.verbose_name})
+        return obj
     
 class EstateRegisterMixin(ModelFormMixin):
     template_name = 'registers/register_update.html'

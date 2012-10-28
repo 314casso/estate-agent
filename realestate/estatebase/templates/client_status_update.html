@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% block linkback %}
+{% include 'back2estate.html' with estate=object.estate %}
+{% endblock linkback %}
+
+{% block left %}
+<form method="post" action="" class="table-form">
+    {% csrf_token %}    
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:500px; white-space: nowrap">
+            <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    {% csrf_token %}
+                    Cтатус клиента {{ object.client }} к лоту [{{ object.estate }}]
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+            </thead>
+            <tbody>                             
+            <tr>
+                <td colspan="100%">
+                    <table>
+                    {{ form.as_table }}
+                    </table>
+                </td>                   
+            </tr>
+            </tbody>                                         
+            <tfoot class="button">
+            <tr>
+                <td colspan="100%" style="text-align: right"> {% block dialog_buttons %}
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                {% endblock dialog_buttons %} </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+{% endblock %}

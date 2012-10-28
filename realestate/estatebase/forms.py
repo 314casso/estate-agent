@@ -16,7 +16,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LayoutTypeLookup, LevelNameLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid, \
-    EstateRegister, EstateClientStatus, EstateType
+    EstateRegister, EstateClientStatus, EstateType, EstateClient
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
@@ -571,4 +571,8 @@ class EstateRegisterForm(BetterModelForm):
             'bids' : forms.MultipleHiddenInput(),
             'estates' : forms.MultipleHiddenInput()            
         }
-        
+
+class ClientStatusUpdateForm(ModelForm):
+    class Meta:
+        model = EstateClient 
+        fields = ['estate_client_status']       
