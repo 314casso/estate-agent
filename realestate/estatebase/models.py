@@ -680,7 +680,7 @@ class Client(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='clientbrokers', blank=True, null=True, on_delete=models.PROTECT)             
     def __unicode__(self):
-        return u'%s %s' % (self.name, self.address)    
+        return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
     @property
     def user(self):
         return self.history.updated_by or self.history.created_by                

@@ -23,7 +23,10 @@
 		$('#id_street_0').djselectable('option', 'prepareQuery', localityParam);
 		$('#id_locality_0').djselectable('option', 'prepareQuery', regionParam);
 		$('#id_microdistrict_0').djselectable('option', 'prepareQuery', localityParam);
-		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);	});
+		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);
+		
+		$('#id_client_0').after("<a onclick=\"popupWin = window.open(this.href, 'contacts', 'location,width=400,height=300,top=0'); popupWin.focus(); return false;\" href='{% url client_create %}'>Добавить</a>");
+			});
 	
 </script>
 {% endblock js %}
@@ -33,9 +36,9 @@
 {% endblock linkback %}
 
 {% block left %}
-<form action="" method="post" class="table-form">
+<form action="" method="post" class="table-form edit-form">
 	{% block general_info %}
-	<table class="ui-widget ui-widget-content ui-corner-all" style="width:360px">
+	<table class="ui-widget ui-widget-content ui-corner-all" style="width:100%">
 		<thead>
 			<tr>
 				<td colspan="100%">

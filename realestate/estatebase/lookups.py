@@ -125,7 +125,7 @@ class ClientLookup(ModelLookup):
     def get_item_label(self, item):
         contacts = ', '.join(item.contacts.all().values_list('contact', flat=True))
         address = item.address and ('(%s)' % item.address)  or ''
-        return u"%s, %s %s" % (item.name, contacts or '', address)
+        return u"%s: %s %s" % (item.name, contacts or '', address)
 
 class ClientTypeLookup(SimpleNameLookup):
     model = ClientType    

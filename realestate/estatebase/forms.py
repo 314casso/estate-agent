@@ -66,18 +66,19 @@ class EstateCreateForm(EstateForm):
                   'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
 
 class EstateCreateClientForm(EstateCreateForm):
-    client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())
-        
-class EstateCreateWizardForm(EstateCreateForm):
-    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())
-    clients = AutoCompleteSelectField(
+    client = AutoCompleteSelectField(
             lookup_class=ClientLookup,
             label=_('Client'),
-            required=True,
-        ) 
-    class Meta(EstateCreateForm.Meta):        
-        fields = ('clients', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+            required=True,            
+        )
+    def __init__(self, *args, **kwargs):
+        super(EstateCreateClientForm, self).__init__(*args, **kwargs)
+        self.fields['client'].widget.attrs={'class':'long-input'}
+        
+class EstateCreateWizardForm(EstateCreateClientForm):
+    class Meta(EstateCreateClientForm.Meta):        
+        fields = ('client', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
                   'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
 
 class EstateCommunicationForm(ModelForm):
@@ -354,8 +355,6 @@ class EstateFilterForm(BetterForm):
                      ('right', {'fields': ['created', 'updated', 'origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
     
-
-        
 class ContactHistoryForm(ModelForm):    
     class Meta:        
         model = ContactHistory

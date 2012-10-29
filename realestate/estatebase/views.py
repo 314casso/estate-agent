@@ -17,7 +17,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     ContactHistoryFormSet, ContactForm, EstateCommunicationForm, EstateParamForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
     BidForm, from_to, BidFilterForm, BidPicleForm, EstateRegisterForm, \
-    EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm,\
+    EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
@@ -143,9 +143,9 @@ class EstateTypeViewAjax(TemplateView):
     template_name = 'ajax/estate_type_select.html'
     def get_context_data(self, **kwargs):                
         context = super(EstateTypeViewAjax, self).get_context_data(**kwargs)   
-        estate_categories = EstateType.objects.filter(estate_type_category__independent = True).order_by('estate_type_category','order')
+        estate_categories = EstateType.objects.filter(estate_type_category__independent=True).order_by('estate_type_category', 'order')
         context.update({            
-            'estate_categories': estate_categories,                                             
+            'estate_categories': estate_categories,
         })        
         return context
 
@@ -162,11 +162,11 @@ class PlaceableTypeViewAjax(TemplateView):
             filter_dict.update({
             'estate_type_category__independent' : False
             })             
-        estate_categories = EstateType.objects.filter(**filter_dict).select_related().order_by('estate_type_category','order')
+        estate_categories = EstateType.objects.filter(**filter_dict).select_related().order_by('estate_type_category', 'order')
         context = super(PlaceableTypeViewAjax, self).get_context_data(**kwargs)
         context.update({            
             'estate_categories': estate_categories,
-            'estate': self.kwargs['estate'],                                   
+            'estate': self.kwargs['estate'],
         })        
         return context
 
@@ -213,15 +213,15 @@ class EstateCreateClientView(EstateCreateView):
     form_class = EstateCreateClientForm    
     def get_initial(self):        
         initial = super(EstateCreateClientView, self).get_initial()      
-        initial['client_pk'] = self.kwargs.get('client', None)        
+        initial['client'] = self.kwargs.get('client', None)        
         initial['client_status'] = EstateClient.ESTATE_CLIENT_STATUS    
         return initial    
     def form_valid(self, form):
         super(EstateCreateClientView, self).form_valid(form) 
-        client_pk = form.cleaned_data.get('client_pk') or None
+        client = form.cleaned_data.get('client') or None
         estate_client_status = form.cleaned_data.get('client_status') or EstateClient.ESTATE_CLIENT_STATUS
-        if client_pk:
-            EstateClient.objects.create(client_id=client_pk,
+        if client:
+            EstateClient.objects.create(client_id=client.pk,
                                         estate_client_status=estate_client_status,
                                         estate=self.object)
         return HttpResponseRedirect(self.get_success_url())    
@@ -242,7 +242,7 @@ class EstateDetailView(DetailView):
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%d (%d%%)' % (r, p),
-            'images': self.object.images.all()[:6],                       
+            'images': self.object.images.all()[:6],
         })        
         return context
     
@@ -297,7 +297,7 @@ class EstateListView(ListView):
     paginate_by = 25   
     def get_queryset(self):
         #q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
-        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type__estate_type_category','history')        
+        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type__estate_type_category', 'history')        
         search_form = EstateFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()        
         q = set_estate_filter(q, filter_dict, user=self.request.user)
@@ -313,7 +313,7 @@ class EstateListView(ListView):
             'total_count': Estate.objects.count(),
             'filter_count' : self.get_queryset().count(),
             'fields': list(estate_filter_form),
-            'filter_action': reverse('estate-list'),                                   
+            'filter_action': reverse('estate-list'),
         })        
         return context
        
@@ -337,7 +337,7 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%s (%s%%)' % (intcomma(r), intcomma(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
-            'estate': self.estate, 
+            'estate': self.estate,
         })                
         return context        
 
@@ -349,7 +349,7 @@ class EstateSelectListView(EstateListDetailsView):
         selected_estate = self.kwargs.get('pk', None)        
         if selected_estate:
             selected_estates = selected_estates.exclude(pk__exact=selected_estate)           
-        q = q.exclude(id__in = selected_estates.values_list('id', flat=True))        
+        q = q.exclude(id__in=selected_estates.values_list('id', flat=True))        
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateSelectListView, self).get_context_data(**kwargs)
@@ -358,9 +358,9 @@ class EstateSelectListView(EstateListDetailsView):
         if self.estate and self.estate.estate_registers.filter(pk=selected):
             in_register = True
         context.update({            
-            'selected': selected,  
+            'selected': selected,
             'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),
-            'in_register': in_register,                                              
+            'in_register': in_register,
         })
         return context
 
@@ -384,14 +384,14 @@ class ClientUpdateEstateView(DetailView):
             'dialig_body'  : u'Привязать заказчика %s к объекту [%s]?' % (self.object, self.kwargs['estate_pk']),
         })
         return context
-    def update_object(self,client_pk,estate_pk):
+    def update_object(self, client_pk, estate_pk):
         '''
         Вынесена для переопределения в потомках класса
         '''        
-        EstateClient.objects.create(client_id=client_pk,estate_id=estate_pk,
+        EstateClient.objects.create(client_id=client_pk, estate_id=estate_pk,
                                     estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS)                
     def post(self, request, *args, **kwargs):       
-        self.update_object(self.kwargs['pk'],self.kwargs['estate_pk'])       
+        self.update_object(self.kwargs['pk'], self.kwargs['estate_pk'])       
         #Обновление истории и контакта у оъекта                            
         prepare_history(Estate.objects.get(pk=self.kwargs['estate_pk']).history, self.request.user.pk)      
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
@@ -404,8 +404,8 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
             'dialig_body'  : u'Отвязать заказчика %s от объекта [%s]?' % (self.object, self.kwargs['estate_pk']),
         })
         return context 
-    def update_object(self,client_pk,estate_pk):
-        EstateClient.objects.get(estate_id=estate_pk,client_id=client_pk).delete()                   
+    def update_object(self, client_pk, estate_pk):
+        EstateClient.objects.get(estate_id=estate_pk, client_id=client_pk).delete()                   
         
 class ObjectMixin(ModelFormMixin):    
     model = Bidg    
@@ -446,7 +446,7 @@ class ClientListView(ListView):
     context_object_name = "clients"
     paginate_by = 5    
     def get_queryset(self):                        
-        q = Client.objects.select_related().prefetch_related('origin','contacts__contact_state','contacts__contact_type')
+        q = Client.objects.select_related().prefetch_related('origin', 'contacts__contact_state', 'contacts__contact_type')
         search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if len(filter_dict):
@@ -723,7 +723,7 @@ class BidMixin(ModelFormMixin):
         context = super(BidMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'client': client,            
+            'client': client,
         })       
                            
         if self.request.POST:
@@ -821,8 +821,8 @@ class BidListView(ListView):
         bid_filter_form = BidFilterForm(self.request.GET)                                                                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'bid_count': Bid.objects.count(),           
-            'bid_filter_form': bid_filter_form,                                   
+            'bid_count': Bid.objects.count(),
+            'bid_filter_form': bid_filter_form,
         })        
         return context    
 
@@ -836,7 +836,7 @@ class ClientDetailView(DetailView):
         })        
         return context       
     
-class ClientStatusUpdateView(BaseMixin,UpdateView):
+class ClientStatusUpdateView(BaseMixin, UpdateView):
     model = EstateClient
     form_class = ClientStatusUpdateForm
     template_name = 'client_status_update.html'
@@ -849,7 +849,7 @@ class ClientStatusUpdateView(BaseMixin,UpdateView):
         try:
             obj = queryset.get()
         except ObjectDoesNotExist:
-            raise Http404(_(u"No %(verbose_name)s found matching the query") %
+            raise Http404(_(u"No %(verbose_name)s found matching the query") % 
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
     
@@ -865,7 +865,7 @@ class EstateRegisterMixin(ModelFormMixin):
     def get_context_data(self, **kwargs):                         
         context = super(EstateRegisterMixin, self).get_context_data(**kwargs)
         context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),            
+            'next_url': safe_next_link(self.request.get_full_path()),
         })
         return context
     def get_success_url(self):   
@@ -965,8 +965,8 @@ class  EstateRegisterListView(ListView):
         register_filter_form = EstateRegisterFilterForm(self.request.GET)                                                                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'bid_count': Bid.objects.count(),           
-            'register_filter_form': register_filter_form,                                   
+            'bid_count': Bid.objects.count(),
+            'register_filter_form': register_filter_form,
         })        
         return context
 
@@ -975,7 +975,7 @@ class EstateRegisterSelectView(EstateRegisterListView):
     def get_context_data(self, **kwargs):         
         context = super(EstateRegisterSelectView, self).get_context_data(**kwargs)                    
         context.update ({            
-            'bid_pk' : self.kwargs['bid_pk'],            
+            'bid_pk' : self.kwargs['bid_pk'],
         })        
         return context
     def get_queryset(self):
@@ -1014,15 +1014,15 @@ class RemoveRegisterFromBid(AddRegisterToBid):
 class RegisterReportView(EstateRegisterMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(RegisterReportView, self).get_context_data(**kwargs)        
-        estate_list = self.object.estates.prefetch_related('beside', 'estate_category' , 'contact' , 'bidgs__wall_construcion', 'history', 
-                                                           'clients__contacts','bidgs__estate_type__estate_type_category', 
+        estate_list = self.object.estates.prefetch_related('beside', 'estate_category' , 'contact' , 'bidgs__wall_construcion', 'history',
+                                                           'clients__contacts', 'bidgs__estate_type__estate_type_category',
                                                            'stead__estate_type__estate_type_category',
-                                                           'bidgs__documents','bidgs__levels__layout_set',
-                                                           'bidgs__exterior_finish','bidgs__roof','bidgs__window_type','bidgs__heating',
-                                                           'bidgs__levels__level_name','bidgs__levels__layout_set__furniture',
-                                                           'bidgs__levels__layout_set__interior','bidgs__levels__layout_set__layout_feature',
+                                                           'bidgs__documents', 'bidgs__levels__layout_set',
+                                                           'bidgs__exterior_finish', 'bidgs__roof', 'bidgs__window_type', 'bidgs__heating',
+                                                           'bidgs__levels__level_name', 'bidgs__levels__layout_set__furniture',
+                                                           'bidgs__levels__layout_set__interior', 'bidgs__levels__layout_set__layout_feature',
                                                            'bidgs__levels__layout_set__layout_type', 'estate_status', 'origin',
-                                                           'region','locality')
+                                                           'region', 'locality')
         
         order_by = self.request.fields
         if order_by:      
