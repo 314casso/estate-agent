@@ -1,7 +1,9 @@
 {% load link_helper %}
+{% if estate %}
 <div class="ui-widget">
-    <div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em;">
+    <div class="ui-state-highlight ui-corner-all" style="margin-bottom: 5px; padding: .4em; display: inline-block">
         <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"> </span>
         <a href="{{ request.GET.next }}">{{ estate.estate_type }} <b>[{{ estate.pk }}]</b> {% address estate %}</a>
     </div>
 </div>
+{% endif %}

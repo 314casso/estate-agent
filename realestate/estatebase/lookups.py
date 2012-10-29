@@ -1,17 +1,17 @@
 from estatebase.models import Street, Locality, Microdistrict, EstateType, \
     Estate, Region, EstateStatus, WallConstrucion, Origin, Beside, Interior, \
     Electricity, Watersupply, Gassupply, Sewerage, Driveway, Client, Contact, ExUser, \
-    ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony,\
+    ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony, \
     LayoutType, LevelName, ComStatus
-from selectable.base import ModelLookup, LookupBase
+from selectable.base import ModelLookup
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
 
 class SimpleIdLookup(ModelLookup):
     search_fields = ('id__icontains',)
     def get_item_label(self, item):
-        if hasattr(item,'name'):            
-            return u"%s, %s" % (item.pk, getattr(item,'name'))
+        if hasattr(item, 'name'):            
+            return u"%s, %s" % (item.pk, getattr(item, 'name'))
         else:
             return u"%s" % item.pk        
     def get_item_value(self, item):
@@ -35,7 +35,7 @@ class EstateLookup(ModelLookup):
     def get_query(self, request, term):
         results = super(EstateLookup, self).get_query(request, term)        
         if request.user:
-            results = results.filter(region__geo_group__userprofile__user__exact = request.user)
+            results = results.filter(region__geo_group__userprofile__user__exact=request.user)
         return results        
     
 class EstateStatusLookup(ModelLookup):
@@ -79,10 +79,10 @@ class EstateTypeLookup(SimpleNameLookup):
     model = EstateType 
     def get_query(self, request, term):
         results = super(EstateTypeLookup, self).get_query(request, term)
-        results = results.filter(estate_type_category__independent = True)        
+        results = results.filter(estate_type_category__independent=True)        
         self.category = request.GET.get('category', '')        
         if self.category:
-            results = results.filter(estate_type_category_id = self.category)
+            results = results.filter(estate_type_category_id=self.category)
         return results
     def get_item_label(self, item):
         if self.category:
@@ -145,7 +145,6 @@ class LayoutTypeLookup(SimpleNameLookup):
     
 class LevelNameLookup(SimpleNameLookup):
     model = LevelName    
-
     
 try:
     registry.register(StreetLookup)

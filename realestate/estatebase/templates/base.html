@@ -19,10 +19,13 @@
         <div id="wrapper">
             <div id="header">
                 {% block header %}{% endblock %}
-                <div style="float: left">
+                <div>
                     {% if user.is_authenticated %}
                     <div class="maintree" id="nav">
                         {% sitetree_menu from "maintree" include "trunk,topmenu" %}
+                    </div>
+                    <div class="ui-widget ui-widget-content ui-corner-all user-info">
+                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> ({{ request.user.userprofile.office }}) / <a href="{% url logout %}">Выйти</a>
                     </div>
                     {% endif %}
                     <div class="page-header ui-widget">
@@ -31,12 +34,6 @@
                     {% block linkback %}{% endblock %}
                     {% block topbar %}{% endblock %}
                 </div>
-                {% if user.is_authenticated %}
-                <div class="ui-widget ui-widget-content ui-corner-all user-info">
-                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> ({{ request.user.userprofile.office }}) / <a href="{% url logout %}">Выйти</a>
-                </div>
-                {% endif %}
-                <br style="clear: both" />
             </div>
             <div id="content">
                 <div id="left">

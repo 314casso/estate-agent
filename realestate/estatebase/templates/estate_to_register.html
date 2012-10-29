@@ -1,0 +1,12 @@
+{% extends "estate_list.html" %}
+{% block lastcol %}
+{% if not in_register %}
+<a href="{% url register_add_estate selected estate.pk %}?{{ next_url }}">Добавить в подборку [{{ selected }}]</a>
+{% else %}
+<a href="{% url register_remove_estate selected estate.pk %}?{{ next_url }}">Отвязать от подборки [{{ selected }}]</a>
+{% endif %}
+{% endblock lastcol %}
+
+{% block navlink  %}
+{% url estate_select_list estate_item.pk selected %}
+{% endblock navlink  %}

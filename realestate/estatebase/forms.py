@@ -16,7 +16,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LayoutTypeLookup, LevelNameLookup
 from estatebase.models import Client, Contact, \
     ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid, \
-    EstateRegister, EstateClientStatus, EstateType
+    EstateRegister, EstateClientStatus, EstateType, EstateClient
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
@@ -517,7 +517,7 @@ class BidFilterForm(BetterForm):
 class EstateRegisterFilterForm(BidFilterForm):
     def __init__(self, *args, **kwargs):
         super(EstateRegisterFilterForm, self).__init__(*args, **kwargs)
-        exclude = ['clients', 'contacts']
+        exclude = ['clients', 'contacts','broker']
         for field in exclude:
             del self.fields[field]        
     pk = AutoCompleteSelectMultipleField(
@@ -544,8 +544,6 @@ class EstateRegisterFilterForm(BidFilterForm):
                 f.update(value)
         if self['created_by'].value():
             f['history__created_by_id'] = self['created_by'].value()
-        if self['broker'].value():
-            f['broker_id'] = self['broker'].value()            
         if self['estate_type'].value():
             f['bids__estate_types__id__in'] = self['estate_type'].value()
         if self['name'].value():
@@ -573,4 +571,8 @@ class EstateRegisterForm(BetterModelForm):
             'bids' : forms.MultipleHiddenInput(),
             'estates' : forms.MultipleHiddenInput()            
         }
-        
+
+class ClientStatusUpdateForm(ModelForm):
+    class Meta:
+        model = EstateClient 
+        fields = ['estate_client_status']       

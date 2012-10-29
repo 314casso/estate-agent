@@ -1,12 +1,20 @@
 {% extends "base.html" %}
 {% load thumbnail %}
-
+{% load link_helper %}
 {% load paginator %}
+{% load humanize %}
 
 {% block css %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
 <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" media="all" rel="stylesheet" />
-{% block extra_css %}{% endblock extra_css %}
+<style>
+	.ui-accordion-content {
+		padding: 3px !important;
+	}
+	#estate-accordion h3 {
+		font-size: 16px;
+	}
+</style>
 {% endblock css %}
 
 {% block js %}
@@ -15,57 +23,192 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
 <script type="text/javascript">
-    $(function() {
-        $(".selected").addClass('ui-state-highlight');
-        $("#filter").dialog({
-            modal : true,                       
-            width: 1100,               
-            height: 'auto',         
-            title : 'Фильтр',            
-            autoOpen: false,
-  
-  
-  open: function (event, ui) {
-    $('#filters').css('overflow', 'hidden');
-  }                       
-        });
-                
-    }); 
+	$(function() {
+		$(".selected").addClass('ui-state-highlight');
+		$("#filter").dialog({
+			modal : true,
+			width : 1100,
+			height : 'auto',
+			title : 'Фильтр',
+			autoOpen : false,
 
-function showFilter(){
-    $('#filter').dialog('open');
-}
+			open : function(event, ui) {
+				$('#filters').css('overflow', 'hidden');
+			}
+		});
+
+	});
+
+	function showFilter() {
+		$('#filter').dialog('open');
+	}
+
+    $(function() { 
+	    $("#tabs").tabs({
+	        select: function(event, ui) {
+	            localStorage.setItem('estate_id', '{{ estate.id }}');               
+	            localStorage.setItem('saved_tab', ui.index);                
+	        }, 
+	        selected : getIndex('{{ estate.id }}','saved_tab')  
+	    });   
+	    $("#bidg-accordion").accordion({
+	        change : function(event, ui) {              
+	            localStorage.setItem('estate_id', '{{ estate.id }}');
+	            localStorage.setItem('bidg_index', ui.options.active);             
+	        },
+	        active : getIndex('{{ estate.id }}','bidg_index'),
+	        autoHeight : false
+	    });        
+	    $("#outbuildings-accordion").accordion({
+	        change : function(event, ui) {              
+	            localStorage.setItem('estate_id', '{{ estate.id }}');
+	            localStorage.setItem('outbuildings_index', ui.options.active);             
+	        },
+	        active : getIndex('{{ estate.id }}','outbuildings_index'),
+	        autoHeight : false
+	    });
+    });  
 </script>
-{% block extra_js %}{% endblock extra_js %}
 {% endblock js %}
 
 {% block page_header %}
-Cписок недвижимости
+{% if estate %}
+Просмотр недвижимости «{{ estate.estate_type }}» [{{ estate.pk }}]
+{% endif %}
 {% endblock %}
 
 {% block topbar %}
 <div class="topbar button">
-    <div class="ui-widget ui-widget-content ui-corner-all user-info" style="float: none; margin-bottom: 3px">
-        Всего объектов: {{ total_count }},
-        отобрано: {{ filter_count }},
-        показано на странице: {{ estate_list.count }}
+    <div>
+        <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
+        <button onclick="showFilter()">
+            Показать фильтр
+        </button>
+        {% include 'prev_view.html' %}
+        {% if estate %}
+        <div style="float: right">
+        	{% block lastcol %}
+        	<a href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
+        	{% endblock lastcol %}            
+        </div>
+        {% endif %}
     </div>
-    <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
-    <button onclick="showFilter()">
-        Показать фильтр
-    </button>
-    {% include 'prev_view.html' %}
 </div>
 {% include 'estate_filter_form.html' %}
 {% endblock topbar %}
 
 {% block left %}
+<div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: none; margin-bottom: 3px";>
+    Всего объектов: {{ total_count }},
+    отобрано: {{ filter_count }},
+    показано на странице: {{ estate_list.count }}
+</div>
+<br style="clear: both" />
+{% for estate_item in estate_list %}
+<fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
+    <legend style="font-size: 11px;">
+        [{{ estate_item.pk }}]
+        <a title="{{ estate_item.estate_type }}" href="{% block navlink  %}{% url estate_list_details estate_item.pk %}{% endblock navlink  %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:19 }}</a>
+        <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
+        {% if estate_item.agency_price %}
+        <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
+        {% endif %}
 
-{% include 'estate_table.html' %}
+        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url estate_update estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
+    </legend>
+    <div style="border-bottom: 0px solid #ddd; font-style: italic">
+        {% address estate_item %}
+    </div>
+    <div style="margin-top: 2px">
+        {% with contact=estate_item.basic_contact  %}
+        {% if contact %}
+        {{ contact.client.client_type }}
+        <a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
+        <span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+        {% endif %}
+        {% endwith %}
+    </div>
+</fieldset>
+{% empty %}
+Объектов, подходящих под критерии фильтра не обнаружено...
+{% endfor %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">
     {% digg_paginator %}
 </div>
 {% endif %}
+
 {% endblock left %}
+
+{% block right %}
+{% if estate %}
+<div id="tabs">
+    <ul>
+        <li>
+            <a href="#tab-basic">Основная информация</a>
+        </li>
+        {% if not estate.estate_category.is_stead %}
+        <li>
+            <a href="#tab-bidgs">Объекты</a>
+        </li>
+        {% endif %}
+        {% if estate.stead %}
+        <li>
+            <a href="#tab-outbuildings">Постройки</a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div id="tab-basic">
+        <div style="float: left">
+            {% include "estate_dialog/basic.html" %}
+            {% include "estate_dialog/salers.html" %}
+            {% if estate.basic_bidg %}
+            {% include "estate_dialog/basic_bidg_summary.html" with basic_bidg=estate.basic_bidg %}
+            {% endif %}
+        </div>
+        <div style="float: left; margin-left: 10px">
+            {% include "estate_dialog/photo_base.html" %}
+            {% include "estate_dialog/comm.html" %}
+            {% if estate.stead %}
+            {% include "details/stead.html" with stead=estate.basic_stead %}
+            {% if estate.estate_category.maybe_stead %}
+            <div class="button" style="text-align: right; margin: 10px 0">
+                <a title="Удаление участка из лота..." href="{% url stead_remove estate.basic_stead.pk %}?{{ next_url }}">Удалить участок</a>
+            </div>
+            {% endif %}
+            {% elif estate.estate_category.can_has_stead %}
+            <div class="button" style="text-align: right; margin: 10px 0">
+                <a title="Добавление участка к лоту..." href="{% url stead_append estate.pk %}?{{ next_url }}">Добавить участок</a>
+            </div>
+            {% endif %}
+            {% include "estate_dialog/marks.html" %}
+        </div>
+        <br style="clear: both" />
+    </div>
+    {% if not estate.estate_category.is_stead %}
+    <div id="tab-bidgs">
+        <div id="bidg-accordion">
+            {% include 'object_type/mix.html' with bidgs=estate.bidg_objects %}
+        </div>
+        {% if estate.stead and estate.is_commerce %}
+        <div class="button" style="text-align: right; margin: 10px 0">
+            <a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=commerce" class="ajax-dialog">Добавить ком. недвижимость</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if estate.stead %}
+    <div id="tab-outbuildings">
+        <div id="outbuildings-accordion">
+            {% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}
+        </div>
+        <div class="button" style="text-align: right; margin: 10px 0">
+            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить постройку или сооружение</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock right %}

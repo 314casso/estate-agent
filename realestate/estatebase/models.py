@@ -804,7 +804,7 @@ class EstateRegister(ProcessDeletedModel):
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
-    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True, related_name='estate_registers')    
     bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
     def __unicode__(self):
         return u'%s' % self.pk                          

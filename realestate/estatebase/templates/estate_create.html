@@ -23,17 +23,16 @@
 		$('#id_street_0').djselectable('option', 'prepareQuery', localityParam);
 		$('#id_locality_0').djselectable('option', 'prepareQuery', regionParam);
 		$('#id_microdistrict_0').djselectable('option', 'prepareQuery', localityParam);
-		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);		// $("#id_region_0").bind('autocompleteselect', function(event, ui) {                       
-            // $("#id_locality_1").val('');        
-            // $("#id_locality_0").val('');
-        // });
-        	});
+		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);	});
 	
 </script>
 {% endblock js %}
 
-{% block left %}
+{% block linkback %}
+{% include 'back2estate.html' %}
+{% endblock linkback %}
 
+{% block left %}
 <form action="" method="post" class="table-form">
 	{% block general_info %}
 	<table class="ui-widget ui-widget-content ui-corner-all" style="width:360px">

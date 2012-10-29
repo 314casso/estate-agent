@@ -38,11 +38,11 @@
 </fieldset>
 <!-- -->
 
-<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Объекты в подборке</legend>
 
 <div class="topbar button">
-    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Подобрать</a>    	
+    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Добавить в подборку</a>    	
 </div>
     
 {% include 'registers/estate_table_register.html' with estate_list=object_list %}
