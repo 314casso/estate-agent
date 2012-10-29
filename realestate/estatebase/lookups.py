@@ -116,8 +116,9 @@ class SewerageLookup(SimpleNameLookup):
 class DrivewayLookup(SimpleNameLookup):
     model = Driveway
 
-class ClientLookup(SimpleNameLookup):
+class ClientLookup(ModelLookup):
     model = Client
+    search_fields = ('username__icontains', 'first_name__icontains', 'last_name__icontains', 'email__icontains')
 
 class ClientTypeLookup(SimpleNameLookup):
     model = ClientType    
