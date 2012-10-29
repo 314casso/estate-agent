@@ -18,7 +18,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
     BidForm, from_to, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm,\
-    ClientStatusUpdateForm
+    ClientStatusUpdateForm, EstateCreateWizardForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -213,18 +213,22 @@ class EstateCreateClientView(EstateCreateView):
     form_class = EstateCreateClientForm    
     def get_initial(self):        
         initial = super(EstateCreateClientView, self).get_initial()      
-        initial['client_pk'] = self.kwargs['client']        
+        initial['client_pk'] = self.kwargs.get('client', None)        
         initial['client_status'] = EstateClient.ESTATE_CLIENT_STATUS    
         return initial    
     def form_valid(self, form):
         super(EstateCreateClientView, self).form_valid(form) 
-        client_pk = form.cleaned_data.get('client_pk') or EstateClient.ESTATE_CLIENT_STATUS
-        estate_client_status = form.cleaned_data.get('client_status') or None
+        client_pk = form.cleaned_data.get('client_pk') or None
+        estate_client_status = form.cleaned_data.get('client_status') or EstateClient.ESTATE_CLIENT_STATUS
         if client_pk:
             EstateClient.objects.create(client_id=client_pk,
                                         estate_client_status=estate_client_status,
                                         estate=self.object)
         return HttpResponseRedirect(self.get_success_url())    
+
+class EstateCreateWizardView(EstateCreateClientView):
+    template_name = 'estate_create.html'       
+    form_class = EstateCreateWizardForm
             
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    

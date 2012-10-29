@@ -31,7 +31,7 @@ from estatebase.fields import ComplexField, LocalIntegerField, \
 from estatebase.field_utils import from_to_values, split_string, from_to, \
     complex_field_parser, check_value_list
 
-class EstateForm(ModelForm):              
+class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
     agency_price = LocalIntegerField(label=_('Agency price'))
     saler_price = LocalIntegerField(label=_('Saler price'))
@@ -67,7 +67,18 @@ class EstateCreateForm(EstateForm):
 
 class EstateCreateClientForm(EstateCreateForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
-    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())    
+    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())
+        
+class EstateCreateWizardForm(EstateCreateForm):
+    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())
+    clients = AutoCompleteSelectField(
+            lookup_class=ClientLookup,
+            label=_('Client'),
+            required=True,
+        ) 
+    class Meta(EstateCreateForm.Meta):        
+        fields = ('clients', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
 
 class EstateCommunicationForm(ModelForm):
     class Meta:                

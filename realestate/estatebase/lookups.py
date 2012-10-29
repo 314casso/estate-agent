@@ -118,7 +118,14 @@ class DrivewayLookup(SimpleNameLookup):
 
 class ClientLookup(ModelLookup):
     model = Client
-    search_fields = ('username__icontains', 'first_name__icontains', 'last_name__icontains', 'email__icontains')
+    search_fields = ('name__icontains', 'address__icontains', 'contacts__contact__icontains')
+    def get_query(self, request, term):
+        results = super(ClientLookup, self).get_query(request, term)
+        return results.distinct('id')    
+    def get_item_label(self, item):
+        contacts = ', '.join(item.contacts.all().values_list('contact', flat=True))
+        address = item.address and ('(%s)' % item.address)  or ''
+        return u"%s, %s %s" % (item.name, contacts or '', address)
 
 class ClientTypeLookup(SimpleNameLookup):
     model = ClientType    
