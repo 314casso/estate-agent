@@ -20,7 +20,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup, \
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
-    LevelNameLookup
+    LevelNameLookup, EstateClientStatusLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateClientStatus, EstateType, EstateClient
@@ -68,7 +68,7 @@ class EstateCreateForm(EstateForm):
                   'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
 
 class EstateCreateClientForm(EstateCreateForm):
-    client_status = forms.ModelChoiceField(queryset=EstateClientStatus.objects.all())
+    client_status = AutoComboboxSelectField(lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
     client = AutoCompleteSelectField(
             lookup_class=ClientLookup,
             label=_('Client'),
