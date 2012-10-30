@@ -4,7 +4,7 @@ from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils import simplejson as json
 from django.views.generic import TemplateView
 from django.views.generic.base import View, RedirectView
@@ -26,6 +26,7 @@ from estatebase.models import Estate, Client, EstateType, Contact, Level, \
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.html import escape, escapejs
 
 
 class BaseMixin(object):
@@ -442,7 +443,7 @@ class ApartmentUpdateView(ObjectMixin, UpdateView):
     continue_url = 'apartment_update'        
 
 class ClientListView(ListView):
-    template_name = 'client_list.html'
+    template_name = 'clients/client_list.html'
     context_object_name = "clients"
     paginate_by = 5    
     def get_queryset(self):                        
@@ -469,7 +470,7 @@ class ClientListView(ListView):
         return context
 
 class ClientSelectView(ClientListView):
-    template_name = 'client_select.html'
+    template_name = 'clients/client_select.html'
     def get_estate(self):
         estate = Estate.objects.get(pk=self.kwargs['estate_pk'])
         return estate            
@@ -486,7 +487,7 @@ class ClientSelectView(ClientListView):
         return q   
 
 class ClientMixin(ModelFormMixin):
-    template_name = 'client_form.html'
+    template_name = 'clients/client_form.html'
     model = Client
     form_class = ClientForm          
     def form_valid(self, form):
@@ -501,14 +502,20 @@ class ClientMixin(ModelFormMixin):
                 contacts = contact_form.save(commit=False)
                 for contact in contacts:
                     contact.user_id = self.request.user.pk
-                    contact.save()                                       
+                    contact.save()
+            if  '_popup' in self.request.POST:            
+                return HttpResponse(
+                '<!DOCTYPE html><html><head><title></title></head><body>'
+                '<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script></body></html>' % \
+                # escape() calls force_unicode.
+                (escape(self.object.pk), escapejs(self.object)))                                               
             return super(ModelFormMixin, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
-            return '%s?%s' % (reverse('client_update', args=[self.object.id]), safe_next_link(next_url)) 
+            return '%s?%s' % (reverse('client_update', args=[self.object.id]), safe_next_link(next_url))
         return next_url
     def get_context_data(self, **kwargs):
         context = super(ClientMixin, self).get_context_data(**kwargs)                
@@ -828,7 +835,7 @@ class BidListView(ListView):
 
 class ClientDetailView(DetailView):
     model = Client
-    template_name = 'client_detail.html'
+    template_name = 'clients/client_detail.html'
     def get_context_data(self, **kwargs):
         context = super(ClientDetailView, self).get_context_data(**kwargs)                
         context.update({            
@@ -839,7 +846,7 @@ class ClientDetailView(DetailView):
 class ClientStatusUpdateView(BaseMixin, UpdateView):
     model = EstateClient
     form_class = ClientStatusUpdateForm
-    template_name = 'client_status_update.html'
+    template_name = 'clients/client_status_update.html'
     def get_object(self, queryset=None):
         if queryset is None:
             queryset = self.get_queryset()

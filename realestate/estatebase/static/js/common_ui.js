@@ -16,11 +16,19 @@ $(document).ready(function() {
 			$(this).children("td").removeClass("ui-state-hover");
 		}
 	});
-	
-	$('.active').addClass('ui-state-highlight');	
-    $('.local-int').autoNumeric({aSep: String.fromCharCode(160), aDec: ',', mDec: 0});
-    $('.local-decimal').autoNumeric({aSep: String.fromCharCode(160), aDec: ',', mDec: 2});
-    $('#loadingMask').fadeOut();
+
+	$('.active').addClass('ui-state-highlight');
+	$('.local-int').autoNumeric({
+		aSep : String.fromCharCode(160),
+		aDec : ',',
+		mDec : 0
+	});
+	$('.local-decimal').autoNumeric({
+		aSep : String.fromCharCode(160),
+		aDec : ',',
+		mDec : 2
+	});
+	$('#loadingMask').fadeOut();
 });
 
 function getIndex(id, item) {
@@ -32,6 +40,49 @@ function getIndex(id, item) {
 	}
 }
 
+function html_unescape(text) {
+	text = text.replace(/</g, '');
+	text = text.replace(/"/g, '"');
+	text = text.replace(/'/g, "'");
+	text = text.replace(/&/g, '&');
+	return text;
+}
+
+function dismissAddAnotherPopup(win, newId, newRepr) {
+	newId = html_unescape(newId);
+	newRepr = html_unescape(newRepr);
+	var name = win.name;
+	var elem_repr = $('#' + name + '_0');
+	var elem_id = $('#' + name + '_1');
+	elem_repr.val(newRepr);
+	elem_id.val(newId);
+	win.close();
+}
+
+(function($) {
+	$.fn.addAnother = function(options) {
+
+		defaults = {
+			url : null,
+			width : 500,
+			height : 800,
+			object_id : null
+		};
+
+		var opts = $.extend(defaults, options);
+
+		var a = document.createElement('a');
+		a.title = "Добавить нового заказчика";
+		a.innerHTML = "Добавить";
+		a.href = opts.url;
+		$(a).click(function() {
+			popupWin = window.open(this.href, opts.object_id, 'height=' + opts.height + ', width=' + opts.width + ', resizable=yes, scrollbars=yes');
+			popupWin.focus();
+			return false;
+		})
+		this.after(' ', a);
+	};
+})(jQuery);
 
 $(document).ajaxSend(function(event, xhr, settings) {
 	function getCookie(name) {
@@ -151,7 +202,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
 	});
 })(jQuery);
 
-
-function showFilter(id){
-    $(id).dialog('open');
+function showFilter(id) {
+	$(id).dialog('open');
 }
+
