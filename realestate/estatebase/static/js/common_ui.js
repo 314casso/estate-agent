@@ -49,14 +49,14 @@ function html_unescape(text) {
 }
 
 function dismissAddAnotherPopup(win, newId, newRepr) {
-	newId = html_unescape(newId);
-	newRepr = html_unescape(newRepr);
-	var name = win.name;
-	var elem_repr = $('#' + name + '_0');
-	var elem_id = $('#' + name + '_1');
-	elem_repr.val(newRepr);
-	elem_id.val(newId);
-	win.close();
+    newId = html_unescape(newId);
+    newRepr = html_unescape(newRepr);
+    var name = win.name;	    
+    var elem_repr = $('#'+ name + '_0');	
+    var elem_id = $('#'+ name + '_1');
+    elem_repr.val(newRepr);
+    elem_id.val(newId);	
+    win.close();
 }
 
 (function($) {

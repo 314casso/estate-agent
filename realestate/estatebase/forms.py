@@ -1,35 +1,37 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.forms.forms import Form
-from django.forms.models import inlineformset_factory
+from django.forms.formsets import BaseFormSet
+from django.forms.models import inlineformset_factory, BaseModelFormSet, \
+    BaseInlineFormSet
 from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
     CheckboxInput
 from django.utils.translation import ugettext_lazy as _
+from estatebase.field_utils import from_to_values, split_string, from_to, \
+    complex_field_parser, check_value_list
+from estatebase.fields import ComplexField, LocalIntegerField, DateRangeField, \
+    IntegerRangeField, DecimalRangeField, LocalDecimalField
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup, \
     ElectricityLookup, WatersupplyLookup, GassupplyLookup, SewerageLookup, \
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup, \
-    ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, \
-    EstateTypeCategoryLookup, ComChoiceLookup, InternetLookup, TelephonyLookup, \
-    LayoutTypeLookup, LevelNameLookup
-from estatebase.models import Client, Contact, \
-    ContactHistory, Bidg, Estate, Document, Layout, Level, EstatePhoto, Stead, Bid, \
-    EstateRegister, EstateClientStatus, EstateType, EstateClient
+    ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
+    ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
+    LevelNameLookup
+from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
+    Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
+    EstateClientStatus, EstateType, EstateClient
+from estatebase.wrapper import get_polymorph_label, get_wrapper
+from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
     AutoCompleteSelectField
-from selectable.forms.widgets import AutoComboboxSelectWidget    
-from form_utils.forms import BetterForm, BetterModelForm
+from selectable.forms.widgets import AutoComboboxSelectWidget
 from settings import CORRECT_DELTA
-from django.db.models.query_utils import Q
-from estatebase.wrapper import get_polymorph_label, get_wrapper
-from estatebase.fields import ComplexField, LocalIntegerField, \
-    DateRangeField, IntegerRangeField, DecimalRangeField, LocalDecimalField
-from estatebase.field_utils import from_to_values, split_string, from_to, \
-    complex_field_parser, check_value_list
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -365,8 +367,15 @@ class ContactHistoryForm(ModelForm):
 class ContactInlineForm(ModelForm):
     class Meta:
         model = Contact        
+
+
+class RequiredFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
         
-ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm)
+ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm, formset=RequiredFormSet)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)
 
 class ContactForm(ModelForm):     
@@ -448,7 +457,10 @@ class ImageUpdateForm(ModelForm):
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')
-    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')    
+    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
+    def __init__(self, *args, **kwargs):
+        super(BidForm, self).__init__(*args, **kwargs)
+        self.fields['client'].widget.attrs={'class':'long-input'}    
     class Meta:
         model = Bid    
         fields = ('client', 'broker')                          

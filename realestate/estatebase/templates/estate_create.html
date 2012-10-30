@@ -26,18 +26,7 @@
 		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);
 		
 		$('#id_client_0').addAnother({url : '{% url client_create_popup %}', width: 650, height: 600, object_id: 'id_client' });
-			});
-	
-	function dismissAddAnotherPopup(win, newId, newRepr) {
-	    newId = html_unescape(newId);
-	    newRepr = html_unescape(newRepr);
-	    var name = win.name;	    
-	    var elem_repr = $('#'+ name + '_0');	
-	    var elem_id = $('#'+ name + '_1');
-	    elem_repr.val(newRepr);
-	    elem_id.val(newId);	
-	    win.close();
-	}	
+			});			
 </script>
 {% endblock js %}
 
