@@ -42,7 +42,8 @@
     <legend style="font-size: 14px;">Объекты в подборке</legend>
 
 <div class="topbar button">
-    <a href="{% url estate_select_list estateregister.pk %}?{{ next_url }}">Добавить в подборку</a>    	
+    <a href="{% url estate_select_list estateregister.pk %}?r_filter=outregister&{{ next_url }}">Добавление в подборку</a>    	
+    <a href="{% url estate_select_list estateregister.pk %}?r_filter=inregister&{{ next_url }}">Просмотр подборки</a>
 </div>
     
 {% include 'registers/estate_table_register.html' with estate_list=object_list %}

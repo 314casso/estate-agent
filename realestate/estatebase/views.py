@@ -324,9 +324,12 @@ class EstateListDetailsView(EstateListView):
     estate = None        
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
-        if 'pk' in self.kwargs:                     
-            self.estate = get_object_or_404(Estate, pk=self.kwargs['pk'])
-        else:              
+        if 'pk' in self.kwargs:
+            try:
+                self.estate = self.get_queryset().filter(pk=self.kwargs['pk']).get()
+            except Estate.DoesNotExist:
+                self.estate = None
+        if not self.estate:              
             estates = list(self.get_queryset()[:1])
             if estates:
                 self.estate = estates[0]
@@ -342,18 +345,20 @@ class EstateListDetailsView(EstateListView):
         })                
         return context        
 
-class EstateSelectListView(EstateListDetailsView):    
-    def get_queryset(self):                  
-        q = super(EstateSelectListView, self).get_queryset()
-        selected = get_object_or_404(EstateRegister, pk=self.kwargs['selected'])
-        selected_estates = selected.estates.all()
-        selected_estate = self.kwargs.get('pk', None)        
-        if selected_estate:
-            selected_estates = selected_estates.exclude(pk__exact=selected_estate)           
-        q = q.exclude(id__in=selected_estates.values_list('id', flat=True))        
+class EstateSelectRegisterView(EstateListDetailsView):    
+    def get_queryset(self):
+        r_filter = self.request.GET.get('r_filter', None)
+        self.register = get_object_or_404(EstateRegister, pk=self.kwargs['selected'])                  
+        q = super(EstateSelectRegisterView, self).get_queryset()
+        if not r_filter:
+            return q
+        estates_in_register = self.register.estates.all()
+        if r_filter == 'inregister':
+            return estates_in_register
+        q = q.exclude(id__in=estates_in_register.values_list('id', flat=True))        
         return q
     def get_context_data(self, **kwargs):
-        context = super(EstateSelectListView, self).get_context_data(**kwargs)
+        context = super(EstateSelectRegisterView, self).get_context_data(**kwargs)
         selected = self.kwargs['selected']
         in_register = False
         if self.estate and self.estate.estate_registers.filter(pk=selected):
@@ -362,6 +367,7 @@ class EstateSelectListView(EstateListDetailsView):
             'selected': selected,
             'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),
             'in_register': in_register,
+            'register' : self.register,
         })
         return context
 
@@ -507,7 +513,6 @@ class ClientMixin(ModelFormMixin):
                 return HttpResponse(
                 '<!DOCTYPE html><html><head><title></title></head><body>'
                 '<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script></body></html>' % \
-                # escape() calls force_unicode.
                 (escape(self.object.pk), escapejs(self.object)))                                               
             return super(ModelFormMixin, self).form_valid(form)
         else:

@@ -10,7 +10,7 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     BidgAppendView, BidgRemoveView, EstateListDetailsView, PlaceableTypeViewAjax,\
     BidCreateView, BidUpdateView, BidListView, BidDeleteView,\
     ClientDetailView, EstateDeleteView, BidDetailView, EstateRegisterCreateView,\
-    EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectListView,\
+    EstateRegisterUpdateView, EstateRegisterDeleteView, EstateSelectRegisterView,\
     EstateRegisterDetailView, AddEstateToRegisterView,\
     RemoveEstateFromRegisterView, EstateRegisterListView,\
     EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid,\
@@ -19,8 +19,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
-    url(r'^estateselectlist/(?P<selected>\d+)$',EstateSelectListView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
-    url(r'^estateselectlist/(?P<pk>\d+)/(?P<selected>\d+)$',EstateSelectListView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
+    url(r'^estateselectlist/(?P<selected>\d+)$',EstateSelectRegisterView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
+    url(r'^estateselectlist/(?P<pk>\d+)/(?P<selected>\d+)$',EstateSelectRegisterView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
     url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client-list'),
