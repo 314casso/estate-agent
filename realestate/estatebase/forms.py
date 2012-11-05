@@ -3,13 +3,12 @@ from django import forms
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.forms.forms import Form
-from django.forms.formsets import BaseFormSet
-from django.forms.models import inlineformset_factory, BaseModelFormSet, \
+from django.forms.models import inlineformset_factory, \
     BaseInlineFormSet
 from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
     CheckboxInput
 from django.utils.translation import ugettext_lazy as _
-from estatebase.field_utils import from_to_values, split_string, from_to, \
+from estatebase.field_utils import from_to_values, split_string, \
     complex_field_parser, check_value_list
 from estatebase.fields import ComplexField, LocalIntegerField, DateRangeField, \
     IntegerRangeField, DecimalRangeField, LocalDecimalField
@@ -20,10 +19,10 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup, \
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
-    LevelNameLookup, EstateClientStatusLookup
+    LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateClientStatus, EstateType, EstateClient
+    EstateType, EstateClient
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -72,11 +71,11 @@ class EstateCreateClientForm(EstateCreateForm):
     client = AutoCompleteSelectField(
             lookup_class=ClientLookup,
             label=_('Client'),
-            required=True,            
+            required=True,
         )
     def __init__(self, *args, **kwargs):
         super(EstateCreateClientForm, self).__init__(*args, **kwargs)
-        self.fields['client'].widget.attrs={'class':'long-input'}
+        self.fields['client'].widget.attrs = {'class':'long-input'}
         
 class EstateCreateWizardForm(EstateCreateClientForm):
     class Meta(EstateCreateClientForm.Meta):        
@@ -278,11 +277,23 @@ class EstateFilterForm(BetterForm):
             required=False,
         )
     face_area = DecimalRangeField(required=False, label=_('Face area'))
+    shape = AutoComboboxSelectMultipleField(
+            lookup_class=ShapeLookup,
+            label=_('Shape'),
+            required=False,
+        ) 
     electricity = ComplexField(required=False, label=_('Electricity'), lookup_class=ElectricityLookup)
     watersupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=WatersupplyLookup)    
-    gassupply = ComplexField(required=False, label=_('Watersupply'), lookup_class=GassupplyLookup)    
+    gassupply = ComplexField(required=False, label=_('Gassupply'), lookup_class=GassupplyLookup)    
     sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
     driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
+    
+    marks = AutoComboboxSelectMultipleField(
+            lookup_class=EstateParamLookup,
+            label=_('Estate params'),
+            required=False,
+        ) 
+    
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -319,6 +330,10 @@ class EstateFilterForm(BetterForm):
             f['clients__id__in'] = self['clients'].value()    
         if self['contacts'].value():
             f['clients__contacts__id__in'] = self['contacts'].value()
+        if self['shape'].value():
+            f['stead__shape__id__in'] = self['shape'].value()            
+        if self['marks'].value():
+            f['estate_params__id__in'] = self['marks'].value()    
         two_number_fields = {'agency_price':'agency_price', 'year_built':'bidgs__year_built',
                              'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
                              'total_area':'bidgs__total_area', 'used_area':'bidgs__used_area',
@@ -352,10 +367,32 @@ class EstateFilterForm(BetterForm):
         f.update(lst)    
         return f
     class Meta:
-        fieldsets = [('left', {'fields': ['pk', 'estate_category', 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 'room_number', 'estate_status', 'agency_price', ], 'legend': ''}),
-                     ('center', {'fields': ['clients', 'contacts', 'year_built', 'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 'room_count', 'stead_area', ]}),
-                     ('right', {'fields': ['created', 'updated', 'origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
+        fieldsets = [('left', {'fields': [
+                                         'valid', 'estate_status', 'estates', 'estate_category', 'estate_type',
+                                         'com_status', 'locality', 'street', 'estate_number', 'room_number', 
+                                         'microdistrict', 'beside', 'agency_price',
+                                         ]}),
+                     ('center', {'fields': [
+                                            'clients', 'contacts', 'created', 'updated', 'year_built', 
+                                            'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
+                                            'room_count', 'interior', 
+                                           ]}),
+                     ('right', {'fields': [
+                                           'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
+                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 'next'
+                                          ]})
                      ]
+
+REGISTER_CHOICES = (
+    ('outregister', 'Не в подборке'),
+    ('inregister', 'В подборке'),
+) 
+
+class EstateFilterRegisterForm(EstateFilterForm):
+    r_filter = forms.ChoiceField(label='', choices=REGISTER_CHOICES, widget=forms.HiddenInput())
+    class Meta(EstateFilterForm.Meta):
+        fieldsets = EstateFilterForm.Meta.fieldsets
+        fieldsets[2][1]['fields'].append('r_filter')
     
 class ContactHistoryForm(ModelForm):    
     class Meta:        
@@ -367,7 +404,6 @@ class ContactHistoryForm(ModelForm):
 class ContactInlineForm(ModelForm):
     class Meta:
         model = Contact        
-
 
 class RequiredFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
@@ -460,7 +496,7 @@ class BidForm(ModelForm):
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
     def __init__(self, *args, **kwargs):
         super(BidForm, self).__init__(*args, **kwargs)
-        self.fields['client'].widget.attrs={'class':'long-input'}    
+        self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
         fields = ('client', 'broker')                          
@@ -539,7 +575,7 @@ class BidFilterForm(BetterForm):
 class EstateRegisterFilterForm(BidFilterForm):
     def __init__(self, *args, **kwargs):
         super(EstateRegisterFilterForm, self).__init__(*args, **kwargs)
-        exclude = ['clients', 'contacts','broker']
+        exclude = ['clients', 'contacts', 'broker']
         for field in exclude:
             del self.fields[field]        
     pk = AutoCompleteSelectMultipleField(

@@ -3,6 +3,7 @@
 {% load link_helper %}
 {% load paginator %}
 {% load humanize %}
+{% load sorting_tags %}
 
 {% block css %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
@@ -80,15 +81,16 @@
 {% block topbar %}
 <div class="topbar button">
     <div>
-        <a data-width="450" title="Добавление нового объекта..." href="{% url select_estate_type %}?{{ next_url }}" class="ajax-dialog">Добавить новый объект</a>
-        <button onclick="showFilter()">
-            Показать фильтр
-        </button>
+        <a data-width="450" title="Добавление нового лота..." href="{% url select_estate_type %}?{{ next_url }}" class="btn-add ajax-dialog">Добавить новый лот</a>
+        <button class="btn-filter-add" onclick="showFilter()">Показать фильтр</button>
+        {% if filtered %}
+        <a class="btn-filter-remove" href="{{ filter_action }}">Сбросить фильтр</a>
+        {% endif %}
         {% include 'prev_view.html' %}
         {% if estate %}
         <div style="float: right">
         	{% block lastcol %}
-        	<a href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
+        	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
         	{% endblock lastcol %}            
         </div>
         {% endif %}
@@ -98,10 +100,14 @@
 {% endblock topbar %}
 
 {% block left %}
-<div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: none; margin-bottom: 3px";>
+<div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin-bottom: 3px">
     Всего объектов: {{ total_count }},
     отобрано: {{ filter_count }},
     показано на странице: {{ estate_list.count }}
+</div>
+<br style="clear: both"  />
+<div title="Сортировка лотов" class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left">
+        {% anchor id 'Код' %} {% anchor estate_category 'Катагория' %} {% anchor agency_price 'Цена' %} {% anchor history__modificated 'Обновлено' %}
 </div>
 <br style="clear: both" />
 {% for estate_item in estate_list %}

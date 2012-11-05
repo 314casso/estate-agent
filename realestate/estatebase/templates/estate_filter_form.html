@@ -5,7 +5,7 @@
             <tr>
                 <td class="top-align">
                     <table>                 
-                    {% for field in fields|slice:":11" %}
+                    {% for field in filter_form.fieldsets.left %}
                         <tr>
                             <th>                    
                             {{ field.label_tag }}
@@ -19,7 +19,7 @@
                 </td>
                 <td class="top-align">
                     <table>                 
-                    {% for field in fields|slice:"11:23" %}
+                    {% for field in filter_form.fieldsets.center %}
                         <tr>
                             <th>                    
                             {{ field.label_tag }}
@@ -33,7 +33,7 @@
                 </td>   
                 <td class="top-align">
                     <table>                 
-                    {% for field in fields|slice:"23:" %}                    
+                    {% for field in filter_form.fieldsets.right %}                    
                         <tr>
                             <th>                    
                             {{ field.label_tag }}
@@ -49,7 +49,7 @@
             </tr>                                          
             <tfoot>
                 <tr>
-                    <td colspan=3><a href="{{ filter_action }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <td colspan=3><a href="{{ filter_action }}">Сбросить</a>
                     <input type="submit" value="Применить"/>
                     </td>
                 </tr>

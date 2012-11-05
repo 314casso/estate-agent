@@ -2,9 +2,18 @@ $(document).ready(function() {
 	$('a.inline-button').parent().addClass('ui-state-default ui-corner-all');
 	$('a.icon-plus').addClass('ui-icon ui-icon-plus');
 	$('input:submit, input:button, a, button', '.button').button();
+	$('.btn-add').button( "option", "icons", { primary: "ui-icon-plusthick"});
+	$('.btn-filter-add').button( "option", "icons", { primary: "ui-icon-search"});
+	$('.btn-filter-remove').button( "option", "icons", { primary: "ui-icon-cancel"});
+	$('.btn-back').button( "option", "icons", { primary: "ui-icon-circle-arrow-w"});
+	$('.btn-bind').button( "option", "icons", { primary: "ui-icon-circle-plus"});
+	$('.btn-unbind').button( "option", "icons", { primary: "ui-icon-circle-minus"});
+	$('.btn-delete').button( "option", "icons", { primary: "ui-icon-minusthick"});
+	
+	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete').button("option", "text", false);	
 	// $( ".date-time-input" ).datepicker();
-	$('input:text, textarea, input:password').addClass('ui-widget ui-widget-content ui-corner-all');
-	$('select').addClass('ui-corner-left')
+	$('input:text, textarea, input:password, .topbar').addClass('ui-widget ui-widget-content ui-corner-all');
+	$('select').addClass('ui-corner-left')	
 	$('.date-input').datepicker({
 		dateFormat : "dd.mm.yy"
 	});

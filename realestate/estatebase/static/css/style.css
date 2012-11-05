@@ -466,8 +466,8 @@ legend {
 	background: #bcc6c9;
 }
 
-.topbar {
-	margin-bottom: 1px;
+.topbar {	
+	padding: 2px 2px 1px 2px;
 }
 
 fieldset .topbar {

@@ -4,21 +4,21 @@ from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404 
 from django.utils import simplejson as json
 from django.views.generic import TemplateView
-from django.views.generic.base import View, RedirectView
+from django.views.generic.base import View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView, FormMixin, BaseUpdateView
+    DeleteView, BaseUpdateView
 from django.views.generic.list import ListView
 from estatebase.field_utils import check_value_list
 from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     ContactHistoryFormSet, ContactForm, EstateCommunicationForm, EstateParamForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
-    BidForm, from_to, BidFilterForm, BidPicleForm, EstateRegisterForm, \
+    BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
-    ClientStatusUpdateForm, EstateCreateWizardForm
+    ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -264,8 +264,8 @@ class EstateDeleteView(DeleteMixin, EstateMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(EstateDeleteView, self).get_context_data(**kwargs)
         context.update({
-            'dialig_title' : u'Удаление объекта...',
-            'dialig_body'  : u'Подтвердите удаление объекта: %s' % self.object,
+            'dialig_title' : u'Удаление лота в корзину...',
+            'dialig_body'  : u'Подтвердите удаление лота: [%s]' % self.object,
         })
         return context
     def get_success_url(self):   
@@ -294,13 +294,17 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None):
     return q
 
 class EstateListView(ListView):    
+    filtered = False
     template_name = 'estate_list.html'
-    paginate_by = 25   
+    paginate_by = 25  
+    filter_form = EstateFilterForm
     def get_queryset(self):
         #q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
         q = Estate.objects.select_related().prefetch_related('bidgs__estate_type__estate_type_category', 'history')        
-        search_form = EstateFilterForm(self.request.GET)
-        filter_dict = search_form.get_filter()        
+        filter_form = self.filter_form(self.request.GET)
+        filter_dict = filter_form.get_filter()        
+        if filter_dict:
+            self.filtered = True                    
         q = set_estate_filter(q, filter_dict, user=self.request.user)
         order_by = self.request.fields 
         if order_by:      
@@ -308,31 +312,31 @@ class EstateListView(ListView):
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)
-        estate_filter_form = EstateFilterForm(self.request.GET)                                                                    
+        filter_form = self.filter_form(self.request.GET)           
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
             'filter_count' : self.get_queryset().count(),
-            'fields': list(estate_filter_form),
-            'filter_action': reverse('estate-list'),
+            'filter_form': filter_form,
+            'filter_action': '%s?next=%s' % (reverse('estate-list'), self.request.GET.get('next','')),
+            'filtered' :self.filtered,
         })        
         return context
        
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_list.html'
-    estate = None        
+    estate = None  
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
-        if 'pk' in self.kwargs:
-            try:
-                self.estate = self.get_queryset().filter(pk=self.kwargs['pk']).get()
-            except Estate.DoesNotExist:
-                self.estate = None
-        if not self.estate:              
-            estates = list(self.get_queryset()[:1])
-            if estates:
-                self.estate = estates[0]
+        pk = self.kwargs.get('pk', None)        
+        try:
+            if pk:
+                self.estate = self.get_queryset().filter(id__lte=pk)[:1].get()
+            else:
+                self.estate = self.get_queryset()[:1].get()
+        except Estate.DoesNotExist:
+            self.estate = None
         r = p = 0
         if self.estate:      
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
@@ -345,17 +349,19 @@ class EstateListDetailsView(EstateListView):
         })                
         return context        
 
-class EstateSelectRegisterView(EstateListDetailsView):    
+class EstateSelectRegisterView(EstateListDetailsView):
+    filter_form = EstateFilterRegisterForm    
     def get_queryset(self):
         r_filter = self.request.GET.get('r_filter', None)
         self.register = get_object_or_404(EstateRegister, pk=self.kwargs['selected'])                  
         q = super(EstateSelectRegisterView, self).get_queryset()
         if not r_filter:
             return q
-        estates_in_register = self.register.estates.all()
+        estates_in_register = self.register.estates.all().values_list('id', flat=True)
         if r_filter == 'inregister':
-            return estates_in_register
-        q = q.exclude(id__in=estates_in_register.values_list('id', flat=True))        
+            q = q.filter(id__in=estates_in_register)
+        else:
+            q = q.exclude(id__in=estates_in_register)
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateSelectRegisterView, self).get_context_data(**kwargs)
@@ -365,7 +371,7 @@ class EstateSelectRegisterView(EstateListDetailsView):
             in_register = True
         context.update({            
             'selected': selected,
-            'filter_action': reverse('estate_select_list', kwargs={'selected': selected}),
+            'filter_action': '%s?next=%s&r_filter=%s' % (reverse('estate_select_list', kwargs={'selected': selected}), self.request.GET.get('next',''), self.request.GET.get('r_filter','')),
             'in_register': in_register,
             'register' : self.register,
         })

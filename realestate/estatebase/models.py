@@ -17,6 +17,7 @@ from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS,\
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
     OUTBUILDINGS
 import caching.base
+from collections import OrderedDict
 
 class ExUser(User):
     def __unicode__(self):
@@ -305,6 +306,16 @@ class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
     '''
+    #Состояния
+    FREE = 1
+    NEW = 2
+    SOLD = 3
+    EXCLUDE = 4
+    #Фазы
+    DRAFT = 0
+    VALID = 1    
+    NOCONACT = 2
+    NOTFREE = 3
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -341,7 +352,57 @@ class Estate(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
     valid = models.BooleanField(_('Valid'), default=False)
-    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)        
+    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
+    def check_validity(self):
+        report = OrderedDict([(self.DRAFT,[]),(self.NOTFREE,False),(self.NOCONACT,False)])
+        if not (self.contact and self.contact.contact_state_id == Contact.AVAILABLE):
+            report[self.NOCONACT] = True
+        if not self.estate_status_id == self.FREE:
+            report[self.NOTFREE] = True    
+        if not not self.street:
+            report[self.DRAFT].append(_('Street'))
+        if not not self.watersupply:
+            report[self.DRAFT].append(_('Watersupply'))
+        if not not self.gassupply:
+            report[self.DRAFT].append(_('Gassupply'))    
+        if not not self.electricity:
+            report[self.DRAFT].append(_('Electricity'))    
+        if not not self.agency_price:
+            report[self.DRAFT].append(_('Agency price'))
+        if self.basic_bidg:
+            if not not self.basic_bidg.year_built:
+                report[self.DRAFT].append(_('Year built'))
+            if not not self.basic_bidg.floor:                
+                report[self.DRAFT].append(_('Floor'))
+            if not not self.basic_bidg.floor_count:
+                report[self.DRAFT].append(_('Floor count'))
+            if not not self.basic_bidg.wall_construcion:
+                report[self.DRAFT].append(_('Wall construcion'))
+            if not not self.basic_bidg.room_count:
+                report[self.DRAFT].append(_('Room count'))
+            if not not self.basic_bidg.total_area:
+                report[self.DRAFT].append(_('Total area'))
+            if not not self.basic_bidg.interior:
+                report[self.DRAFT].append(_('Interior'))
+        if self.basic_stead:
+            if not not self.basic_stead.total_area:
+                report[self.DRAFT].append(u'Площадь участка')
+        return report
+    
+    def set_validity(self):
+        #TODO: Валидности поле добавить
+        result = self.VALID
+        validity = self.check_validity()
+        for key, value in validity.items():
+            if value:
+                result = key
+                break
+        self.validity_id = result     
+    
+    @property
+    def validity_report(self):
+        pass
+    
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk]) 
@@ -365,7 +426,7 @@ class Estate(ProcessDeletedModel):
         return self.contact 
     @property
     def state_css(self):
-        css = {1:'free-state', 2:'new-state', 3:'sold-state', 4:'exclude-state'}                             
+        css = {self.FREE:'free-state', self.NEW:'new-state', self.SOLD:'sold-state', self.EXCLUDE:'exclude-state'}                             
         return self.estate_status_id in css and css[self.estate_status_id] or ''    
     def get_best_contact(self):
         contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id', 'contact_type__id', '-updated')[:1]        
@@ -407,7 +468,7 @@ class Estate(ProcessDeletedModel):
         return u'%s' % self.pk    
     def set_contact(self):
         self.contact = self.get_best_contact()
-        self.valid = self.contact and self.contact.contact_state_id == 1 or False       
+        self.valid = self.contact and self.contact.contact_state_id == Contact.AVAILABLE or False       
                                            
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
@@ -712,29 +773,37 @@ class ContactHistory(models.Model):
         verbose_name = _('contact history')
         verbose_name_plural = _('contact history') 
 
-class Contact(models.Model):    
+class Contact(models.Model):
+    AVAILABLE = 1
+    NONAVAILABLE = 2
+    BAN = 3
+    NOTRESPONDED = 4
+    NOTCHECKED = 5   
+    PHONE = 1
+    EMAIL = 2
+    SITE = 3
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'), on_delete=models.PROTECT)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
-    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=5, on_delete=models.PROTECT)
+    contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=NOTCHECKED, on_delete=models.PROTECT)
     user_id = None      
     def __unicode__(self):
         return u'%s (%s)' % (self.contact, self.client.name)
     @property
     def state_css(self):
-        css = {1:'available-state', 2:'non-available-state', 3:'ban-state', 4:'not-responded-state', 5:'not-checked-state'}                             
+        css = {self.AVAILABLE:'available-state', self.NONAVAILABLE:'non-available-state', self.BAN:'ban-state', self.NOTRESPONDED:'not-responded-state', self.NOTCHECKED:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
     def clean(self):                
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator(verify_exists=False)
         validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')        
-        if self.contact_type.id == 1:
+        if self.contact_type.id == self.PHONE:
             validate_phone(self.contact)
-        elif self.contact_type.id == 2:
+        elif self.contact_type.id == self.EMAIL:
             validate_email(self.contact)
-        elif self.contact_type.id == 3:
+        elif self.contact_type.id == self.SITE:
             validate_url(self.contact)
     def save(self, *args, **kwargs):               
         self.updated = datetime.datetime.now()     

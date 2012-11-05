@@ -152,7 +152,7 @@ msgstr "микрорайон"
 #: forms.py:219
 #: models.py:310
 msgid "Street"
-msgstr "улица"
+msgstr "Улица"
 
 #: forms.py:222
 #: models.py:311
@@ -404,11 +404,11 @@ msgstr "документы"
 
 #: models.py:181
 msgid "estate param"
-msgstr "параметр недвижимости"
+msgstr "метка"
 
 #: models.py:182
 msgid "estate params"
-msgstr "параметры недвижимости"
+msgstr "метки"
 
 #: models.py:189
 msgid "estate status"
@@ -543,7 +543,7 @@ msgstr "Подъезд"
 
 #: models.py:334
 msgid "Estate params"
-msgstr "Параметры недвижимости"
+msgstr "Метки"
 
 #: models.py:335
 msgid "Description"

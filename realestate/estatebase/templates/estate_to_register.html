@@ -1,9 +1,16 @@
 {% extends "estate_list.html" %}
 {% block lastcol %}
-{% if not in_register %}
-<a href="{% url register_add_estate selected estate.pk %}?{{ next_url }}">Добавить в подборку [{{ selected }}]</a>
+
+{% if request.GET.r_filter == 'inregister' %}
+<a class="btn-add-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=outregister">Режим добавления</a>
 {% else %}
-<a href="{% url register_remove_estate selected estate.pk %}?{{ next_url }}">Отвязать от подборки [{{ selected }}]</a>
+<a class="btn-view-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=inregister">Режим просмотра</a>
+{% endif %}
+
+{% if not in_register %}
+<a class="btn-bind" href="{% url register_add_estate selected estate.pk %}?{{ next_url }}">Добавить лот [{{ estate.pk }}] в подборку [{{ selected }}]</a>
+{% else %}
+<a class="btn-unbind" href="{% url register_remove_estate selected estate.pk %}?{{ next_url }}">Отвязать лот [{{ estate.pk }}] от подборки [{{ selected }}]</a>
 {% endif %}
 {% endblock lastcol %}
 

@@ -17,9 +17,9 @@ class ComplexFieldWidget(forms.MultiWidget):
         return [None, None] 
 
 class ComplexField(MultiValueField):
-    help_text = u'испозьуйте > < и дефис для диапазона'
+    help_text = u'Испозьуйте > < и дефис для указания диапазона в числовом поле'
     def __init__(self, lookup_class, *args, **kwargs):
-        self.widget = ComplexFieldWidget(lookup_class=lookup_class)        
+        self.widget = ComplexFieldWidget(lookup_class=lookup_class, attrs={'title':self.help_text})        
         fields = []
         fields.append(AutoComboboxSelectMultipleField(
             lookup_class=lookup_class,
@@ -27,7 +27,7 @@ class ComplexField(MultiValueField):
             )
          )        
         fields.append(CharField())        
-        super(ComplexField, self).__init__(fields, *args, help_text = self.help_text, **kwargs)
+        super(ComplexField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:                        
