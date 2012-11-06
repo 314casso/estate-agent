@@ -1,0 +1,27 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.validity",
+    "fields": {
+        "name": "Корректно"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.validity",
+    "fields": {
+        "name": "Не вакантно"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.validity",
+    "fields": {
+        "name": "Нет контакта"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.validity",
+    "fields": {
+        "name": "Черновик"
+    }
+}
+]

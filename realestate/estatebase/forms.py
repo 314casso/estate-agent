@@ -19,7 +19,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     DrivewayLookup, ClientLookup, ContactLookup, ExUserLookup, ClientIdLookup, \
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
-    LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup
+    LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
+    ValidityLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient
@@ -178,40 +179,33 @@ class ClientFilterForm(Form):
         if self['note'].value():
             f['note__icontains'] = self['note'].value()    
         return f   
-           
-              
-VALID_CHOICES = (
-    ('ALL', 'Все'),
-    ('CORRECT', 'Корректные'),
-    ('UNCORRECT', 'Не корректные'),
-)              
                
 class EstateFilterForm(BetterForm):
-    valid = forms.BooleanField(label=_('Valid'), required=False)
+    validity = AutoComboboxSelectMultipleField(
+            lookup_class=ValidityLookup,
+            label=_('Validity'),
+            required=False,
+        )
     estates = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
             label=_('ID'),
             required=False,
         )
-    
     estate_category = AutoComboboxSelectMultipleField(
             lookup_class=EstateTypeCategoryLookup,
             label=_('EstateTypeCategory'),
             required=False,
         )
-
     estate_type = AutoCompleteSelectMultipleField(
             lookup_class=EstateTypeLookup,
             label=_('Estate type'),
             required=False,
         )
-    
     com_status = AutoComboboxSelectMultipleField(
             lookup_class=ComChoiceLookup,
             label=_('Commerce'),
             required=False,
         ) 
-       
     region = AutoComboboxSelectMultipleField(
             lookup_class=RegionLookup,
             label=_('Region'),
@@ -307,8 +301,8 @@ class EstateFilterForm(BetterForm):
             f['estate_category_id__in'] = self['estate_category'].value()
         if self['com_status'].value():
             f['com_status_id__in'] = self['com_status'].value()
-        if self['valid'].value():
-            f['valid__exact'] = True
+        if self['validity'].value():
+            f['validity_id__in'] = self['validity'].value()
             f['history__modificated__gt'] = CORRECT_DELTA
         if self['estates'].value():                                 
             f['id__in'] = self['estates'].value()        
@@ -368,7 +362,7 @@ class EstateFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [('left', {'fields': [
-                                         'valid', 'estate_status', 'estates', 'estate_category', 'estate_type',
+                                         'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'locality', 'street', 'estate_number', 'room_number', 
                                          'microdistrict', 'beside', 'agency_price',
                                          ]}),

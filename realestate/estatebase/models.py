@@ -302,6 +302,15 @@ class ComStatus(SimpleDict):
         verbose_name = _('Com status')
         verbose_name_plural = _('Com statuses')
     
+class Validity(SimpleDict):
+    '''
+    Validity
+    ./manage.py loaddata validity.json
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Validity')
+        verbose_name_plural = _('Validitys')    
+    
 class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
@@ -312,10 +321,10 @@ class Estate(ProcessDeletedModel):
     SOLD = 3
     EXCLUDE = 4
     #Фазы
-    DRAFT = 0
-    VALID = 1    
-    NOCONACT = 2
-    NOTFREE = 3
+    VALID = 1
+    NOTFREE = 2
+    NOCONACT = 3
+    DRAFT = 4
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -351,12 +360,13 @@ class Estate(ProcessDeletedModel):
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    valid = models.BooleanField(_('Valid'), default=False)
+    validity = models.ForeignKey(Validity,verbose_name=_('Validity'),blank=True,null=True)
     broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
+    def check_contact(self):
+        return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
     def check_validity(self):
         report = OrderedDict([(self.DRAFT,[]),(self.NOTFREE,False),(self.NOCONACT,False)])
-        if not (self.contact and self.contact.contact_state_id == Contact.AVAILABLE):
-            report[self.NOCONACT] = True
+        report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
         if not not self.street:
@@ -389,16 +399,13 @@ class Estate(ProcessDeletedModel):
                 report[self.DRAFT].append(u'Площадь участка')
         return report
     
-    def set_validity(self):
-        #TODO: Валидности поле добавить
-        result = self.VALID
-        validity = self.check_validity()
-        for key, value in validity.items():
+    def set_validity(self, report):
+        self.validity_id = self.VALID        
+        for key, value in report.items():
             if value:
-                result = key
+                self.validity_id = key
                 break
-        self.validity_id = result     
-    
+        
     @property
     def validity_report(self):
         pass
@@ -420,7 +427,7 @@ class Estate(ProcessDeletedModel):
             return None    
     @property
     def correct(self):
-        return self.valid and (self.history.modificated > CORRECT_DELTA)
+        return self.validity == self.VALID and (self.history.modificated > CORRECT_DELTA)
     @property
     def basic_contact(self):
         return self.contact 
@@ -468,7 +475,7 @@ class Estate(ProcessDeletedModel):
         return u'%s' % self.pk    
     def set_contact(self):
         self.contact = self.get_best_contact()
-        self.valid = self.contact and self.contact.contact_state_id == Contact.AVAILABLE or False       
+        self.set_validity(self.check_validity())
                                            
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
