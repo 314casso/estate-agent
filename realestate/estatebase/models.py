@@ -369,34 +369,34 @@ class Estate(ProcessDeletedModel):
         report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
-        if not not self.street:
-            report[self.DRAFT].append(_('Street'))
-        if not not self.watersupply:
-            report[self.DRAFT].append(_('Watersupply'))
-        if not not self.gassupply:
-            report[self.DRAFT].append(_('Gassupply'))    
-        if not not self.electricity:
-            report[self.DRAFT].append(_('Electricity'))    
-        if not not self.agency_price:
-            report[self.DRAFT].append(_('Agency price'))
+        if not self.street:
+            report[self.DRAFT].append(unicode(_('Street')))
+        if not self.watersupply:
+            report[self.DRAFT].append(unicode(_('Watersupply')))
+        if not self.gassupply:
+            report[self.DRAFT].append(unicode(_('Gassupply')))    
+        if not self.electricity:
+            report[self.DRAFT].append(unicode(_('Electricity')))    
+        if not self.agency_price:
+            report[self.DRAFT].append(unicode(_('Agency price')))
         if self.basic_bidg:
-            if not not self.basic_bidg.year_built:
-                report[self.DRAFT].append(_('Year built'))
-            if not not self.basic_bidg.floor:                
-                report[self.DRAFT].append(_('Floor'))
-            if not not self.basic_bidg.floor_count:
-                report[self.DRAFT].append(_('Floor count'))
-            if not not self.basic_bidg.wall_construcion:
-                report[self.DRAFT].append(_('Wall construcion'))
-            if not not self.basic_bidg.room_count:
-                report[self.DRAFT].append(_('Room count'))
-            if not not self.basic_bidg.total_area:
-                report[self.DRAFT].append(_('Total area'))
-            if not not self.basic_bidg.interior:
-                report[self.DRAFT].append(_('Interior'))
+            if not self.basic_bidg.year_built:
+                report[self.DRAFT].append(unicode(_('Year built')))
+            if not self.basic_bidg.floor:                
+                report[self.DRAFT].append(unicode(_('Floor')))
+            if not self.basic_bidg.floor_count:
+                report[self.DRAFT].append(unicode(_('Floor count')))
+            if not self.basic_bidg.wall_construcion:
+                report[self.DRAFT].append(unicode(_('Wall construcion')))
+            if not self.basic_bidg.room_count:
+                report[self.DRAFT].append(unicode(_('Room count')))
+            if not self.basic_bidg.total_area:
+                report[self.DRAFT].append(unicode(_('Total area')))
+            if not self.basic_bidg.interior:
+                report[self.DRAFT].append(unicode(_('Interior')))
         if self.basic_stead:
-            if not not self.basic_stead.total_area:
-                report[self.DRAFT].append(u'Площадь участка')
+            if not self.basic_stead.total_area:
+                report[self.DRAFT].append(u'Площадь участка')        
         return report
     
     def set_validity(self, report):
@@ -408,8 +408,16 @@ class Estate(ProcessDeletedModel):
         
     @property
     def validity_report(self):
-        pass
-    
+        result = []
+        report = self.check_validity()
+        if report[self.DRAFT]:
+            result.append(u'не заполнены поля: %s' % ', '.join(report[self.DRAFT]))
+        if report[self.NOTFREE]:
+            result.append(u'Не вакантно')
+        if report[self.NOCONACT]:    
+            result.append(u'Нет доступного контакта')
+        return '; '.join(result).lower()
+        
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk]) 
@@ -427,7 +435,7 @@ class Estate(ProcessDeletedModel):
             return None    
     @property
     def correct(self):
-        return self.validity == self.VALID and (self.history.modificated > CORRECT_DELTA)
+        return self.validity_id == self.VALID and (self.history.modificated > CORRECT_DELTA)
     @property
     def basic_contact(self):
         return self.contact 
@@ -488,6 +496,13 @@ def prepare_estate_childs(sender, instance, created, **kwargs):
                 Stead.objects.create(estate=instance, estate_type_id=stead_type_id)          
 
 post_save.connect(prepare_estate_childs, sender=Estate)
+
+def set_validity(sender, instance, created, **kwargs):
+    estate = getattr(instance,'estate',instance) 
+    post_save.disconnect(set_validity, sender=Estate)
+    estate.set_validity(estate.check_validity())
+    estate.save()
+    post_save.connect(set_validity, sender=Estate)
 
 def estate_client_handler(sender, instance, **kwargs):    
     instance.estate.set_contact()
@@ -886,3 +901,8 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
+        
+post_save.connect(set_validity, sender=Estate)
+post_save.connect(set_validity, sender=Bidg)
+post_save.connect(set_validity, sender=Stead)       
+        
