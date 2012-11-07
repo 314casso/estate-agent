@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="ui-state-highlight ui-corner-all descr">
-	<strong>{{ estate.estate_type }} [{{ estate.pk }}]</strong>
+	<strong title="{{ estate.estate_type }}">{{ estate.estate_type|truncatechars:33 }} [{{ estate.pk }}]</strong>
 	<span style="float: right; padding: 0 4px" class="ui-widget-content ui-corner-all {{ estate.state_css }}">
         <strong>{{ estate.estate_status }}</strong>
     </span>

@@ -6,6 +6,7 @@ NEWAPART = 1
 HOUSE = 2 
 STEAD = 3
 OUTBUILDINGS = 4
+AGRICULTURAL = 5
 
 class FieldWrapper():
     def __init__(self, name, label, value=None):
@@ -83,7 +84,7 @@ class HomeWrapper(BidgWrapper):
     @BidgWrapper.exterior_set.getter
     def exterior_set(self):
         result = super(HomeWrapper, self).exterior_set[:]
-        exclude_set = ('room_number',)
+        exclude_set = ('room_number','floor', 'elevator')
         for f in exclude_set:
             try:             
                 result.remove(f)
@@ -123,6 +124,7 @@ WRAPPERS = {
            HOUSE:(HomeWrapper(), SteadWrapper()),
            STEAD:(None, SteadWrapper()),
            OUTBUILDINGS:(OutbuildingsWrapper(), None),
+           AGRICULTURAL:(None, SteadWrapper()),
            }
    
 def get_wrapper(obj):    

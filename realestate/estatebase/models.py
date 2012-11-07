@@ -15,7 +15,7 @@ from picklefield.fields import PickledObjectField
 from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS,\
     MAX_CREDIT_SUM
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
-    OUTBUILDINGS
+    OUTBUILDINGS, AGRICULTURAL
 import caching.base
 from collections import OrderedDict
 
@@ -236,6 +236,7 @@ class EstateType(OrderedModel):
         (HOUSE, u'Дом'),
         (STEAD, u'Участок'),
         (OUTBUILDINGS, u'Постройка'),
+        (AGRICULTURAL, u'Сельхоз. участок'),
         )    
     name = models.CharField(_('Name'), max_length=100)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT)   
@@ -365,11 +366,11 @@ class Estate(ProcessDeletedModel):
     def check_contact(self):
         return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
     def check_validity(self):
-        report = OrderedDict([(self.DRAFT,[]),(self.NOTFREE,False),(self.NOCONACT,False)])
+        report = OrderedDict([(self.NOTFREE,False),(self.NOCONACT,False),(self.DRAFT,[])])
         report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
-        if not self.street:
+        if not self.street and not (self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL):
             report[self.DRAFT].append(unicode(_('Street')))
         if not self.watersupply:
             report[self.DRAFT].append(unicode(_('Watersupply')))
@@ -382,7 +383,7 @@ class Estate(ProcessDeletedModel):
         if self.basic_bidg:
             if not self.basic_bidg.year_built:
                 report[self.DRAFT].append(unicode(_('Year built')))
-            if not self.basic_bidg.floor:                
+            if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template == HOUSE:                                
                 report[self.DRAFT].append(unicode(_('Floor')))
             if not self.basic_bidg.floor_count:
                 report[self.DRAFT].append(unicode(_('Floor count')))
@@ -410,12 +411,12 @@ class Estate(ProcessDeletedModel):
     def validity_report(self):
         result = []
         report = self.check_validity()
-        if report[self.DRAFT]:
-            result.append(u'не заполнены поля: %s' % ', '.join(report[self.DRAFT]))
         if report[self.NOTFREE]:
             result.append(u'Не вакантно')
         if report[self.NOCONACT]:    
-            result.append(u'Нет доступного контакта')            
+            result.append(u'Нет доступного контакта')
+        if report[self.DRAFT]:
+            result.append(u'не заполнены поля: %s' % ', '.join(report[self.DRAFT]))
         return '; '.join(result).lower()
     @property
     def validity_state(self):        

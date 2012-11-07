@@ -284,7 +284,7 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None):
         q = q.filter(filter_dict.pop('Q'))
     if force_valid:
         filter_dict.update({
-           'valid__exact' : True,
+           'validity_id' : Estate.VALID,
            'history__modificated__gt' : CORRECT_DELTA
         })
     if user:
@@ -331,12 +331,12 @@ class EstateListDetailsView(EstateListView):
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', None)        
         try:
-            if pk: #FIXME: НЕ ВЕРНО!
+            if pk:
                 self.estate = self.get_queryset().filter(id=pk)[:1].get()
-            else:
-                self.estate = self.get_queryset()[:1].get()
         except Estate.DoesNotExist:
             self.estate = None
+        if not self.estate:    
+            self.estate = self.get_queryset()[:1].get()    
         r = p = 0
         if self.estate:      
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
@@ -357,7 +357,7 @@ class EstateSelectRegisterView(EstateListDetailsView):
         q = super(EstateSelectRegisterView, self).get_queryset()
         if not r_filter:
             return q
-        estates_in_register = self.register.estates.all().values_list('id', flat=True)
+        estates_in_register = list(self.register.estates.all().values_list('id', flat=True))
         if r_filter == 'inregister':
             q = q.filter(id__in=estates_in_register)
         else:
