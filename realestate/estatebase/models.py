@@ -415,9 +415,16 @@ class Estate(ProcessDeletedModel):
         if report[self.NOTFREE]:
             result.append(u'Не вакантно')
         if report[self.NOCONACT]:    
-            result.append(u'Нет доступного контакта')
+            result.append(u'Нет доступного контакта')            
         return '; '.join(result).lower()
-        
+    @property
+    def validity_state(self):        
+        if not self.correct and self.validity == self.VALID:
+            return u'Устарело'
+        else:
+            return self.validity
+        return u'Корректно'
+            
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk]) 

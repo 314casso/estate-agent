@@ -59,8 +59,7 @@
 </span>
 {% else %}
 <span title="{{ estate.validity_report }}" style="float: right; padding: 0 4px; margin: 0 -5px" class="ui-widget-content ui-corner-all sold-state">
-  <strong>{{ estate.validity }}</strong>
-  
+  <strong>{{ estate.validity_state|default:'Не корректно' }}</strong>
 </span>
 {% endif %}
 {% endblock %}

@@ -74,7 +74,7 @@
 
 {% block page_header %}
 {% if estate %}
-Просмотр недвижимости «{{ estate.estate_type }}» [{{ estate.pk }}]
+Просмотр лота «{{ estate.estate_type }}» [{{ estate.pk }}]
 {% endif %}
 {% endblock %}
 
@@ -136,7 +136,7 @@
     </div>
 </fieldset>
 {% empty %}
-Объектов, подходящих под критерии фильтра не обнаружено...
+Лотов, подходящих под критерии фильтра не обнаружено...
 {% endfor %}
 
 {% if is_paginated %}
