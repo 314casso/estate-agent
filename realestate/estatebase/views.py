@@ -331,8 +331,8 @@ class EstateListDetailsView(EstateListView):
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', None)        
         try:
-            if pk:
-                self.estate = self.get_queryset().filter(id__lte=pk)[:1].get()
+            if pk: #FIXME: НЕ ВЕРНО!
+                self.estate = self.get_queryset().filter(id=pk)[:1].get()
             else:
                 self.estate = self.get_queryset()[:1].get()
         except Estate.DoesNotExist:
