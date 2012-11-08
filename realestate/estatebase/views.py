@@ -326,7 +326,7 @@ class EstateListView(ListView):
 class EstateListDetailsView(EstateListView):   
     paginate_by = 10 
     template_name = 'estate_list.html'
-    estate = None  
+    estate = None 
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', None)        
@@ -335,7 +335,7 @@ class EstateListDetailsView(EstateListView):
                 self.estate = self.get_queryset().filter(id=pk)[:1].get()
         except Estate.DoesNotExist:
             self.estate = None
-        if not self.estate:    
+        if not self.estate and self.get_queryset().count():    
             self.estate = self.get_queryset()[:1].get()    
         r = p = 0
         if self.estate:      
