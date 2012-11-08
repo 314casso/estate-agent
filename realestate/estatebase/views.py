@@ -329,14 +329,12 @@ class EstateListDetailsView(EstateListView):
     estate = None 
     def get_context_data(self, **kwargs):        
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
-        pk = self.kwargs.get('pk', None)        
+        pk = self.kwargs.get('pk', None)
         try:
             if pk:
                 self.estate = self.get_queryset().filter(id=pk)[:1].get()
         except Estate.DoesNotExist:
             self.estate = None
-        if not self.estate and self.get_queryset().count():    
-            self.estate = self.get_queryset()[:1].get()    
         r = p = 0
         if self.estate:      
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
@@ -358,9 +356,14 @@ class EstateSelectRegisterView(EstateListDetailsView):
         if not r_filter:
             return q
         estates_in_register = list(self.register.estates.all().values_list('id', flat=True))
+        pk = int(self.kwargs.get('pk', 0))
         if r_filter == 'inregister':
+            if pk and pk not in estates_in_register:
+                estates_in_register.append(pk)
             q = q.filter(id__in=estates_in_register)
         else:
+            if pk in estates_in_register:
+                estates_in_register.remove(pk)
             q = q.exclude(id__in=estates_in_register)
         return q
     def get_context_data(self, **kwargs):

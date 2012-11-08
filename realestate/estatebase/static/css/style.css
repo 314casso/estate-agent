@@ -583,3 +583,9 @@ input[type=text] {
 	white-space: normal;
 	/*border-bottom: 1px solid white;*/
 }
+
+.just-added {
+	display: inline-block;
+	background: #cfed7e;
+	padding: 0 3px;	
+}

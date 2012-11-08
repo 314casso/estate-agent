@@ -1,16 +1,22 @@
 {% extends "estate_list.html" %}
-{% block lastcol %}
 
+{% block extra_button %}
 {% if request.GET.r_filter == 'inregister' %}
-<a class="btn-add-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=outregister">Режим добавления</a>
+<a class="btn-add-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=outregister">В режим добавления</a>
 {% else %}
-<a class="btn-view-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=inregister">Режим просмотра</a>
+<a class="btn-view-mode" href="{{ filter_action }}?next={{ request.GET.next|urlencode }}&r_filter=inregister">В режим просмотра</a>
 {% endif %}
+{% endblock %}
 
+{% block lastcol %}
 {% if not in_register %}
+<span class="ui-corner-all{% if request.GET.r_filter == 'inregister' %} just-added {% endif %}">
 <a class="btn-bind" href="{% url register_add_estate selected estate.pk %}?{{ next_url }}">Добавить лот [{{ estate.pk }}] в подборку [{{ selected }}]</a>
+</span>
 {% else %}
+<span class="ui-corner-all{% if request.GET.r_filter != 'inregister' %} just-added {% endif %}">
 <a class="btn-unbind" href="{% url register_remove_estate selected estate.pk %}?{{ next_url }}">Отвязать лот [{{ estate.pk }}] от подборки [{{ selected }}]</a>
+</span>
 {% endif %}
 {% endblock lastcol %}
 

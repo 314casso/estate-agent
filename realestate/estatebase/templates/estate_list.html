@@ -87,13 +87,16 @@
         <a class="btn-filter-remove" href="{{ filter_action }}">Сбросить фильтр</a>
         {% endif %}
         {% include 'prev_view.html' %}
-        {% if estate %}
         <div style="float: right">
-        	{% block lastcol %}
-        	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
-        	{% endblock lastcol %}            
-        </div>
+        {% block extra_button %}{% endblock %}        
+        {% if estate %}       
+        
+    	{% block lastcol %}
+    	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
+    	{% endblock lastcol %}            
+        
         {% endif %}
+        </div>
     </div>
 </div>
 {% include 'estate_filter_form.html' %}
@@ -216,5 +219,7 @@
     </div>
     {% endif %}
 </div>
+{% else %}
+<div style="text-align: center; width: 720px; margin-top: 200px; font-size: 32px; color: #BBB">Лоты не выбраны</div>
 {% endif %}
 {% endblock right %}
