@@ -10,7 +10,7 @@
 
 {% block topbar %}
 <div class="topbar button">        
-    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+    {% include 'prev_view.html' %}
 </div>
 {% endblock %}
 
@@ -19,8 +19,12 @@
     <legend style="font-size: 14px;">Карточка заказчика</legend>
 <table>
 	<tr>
+        <th>Код:</th>
+        <td title="Редактировать заказчика" style="font-weight: bold"><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
+    </tr>
+	<tr>
 		<th>Имя:</th>
-		<td style="font-weight: bold"><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+		<td style="font-weight: bold"><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
 	</tr>
 	<tr>
 		<th>Вид:</th>

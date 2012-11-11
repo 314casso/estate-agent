@@ -1,52 +1,39 @@
 <!--  -->
 <div class="button table-form" id='filter'>
-    <form method="get" action="{{ filter_action }}">        
+    <form method="get" action="{{ filter_action }}">
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
             <tr>
                 <td class="top-align">
-                    <table>                 
+                <table>
                     {% for field in filter_form.fieldsets.left %}
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }} </td>
+                    </tr>
                     {% endfor %}
-                    </table>
-                </td>
+                </table></td>
                 <td class="top-align">
-                    <table>                 
+                <table>
                     {% for field in filter_form.fieldsets.center %}
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            </td>
-                        </tr>
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }} </td>
+                    </tr>
                     {% endfor %}
-                </table>                
-                </td>   
+                </table></td>
                 <td class="top-align">
-                    <table>                 
-                    {% for field in filter_form.fieldsets.right %}                    
-                        <tr>
-                            <th>                    
-                            {{ field.label_tag }}
-                            </th>
-                            <td>
-                            {{ field.errors }}{{ field }}
-                            <div class="help-text">{{ field.help_text }}</div>
-                            </td>
-                        </tr>
+                <table>
+                    {% for field in filter_form.fieldsets.right %}
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }}
+                        <div class="help-text">
+                            {{ field.help_text }}
+                        </div></td>
+                    </tr>
                     {% endfor %}
-                </table>                
-                </td>   
-            </tr>                                          
+                </table></td>
+            </tr>
             <tfoot>
                 <tr>
                     <td colspan=3><a href="{{ filter_action }}">Сбросить</a>

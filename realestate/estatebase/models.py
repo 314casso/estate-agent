@@ -3,14 +3,13 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator, RegexValidator, validate_email
-from django.db import models, transaction
+from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from orderedmodel.models import OrderedModel
 from sorl.thumbnail.fields import ImageField
 import datetime
 import os
-from django.db.models.signals import post_save, pre_save, post_delete
 from picklefield.fields import PickledObjectField
 from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS,\
     MAX_CREDIT_SUM
@@ -357,7 +356,7 @@ class Estate(ProcessDeletedModel):
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
-    comment = models.TextField (_('Note'), blank=True, null=True, max_length=255)  
+    comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)  
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
@@ -452,7 +451,7 @@ class Estate(ProcessDeletedModel):
         css = {self.FREE:'free-state', self.NEW:'new-state', self.SOLD:'sold-state', self.EXCLUDE:'exclude-state'}                             
         return self.estate_status_id in css and css[self.estate_status_id] or ''    
     def get_best_contact(self):
-        contacts = Contact.objects.filter(client__estates__id__exact=self.pk).select_related().order_by('contact_state__id', 'contact_type__id', '-updated')[:1]        
+        contacts = Contact.objects.filter(client__estates__id__exact=self.pk, client__deleted=False).select_related().order_by('contact_state__id', 'contact_type__id', '-updated')[:1]        
         if contacts:
             return contacts[0]
     @property
@@ -492,32 +491,8 @@ class Estate(ProcessDeletedModel):
     def set_contact(self):
         self.contact = self.get_best_contact()
         self.set_validity(self.check_validity())
-                                           
-def prepare_estate_childs(sender, instance, created, **kwargs):
-    if created:
-        estate_type = getattr(instance,'_estate_type_id', None) and EstateType.objects.get(pk=instance._estate_type_id) or None                
-        if estate_type:             
-            if estate_type.estate_type_category.has_bidg == YES:
-                Bidg.objects.create(estate=instance, estate_type=estate_type, basic=True)
-            if estate_type.estate_type_category.has_stead == YES:
-                stead_type_id = instance.estate_category.is_stead and estate_type.pk or Stead.DEFAULT_TYPE_ID 
-                Stead.objects.create(estate=instance, estate_type_id=stead_type_id)          
 
-post_save.connect(prepare_estate_childs, sender=Estate)
 
-def set_validity(sender, instance, created, **kwargs):
-    estate = getattr(instance,'estate',instance) 
-    post_save.disconnect(set_validity, sender=Estate)
-    estate.set_validity(estate.check_validity())
-    estate.save()
-    post_save.connect(set_validity, sender=Estate)
-
-def estate_client_handler(sender, instance, **kwargs):    
-    instance.estate.set_contact()
-    instance.estate.save()        
-
-post_save.connect(estate_client_handler, sender=EstateClient)
-post_delete.connect(estate_client_handler, sender=EstateClient)
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)
@@ -695,6 +670,7 @@ class Bidg(models.Model):
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=False)    
+    description = models.TextField(_('Description'), blank=True, null=True)
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
@@ -855,18 +831,6 @@ class Contact(models.Model):
         verbose_name_plural = _('contacts') 
         ordering = ['contact_state__id', 'contact_type__id']
 
-@transaction.commit_on_success        
-def update_estate(sender, instance, created, **kwargs):
-    if instance.client.history:
-        prepare_history(instance.client.history, instance.user_id)
-    if instance.client.pk:    
-        for estate in instance.client.estates.all():
-            estate.set_contact()
-            estate.save()            
-            prepare_history(estate.history, instance.user_id)                                
-
-post_save.connect(update_estate, sender=Contact)
-
 class Bid(ProcessDeletedModel):
     '''
     Заявка
@@ -881,21 +845,11 @@ class Bid(ProcessDeletedModel):
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
-    
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      
         ordering = ['-id']    
-
-def update_localities(sender, instance, **kwargs):
-    if instance.pk:
-        if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
-            for region in instance.regions.all():
-                for locality in region.locality_set.all(): 
-                    instance.localities.add(locality)
-                    instance.estate_filter.update({'locality_1' : locality.pk})                    
-
-pre_save.connect(update_localities, sender=Bid)
 
 class EstateRegister(ProcessDeletedModel):
     '''
@@ -909,8 +863,6 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
-        
-post_save.connect(set_validity, sender=Estate)
-post_save.connect(set_validity, sender=Bidg)
-post_save.connect(set_validity, sender=Stead)       
-        
+
+from estatebase.signals import connect_signals
+connect_signals()

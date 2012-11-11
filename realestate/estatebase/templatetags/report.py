@@ -43,6 +43,8 @@ def wrapper_fieldset_tr(obj, fieldset_name):
     return wrapper_fieldset(obj, fieldset_name)
 
 def wrapper_fieldset(obj, fieldset_name):    
+    if not obj:
+        return ''
     details = OrderedDict()
     wrapper = get_wrapper(obj)
     field_list = getattr(wrapper, fieldset_name)

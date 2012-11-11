@@ -295,7 +295,8 @@ class EstateFilterForm(BetterForm):
     def get_filter(self):
         f = {}  
         if self['estate_type'].value():
-            q = Q(bidgs__estate_type_id__in=self['estate_type'].value()) 
+            q = Q(bidgs__estate_type_id__in=self['estate_type'].value())
+            q = q | Q(stead__estate_type_id__in=self['estate_type'].value()) 
             f['Q'] = q 
         if self['estate_category'].value():
             f['estate_category_id__in'] = self['estate_category'].value()
@@ -493,7 +494,10 @@ class BidForm(ModelForm):
         self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
-        fields = ('client', 'broker')                          
+        fields = ('client', 'broker', 'note') 
+        widgets = {
+            'note': TextInput(attrs={'class': 'long-input'}) 
+        }                         
 
 class BidFilterForm(BetterForm):
     pk = AutoCompleteSelectMultipleField(
@@ -531,7 +535,7 @@ class BidFilterForm(BetterForm):
             required=False,
         )
     agency_price = IntegerRangeField(label=_('Price'), required=False)
-    next = forms.CharField(required=False, widget=forms.HiddenInput())
+    next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
     def get_filter(self):
         f = {}
         if self['pk'].value():
@@ -565,6 +569,12 @@ class BidFilterForm(BetterForm):
             if values[0]:                                                                              
                 f['agency_price_min__gte'] = values[0]                                        
         return f
+    class Meta:
+        fieldsets = [
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'estate_type', 
+                                          'region', 'locality', 'agency_price', 'clients', 'contacts' ,
+                                          'next' ], 'legend': ''}),                    
+                    ]
 
 class EstateRegisterFilterForm(BidFilterForm):
     def __init__(self, *args, **kwargs):

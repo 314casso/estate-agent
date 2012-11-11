@@ -28,9 +28,12 @@
 {% endblock %}
 {% block topbar %}
 <div class="topbar button">
-    <a href="{% url client_create %}?{{ next_url }}">Добавить</a>
-    <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">    
-    {% if request.GET.next %}<a href="{{ request.GET.next }}">Вернуться к прежнему виду</a>{% endif %}
+    <a class="btn-add" href="{% url client_create %}?{{ next_url }}">Добавить нового заказчика</a>
+    <button class="btn-filter-add" onclick="showFilter('#filter')">Показать фильтр</button>    
+    {% if filtered %}
+    <a class="btn-filter-remove" href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить фильтр</a>
+    {% endif %}
+    {% include 'prev_view.html' %}
 </div>
 {% endblock %}
 

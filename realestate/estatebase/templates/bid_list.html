@@ -3,6 +3,7 @@
 {% load query_string %}
 {% load paginator %}
 {% load humanize %}
+{% load sorting_tags %}
 
 {% block css %}
 {{ bid_filter_form.media.css }}
@@ -30,43 +31,48 @@
 {% block left %}
 
 <div class="topbar button">
-<input value="Показать фильтр" type="button" onclick="showFilter('#filter')">
-<a href="{% url bid_create %}?{{ next_url }}">Добавить</a>
+<a title="Добавление новой заявки..." class="btn-add" href="{% url bid_create %}?{{ next_url }}">Добавить</a>
+<button class="btn-filter-add" onclick="showFilter('#filter')">Показать фильтр</button>
+{% if filtered %}
+<a class="btn-filter-remove" href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить фильтр</a>
+{% endif %}
 {% include 'prev_view.html' %}
 </div>
 
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
-            <th>Код</th>
+            <th style="white-space: nowrap">{% anchor id 'Код' %}</th>
+            <th style="white-space: nowrap">{% anchor history__modificated 'Обновлено' %}</th>
+            <th>Риэлтор</th>
             <th>Вид недвижимости</th>
-            <th>Цена</th>
             <th>Населенные пункты</th>
-            <th>Обновлено</th>
-            <th>Заказчик</th>
-            <th>Контакты</th>           
+            <th>Цена</th>
+            <th>Заказчик</th>                       
+            <th>Контакты</th>
             <th>Действие</th>
         </tr>
     </thead>
     <tbody>
         {% for bid_item in bid_list %}
         <tr class="ui-widget-content">
-            <td><a href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td><a title="Редактирование заявки" href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td style="white-space: nowrap">{{ bid_item.history.modificated|date:"d M Y" }} </td>
+            <td>{{ bid_item.broker }} </td>
             <td>
                 {% for estate_type in bid_item.estate_types.all %}
-                    <a href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                    <a title="Просмотр заявки" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
                 {% empty %}
-                    <a href="{% url bid_detail bid_item.pk %}?{{ next_url }}">---------</a>    
+                    <a title="Просмотр заявки" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">---------</a>    
                 {% endfor %}                
             </td>
-            <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
             <td>
                 {% for locality in bid_item.localities.all %}
                     {{ locality }}{% include 'comma.html' %}
                 {% endfor %}
             </td>
-            <td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
-            <td>{{ bid_item.client }}</td>
+            <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
+            <td><a title="Просмотр карточки заказчика" href="{% url client_detail bid_item.client.pk %}?{{ next_url }}">{{ bid_item.client.name }}</a></td>
             <td>{% contact_list bid_item.client next_url 2 %}</td>          
             <td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
@@ -86,9 +92,18 @@
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
             <tr>
                 <td class="top-align">
-                    <table>                 
-                        {{ bid_filter_form.as_table }}                      
-                    </table>
+                	<table>
+                    {% for field in bid_filter_form.fieldsets.main %}
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }}
+                        <div class="help-text">
+                            {{ field.help_text }}
+                        </div></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                    
                 </td>                   
             </tr>                                          
             <tfoot>

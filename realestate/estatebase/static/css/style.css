@@ -85,7 +85,7 @@ body {
 
 .table-form table td {
 	padding: 2px;
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	/*vertical-align: bottom;*/
 }
 

@@ -20,27 +20,33 @@
 <table>
 	<tr>
 		<th>Код:</th>
-		<td style="font-weight: bold"><a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
+		<td style="font-weight: bold"><a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
 	</tr>
+	<tr>
+        <th>Риэлтор:</th>
+        <td>
+         {{ bid.broker }}
+        </td>
+    </tr>
 	<tr>
 		<th>Виды недвижимости:</th>
 		<td>
                 {% for estate_type in bid.estate_types.all %}
-                    <a href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
+                    <a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
                 {% endfor %}
         </td>
 	</tr>
 	<tr>
-		<th>Цена:</th>
-		<td>{% two_num bid.agency_price_min bid.agency_price_max %}</td>            
-	</tr>
-	<tr>
-		<th>Адрес:</th>
-		<td>
+        <th>Населенные пункты:</th>
+        <td>
                 {% for locality in bid.localities.all %}
                     {{ locality }}{% include 'comma.html' %}
                 {% endfor %}
             </td>
+    </tr>
+	<tr>
+		<th>Цена:</th>
+		<td>{% two_num bid.agency_price_min bid.agency_price_max %}</td>            
 	</tr>
 	{% history bid.history %}
 	<tr>
@@ -57,11 +63,10 @@
 {% block right %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Подборки</legend>    
-
 <div class="topbar button">
-    <a href="{% url register_create bid.pk %}?{{ next_url }}&type=empty">Добавить пустую</a>          
-    <a href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Создать по заявке</a>
-    <a href="{% url register_select bid.pk %}?{{ next_url }}">Подобрать</a>
+    <a title="Создать пустую подборку для ручного заполнения" href="{% url register_create bid.pk %}?{{ next_url }}&type=empty">Cоздать вручную</a>          
+    <a title="Создать подборку согласно данной заявке" href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Cоздать автоматически</a>
+    <a class="btn-bind" title="Привязать уже созданную ранее подборку к этой заявке" href="{% url register_select bid.pk %}?{{ next_url }}">Добавить подборку</a>
 </div>
 {% include 'registers/register_table.html' %}
 </fieldset>

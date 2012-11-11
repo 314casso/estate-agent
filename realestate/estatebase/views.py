@@ -38,6 +38,7 @@ class BaseMixin(object):
 class DeleteMixin(object):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.object._user_id = self.request.user.pk
         self.object.deleted = True
         self.object.save() 
         return HttpResponseRedirect(self.get_success_url())
@@ -460,11 +461,14 @@ class ApartmentUpdateView(ObjectMixin, UpdateView):
 class ClientListView(ListView):
     template_name = 'clients/client_list.html'
     context_object_name = "clients"
-    paginate_by = 5    
+    paginate_by = 20
+    filtered = False    
     def get_queryset(self):                        
         q = Client.objects.select_related().prefetch_related('origin', 'contacts__contact_state', 'contacts__contact_type')
         search_form = ClientFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
+        if filter_dict:
+            self.filtered = True
         if len(filter_dict):
             q = q.filter(**filter_dict)        
         order_by = self.request.fields 
@@ -481,6 +485,7 @@ class ClientListView(ListView):
             'title': 'list',
             'next_url': safe_next_link(self.request.get_full_path()),
             'client_filter_form' : ClientFilterForm(self.request.GET),
+            'filtered': self.filtered,
         })        
         return context
 
@@ -825,17 +830,23 @@ class BidDetailView(BidMixin, DetailView):
 
         return context 
 
-class BidListView(ListView):    
+class BidListView(ListView):
+    filtered = False    
     template_name = 'bid_list.html'
     paginate_by = 20   
     def get_queryset(self):        
         q = Bid.objects.select_related().all()        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
+        if filter_dict:
+            self.filtered = True
 #        Если нужно и заявки только по гео-фактору показывать
 #        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
+        order_by = self.request.fields 
+        if order_by:      
+            q = q.order_by(','.join(order_by))    
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
@@ -844,6 +855,7 @@ class BidListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),
             'bid_filter_form': bid_filter_form,
+            'filtered': self.filtered,
         })        
         return context    
 
@@ -912,9 +924,9 @@ class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
             if fltr:            
                 pickle_form = BidPicleForm(fltr)
                 f = pickle_form.get_filter()
-                q = Estate.objects.all()                 
-                q = set_estate_filter(q, f, True)                
-                initial['estates'] = q.values_list('id', flat=True)                                
+                q = Estate.objects
+                q = set_estate_filter(q, f, True)   
+                initial['estates'] = q.values_list('id', flat=True)
         return initial     
 
 class EstateRegisterUpdateView(EstateRegisterMixin, UpdateView):
