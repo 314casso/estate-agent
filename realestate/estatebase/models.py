@@ -800,7 +800,17 @@ class Contact(models.Model):
     def state_css(self):
         css = {self.AVAILABLE:'available-state', self.NONAVAILABLE:'non-available-state', self.BAN:'ban-state', self.NOTRESPONDED:'not-responded-state', self.NOTCHECKED:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
-    def clean(self):                
+    def clean(self):   
+        q = Contact.objects.filter(contact=self.contact)
+        if self.id:
+            q = q.exclude(pk=self.id)
+        if q.count() > 0:
+            client = list(q.all()[:1])[0].client
+#            t = Template('<a target="_blabk" href="{% url client_detail %s %}">%s</a>' % (client.pk, client.name))
+#            t = mark_safe(t)
+            extra = client.deleted and u'Находится в корзине!' or '' 
+            raise ValidationError(u'Данный контакт уже создан и принадлежит [%s] - %s. %s' % (client.id, client.name, extra))
+                     
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator(verify_exists=False)

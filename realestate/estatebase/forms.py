@@ -399,23 +399,6 @@ class ContactHistoryForm(ModelForm):
         }            
 
 class ContactForm(ModelForm):
-    id = None
-    def __init__(self, *args, **kwargs):
-        super(ContactForm, self).__init__(*args, **kwargs)
-        if 'instance' in kwargs:
-            self.id = kwargs['instance'].id
-    def clean_contact(self):
-        data = self.cleaned_data['contact']
-        q = Contact.objects.filter(contact=data)
-        if self.id:
-            q = q.exclude(pk=self.id)
-        if q.count() > 0:
-            client = list(q.all()[:1])[0].client
-#            t = Template('<a target="_blabk" href="{% url client_detail %s %}">%s</a>' % (client.pk, client.name))
-#            t = mark_safe(t)
-            extra = client.deleted and u'Находится в корзине!' or '' 
-            raise forms.ValidationError(u'Данный контакт уже создан и принадлежит [%s] - %s. %s' % (client.id, client.name, extra))
-        return data
     class Meta:        
         fields = ('contact', 'contact_state')
         model = Contact
