@@ -32,6 +32,8 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoCompleteSelectField
 from selectable.forms.widgets import AutoComboboxSelectWidget
 from settings import CORRECT_DELTA
+from django.utils.safestring import mark_safe
+from django.template.base import Template
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -395,8 +397,30 @@ class ContactHistoryForm(ModelForm):
         widgets = {
             'event_date': DateTimeInput(attrs={'readonly':'True'}, format='%d.%m.%Y %H:%M'),
         }            
+
+class ContactForm(ModelForm):
+    id = None
+    def __init__(self, *args, **kwargs):
+        super(ContactForm, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs:
+            self.id = kwargs['instance'].id
+    def clean_contact(self):
+        data = self.cleaned_data['contact']
+        q = Contact.objects.filter(contact=data)
+        if self.id:
+            q = q.exclude(pk=self.id)
+        if q.count() > 0:
+            client = list(q.all()[:1])[0].client
+#            t = Template('<a target="_blabk" href="{% url client_detail %s %}">%s</a>' % (client.pk, client.name))
+#            t = mark_safe(t)
+            extra = client.deleted and 'Находится в корзине!' or '' 
+            raise forms.ValidationError(u'Данный контакт уже создан и принадлежит [%s] - %s. %s' % (client.id, client.name, extra))
+        return data
+    class Meta:        
+        fields = ('contact', 'contact_state')
+        model = Contact
         
-class ContactInlineForm(ModelForm):
+class ContactInlineForm(ContactForm):
     class Meta:
         model = Contact        
 
@@ -408,11 +432,6 @@ class RequiredFormSet(BaseInlineFormSet):
         
 ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm, formset=RequiredFormSet)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)
-
-class ContactForm(ModelForm):     
-    class Meta:        
-        fields = ('contact', 'contact_state')
-        model = Contact
 
 class ObjectForm(ModelForm):
     total_area = LocalDecimalField(label=_('Total area'))
