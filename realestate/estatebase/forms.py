@@ -413,7 +413,7 @@ class ContactForm(ModelForm):
             client = list(q.all()[:1])[0].client
 #            t = Template('<a target="_blabk" href="{% url client_detail %s %}">%s</a>' % (client.pk, client.name))
 #            t = mark_safe(t)
-            extra = client.deleted and 'Находится в корзине!' or '' 
+            extra = client.deleted and u'Находится в корзине!' or '' 
             raise forms.ValidationError(u'Данный контакт уже создан и принадлежит [%s] - %s. %s' % (client.id, client.name, extra))
         return data
     class Meta:        
