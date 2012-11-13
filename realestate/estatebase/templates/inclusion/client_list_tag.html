@@ -1,7 +1,7 @@
 {% load link_helper %}
 
+{% if perms.estatebase.view_private %}
 {% for client in estate.clients.all %}
-
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px">
     <legend>
         <a title="{{ client.origin|default_if_none:'' }} {{ client.address }}" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a>
@@ -10,5 +10,5 @@
     </legend>
     {% contact_list client next_url %}
 </fieldset>
-
 {% endfor %}
+{% endif %}

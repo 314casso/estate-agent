@@ -128,6 +128,7 @@
     <div style="border-bottom: 0px solid #ddd; font-style: italic">
         {% address estate_item %}
     </div>
+    {% if perms.estatebase.view_private %}
     <div style="margin-top: 2px">
         {% with contact=estate_item.basic_contact  %}
         {% if contact %}
@@ -137,6 +138,7 @@
         {% endif %}
         {% endwith %}
     </div>
+    {% endif %}
 </fieldset>
 {% empty %}
 Лотов, подходящих под критерии фильтра не обнаружено...

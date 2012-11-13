@@ -1,5 +1,6 @@
 {% extends "dialog_block.html" %}
 {% load humanize %}
+{% load i18n %}
 {% load link_helper %}
 {% block title_left %}
 <a href="{% url estate_update estate.pk %}?{{ next_url }}">Основная информация</a>
@@ -33,21 +34,29 @@
     {% endif %}   
 </table>
 <div style="margin-top: 3px">
+	{% if perms.estatebase.view_private %}
 	<table class="detail-table all-borders">
 		<tr>
-			<th colspan="2">Цена</th>
-			<th rowspan="2" valign="top">%</th>
+			<th colspan="2">{% trans 'Price' %}</th>
+			<th rowspan="2" valign="top">Проценты</th>
 		</tr>
 		<tr>
 			<th>Продавца</th>
 			<th>Агенства</th>
 		</tr>
-		<tr>
+		<tr>			
 			<td>{{ estate.saler_price|default:'--------'|intcomma }}</td>
 			<td>{{ estate.agency_price|default:'--------'|intcomma }}</td>
 			<td class="ui-state-highlight">{{ margin }}</td>
 		</tr>
 	</table>
+	{% else %}
+	<table class="detail-table all-borders">
+		<th>{% trans 'Price' %}</th>
+		<td>{{ estate.agency_price|default:'--------'|intcomma }}</td>
+	</table>
+	{% endif %}
+	
 </div>
 
 {% endblock %}
