@@ -17,6 +17,9 @@ from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
     OUTBUILDINGS, AGRICULTURAL
 import caching.base
 from collections import OrderedDict
+from django.template.base import Template
+from django.utils.safestring import mark_safe
+from django.template.context import Context
 
 class ExUser(User):
     def __unicode__(self):
@@ -806,10 +809,10 @@ class Contact(models.Model):
             q = q.exclude(pk=self.id)
         if q.count() > 0:
             client = list(q.all()[:1])[0].client
-#            t = Template('<a target="_blabk" href="{% url client_detail %s %}">%s</a>' % (client.pk, client.name))
-#            t = mark_safe(t)
+            t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blabk" href="{% url client_detail pk %}">{{ name }}</a>')
+            t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
             extra = client.deleted and u'Находится в корзине!' or '' 
-            raise ValidationError(u'Данный контакт уже создан и принадлежит [%s] - %s. %s' % (client.id, client.name, extra))
+            raise ValidationError(mark_safe(u'Данный контакт уже создан и принадлежит %s. %s' % (t, extra)))
                      
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
