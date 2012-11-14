@@ -484,18 +484,19 @@ class Estate(ProcessDeletedModel):
         return int(self.agency_price - self.agency_price * MAX_CREDIT_SUM)
     @property
     def credit_sum(self):        
-        return int(self.max_credit_sum * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))                                           
-    class Meta:
-        verbose_name = _('estate')
-        verbose_name_plural = _('estate')
-        ordering = ['-id']    
+        return int(self.max_credit_sum * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))
     def __unicode__(self):
         return u'%s' % self.pk    
     def set_contact(self):
         self.contact = self.get_best_contact()
-        self.set_validity(self.check_validity())
-
-
+        self.set_validity(self.check_validity())                                           
+    class Meta:
+        verbose_name = _('estate')
+        verbose_name_plural = _('estate')
+        ordering = ['-id']    
+        permissions = (
+            ("view_private", u'Просмотр цены, полного адреса и контактов'),
+        )
 
 def get_upload_to(instance, filename):    
     return os.path.join('photos', str(instance.estate_id), filename)

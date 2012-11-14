@@ -7,16 +7,6 @@ from copy import deepcopy
 
 register = template.Library()
 
-#@register.inclusion_tag('inclusion/menu.html')
-#def reverse_link(path, next_url):    
-#    if path:
-#        url_name = resolve(path).url_name
-#    return {'menu_items': menu_items, 'url_name': url_name, 'next_url': next_url}  
-
-#@register.simple_tag
-#def next_from_request(next_url):    
-#    return next_url and ('?next=%s' % next_url.urlencode()) or ''  
-
 @register.simple_tag
 def im_source(im):
     return base64.b64encode(im.read())
@@ -28,16 +18,6 @@ def selected_css(list_pk,item_pk):
 @register.inclusion_tag('inclusion/close_btn.html')
 def close_btn(url):        
     return {'url': url or ''}
-
-#@register.inclusion_tag('inclusion/table_row.html')
-#def table_row(queryset,field_name):         
-#    label = get_label(queryset,field_name)    
-#    value = get_value(queryset,field_name)           
-#    return {'field': value, 'label':label }
-
-#@register.inclusion_tag('inclusion/inline_field.html')
-#def inline_field(queryset,field_name):
-#    return table_row(queryset,field_name)
 
 @register.inclusion_tag('inclusion/contact_list_tag.html')
 def contact_list(client, next_url, first=None):
@@ -60,9 +40,12 @@ def base_address(estate):
         items.append(estate.microdistrict.name)
     return items
 
-@register.simple_tag
-def address(estate):    
+@register.simple_tag(takes_context=True)
+def address(context, estate):    
     items = deepcopy(base_address(estate))
+    user = context.get('request').user
+    if not user.has_perm('estatebase.view_private'):
+        return ', '.join(items)
     if estate.street:     
         items.append(estate.street.name)
     if estate.estate_number:                      
@@ -80,21 +63,6 @@ def no_street_address(estate):
 @register.filter()
 def rubble(value):    
     return value and u'%s руб.' % intcomma(value) or ''
-
-#@register.simple_tag
-#def get_label(queryset,field_name):
-#    return get_polymorph_label(queryset,field_name) or get_field(queryset, field_name).verbose_name
-
-#@register.simple_tag
-#def get_value(queryset,field_name):
-#    field = get_field(queryset, field_name)
-#    value = getattr(queryset,field_name)
-#    if field.get_internal_type() == 'BooleanField' and value:
-#        value = u'Есть'
-#    return value
-
-#def get_field(queryset, field_name):
-#    return queryset._meta.get_field(field_name)
 
 @register.simple_tag
 def two_num(n_min, n_max):
@@ -118,4 +86,3 @@ def estate_client_status(estate_pk,client_pk):
 def history(history):        
     if history:
         return {'history': history}
-           
