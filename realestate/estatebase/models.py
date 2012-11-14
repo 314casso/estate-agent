@@ -810,9 +810,13 @@ class Contact(models.Model):
             q = q.exclude(pk=self.id)
         if q.count() > 0:
             client = list(q.all()[:1])[0].client
-            t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blabk" href="{% url client_detail pk %}">{{ name }}</a>')
+            t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">{{ name }}</a>')
             t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
-            extra = client.deleted and u'Находится в корзине!' or '' 
+            extra = ''
+            if client.deleted:
+                extra = u'Находится в корзине! %s'
+                restore = Template(u'<a target="_blank" href="{% url client_restore pk %}">Восстановить</a>')
+                extra = extra % restore.render(Context({ 'pk': client.pk }))
             raise ValidationError(mark_safe(u'Данный контакт уже создан и принадлежит %s. %s' % (t, extra)))
                      
         if not self.contact_type_id:

@@ -1064,3 +1064,17 @@ class RegisterReportView(EstateRegisterMixin, DetailView):
                 'estate_list': estate_list
             })  
         return context
+    
+class RestoreFromTrashView(BaseUpdateView):   
+    def action(self):                
+        self.object.deleted = False        
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.action() 
+        self.object.save()             
+        return HttpResponseRedirect(reverse('client_detail', args=[self.object.pk]))    
+
+class RestoreClientView(RestoreFromTrashView):
+    def get_queryset(self):
+        return Client.all_objects.filter(deleted=True)
+    
