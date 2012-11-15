@@ -38,6 +38,11 @@ $(document).ready(function() {
 		mDec : 2
 	});
 	$('#loadingMask').fadeOut();
+	
+	$(".errorlist a").click(function(){
+		$(this).parent().fadeOut();
+	});
+	
 });
 
 function getIndex(id, item) {

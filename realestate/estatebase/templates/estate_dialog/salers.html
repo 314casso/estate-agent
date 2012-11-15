@@ -4,9 +4,7 @@
 <a title="Привязать продавцов" href="{% url client_select estate.pk %}?{{ next_url }}">Продавцы</a>
 {% endblock %}
 {% block content %}
-{% if perms.estatebase.view_private %}
 {% client_list estate next_url %}
-{% endif %}
 {% endblock %}
 {% block title_right %}
 {{ estate.clients.count }}

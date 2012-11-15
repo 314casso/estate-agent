@@ -11,9 +11,9 @@ from sorl.thumbnail.fields import ImageField
 import datetime
 import os
 from picklefield.fields import PickledObjectField
-from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS,\
+from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS, \
     MAX_CREDIT_SUM
-from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD,\
+from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD, \
     OUTBUILDINGS, AGRICULTURAL
 import caching.base
 from collections import OrderedDict
@@ -203,7 +203,7 @@ class EstateClientStatus(SimpleDict):
 
 YES = 1
 NO = 0
-MAYBE =2
+MAYBE = 2
 AVAILABILITY_CHOICES = (
     (YES, u'Да'),
     (NO, u'Нет'),
@@ -215,7 +215,7 @@ class EstateTypeCategory(OrderedModel):
     independent = models.BooleanField(_('Independent'), default=True)
     has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)
     has_stead = models.IntegerField(_('HasStead'), choices=AVAILABILITY_CHOICES)
-    is_commerce =  models.BooleanField(_('Commerce'), default=False)
+    is_commerce = models.BooleanField(_('Commerce'), default=False)
     @property
     def maybe_stead(self):
         return self.has_stead == MAYBE
@@ -254,7 +254,7 @@ class EstateType(OrderedModel):
     
 class HistoryMeta(models.Model):
     created = models.DateTimeField(_('Created'),)
-    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators',on_delete=models.PROTECT)
+    created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators', on_delete=models.PROTECT)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
     updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)
     modificated = models.DateTimeField(_('Modificated'),)     
@@ -281,7 +281,7 @@ class EstateClient(models.Model):
     ESTATE_CLIENT_STATUS = 3 #Собственник
     client = models.ForeignKey('Client')
     estate = models.ForeignKey('Estate')    
-    estate_client_status = models.ForeignKey(EstateClientStatus,verbose_name=_('EstateClientStatus'))
+    estate_client_status = models.ForeignKey(EstateClientStatus, verbose_name=_('EstateClientStatus'))
     class Meta:
         unique_together = ('client', 'estate')
 
@@ -342,7 +342,7 @@ class Estate(ProcessDeletedModel):
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
     agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
-    com_status = models.ForeignKey(ComStatus,verbose_name=_('ComStatus'),blank=True,null=True)         
+    com_status = models.ForeignKey(ComStatus, verbose_name=_('ComStatus'), blank=True, null=True)         
     #Коммуникации    
     electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
@@ -363,12 +363,12 @@ class Estate(ProcessDeletedModel):
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    validity = models.ForeignKey(Validity,verbose_name=_('Validity'),blank=True,null=True)
+    validity = models.ForeignKey(Validity, verbose_name=_('Validity'), blank=True, null=True)
     broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
     def check_contact(self):
         return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
     def check_validity(self):
-        report = OrderedDict([(self.NOTFREE,False),(self.NOCONACT,False),(self.DRAFT,[])])
+        report = OrderedDict([(self.NOTFREE, False), (self.NOCONACT, False), (self.DRAFT, [])])
         report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
@@ -472,10 +472,10 @@ class Estate(ProcessDeletedModel):
                 return self.estate_category
     @property
     def bidg_objects(self):
-        return self.bidgs.filter(estate_type__estate_type_category__independent = True) 
+        return self.bidgs.filter(estate_type__estate_type_category__independent=True) 
     @property
     def bidg_outbuildings(self):
-        return self.bidgs.filter(estate_type__estate_type_category__independent = False)                               
+        return self.bidgs.filter(estate_type__estate_type_category__independent=False)                               
     @property
     def is_commerce(self):
         return self.com_status.status == YES
@@ -657,7 +657,7 @@ class Bidg(models.Model):
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
     floor_count = models.PositiveIntegerField(_('Floor count'), blank=True, null=True)
     elevator = models.BooleanField(_('Elevator'), default=False)
-    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True,  on_delete=models.PROTECT)
+    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True, on_delete=models.PROTECT)
     exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True, on_delete=models.PROTECT)    
     window_type = models.ForeignKey(WindowType, verbose_name=_('Window type'), blank=True, null=True, on_delete=models.PROTECT)
     roof = models.ForeignKey(Roof, verbose_name=_('Roof'), blank=True, null=True, on_delete=models.PROTECT)
@@ -810,14 +810,17 @@ class Contact(models.Model):
             q = q.exclude(pk=self.id)
         if q.count() > 0:
             client = list(q.all()[:1])[0].client
-            t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">{{ name }}</a>')
-            t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
             extra = ''
-            if client.deleted:
-                extra = u'Находится в корзине! %s'
+            t = None
+            if not client.deleted:
+                t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">{{ name }}</a>')
+                t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
+            else:
+                t = '"%s"' % client.name                
+                extra = u' - находится в корзине! %s'
                 restore = Template(u'<a target="_blank" href="{% url client_restore pk %}">Восстановить</a>')
                 extra = extra % restore.render(Context({ 'pk': client.pk }))
-            raise ValidationError(mark_safe(u'Данный контакт уже создан и принадлежит %s. %s' % (t, extra)))
+            raise ValidationError(mark_safe(u'Данный контакт уже создан и принадлежит %s %s' % (t, extra)))
                      
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')

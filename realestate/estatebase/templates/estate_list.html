@@ -174,7 +174,9 @@
     <div id="tab-basic">
         <div style="float: left">
             {% include "estate_dialog/basic.html" %}
+            {% if perms.estatebase.view_private %}
             {% include "estate_dialog/salers.html" %}
+            {% endif %}
             {% if estate.basic_bidg %}
             {% include "estate_dialog/basic_bidg_summary.html" with basic_bidg=estate.basic_bidg %}
             {% endif %}
