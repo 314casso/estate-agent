@@ -7,6 +7,8 @@ HOUSE = 2
 STEAD = 3
 OUTBUILDINGS = 4
 AGRICULTURAL = 5
+APARTMENTSTEAD = 6
+FACILITIES = 7
 
 class FieldWrapper():
     def __init__(self, name, label, value=None):
@@ -92,11 +94,32 @@ class HomeWrapper(BidgWrapper):
                 pass               
         return result
 
+class ApartmentSteadWrapper(BidgWrapper):
+    '''
+    Участок с квартирой
+    '''
+    @BidgWrapper.exterior_set.getter
+    def exterior_set(self):
+        result = super(HomeWrapper, self).exterior_set[:]
+        exclude_set = ('elevator',)
+        for f in exclude_set:
+            try:             
+                result.remove(f)
+            except:
+                pass               
+        return result
+
 class OutbuildingsWrapper(BidgWrapper):
     def __init__(self):
         self.exterior_set = ['year_built', 'floor_count', 'wall_construcion', 'exterior_finish', 'room_count', 'total_area', 'description']
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior']
-        self.extra_set = ['documents']
+        self.extra_set = []
+    
+class FacilitiesWrapper(BidgWrapper):
+    def __init__(self):
+        self.exterior_set = ['description']
+        self.interior_set = []
+        self.extra_set = []    
     
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'    
@@ -125,6 +148,8 @@ WRAPPERS = {
            STEAD:(None, SteadWrapper()),
            OUTBUILDINGS:(OutbuildingsWrapper(), None),
            AGRICULTURAL:(None, SteadWrapper()),
+           APARTMENTSTEAD:(ApartmentSteadWrapper(), SteadWrapper()),
+           FACILITIES:(FacilitiesWrapper(), None),
            }
    
 def get_wrapper(obj):    

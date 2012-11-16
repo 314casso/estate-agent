@@ -23,7 +23,7 @@
 </fieldset>
 {% endif %}
 
-{% if estate.comment %}
+{% if estate.comment and perms.estatebase.view_private %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>
         Комментарий

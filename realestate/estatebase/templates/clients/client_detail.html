@@ -11,6 +11,7 @@
 {% block topbar %}
 <div class="topbar button">        
     {% include 'prev_view.html' %}
+    <a title="Удалить заказчика [{{ client.id }}] в корзину" class="btn-delete" href="{% url client_delete client.pk %}?next={{ request.GET.next }}">Удалить</a>
 </div>
 {% endblock %}
 
