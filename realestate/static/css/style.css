@@ -440,6 +440,10 @@ legend {
 	/*padding: 0 3px;*/
 }
 
+#tabs {
+	width: 733px;
+}
+
 .style-table {
 	border-collapse: separate;
 	border-spacing: 0 1px;
