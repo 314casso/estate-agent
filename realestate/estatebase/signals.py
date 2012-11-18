@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.db import transaction
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
-    prepare_history, Bid, Contact, EstateClient, Client
+    prepare_history, Bid, Contact, EstateClient, Client, BidEvent
 
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
@@ -49,6 +49,15 @@ def update_localities(sender, instance, **kwargs):
                     instance.localities.add(locality)
                     instance.estate_filter.update({'locality_1' : locality.pk})                    
 
+def bid_event_history(sender, instance, created, **kwargs):
+    if created:
+        post_save.disconnect(bid_event_history, sender=BidEvent)
+        instance.history = prepare_history(None, instance._user_id)
+        instance.save()
+        post_save.connect(bid_event_history, sender=BidEvent)
+    else:
+        prepare_history(instance.history, instance._user_id)
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
@@ -59,3 +68,4 @@ def connect_signals():
     post_save.connect(estate_client_handler, sender=EstateClient)
     post_delete.connect(estate_client_handler, sender=EstateClient)
     pre_save.connect(update_localities, sender=Bid)
+    post_save.connect(bid_event_history, sender=BidEvent)

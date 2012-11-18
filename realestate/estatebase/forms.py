@@ -20,17 +20,18 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
-    ValidityLookup
+    ValidityLookup, ApplianceLookup, BidEventCategoryLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateType, EstateClient
+    EstateType, EstateClient, BidEvent
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
     AutoCompleteSelectField
-from selectable.forms.widgets import AutoComboboxSelectWidget
+from selectable.forms.widgets import AutoComboboxSelectWidget,\
+    AutoComboboxSelectMultipleWidget
 from settings import CORRECT_DELTA
 from django.utils.safestring import mark_safe
 from django.template.base import Template
@@ -436,16 +437,19 @@ class ObjectForm(ModelForm):
                 self.fields[field].label = get_polymorph_label(self.instance, field)                           
         for field in self.field_to_delete:
             if field in self.fields:
-                del self.fields[field]       
-        if self.instance.pk:
-            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)            
-        self.fields['documents'].help_text = ''
+                del self.fields[field]
+        if 'appliances' in self.fields:
+            self.fields['appliances'].help_text = ''                                            
+        if self.instance.pk and 'documents' in self.fields:
+            self.fields['documents'].queryset = Document.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)
+            self.fields['documents'].help_text = ''
     estate = forms.ModelChoiceField(queryset=Estate.objects.all(), widget=forms.HiddenInput())
     class Meta:
         model = Bidg
         widgets = {
            'documents' : forms.CheckboxSelectMultiple(),
            'interior' : AutoComboboxSelectWidget(InteriorLookup),
+           'appliances': AutoComboboxSelectMultipleWidget(ApplianceLookup),
         }
 
 class BidgForm(ObjectForm):    
@@ -639,4 +643,16 @@ class EstateRegisterForm(BetterModelForm):
 class ClientStatusUpdateForm(ModelForm):
     class Meta:
         model = EstateClient 
-        fields = ['estate_client_status']       
+        fields = ['estate_client_status']
+
+class BidEventForm(ModelForm):
+    bid_event_category = AutoComboboxSelectField(
+            lookup_class=BidEventCategoryLookup,
+        )  
+    class Meta:
+        model = BidEvent 
+        exclude = ['estates']
+        widgets = {
+                   'date': DateTimeInput(attrs={'class':'date-time-input'}, format='%d.%m.%Y %H:%M'),
+                   'bid': forms.HiddenInput
+        }

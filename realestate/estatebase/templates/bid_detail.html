@@ -70,4 +70,13 @@
 </div>
 {% include 'registers/register_table.html' %}
 </fieldset>
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">История заявки</legend>    
+<div class="topbar button">
+    <a class="btn-add" title="Добавить новое событие" href="{% url bid_event_create bid.pk %}?{{ next_url }}">Добавить событие</a>          
+</div>
+{% include 'bid/bid_event_table.html' %}
+</fieldset>
+
 {% endblock %}

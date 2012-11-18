@@ -51,6 +51,8 @@ def wrapper_fieldset(obj, fieldset_name):
     for field in field_list:
         obj_field = obj._meta.get_field(field)
         value = getattr(obj,field)
+        if obj_field.get_internal_type() == 'ManyToManyField':
+            value = ', '.join(value.all().values_list('name', flat=True)) 
         if obj_field.get_internal_type() == 'BooleanField' and value:
             value = u'Есть'             
         if value:

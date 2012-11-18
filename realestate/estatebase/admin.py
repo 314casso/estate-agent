@@ -6,7 +6,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ContactState, ContactHistory, Bidg, EstateStatus, Document, EstateParam,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
     Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup, Bid,\
-    ComStatus, Office
+    ComStatus, Office, Appliance, BidEventCategory
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -79,3 +79,5 @@ admin.site.register(GeoGroup)
 admin.site.register(Bid)
 admin.site.register(ComStatus)
 admin.site.register(Office)
+admin.site.register(Appliance)
+admin.site.register(BidEventCategory)

@@ -33,7 +33,7 @@ class UserProfile(models.Model):
     office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)                
 
 class SimpleDict(caching.base.CachingMixin, models.Model):
-    objects = caching.base.CachingManager()
+    #objects = caching.base.CachingManager()
     name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
     def __unicode__(self):
         return u'%s' % self.name
@@ -651,6 +651,15 @@ class Layout(models.Model):
         verbose_name_plural = _('layouts')        
         ordering = ['id']     
 
+class Appliance(SimpleDict):
+    '''
+    Appliance
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Appliance')
+        verbose_name_plural = _('Appliances')
+    
+
 class Bidg(models.Model):
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)   
@@ -674,6 +683,7 @@ class Bidg(models.Model):
     flooring = models.ForeignKey(Flooring, verbose_name=_('Flooring'), blank=True, null=True, on_delete=models.PROTECT)
     ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True, on_delete=models.PROTECT)
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
+    appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=False)    
     description = models.TextField(_('Description'), blank=True, null=True)
@@ -684,7 +694,9 @@ class Bidg(models.Model):
     @property    
     def layout_area(self):
         return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
-    
+    @property    
+    def is_facility(self):
+        return self.estate_type.template == FACILITIES   
     
 class Shape(SimpleDict):
     '''
@@ -873,6 +885,30 @@ class Bid(ProcessDeletedModel):
         return u'%s' % self.pk                                  
     class Meta:      
         ordering = ['-id']    
+
+class BidEventCategory(SimpleDict):
+    '''
+    Категория событий по заявке 
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('BidEventCategory')
+        verbose_name_plural = _('BidEventCategories')
+
+class BidEvent(models.Model):
+    '''
+    Событие по заявке 
+    '''
+    bid = models.ForeignKey(Bid,verbose_name=_('Bid'), related_name='bid_events')
+    bid_event_category = models.ForeignKey(BidEventCategory,verbose_name=_('BidEventCategory'))
+    date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    note = models.TextField(_('Note'), blank=True, null=True)
+    def __unicode__(self):
+        return u'[%s] - %s' % (self.pk, self.bid_event_category)
+    class Meta:
+        verbose_name = _('bid event')
+        verbose_name_plural = _('bid events')        
 
 class EstateRegister(ProcessDeletedModel):
     '''

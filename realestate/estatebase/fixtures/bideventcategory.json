@@ -1,0 +1,153 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Входящий звонок"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Задаток"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Звонок-беседа"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Звонок-заявка"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Исходящий звонок"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Комментарий"
+    }
+},{
+    "pk": 7,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Назначен осмотр"
+    }
+},{
+    "pk": 8,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Осмотр"
+    }
+},{
+    "pk": 9,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Ответ на комментарий"
+    }
+},{
+    "pk": 10,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Отказ"
+    }
+},{
+    "pk": 11,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Отложено"
+    }
+},{
+    "pk": 12,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Офис-подборка"
+    }
+},{
+    "pk": 13,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-вопрос"
+    }
+},{
+    "pk": 14,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-заявка"
+    }
+},{
+    "pk": 15,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-знакомство"
+    }
+},{
+    "pk": 16,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-контакты"
+    }
+},{
+    "pk": 17,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-мониторинг"
+    }
+},{
+    "pk": 18,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-осмотр"
+    }
+},{
+    "pk": 19,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-ответ"
+    }
+},{
+    "pk": 20,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-подборка"
+    }
+},{
+    "pk": 21,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-сожаление"
+    }
+},{
+    "pk": 22,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Письмо-эксклюзив"
+    }
+},{
+    "pk": 23,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Покупка"
+    }
+},{
+    "pk": 24,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Смс-сайт"
+    }
+},{
+    "pk": 25,
+    "model": "estatebase.bideventcategory",
+    "fields": {
+        "name": "Тайм-аут"
+    }
+}
+]

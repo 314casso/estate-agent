@@ -18,6 +18,7 @@
 </fieldset>
 {% endif %}
 
+{% if not bidg.is_facility %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>
         Внутреняя отделка
@@ -26,6 +27,7 @@
         {% wrapper_fieldset_tr bidg 'interior_set' %}
     </table>
 </fieldset>
+{% endif %}
 
 {% endblock %}
 

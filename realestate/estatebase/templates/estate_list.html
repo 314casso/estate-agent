@@ -218,7 +218,7 @@
             {% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}
         </div>
         <div class="button" style="text-align: right; margin: 10px 0">
-            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить постройку или сооружение</a>
+            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить строение или сооружение</a>
         </div>
     </div>
     {% endif %}

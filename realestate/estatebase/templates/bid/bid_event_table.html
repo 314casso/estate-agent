@@ -1,0 +1,28 @@
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Код</th>                                   
+            <th>Обновлено</th>
+            <th>Пользователь</th>
+            <th>Событие</th>
+            <th>Дата и время</th>           
+            <th>Примечание</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+    	{% for bid_event in bid.bid_events.all %}
+        <tr class="ui-widget-content">          
+            <td><a title="Радактировать событие" href="{% url bid_event_update bid_event.pk %}?{{ next_url }}">{{ bid_event.pk }}</a></td>            
+            <td title="{{ bid_event.history.modificated|date:'d M Y H:i' }}">{{ bid_event.history.modificated|date:"d M Y" }}</td>
+            <td>{{ bid_event.history.created_by }} </td>
+            <td>{{ bid_event.bid_event_category }}</td>
+            <td>{{ bid_event.date|date:"d M Y H:i" }}</td>                      
+            <td>{{ bid_event.note }}</td>
+            <td>
+                <a href="{% url bid_event_delete bid_event.pk %}?{{ next_url }}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

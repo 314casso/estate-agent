@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
-from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
+from estatebase.views import ClientListView, \
     ClientCreateView, ClientUpdateView, ClientDeleteView, ContactHistoryListView, \
     ContactUpdateView, ClientSelectView, ClientUpdateEstateView, \
-    ClientRemoveEstateView, EstateCreateView, EstateCommunicationUpdateView, \
+    ClientRemoveEstateView, EstateCommunicationUpdateView, \
     EstateParamUpdateView, EstateUpdateView, ApartmentCreateView, \
     ApartmentUpdateView, LevelCreateView, LevelUpdateView, LevelDeleteView, \
     upload_images, EstateImagesView, SwapEstatePhotoView, ImageUpdateView, \
@@ -15,7 +15,8 @@ from estatebase.views import EstateTypeView, EstateListView, ClientListView, \
     RemoveEstateFromRegisterView, EstateRegisterListView,\
     EstateRegisterSelectView, AddRegisterToBid, RemoveRegisterFromBid,\
     EstateCreateClientView, RegisterReportView, SteadAppendView, SteadRemoveView,\
-    ClientStatusUpdateView, EstateCreateWizardView, RestoreClientView
+    ClientStatusUpdateView, EstateCreateWizardView, RestoreClientView,\
+    BidEventCreateView, BidEventUpdateView, BidEventDeleteView
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -98,7 +99,6 @@ urlpatterns += patterns('',
     url (r'^registerselect/(?P<bid_pk>\d+)$', EstateRegisterSelectView.as_view(), name='register_select'),
     url (r'^registeraddbid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', AddRegisterToBid.as_view(), name='register_add_bid'),
     url (r'^registerremovebid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', RemoveRegisterFromBid.as_view(), name='register_remove_bid'),
-        
 )
 
 urlpatterns += patterns('',    
@@ -107,12 +107,14 @@ urlpatterns += patterns('',
     url (r'^bidupdate/(?P<pk>\d+)$', BidUpdateView.as_view(), name='bid_update'),
     url (r'^bidremove/(?P<pk>\d+)$', BidDeleteView.as_view(), name='bid_remove'),
     url (r'^bidlist/$', BidListView.as_view(), name='bid-list'),       
-    url (r'^biddetail/(?P<pk>\d+)$', BidDetailView.as_view(), name='bid_detail'),             
+    url (r'^biddetail/(?P<pk>\d+)$', BidDetailView.as_view(), name='bid_detail'),
+    url (r'^bideventupdate/(?P<pk>\d+)$', BidEventUpdateView.as_view(), name='bid_event_update'),
+    url (r'^bideventcreate/(?P<bid>\d+)$', BidEventCreateView.as_view(), name='bid_event_create'),
+    url (r'^bideventdelete/(?P<pk>\d+)$', BidEventDeleteView.as_view(), name='bid_event_delete'),
 )
 
 urlpatterns += patterns('',    
     url (r'^privateshortreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_short.html'), name='private_short_report'),
     url (r'^privatedetailreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_detail.html'), name='private_detail_report'),
     url (r'^publicreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/public.html'), name='public_report'),
-    
 )

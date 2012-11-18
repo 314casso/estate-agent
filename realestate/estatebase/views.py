@@ -18,11 +18,12 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
-    ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm
+    ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
+    BidEventForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg
+    ExUser, Bidg, BidEvent
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist
@@ -685,8 +686,8 @@ class SteadUpdateView(ObjectMixin, UpdateView):
 
 class BidgAppendView(TemplateView):    
     template_name = 'confirm.html'
-    dialig_title = u'Добавление строения...'
-    dialig_body = u'Добавить строение на участок?'    
+    dialig_title = u'Добавление строения или сооружения...'
+    dialig_body = u'Добавить строение или сооружение на участок?'    
     def get_context_data(self, **kwargs):        
         context = super(BidgAppendView, self).get_context_data(**kwargs)
         context.update({
@@ -709,8 +710,8 @@ class BidgAppendView(TemplateView):
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))      
     
 class BidgRemoveView(BidgAppendView):
-    dialig_title = u'Удаление строения...'
-    dialig_body = u'Удалить строение из лота?'
+    dialig_title = u'Удаление строения или сооружения...'
+    dialig_body = u'Удалить строение или сооружение с участка?'
     def update_object(self):                        
         bidg = Bidg.objects.get(pk=self.kwargs['pk'])
         self.estate = bidg.estate
@@ -1077,4 +1078,43 @@ class RestoreFromTrashView(BaseUpdateView):
 class RestoreClientView(RestoreFromTrashView):
     def get_queryset(self):
         return Client.all_objects.filter(deleted=True)
+
+class BidEventMixin(ModelFormMixin):
+    template_name = 'bid/bid_event_update.html'
+    form_class = BidEventForm 
+    model = BidEvent   
+    def get_context_data(self, **kwargs):                         
+        context = super(BidEventMixin, self).get_context_data(**kwargs)
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+        })
+        return context
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('bid_event_update', args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        self.object._user_id = self.request.user.pk        
+        return super(BidEventMixin, self).form_valid(form)    
     
+class BidEventCreateView(BidEventMixin, CreateView):
+    def get_initial(self):        
+        initial = super(BidEventCreateView, self).get_initial()
+        initial['bid'] = self.kwargs['bid']#Bid.objects.get(pk=self.kwargs['bid'])
+        return initial
+
+class BidEventUpdateView(BidEventMixin, UpdateView):
+    pass
+
+
+class BidEventDeleteView(BidEventMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(BidEventDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление события...',
+            'dialig_body'  : u'Подтвердите удаление события: %s' % self.object,
+        })
+        return context    

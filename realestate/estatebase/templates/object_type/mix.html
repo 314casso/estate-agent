@@ -3,9 +3,11 @@
     <div style="float: left;">
         {% include "bidg_dialog/description.html" %}
     </div>
+    {% if not bidg.is_facility %}
     <div style="float: left; margin-left: 10px">
         {% include "bidg_dialog/layout.html" %}
     </div>
+    {% endif %}
     <br style="clear: both" />
     {% if not bidg.basic %}
     <div class="button" style="float: left">

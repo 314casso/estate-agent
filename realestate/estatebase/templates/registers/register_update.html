@@ -1,15 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
-
-{% block css %}
-<link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet" />
-{% endblock css %}
-
-{% block js %}
-<script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
-{% endblock js %}
-
 {% block left %}
 <form method="post" action="" class="table-form">
 	{% csrf_token %}	

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% block css %}
+{{ form.media.css }}
+<style>
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+</style>
+{% endblock css %}
+
+{% block js %}
+{{ form.media.js }}
+{% endblock js %}
+
+{% block left %}
+<form method="post" action="" class="table-form">
+    {% csrf_token %}    
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+            <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    {% csrf_token %}
+                    Событие [{{ estateregister.id|default:'Новое' }}]
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+            </thead>
+            <tbody>                             
+            <tr>
+                <td colspan="100%">
+                    <table>
+                    {{ form.as_table }}
+                    </table>
+                </td>                   
+            </tr>
+            
+            </tbody>                                         
+            <tfoot class="button">
+            <tr>
+                <td colspan="100%" style="text-align: right"> {% block dialog_buttons %}
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                {% endblock dialog_buttons %} </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+{% endblock %}
