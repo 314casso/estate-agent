@@ -648,6 +648,7 @@ class ClientStatusUpdateForm(ModelForm):
 class BidEventForm(ModelForm):
     bid_event_category = AutoComboboxSelectField(
             lookup_class=BidEventCategoryLookup,
+            label = _('Event')
         )  
     class Meta:
         model = BidEvent 
