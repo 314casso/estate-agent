@@ -27,10 +27,11 @@
                 {% endfor %}
             </td>                      
             <td>
-            	{% block lastcol %}<a href="{% url register_delete register_item.pk %}?{{ next_url }}">Удалить</a>{% endblock lastcol %}
+            	{% block lastcol %}<a href="{% url register_delete register_item.pk %}?{{ next_url }}">Удалить</a>
             	{% if bid.pk  %}
             	<a href="{% url register_remove_bid register_item.pk bid.pk %}?{{ next_url }}">Отвязать</a>
             	{% endif %}
+            	{% endblock lastcol %}
             </td>
         </tr>
         {% endfor %}

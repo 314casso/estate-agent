@@ -1017,6 +1017,18 @@ class EstateRegisterSelectView(EstateRegisterListView):
         q = q.exclude(bids__id=self.kwargs['bid_pk'])
         return q
 
+class EstateRegisterBindView(EstateRegisterListView):
+    template_name = 'registers/register_bind_estate.html'                
+    def get_context_data(self, **kwargs):         
+        context = super(EstateRegisterBindView, self).get_context_data(**kwargs)                    
+        context.update ({            
+            'estate' : Estate.objects.get(pk=self.kwargs['estate']),
+        })        
+        return context
+    def get_queryset(self):
+        q = super(EstateRegisterBindView, self).get_queryset()
+        return q
+
 class AddRegisterToBid(DetailView):   
     model = EstateRegister
     template_name = 'confirm.html'
@@ -1107,7 +1119,6 @@ class BidEventCreateView(BidEventMixin, CreateView):
 
 class BidEventUpdateView(BidEventMixin, UpdateView):
     pass
-
 
 class BidEventDeleteView(BidEventMixin, DeleteView):
     template_name = 'confirm.html'
