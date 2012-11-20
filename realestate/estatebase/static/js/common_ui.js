@@ -23,8 +23,16 @@ $(document).ready(function() {
 	$('.btn-delete').button("option", "icons", {
 		primary : "ui-icon-minusthick"
 	});
-
-	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete').button("option", "text", false);
+	$('.btn-bind-all').button("option", "icons", {
+		primary : "ui-icon-transferthick-e-w"
+	});
+	$('.btn-bind-inline').each(function() {
+		setAnchor(this, 'ui-icon ui-icon-circle-plus');
+	});
+	$('.btn-unbind-inline').each(function() {
+		setAnchor(this, 'ui-icon ui-icon-circle-minus');
+	});
+	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all').button("option", "text", false);
 	// $( ".date-time-input" ).datepicker();
 	$('input:text, textarea, input:password, .topbar').addClass('ui-widget ui-widget-content ui-corner-all');
 	$('select').addClass('ui-corner-left')
@@ -69,6 +77,11 @@ $(document).ready(function() {
 	});
 
 });
+
+function setAnchor(obj, clazz) {
+	$(obj).addClass(clazz);
+	$(obj).attr("title", $(obj).text());
+}
 
 function getIndex(id, item) {
 	estateId = parseInt(localStorage.getItem('estate_id'));

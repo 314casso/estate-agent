@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
-    DeleteView, BaseUpdateView
+    DeleteView, BaseUpdateView, ProcessFormView
 from django.views.generic.list import ListView
 from estatebase.field_utils import check_value_list
 from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
@@ -1132,4 +1132,15 @@ class BidEventDeleteView(BidEventMixin, DeleteView):
             'dialig_title' : u'Удаление события...',
             'dialig_body'  : u'Подтвердите удаление события: %s' % self.object,
         })
-        return context    
+        return context   
+
+class MultiBindEstateToRegister(ModelFormMixin, ProcessFormView):   
+    def get(self, request, *args, **kwargs):
+        q = EstateRegister.objects.all()      
+        search_form = EstateRegisterFilterForm(self.request.GET.get('next', None))
+        filter_dict = search_form.get_filter()
+        if len(filter_dict):
+            q = q.filter(**filter_dict)
+        for r in q:
+            print r    
+        return HttpResponseRedirect(self.request.GET.get('next', ''))

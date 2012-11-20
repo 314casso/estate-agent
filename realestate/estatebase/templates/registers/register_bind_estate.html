@@ -9,7 +9,7 @@
 
 {% block extra_button %}
 {% load link_helper %}
-<a href="{% current_url request %}">Добавить всем</a>
+<a class="btn-bind-all" href="{% url register_multi_bind estate.pk %}?next={{ request.get_full_path }}">Добавить лот [{{ estate.pk }}] во все отобранные заявки</a>
 {% endblock extra_button %}
 
 

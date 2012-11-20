@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block topbar %}
-<div class="topbar button">        
-    {% include 'prev_view.html' %}
-    <a title="Удалить заказчика [{{ client.id }}] в корзину" class="btn-delete" href="{% url client_delete client.pk %}?next={{ request.GET.next }}">Удалить</a>
+<div class="topbar button">       
+	<a title="Удалить заказчика [{{ client.id }}] в корзину" class="btn-delete" href="{% url client_delete client.pk %}?next={{ request.GET.next }}">Удалить</a> 
+    {% include 'prev_view.html' %}    
 </div>
 {% endblock %}
 
