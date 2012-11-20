@@ -1,67 +1,18 @@
-{% extends "base.html" %}
-{% load link_helper %}
-{% load query_string %}
-{% load paginator %}
-{% load humanize %}
-
-{% block css %}
-{{ register_filter_form.media.css }}
-{% endblock css %}
-
-{% block js %}
-{{ register_filter_form.media.js }}
-<script type="text/javascript">
-    $(function() {
-        $("#filter").dialog({
-            modal : true,
-            width : 420,
-            title : 'Фильтр',
-            autoOpen : false
-        });
-    }); 
-</script>
-{% endblock js %}
+{% extends "registers/register_list.html" %}
+{% block table %}
+{% include "registers/register_table_estate.html" %}
+{% endblock table %}
 
 {% block page_header %}
-Список подборок
+Добавление лота [{{ estate.pk }}] в подбороки
 {% endblock %}
 
-{% block topbar %}
-<div class="topbar button">
-    <input value="Показать фильтр" type="button" onclick="showFilter('#filter')">
-    {% include 'prev_view.html' %}
-</div>
-<!--  -->
-<div class="button table-form" id='filter'>
-    <form method="get">
-        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
-            <tr>
-                <td class="top-align">
-                <table>
-                    {{ register_filter_form }}
-                </table></td>
-            </tr>
-            <tfoot>
-                <tr>
-                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-                    <input type="submit" value="Применить"/>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </form>
-</div>
-<!--  -->
-{% endblock topbar %}
+{% block extra_button %}
+{% load link_helper %}
+<a href="{% current_url request %}">Добавить всем</a>
+{% endblock extra_button %}
 
-{% block left %}
 
-{% include "registers/register_table_estate.html" %}
-
-{% if is_paginated %}
-<div class="pagination" style="float: left; padding-top:6px">
-    {% digg_paginator %}
-</div>
-{% endif %}
-
-{% endblock left %}
+{% block linkback %}
+{% include 'back2estate.html' %}
+{% endblock linkback %}

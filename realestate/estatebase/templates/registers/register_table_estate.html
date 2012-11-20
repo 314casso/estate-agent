@@ -1,11 +1,11 @@
 {% extends "registers/register_table.html" %}
 {% block lastcol %}
 {% if not estate in register_item.estates.all %}
-<span class="ui-corner-all">
+<span class="ui-corner-all button small-button">	
 <a class="btn-bind" href="{% url register_add_estate register_item.pk estate.pk %}?{{ next_url }}">Добавить лот [{{ estate.pk }}] в подборку [{{ register_item.pk }}]</a>
 </span>
 {% else %}
-<span class="ui-corner-all">
+<span class="ui-corner-all button small-button">
 <a class="btn-unbind" href="{% url register_remove_estate register_item.pk estate.pk %}?{{ next_url }}">Отвязать лот [{{ estate.pk }}] от подборки [{{ register_item.pk }}]</a>
 </span>
 {% endif %}

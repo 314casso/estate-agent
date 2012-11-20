@@ -28,36 +28,20 @@
 
 {% block topbar %}
 <div class="topbar button">
-	<input value="Показать фильтр" type="button" onclick="showFilter('#filter')">
+	<a class="btn-add" title="Добавить ручную подборку без связи с заявкой" href="{% url register_create_free %}?{{ next_url }}&type=free">Добавить</a>
+	<button class="btn-filter-add" type="button" onclick="showFilter('#filter')">Показать фильтр</button>
 	{% include 'prev_view.html' %}
-	<a title="Добавить ручную подборку без связи с заявкой" href="{% url register_create_free %}?{{ next_url }}&type=free">Добавить</a>
+	{% include 'cancel_filter.html' %}
+	{% block extra_button %}{% endblock extra_button %}
 </div>
-<!--  -->
-<div class="button table-form" id='filter'>
-	<form method="get">
-		<table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
-			<tr>
-				<td class="top-align">
-				<table>
-					{{ register_filter_form }}
-				</table></td>
-			</tr>
-			<tfoot>
-				<tr>
-					<td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-					<input type="submit" value="Применить"/>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
-</div>
-<!--  -->
+{% include 'registers/register_filter.html' %}
 {% endblock topbar %}
 
 {% block left %}
 
+{% block table %}
 {% include 'registers/register_table.html' %}
+{% endblock table %}
 
 {% if is_paginated %}
 <div class="pagination" style="float: left; padding-top:6px">

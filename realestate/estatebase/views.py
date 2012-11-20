@@ -984,10 +984,13 @@ class  EstateRegisterListView(ListView):
     context_object_name = 'register_list'
     template_name = 'registers/register_list.html'    
     paginate_by = 5   
+    filtered = False
     def get_queryset(self):        
         q = EstateRegister.objects.select_related()       
         search_form = EstateRegisterFilterForm(self.request.GET)
-        filter_dict = search_form.get_filter()                                        
+        filter_dict = search_form.get_filter()
+        if filter_dict:
+            self.filtered = True                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
         order_by = self.request.fields
@@ -1001,6 +1004,7 @@ class  EstateRegisterListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),
             'register_filter_form': register_filter_form,
+            'filtered': self.filtered,
         })        
         return context
 
