@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load link_helper %}
+
+{% block css %}
+{{ form.media.css }}
+{% endblock css %}
+
+{% block js %}
+{{ form.media.js }}
+{% endblock js %}
+
 {% block left %}
 <form method="post" action="" class="table-form">
 	{% csrf_token %}	

@@ -593,3 +593,7 @@ input[type=text] {
 	background: #cfed7e;
 	padding: 0 3px;	
 }
+
+.small-button a{
+	font-size: 8px !important;
+}

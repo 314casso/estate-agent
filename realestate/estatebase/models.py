@@ -763,7 +763,6 @@ class Client(ProcessDeletedModel):
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
-    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='clientbrokers', blank=True, null=True, on_delete=models.PROTECT)             
     def __unicode__(self):
         return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
     @property
@@ -910,6 +909,14 @@ class BidEvent(models.Model):
         verbose_name = _('bid event')
         verbose_name_plural = _('bid events')        
 
+class RegisterCategory(SimpleDict):
+    '''
+    RegisterCategory
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Register category')
+        verbose_name_plural = _('Register categorys')
+
 class EstateRegister(ProcessDeletedModel):
     '''
     Подборка
@@ -918,6 +925,7 @@ class EstateRegister(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True, related_name='estate_registers')    
     bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
+    register_category = models.ForeignKey(RegisterCategory,verbose_name=_('RegisterCategory'),blank=True,null=True)
     def __unicode__(self):
         return u'%s' % self.pk                          
     class Meta:      

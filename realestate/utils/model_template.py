@@ -153,5 +153,5 @@ else:
 
 
 
-mm = ModelMaker('SimpleDict', 'bid_event_category')
+mm = ModelMaker('SimpleDict', 'register_category')
 print mm.get_model_code()

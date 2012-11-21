@@ -1148,11 +1148,12 @@ class MultiBindEstateToRegister(ModelFormMixin, ProcessFormView):
             q = q.filter(**filter_dict)
         if int(self.kwargs['action']) == 0:    
             q = q .filter(estates__id = self.kwargs['estate'])
-            for r in q:        
-                r.estates.remove(self.kwargs['estate'])
+            for r in q:
+                if r.estates.filter(pk=self.kwargs['estate']):         
+                    r.estates.remove(self.kwargs['estate'])
         else:
             q = q .exclude(estates__id = self.kwargs['estate'])
-            for r in q:                                                
-                r.estates.add(self.kwargs['estate'])
-            
+            for r in q:
+                if not r.estates.filter(pk=self.kwargs['estate']):                                                
+                    r.estates.add(self.kwargs['estate'])            
         return HttpResponseRedirect(self.request.GET.get('next', None))

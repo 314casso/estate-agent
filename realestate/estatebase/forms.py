@@ -20,7 +20,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ClientTypeLookup, BidIdLookup, EstateRegisterIdLookup, EstateTypeCategoryLookup, \
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
-    ValidityLookup, ApplianceLookup, BidEventCategoryLookup
+    ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
+    RegisterCategoryLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent
@@ -140,7 +141,6 @@ class ClientFilterForm(Form):
             label=_('Contact'),
             required=False,
         )
-    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     name = forms.CharField(required=False, label=_('Name'))
     client_type = AutoComboboxSelectMultipleField(
             lookup_class=ClientTypeLookup,
@@ -169,8 +169,6 @@ class ClientFilterForm(Form):
                 f.update(value)
         if self['contacts'].value():
             f['contacts__id__in'] = self['contacts'].value()
-        if self['brokers'].value():
-            f['broker_id__in'] = self['brokers'].value()
         if self['name'].value():
             f['name__icontains'] = self['name'].value()
         if self['client_type'].value():
@@ -593,11 +591,19 @@ class EstateRegisterFilterForm(BidFilterForm):
             label=_('ID'),
             required=False,
         )
-    name = forms.CharField(required=False, label=_('Name'))    
+    name = forms.CharField(required=False, label=_('Name'))
+    register_category = AutoComboboxSelectMultipleField(
+            lookup_class=RegisterCategoryLookup,
+            label=_('Register category'),
+            required=False,
+        )
+        
     def get_filter(self):
         f = {}
         if self['pk'].value():
             f['id__in'] = self['pk'].value()
+        if self['register_category'].value():
+            f['register_category_id__in'] = self['register_category'].value()    
         if self['region'].value():
             f['bids__regions__id__in'] = self['region'].value()
         if self['locality'].value():
@@ -631,10 +637,15 @@ class BidPicleForm(EstateFilterForm):
                      ('right', {'fields': ['origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 
-class EstateRegisterForm(BetterModelForm):        
+class EstateRegisterForm(BetterModelForm):      
+    register_category = AutoComboboxSelectField(
+            lookup_class=RegisterCategoryLookup,
+            label=_('Register category'),
+            required=False,
+        )  
     class Meta:
         model = EstateRegister
-        fieldsets = [('main', {'fields': ['bids', 'estates', 'name']}), ]
+        fieldsets = [('main', {'fields': ['bids', 'estates', 'name', 'register_category']}), ]
         widgets = {         
             'bids' : forms.MultipleHiddenInput(),
             'estates' : forms.MultipleHiddenInput()            
