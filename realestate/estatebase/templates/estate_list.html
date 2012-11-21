@@ -93,6 +93,7 @@
         
     	{% block lastcol %}
     	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
+    	<a title="Групповое  добавление лота [{{ estate.id }}] в подборки" class="btn-bind-all" href="{% url register_bind estate.pk %}?{{ next_url }}">Добавить в подборки</a>
     	{% endblock lastcol %}            
         
         {% endif %}

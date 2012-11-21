@@ -4,6 +4,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.models import EstateClient
 import base64
 from copy import deepcopy
+from django.utils.http import urlencode
 
 register = template.Library()
 
@@ -86,10 +87,3 @@ def estate_client_status(estate_pk,client_pk):
 def history(history):        
     if history:
         return {'history': history}
-
-@register.simple_tag
-def current_url(request):
-    getvars = request.GET.copy()
-    params = getvars and getvars.urlencode() or ''
-    url = '%s?%s' % (request.path, params)
-    return url

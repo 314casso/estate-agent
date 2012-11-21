@@ -3,7 +3,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, QueryDict
 from django.shortcuts import get_object_or_404 
 from django.utils import simplejson as json
 from django.views.generic import TemplateView
@@ -28,6 +28,9 @@ from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
+import urlparse
+from django.utils.encoding import smart_str
+from django.db.utils import IntegrityError
 
 
 class BaseMixin(object):
@@ -1136,11 +1139,20 @@ class BidEventDeleteView(BidEventMixin, DeleteView):
 
 class MultiBindEstateToRegister(ModelFormMixin, ProcessFormView):   
     def get(self, request, *args, **kwargs):
+        next_url = self.request.GET.get('next', None)
+        url_parts = urlparse.urlparse(smart_str(next_url))
         q = EstateRegister.objects.all()      
-        search_form = EstateRegisterFilterForm(self.request.GET.get('next', None))
+        search_form = EstateRegisterFilterForm(QueryDict(url_parts[4]))        
         filter_dict = search_form.get_filter()
         if len(filter_dict):
             q = q.filter(**filter_dict)
-        for r in q:
-            print r    
-        return HttpResponseRedirect(self.request.GET.get('next', ''))
+        if int(self.kwargs['action']) == 0:    
+            q = q .filter(estates__id = self.kwargs['estate'])
+            for r in q:        
+                r.estates.remove(self.kwargs['estate'])
+        else:
+            q = q .exclude(estates__id = self.kwargs['estate'])
+            for r in q:                                                
+                r.estates.add(self.kwargs['estate'])
+            
+        return HttpResponseRedirect(self.request.GET.get('next', None))

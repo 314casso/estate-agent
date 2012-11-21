@@ -24,7 +24,10 @@ $(document).ready(function() {
 		primary : "ui-icon-minusthick"
 	});
 	$('.btn-bind-all').button("option", "icons", {
-		primary : "ui-icon-transferthick-e-w"
+		primary : "ui-icon-bullet"
+	});
+	$('.btn-unbind-all').button("option", "icons", {
+		primary : "ui-icon-radio-on"
 	});
 	$('.btn-bind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-plus');
@@ -32,7 +35,7 @@ $(document).ready(function() {
 	$('.btn-unbind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-minus');
 	});
-	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all').button("option", "text", false);
+	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all,.btn-unbind-all').button("option", "text", false);
 	// $( ".date-time-input" ).datepicker();
 	$('input:text, textarea, input:password, .topbar').addClass('ui-widget ui-widget-content ui-corner-all');
 	$('select').addClass('ui-corner-left')

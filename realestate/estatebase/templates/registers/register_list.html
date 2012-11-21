@@ -30,9 +30,9 @@
 <div class="topbar button">
 	<a class="btn-add" title="Добавить ручную подборку без связи с заявкой" href="{% url register_create_free %}?{{ next_url }}&type=free">Добавить</a>
 	<button class="btn-filter-add" type="button" onclick="showFilter('#filter')">Показать фильтр</button>
-	{% include 'prev_view.html' %}
 	{% include 'cancel_filter.html' %}
 	{% block extra_button %}{% endblock extra_button %}
+	{% include 'prev_view.html' %}
 </div>
 {% include 'registers/register_filter.html' %}
 {% endblock topbar %}
