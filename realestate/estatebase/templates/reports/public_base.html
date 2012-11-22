@@ -14,22 +14,26 @@
 			{% for estate_item in estate_list %}
 			<thead class='public-thead'>
 				<tr>
-					<th><span class="list-title">{{ estate_item.estate_type }}.  Цена {{ estate_item.agency_price|rubble }} {% no_street_address estate_item %}</span></th>
-					<th style="width: 100px; background-color:#dedede"><span class="list-title">Код: {{ estate_item.id }}</span></th>
+					<th style="width: 100px; background-color:#FFE45C"><span class="list-title">Код: {{ estate_item.id }}</span></th>
+					<th><span class="list-title">{{ estate_item.estate_type }}. {% no_street_address estate_item %}. Цена {{ estate_item.agency_price|rubble }} </span></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td colspan="2">
 					<div>
-						{% estate_details estate_item %} {% communication estate_item %}
-
+						{% estate_details estate_item %}
+						<div style="border-top: 1px dotted #ccc;">
+						<span style="background: #eee; color: #666">Коммуникации</span> {% communication estate_item %}
+						</div>
 						<div class="wrapper-0">
 							{% for bidg in estate_item.bidgs.all %}
 							<strong>{{ bidg.estate_type }}:</strong>
 							{% wrapper_fieldset_comma bidg 'exterior_report_set' %};
+							{% if bidg.is_independent %}
 							документы:
 							<strong> {{ bidg.documents.all|to_comma_sep }} </strong>
+							{% endif %}
 							<div class="wrapper-1">
 								{% for level in bidg.levels.all %}
 								<strong>{{ level }}:</strong><i>{% bidg_layout level %}{% if not forloop.last %} {% endif %}</i>
@@ -41,13 +45,14 @@
 						{% if stead %}
 						<strong>Участок:</strong>
 						{% wrapper_fieldset_comma stead 'field_report_set' %};
-						документы: {{ stead.documents.all|to_comma_sep }}
+						документы: <strong>{{ stead.documents.all|to_comma_sep }}</strong>
 						{% endif %}
 						{% endwith %}
-						<div>
-							Кредит ОАО "Сбербанк России" ежемесячный платеж <strong>{{ estate_item.credit_sum|intcomma }} руб.</strong>, максимальный срок <strong>30 лет</strong>, максимальная сумма кредита <strong>{{ estate_item.max_credit_sum|intcomma }} руб.</strong>
+						<div style="border-top: 1px dotted #ccc;">
+							<strong>Кредит ОАО "Сбербанк России":</strong>
+							ежемесячный платеж <strong>{{ estate_item.credit_sum|intcomma }} руб.</strong>, максимальный срок <strong>30 лет</strong>, максимальная сумма кредита <strong>{{ estate_item.max_credit_sum|intcomma }} руб. </strong>
 						</div>
-						<div>
+						<div style="border-top: 1px dotted #ccc;">
 							{% for office in estate_item.region.office_set.all %}
 							{{ office.address|safe }}
 							{% endfor %}
