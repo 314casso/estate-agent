@@ -133,7 +133,7 @@ span.contact-inline label, .bidg-list label {
 }
 
 .confirm-dialog {
-	width: 350px;
+	width: 349px;
 	padding: 1px;
 	margin-bottom: 2px;
 }
@@ -410,7 +410,7 @@ legend {
 	border-spacing: 0 1px;
 }
 
-.filter-table table td {
+.filter-table table td:nth-child(even) {
 	white-space: nowrap;
 }
 
