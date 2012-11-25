@@ -884,10 +884,20 @@ class Bid(ProcessDeletedModel):
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True,null=True)
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      
         ordering = ['-id']    
+
+class BidStatus(SimpleDict):
+    '''
+    BidStatus
+    ./manage.py loaddata bidstatus.json
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Bid status')
+        verbose_name_plural = _('Bid statuss')
 
 class BidEventCategory(SimpleDict):
     '''

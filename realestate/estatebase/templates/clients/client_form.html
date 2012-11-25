@@ -31,9 +31,9 @@
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
-		</thead>		
-		{{ form.as_table }}{% csrf_token %}		
-		{% history client.history %}  		
+		</thead>
+		{% history client.history %}		
+		{{ form.as_table }}{% csrf_token %}	
 		<tr>
 			<td colspan="100%"> {{ contact_formset.management_form }}
 			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">

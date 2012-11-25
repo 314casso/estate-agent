@@ -1,2 +1,2 @@
 {% extends "estate_table.html" %}
-{% block lastcol %}<a href="{% url register_remove_estate estateregister.pk estate_item.pk %}?{{ next_url }}">Отвязать</a>{% endblock lastcol %}
+{% block lastcol %}<a class="btn-unbind-inline" href="{% url register_remove_estate estateregister.pk estate_item.pk %}?{{ next_url }}">Отвязать</a>{% endblock lastcol %}

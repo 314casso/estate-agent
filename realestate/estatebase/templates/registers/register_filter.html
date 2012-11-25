@@ -5,8 +5,16 @@
 			<tr>
 				<td class="top-align">
 				<table>
-					{{ register_filter_form }}
-				</table></td>
+                    {% for field in register_filter_form.fieldsets.main %}
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }}
+                        <div class="help-text">
+                            {{ field.help_text }}
+                        </div></td>
+                    </tr>
+                    {% endfor %}
+                </table></td>
 			</tr>
 			<tfoot>
 				<tr>

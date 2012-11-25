@@ -296,7 +296,7 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None):
         filter_dict.update({'region__geo_group__userprofile__user__exact': user })  
     if len(filter_dict):
         q = q.filter(**filter_dict)
-    return q
+    return q.distinct()
 
 class EstateListView(ListView):    
     filtered = False

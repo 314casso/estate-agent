@@ -23,23 +23,23 @@
         <th>Код:</th>
         <td title="Редактировать заказчика" style="font-weight: bold"><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
     </tr>
+    {% history client.history %}
+    <tr>
+        <th>Источник:</th>
+        <td>{{ client.origin }}</td>
+    </tr>
+    <tr>
+        <th>Вид:</th>
+        <td>{{ client.client_type }}</td>
+    </tr>
 	<tr>
-		<th>Имя:</th>
+		<th>Название:</th>
 		<td style="font-weight: bold"><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
-	</tr>
-	<tr>
-		<th>Вид:</th>
-		<td>{{ client.client_type }}</td>
-	</tr>
-	<tr>
-		<th>Источник:</th>
-		<td>{{ client.origin }}</td>
 	</tr>
 	<tr>
 		<th>Адрес:</th>
 		<td>{{ client.address }}</td>
-	</tr>
-    {% history client.history %}	
+	</tr>    	
 	<tr>
 		<th>Примечание:</th>
 		<td>{{ client.note }}</td>

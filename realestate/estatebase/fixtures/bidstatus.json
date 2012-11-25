@@ -1,0 +1,39 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Задаток"
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Ипотека"
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Наличные"
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Обмен"
+    }
+},{
+    "pk": 5,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Прицениваются"
+    }
+},{
+    "pk": 6,
+    "model": "estatebase.bidstatus",
+    "fields": {
+        "name": "Продают свое"
+    }
+}
+]

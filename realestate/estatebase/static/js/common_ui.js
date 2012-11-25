@@ -35,6 +35,9 @@ $(document).ready(function() {
 	$('.btn-unbind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-minus');
 	});
+	$('.btn-delete-inline').each(function() {
+		setAnchor(this, 'ui-icon ui-icon-trash');
+	});
 	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all,.btn-unbind-all').button("option", "text", false);
 	// $( ".date-time-input" ).datepicker();
 	$('input:text, textarea, input:password, .topbar').addClass('ui-widget ui-widget-content ui-corner-all');
@@ -127,9 +130,12 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
 		var opts = $.extend(defaults, options);
 
 		var a = document.createElement('a');
-		a.title = "Добавить нового заказчика";
-		a.innerHTML = "Добавить";
+		a.innerHTML = "Добавить нового заказчика";
 		a.href = opts.url;
+		$(a).each(function() {
+			setAnchor(this, 'ui-icon ui-icon-plus');
+			$(this).css('display','inline-block')
+		})
 		$(a).click(function() {
 			popupWin = window.open(this.href, opts.object_id, 'height=' + opts.height + ', width=' + opts.width + ', resizable=yes, scrollbars=yes');
 			popupWin.focus();

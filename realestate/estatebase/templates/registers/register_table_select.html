@@ -1,2 +1,2 @@
 {% extends "registers/register_table.html" %}
-{% block lastcol %}<a href="{% url register_add_bid register_item.pk bid_pk %}?{{ next_url }}">Привязать</a>{% endblock lastcol %}
+{% block lastcol %}<a class="btn-bind-inline" href="{% url register_add_bid register_item.pk bid_pk %}?{{ next_url }}">Привязать</a>{% endblock lastcol %}

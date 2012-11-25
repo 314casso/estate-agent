@@ -21,7 +21,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
-    RegisterCategoryLookup
+    RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent
@@ -112,14 +112,14 @@ class EstateParamForm(ModelForm):
         }
 
 class ClientForm(ModelForm):   
-    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
     origin = AutoComboboxSelectField(
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
         )               
     class Meta:        
-        exclude = ('created_by', 'updated', 'created', 'updated_by', 'deleted')
+#        exclude = ('created_by', 'updated', 'created', 'updated_by', 'deleted')
+        fields = ['origin','client_type', 'name', 'address', 'note']
         model = Client
         widgets = {
             'note': Textarea(attrs={'rows':'5'}),
@@ -136,23 +136,23 @@ class ClientFilterForm(Form):
         )
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))
-    contacts = AutoCompleteSelectMultipleField(
-            lookup_class=ContactLookup,
-            label=_('Contact'),
-            required=False,
-        )
-    name = forms.CharField(required=False, label=_('Name'))
-    client_type = AutoComboboxSelectMultipleField(
-            lookup_class=ClientTypeLookup,
-            label=_('ClientType'),
-            required=False,
-        )
     origin = AutoComboboxSelectMultipleField(
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
         )
+    client_type = AutoComboboxSelectMultipleField(
+            lookup_class=ClientTypeLookup,
+            label=_('ClientType'),
+            required=False,
+        )
+    name = forms.CharField(required=False, label=_('Name'))
     address = forms.CharField(required=False, label=_('Address'))
+    contacts = AutoCompleteSelectMultipleField(
+            lookup_class=ContactLookup,
+            label=_('Contact'),
+            required=False,
+        )
     note = forms.CharField(required=False, label=_('Note'))
     next = forms.CharField(required=False, widget=forms.HiddenInput())        
     def get_filter(self):
@@ -271,6 +271,11 @@ class EstateFilterForm(BetterForm):
             label=_('Interior'),
             required=False,
         )
+    exterior_finish = AutoComboboxSelectMultipleField(
+            lookup_class=ExteriorFinishLookup,
+            label=_('Exterior finish'),
+            required=False,
+        )    
     face_area = DecimalRangeField(required=False, label=_('Face area'))
     shape = AutoComboboxSelectMultipleField(
             lookup_class=ShapeLookup,
@@ -289,6 +294,8 @@ class EstateFilterForm(BetterForm):
             required=False,
         ) 
     
+    FOTO_CHOICES = ((3, u'Все',), (0, u'Нет фото',), (1, u'Есть фото',))
+    foto_choice = forms.ChoiceField(label=_('EstatePhoto'), widget=forms.RadioSelect, choices=FOTO_CHOICES, initial=3, required=False,)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -354,6 +361,15 @@ class EstateFilterForm(BetterForm):
             f['origin_id__in'] = self['origin'].value()                    
         if self['interior'].value():
             f['bidgs__interior_id__in'] = self['interior'].value()
+        if self['exterior_finish'].value():
+            f['bidgs__exterior_finish_id__in'] = self['exterior_finish'].value()
+        if self['foto_choice'].value():
+            if int(self['foto_choice'].value()) == 1:                
+                f['images__id__isnull'] = False
+            elif int(self['foto_choice'].value()) == 0:
+                f['images__id__isnull'] = True    
+                
+                    
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
         for fld in complex_fields:
@@ -375,7 +391,7 @@ class EstateFilterForm(BetterForm):
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
-                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 'next'
+                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 'foto_choice', 'next' 
                                           ]})
                      ]
 
@@ -493,12 +509,17 @@ class ImageUpdateForm(ModelForm):
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
+    bid_status = AutoComboboxSelectMultipleField(
+            lookup_class=BidStatusLookup,
+            label=_('BidStatus'),
+            required=True,
+        )
     def __init__(self, *args, **kwargs):
         super(BidForm, self).__init__(*args, **kwargs)
         self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
-        fields = ('client', 'broker', 'note') 
+        fields = ('client', 'broker', 'bid_status' , 'note') 
         widgets = {
             'note': TextInput(attrs={'class': 'long-input'}) 
         }                         
@@ -629,12 +650,33 @@ class EstateRegisterFilterForm(BidFilterForm):
             if values[0]:                                                                              
                 f['bids__agency_price_min__gte'] = values[0]                                
         return f
+    class Meta:
+        fieldsets = [
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'name' , 'estate_type', 
+                                          'region', 'locality', 'agency_price', 'next' ], 'legend': ''}),                    
+                    ]
 
 class BidPicleForm(EstateFilterForm):   
+    def __init__(self, *args, **kwargs):
+        super(BidPicleForm, self).__init__(*args, **kwargs)
+        self.fields['estates'].label = u'Коды на осмотр'
+        required_fields = ('estate_type',)
+        for field in required_fields:             
+            self.fields[field].required=True
+    def clean(self):
+        cleaned_data = super(BidPicleForm, self).clean()
+        region = cleaned_data.get("region")
+        locality = cleaned_data.get("locality")
+        agency_price = cleaned_data.get("agency_price")
+        if not (agency_price[0] or agency_price[1]):
+            raise forms.ValidationError(u'Цена не указана')
+        if not (region or locality):
+            raise forms.ValidationError(u'Необходимо указать район или населенный пункт')
+        return cleaned_data    
     class Meta:        
-        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_type', 'region', 'locality', 'microdistrict', 'estate_status', 'agency_price', ], 'legend': ''}),
-                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 'room_count', 'stead_area', ]}),
-                     ('right', {'fields': ['origin', 'beside', 'interior', 'face_area', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
+        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
+                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', ]}),
+                     ('right', {'fields': ['stead_area', 'face_area', 'shape' , 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 
 class EstateRegisterForm(BetterModelForm):      
