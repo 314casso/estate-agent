@@ -9,6 +9,8 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     ComStatus, Office, Appliance, BidEventCategory, RegisterCategory
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from maxim_base.models import Source
+
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -82,3 +84,8 @@ admin.site.register(Office)
 admin.site.register(Appliance)
 admin.site.register(BidEventCategory)
 admin.site.register(RegisterCategory)
+
+'''
+Maxim
+'''
+admin.site.register(Source)

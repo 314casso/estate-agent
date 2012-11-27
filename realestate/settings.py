@@ -18,6 +18,8 @@ MAX_CREDIT_SUM = 0.1
 
 from local_settings import * #@UnusedWildImport
 
+DATABASE_ROUTERS = ['realestate.db_routers.MaximRouter',]
+
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    
 )
@@ -172,6 +174,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'sorl.thumbnail',  
     'form_utils',
+    'maxim_base',
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
