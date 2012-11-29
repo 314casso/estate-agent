@@ -48,6 +48,8 @@ class CustomerWork(models.Model):
     class Meta:
         db_table = u'customer_work'
 
+
+#+++
 class Customers(models.Model):
     id = models.IntegerField(primary_key=True)
     creator_id = models.IntegerField()
