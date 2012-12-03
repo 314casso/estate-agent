@@ -22,7 +22,7 @@ class Customers(models.Model):
         managed = False
         
 class Contacts(models.Model):
-    customer = models.ForeignKey(Customers)
+    customer = models.ForeignKey(Customers, related_name='contacts')
     contact = models.CharField(max_length=150, unique=True)
     status = models.CharField(max_length=36, blank=True)
     update_record = models.DateTimeField()
@@ -30,4 +30,14 @@ class Contacts(models.Model):
         return u'%s' % self.contact
     class Meta:
         db_table = u'contacts'
-        managed = False        
+        managed = False
+
+class Users(models.Model):
+    user = models.CharField(max_length=48)
+    name = models.CharField(max_length=75)
+    last_logon = models.DateTimeField(null=True, blank=True)
+    def __unicode__(self):
+        return u'%s (%s)' % (self.name,self.user)
+    class Meta:
+        db_table = u'users'
+        managed = False                

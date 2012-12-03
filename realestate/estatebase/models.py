@@ -814,7 +814,8 @@ class Contact(models.Model):
     contact = models.CharField(_('Contact'), max_length=255, db_index=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=NOTCHECKED, on_delete=models.PROTECT)
-    user_id = None      
+    user_id = None
+    migration = False     
     def __unicode__(self):
         return u'%s (%s)' % (self.contact, self.client.name)
     @property
@@ -849,8 +850,9 @@ class Contact(models.Model):
             validate_email(self.contact)
         elif self.contact_type.id == self.SITE:
             validate_url(self.contact)
-    def save(self, *args, **kwargs):               
-        self.updated = datetime.datetime.now()     
+    def save(self, *args, **kwargs):
+        if not self.migration:               
+            self.updated = datetime.datetime.now()     
         super(Contact, self).save(*args, **kwargs)                      
         try: 
             latest = self.contacthistory_set.latest('event_date')

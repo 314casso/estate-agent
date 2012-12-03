@@ -1,3 +1,5 @@
+{% load l10n %}
+{% localize off %}
 {% spaceless %}
 <ul class="ui-widget-content no-border">
   {% if has_previous %}
@@ -27,3 +29,4 @@
   {% endif %}
 </ul>
 {% endspaceless %}
+{% endlocalize %}

@@ -54,7 +54,7 @@
             <td><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
             <td><span title='Источник: {{ client.origin|default_if_none:"----" }}'>{{ client.client_type }}</span></td>
             <td><a title="Показать карточку заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
-            <td>{{ client.address }}</td>
+            <td>{{ client.address|default_if_none:"" }}</td>
             <td> {% contact_list client next_url %} </td>
             <td> {% block lastcol %} <a href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a> {% endblock %} </td>
         </tr>
