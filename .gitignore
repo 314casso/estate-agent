@@ -4,3 +4,5 @@ realestate/local_settings.py
 *~
 .directoryrealestate/media
 realestate/media
+sql
+sql/estate_agent1_04122012.sql
