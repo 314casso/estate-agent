@@ -775,9 +775,7 @@ class Client(ProcessDeletedModel):
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
-        ordering = ['-id']        
-    def save(self, *args, **kwargs):        
-        super(Client, self).save(*args, **kwargs)
+        ordering = ['-id']       
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):

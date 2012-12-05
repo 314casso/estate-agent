@@ -26,7 +26,7 @@ from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     ExUser, Bidg, BidEvent
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils.html import escape, escapejs
 import urlparse
 from django.utils.encoding import smart_str
@@ -517,7 +517,7 @@ class ClientMixin(ModelFormMixin):
     def form_valid(self, form):
         context = self.get_context_data()
         contact_form = context['contact_formset']
-        if contact_form.is_valid():
+        if contact_form.is_valid():            
             self.object = form.save(commit=False)             
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
             self.object.save()            
@@ -534,7 +534,7 @@ class ClientMixin(ModelFormMixin):
                 (escape(self.object.pk), escapejs(self.object)))                                               
             return super(ModelFormMixin, self).form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form))
+            return self.render_to_response(self.get_context_data(form=form,contact_formset=contact_form))
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
         if '_continue' in self.request.POST:                  
@@ -543,7 +543,8 @@ class ClientMixin(ModelFormMixin):
     def get_context_data(self, **kwargs):
         context = super(ClientMixin, self).get_context_data(**kwargs)                
         if self.request.POST:
-            context['contact_formset'] = ContactFormSet(self.request.POST, instance=self.object)            
+            if not 'contact_formset' in context:
+                context['contact_formset'] = ContactFormSet(self.request.POST, instance=self.object)   
         else:
             context['contact_formset'] = ContactFormSet(instance=self.object)
         return context                        

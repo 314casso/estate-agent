@@ -36,6 +36,7 @@ from selectable.forms.widgets import AutoComboboxSelectWidget,\
 from settings import CORRECT_DELTA
 from django.utils.safestring import mark_safe
 from django.template.base import Template
+from django.core.exceptions import ValidationError
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -422,13 +423,16 @@ class ContactInlineForm(ContactForm):
     class Meta:
         model = Contact        
 
-class RequiredFormSet(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
-        super(RequiredFormSet, self).__init__(*args, **kwargs)
-        for form in self.forms:
-            form.empty_permitted = False
+class RequiredContactFormSet(BaseInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            return                
+        for data in self.cleaned_data:            
+            if 'DELETE' in data and not data['DELETE']:
+                return  
+        raise ValidationError(u'Заказчик должен иметь хотя бы один контакт!')
         
-ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm, formset=RequiredFormSet)
+ContactFormSet = inlineformset_factory(Client, Contact, extra=1, form=ContactInlineForm, formset=RequiredContactFormSet)
 ContactHistoryFormSet = inlineformset_factory(Contact, ContactHistory, extra=1, form=ContactHistoryForm)
 
 class ObjectForm(ModelForm):

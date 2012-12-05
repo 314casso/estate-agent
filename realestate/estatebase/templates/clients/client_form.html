@@ -48,11 +48,13 @@
 					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>					
 				</tr>
 				<tr>
-					<td colspan="100%">{{ contact.non_field_errors }}</td>
+					<td colspan="100%">{{ contact.non_field_errors }}</td>					
 				</tr>				
 				{% endfor %}
 				
-			</table>			
+			</table>
+				<span>{{ contact_formset.non_form_errors }}</span>
+				<span>{{ contact_formset.non_field_errors }}</span>
                 <div class="help-text">Вид контакта <b>веб-сайт</b> заполняется с формате <b>http://rbc.ru</b></div>
         </tr>
 			
