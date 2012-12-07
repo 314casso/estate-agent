@@ -27,38 +27,12 @@
 			<tr>
 				<td colspan="100%">
 				<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
-					{{ dialig_title }}
+					{{ dialig_title|truncatechars:80 }}
 					{% close_btn request.GET.next %}
 				</div></td>
 			</tr>
 		</thead>
-		{% history client.history %}		
-		{{ form.as_table }}{% csrf_token %}	
-		<tr>
-			<td colspan="100%"> {{ contact_formset.management_form }}
-			<table id="client-contacts" class="inline-formset ui-widget ui-widget-content ui-corner-all">
-				{% for contact in contact_formset %}
-				{{ contact.id }}
-				<tr>
-					<td>{{ contact.contact_type.label_tag }}</td>
-					<td>{{ contact.contact_type.errors }}{{ contact.contact_type }}</td>
-					<td>{{ contact.contact.label_tag }}</td>
-					<td>{{ contact.contact.errors }}{{ contact.contact }}</td>
-					<td>{{ contact.contact_state.errors }}{{ contact.contact_state }}</td>
-					<td>{% if contact.instance.pk %}{{ contact.DELETE }} {% endif %}</td>					
-				</tr>
-				<tr>
-					<td colspan="100%">{{ contact.non_field_errors }}</td>					
-				</tr>				
-				{% endfor %}
-				
-			</table>
-				<span>{{ contact_formset.non_form_errors }}</span>
-				<span>{{ contact_formset.non_field_errors }}</span>
-                <div class="help-text">Вид контакта <b>веб-сайт</b> заполняется с формате <b>http://rbc.ru</b></div>
-        </tr>
-			
-		
+        {% include 'clients/client_form_content.html' %}
 		<tfoot class="button">
 			<tr>
 				<td colspan="100%">
