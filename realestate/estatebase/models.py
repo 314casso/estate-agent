@@ -666,7 +666,7 @@ class Bidg(models.Model):
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
     year_built = models.PositiveIntegerField(_('Year built'), blank=True, null=True, validators=[validate_year])
     floor = models.PositiveIntegerField(_('Floor'), blank=True, null=True)
-    floor_count = models.PositiveIntegerField(_('Floor count'), blank=True, null=True)
+    floor_count = models.DecimalField(_('Floor count'), blank=True, null=True, max_digits=3, decimal_places=1)
     elevator = models.BooleanField(_('Elevator'), default=False)
     wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True, on_delete=models.PROTECT)
     exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True, on_delete=models.PROTECT)    
