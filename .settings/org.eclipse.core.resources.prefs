@@ -12,6 +12,7 @@ encoding//realestate/estatebase/templatetags/report.py=utf-8
 encoding//realestate/estatebase/views.py=utf-8
 encoding//realestate/estatebase/wrapper.py=utf-8
 encoding//realestate/middleware.py=utf-8
+encoding//realestate/migrate_app/management/commands/com_test.py=utf-8
 encoding//realestate/migrate_app/management/commands/exp_model.py=utf-8
 encoding//realestate/migrate_app/management/commands/migratedata.py=utf-8
 encoding//realestate/migrate_app/prop_map.py=utf-8

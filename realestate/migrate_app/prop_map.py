@@ -78,7 +78,10 @@ class PropMap(object):
     
     def set_floor(self, value):
         self.bidg.floor = parse_decimal(value, splitter='/', index=0)         
-        
+    
+    def set_ceiling_height(self, value):
+        self.bidg.ceiling_height = parse_decimal(value)
+    
     def set_state(self, value):
         state_map = {
         u'1' : None,
@@ -182,6 +185,38 @@ class PropMap(object):
         u'подключено': 3,
         }
         self.estate.internet_id = p_map[value]
+        
+    def set_electricity_distance(self, value):
+        self.estate.electricity_distance = parse_decimal(value)
+    
+    def set_water_distance(self, value):
+        self.estate.watersupply_distance = parse_decimal(value)    
+ 
+    def set_gas_distance(self, value):
+        self.estate.gassupply_distance = parse_decimal(value)
+    
+    def set_porch_distance(self, value):
+        self.estate.driveway_distance = parse_decimal(value)
+
+    def set_sewerage_distance(self, value):
+        self.estate.sewerage_distance = parse_decimal(value)
+
+    def set_elevator(self, value):
+        if value:
+            self.bidg.elevator =  True
+
+    def set_ceiling(self, value):
+        p_map = {
+        u'без отделки': 1,
+        u'гипсокартон': 2,
+        u'натяжные': 3,
+        u'окрашены': 4,
+        u'оштукатурены': 5,
+        u'пластик': 6,
+        u'побелены': 7,
+        u'подвесные': 8,
+        }
+        self.bidg.ceiling_id = p_map[value]
 
     def set_heating(self, value):
         p_map = {
@@ -243,16 +278,39 @@ class PropMap(object):
         self.bidg.flooring_id = p_map[value]
     
     def set_advertise(self, value):
+        '''
+        Рекламировать
+        '''
         if value:
             self.estate.estate_params.add(EstateParam.objects.get(pk=4))
     
     def set_mortgage(self, value):
+        '''
+        Ипотека
+        '''
         if value:
             self.estate.estate_params.add(EstateParam.objects.get(pk=2))       
     
     def set_take_a_photo(self, value):
+        '''
+        Сделать фото
+        '''
         if value:
             self.estate.estate_params.add(EstateParam.objects.get(pk=5))    
+    
+    def set_exchange(self, value):
+        '''
+        Обмен
+        '''
+        if value:
+            self.estate.estate_params.add(EstateParam.objects.get(pk=3))        
+    
+    def set_exclusive(self, value):
+        '''
+        Эксклюзив
+        '''
+        if value:
+            self.estate.estate_params.add(EstateParam.objects.get(pk=6))
                 
     def set_land_area(self, value):
         self.stead.total_area = parse_decimal(value)
@@ -278,10 +336,25 @@ class PropMap(object):
         u'сельхозпроизводства': 42,
         }
         self.stead.estate_type_id = p_map[value]
+    
+    def set_land_form(self, value):
+        p_map = {
+        u'г-образный': 1,
+        u'квадратный': 2,
+        u'многогранный': 3,
+        u'прямоугольный': 4,
+        u'трапециевидный': 5,
+        u'треугольный': 6,
+        }
+        self.stead.shape_id = p_map[value]            
         
     def set_land_evidence(self, value):
         if value:
             self.stead.documents.add(Document.objects.get(pk=7))
+    
+    def set_evidence(self, value):
+        if value:
+            self.bidg.documents.add(Document.objects.get(pk=4))    
         
     def set_land_cadastral_number(self, value):
         if value:

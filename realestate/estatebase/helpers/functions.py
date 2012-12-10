@@ -7,9 +7,11 @@ def safe_next_link(full_path):
     q['next'] = full_path
     return q.urlencode(safe='/')
 
-def parse_decimal(value, splitter=None, index=1):    
-    value = re.sub(r'[^\d,.-/]', '', value)
-    value = value.replace(',','.')
+def parse_decimal(value, splitter=None, index=1):
+    pattern = u"[^\d,.-/'%s]" % (splitter or '')    
+    r = re.compile(pattern)    
+    value = r.sub('', value)
+    value = value.replace(',','.').replace("'",'.')    
     if not value:
         return None
     if splitter:    
@@ -23,4 +25,4 @@ def parse_decimal(value, splitter=None, index=1):
         return Decimal(value)
               
                           
-#print parse_decimal('2/500', splitter='/', index=0)        
+#print parse_decimal("2, 5")        

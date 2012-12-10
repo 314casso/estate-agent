@@ -2,7 +2,8 @@
 from django.core.management.base import BaseCommand
 from estatebase.models import Electricity, Gassupply, Interior, WallConstrucion,\
     Watersupply, Telephony, Driveway, Sewerage, LandType, EstateType, Internet,\
-    Heating, ExteriorFinish, Roof, WindowType, Flooring, WallFinish
+    Heating, ExteriorFinish, Roof, WindowType, Flooring, WallFinish, Shape,\
+    Ceiling
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -10,6 +11,6 @@ class Command(BaseCommand):
     
     def print_model(self):
         template = u"u'%s': %s,"
-        items = WallFinish.objects.all()
+        items = Ceiling.objects.all()
         for item in items:
             print template % (item.name.lower(), item.pk)              
