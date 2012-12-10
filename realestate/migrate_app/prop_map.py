@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from estatebase.helpers.functions import parse_decimal
-from estatebase.models import EstateParam, Document
+from estatebase.models import EstateParam, Document, Bidg, Stead
 class PropMap(object):
-    estate = None
-    #Геттер Сеттер
-    bidg = None
-    #Геттер Сеттер
-    stead = None
+    _estate = None
+    _bidg = None
+    _stead = None
+    _estate_type = None
     params= ('comments', 'destination', 'distance', 'electricity_status', 'gas_status', 
     'land_area', 'land_front', 'living_area', 'rooms_count', 'state', 
     'total_area', 'wall_material', 'water_status', 'year_built', 'all_floors', 'apartment_number', 
@@ -17,6 +16,33 @@ class PropMap(object):
     'electricity_distance', 'water_distance', 'ceiling', 'gas_distance', 'porch_distance', 'elevator', 
     'sewerage_distance', 'exclusive')    
         
+    @property
+    def estate(self):
+        return self._estate
+    
+    @estate.setter
+    def estate(self, value):
+        self._estate = value
+        self._bidg = value.basic_bidg
+        self._stead = value.stead
+        self._estate_type = value._estate_type_id            
+        
+    @property
+    def estate_type(self):
+        return self._estate_type
+            
+    @property    
+    def bidg(self):
+        if not self._bidg:
+            self._bidg = Bidg.objects.create(estate=self.estate, estate_type=self.estate_type, basic=True)
+        return self._bidg
+   
+    @property    
+    def stead(self):
+        if not self._stead:
+            self._stead = Bidg.objects.create(estate=self.estate, estate_type=Stead.DEFAULT_TYPE_ID)
+        return self._stead    
+       
     def get_setter(self, param):
         template = 'set_%s'
         return getattr(self, template % param, None)

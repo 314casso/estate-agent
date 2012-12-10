@@ -40,4 +40,13 @@ class Users(models.Model):
         return u'%s (%s)' % (self.name,self.user)
     class Meta:
         db_table = u'users'
-        managed = False                
+        managed = False
+                        
+class Types(models.Model):
+    name = models.CharField(max_length=90, unique=True)
+    def __unicode__(self):
+        return u'%s' % (self.name)
+    class Meta:
+        db_table = u'types'
+        managed = False
+                                
