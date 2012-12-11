@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from estatebase.models import Electricity, Gassupply, Interior, WallConstrucion,\
     Watersupply, Telephony, Driveway, Sewerage, LandType, EstateType, Internet,\
     Heating, ExteriorFinish, Roof, WindowType, Flooring, WallFinish, Shape,\
-    Ceiling
+    Ceiling, EstateStatus
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -11,6 +11,6 @@ class Command(BaseCommand):
     
     def print_model(self):
         template = u"u'%s': %s,"
-        items = Ceiling.objects.all()
+        items = EstateStatus.objects.all()
         for item in items:
             print template % (item.name.lower(), item.pk)              

@@ -129,6 +129,7 @@ class Command(BaseCommand):
                 h.user_id = h.contact.client.history.created_by_id
                 h.save()         
             
+    
                 
         
         
