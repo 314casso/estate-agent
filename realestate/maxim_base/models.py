@@ -50,6 +50,30 @@ class Types(models.Model):
     class Meta:
         db_table = u'types'
         managed = False
+
+class Region(models.Model):
+    name = models.CharField(max_length=90, unique=True)
+    class Meta:
+        db_table = u'region'
+        managed = False
+
+class Place(models.Model):
+    name = models.CharField(max_length=75, unique=True)
+    class Meta:
+        db_table = u'place'
+        managed = False
+
+class Street(models.Model):
+    name = models.CharField(max_length=75, unique=True)
+    class Meta:
+        db_table = u'street'
+        managed = False
+
+class Area(models.Model):
+    name = models.CharField(max_length=300, unique=True)
+    class Meta:
+        db_table = u'area'
+        managed = False                        
                        
 class RealEstate(models.Model):
     type_id = models.IntegerField()
@@ -58,11 +82,11 @@ class RealEstate(models.Model):
     creation_date = models.DateTimeField()
     last_editor_id = models.IntegerField(null=True, blank=True)
     update_record = models.DateTimeField()
-    region_id = models.IntegerField()
-    place_id = models.IntegerField(null=True, blank=True)
-    street_id = models.IntegerField(null=True, blank=True)
+    region = models.ForeignKey(Region, null=True, blank=True)
+    place = models.ForeignKey(Place, null=True, blank=True)
+    street = models.ForeignKey(Street, null=True, blank=True)
     house_number = models.CharField(max_length=15, blank=True)
-    area_id = models.IntegerField(null=True, blank=True)
+    area = models.ForeignKey(Area, null=True, blank=True)
     cost = models.IntegerField(null=True, blank=True)
     cost_markup = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=42)
@@ -76,7 +100,22 @@ class RealEstate(models.Model):
             u'снят с продажи': 4,
             }
             return dest_map[self.status]
-                
+    
+#    @property
+#    def i_creator_id(self):
+#        if self.creator_id:
+#            return UserUser.objects.get(pk=self.creator_id).user_id
+#
+#    @property
+#    def i_source_id(self):
+#        if self.source_id:
+#            return SourceOrigin.objects.get(pk=self.source_id or 14).origin_id
+#    
+#    @property
+#    def i_last_editor_id(self):
+#        if self.last_editor_id:
+#            return UserUser.objects.get(pk=self.last_editor_id).user_id
+                        
     def __unicode__(self):
         return u'%s (%s)' % (self.pk, self.status_id)
     class Meta:
