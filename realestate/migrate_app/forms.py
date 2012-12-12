@@ -27,6 +27,7 @@ class TypesEstateTypeForm(forms.ModelForm):
     source = forms.ModelChoiceField(queryset=Types.objects.all())
     def __init__(self, *args, **kwargs):
         super(TypesEstateTypeForm, self).__init__(*args, **kwargs)
+        self.fields['estate_type'].queryset = EstateType.objects.order_by('name')
         if self.instance:
             self.fields['source'].initial = self.instance.source_id             
     class Meta:

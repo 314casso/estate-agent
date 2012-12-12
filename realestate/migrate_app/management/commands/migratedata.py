@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
 import sys
-from maxim_base.models import Source, Users, Customers, Contacts
-from migrate_app.models import SourceOrigin, UserUser
+from maxim_base.models import Source, Users, Customers, Contacts, RealEstate
+from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
-    ContactHistory
+    ContactHistory, Estate, Locality
 from django.contrib.auth.models import User
 import datetime
 from django.db import transaction
@@ -70,6 +70,63 @@ class Command(BaseCommand):
                 c.updated = contact.update_record or datetime.datetime.now() 
                 c.contact_state_id = self._contact_state(contact.status)
                 c.save()                
+    
+    
+    def estate_check(self):
+        print self._get_region_id(2)
+#        e = Estate()
+#        e.estate_category_id = 2
+#        e._estate_type_id = 16
+#        e.estate_status_id = 1        
+#        e.region_id = 1
+#        e.save() 
+        
+    def _get_region_id(self, value):
+        mapper = {1: 1, 2: 3, 3: 2, 4: 4}                
+        return mapper[value]        
+    
+    def estate(self):
+        estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
+        imported = list(Estate.objects.values_list('id', flat=True))
+        estates = estates.exclude(pk__in=imported).distinct()
+        for estate in estates:
+            with transaction.commit_on_success():
+                history = HistoryMeta()        
+                history.created = estate.creation_date or datetime.datetime.now()                
+                history.created_by_id = UserUser.objects.get(pk=estate.creator_id).user_id
+                history.updated = estate.update_record
+                history.updated_by = UserUser.objects.get(pk=estate.last_editor_id).user_id                 
+                history.save()
+                e = Estate()
+                e.history = history 
+                estate_type = TypesEstateType.objects.get(pk=estate.type_id).estate_type
+                e.estate_category_id = estate_type.estate_type_category_id
+                e._estate_type_id = estate_type.pk
+                e.origin_id = SourceOrigin.objects.get(pk=estate.source_id or 14).origin_id
+                
+                if estate.place_id == 26: #Виноградный дублируется
+                     
+                locality = Locality.objects.get(name__iexact=estate.place.name.strip())
+                e.region_id = locality.region_id  
+                
+                
+            
+        
+#    type_id
+#    creator_id
+#    source_id 
+#    creation_date
+#    last_editor_id
+#    update_record 
+#    region
+#    place
+#    street
+#    house_number
+#    area
+#    cost
+#    cost_markup
+#    status
+    
     
     def _contact_state(self, contact):
         mapper = {u'доступен':1,u'заблокирован':3,u'недоступен':2,u'нет ответа':4}
