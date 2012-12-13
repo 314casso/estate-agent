@@ -80,26 +80,40 @@ class Locality(models.Model):
         return u'%s' % self.name
     def natural_key(self):
         return self.__unicode__()
-    class Meta(SimpleDict.Meta):
+    class Meta:
         verbose_name = _('locality')
         verbose_name_plural = _('localities')
         unique_together = ('name', 'region')
         ordering = ['name']  
 
-class Microdistrict(SimpleDict):
+class Microdistrict(models.Model):
     '''
     Микрорайоны в населенном пункте
     '''
+    name = models.CharField(_('Name'), db_index=True, max_length=255)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
-    class Meta(SimpleDict.Meta):
+    def __unicode__(self):
+        return u'%s' % self.name
+    def natural_key(self):
+        return self.__unicode__()
+    class Meta:
         verbose_name = _('microdistrict')
         verbose_name_plural = _('microdistricts')
+        unique_together = ('name', 'locality')
+        ordering = ['name']
 
-class Street(SimpleDict):
+class Street(models.Model):
+    name = models.CharField(_('Name'), db_index=True, max_length=255)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
-    class Meta(SimpleDict.Meta):
+    def __unicode__(self):
+        return u'%s' % self.name
+    def natural_key(self):
+        return self.__unicode__()
+    class Meta:
         verbose_name = _('street')
         verbose_name_plural = _('streets')
+        unique_together = ('name', 'locality')
+        ordering = ['name']
 
 class Beside(SimpleDict):    
     '''

@@ -101,26 +101,15 @@ class RealEstate(models.Model):
             u'снят с продажи': 4,
             }
             return dest_map[self.status]
-    
-#    @property
-#    def i_creator_id(self):
-#        if self.creator_id:
-#            return UserUser.objects.get(pk=self.creator_id).user_id
-#
-#    @property
-#    def i_source_id(self):
-#        origin_mapper = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 10, 8: 14, 9: 7, 10: 8, 11: 9, 12: 11, 13: 13, 14: 12}
-#        if self.source_id in origin_mapper:
-#            return origin_mapper[self.source_id]        
-#    
-#    @property
-#    def i_last_editor_id(self):
-#        if self.last_editor_id:
-#            return UserUser.objects.get(pk=self.last_editor_id).user_id
-                        
     def __unicode__(self):
         return u'%s (%s)' % (self.pk, self.status_id)
     class Meta:
         db_table = u'real_estate'
-        managed = False                      
-                                
+        managed = False                    
+    
+class CustomerHasRealEstate(models.Model):
+    real_estate = models.ForeignKey(RealEstate, unique=True, related_name='customers')
+    customer = models.ForeignKey(Customers)
+    class Meta:
+        db_table = u'customer_has_real_estate'
+        managed = False                                
