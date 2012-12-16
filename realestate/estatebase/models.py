@@ -744,8 +744,8 @@ class Stead(models.Model):
     DEFAULT_TYPE_ID = 15   
     estate = models.OneToOneField(Estate, verbose_name=_('Estate'), related_name='stead')
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), limit_choices_to={'estate_type_category__has_bidg': False}, default=DEFAULT_TYPE_ID, on_delete=models.PROTECT)  
-    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)      
-    face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=10, decimal_places=2)      
+    face_area = models.DecimalField(_('Face area'), blank=True, null=True, max_digits=10, decimal_places=2)
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True, on_delete=models.PROTECT)
     purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)

@@ -152,8 +152,8 @@ class Command(BaseCommand):
                 if real_estate.type_id == 9:
                     prop_map.set_state(u'недостроено')
                 if real_estate.type_id == 8:
-                    prop_map.set_state(u'ветхое')
-                prop_map.save_params()                
+                    prop_map.set_state(u'ветхое')                
+                prop_map.save_params()          
                 for client_id in clients_id:
                     EstateClient.objects.create(client_id=client_id,
                                         estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,

@@ -59,8 +59,8 @@ class PropMap(object):
         value = param.value.strip()
         if not value or value == '0':
             return         
-#        print 'Call setter %s' % param.name
-        param_setter = self.get_setter(param.name)        
+        #print 'Call setter %s' % param.name
+        param_setter = self.get_setter(param.name)  
         if not param_setter:
             if param.name not in ['old_id', 'correct', 'site']:
                 print u'Setter for %s not found!' % param.name
@@ -70,9 +70,9 @@ class PropMap(object):
             except AttributeError:
                 print u'%s %s' % (param.name, param.value)
     
-    def save_params(self):            
-        if self._bidg:
-            self._bidg.save()
+    def save_params(self):        
+        if self._bidg:            
+            self._bidg.save()        
         if self._stead:
             self._stead.save()    
                     
