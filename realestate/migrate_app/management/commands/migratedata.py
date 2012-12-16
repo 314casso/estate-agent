@@ -87,10 +87,9 @@ class Command(BaseCommand):
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
         imported = list(Estate.objects.values_list('id', flat=True))
-        real_estates = real_estates.exclude(pk__in=imported).distinct()[:10]
-        i = 0        
-        for real_estate in real_estates:
-            if real_estate.status_id == 3 and real_estate.update_record < datetime.date(2011, 11, 1):
+        real_estates = real_estates.exclude(pk__in=imported).distinct()
+        for real_estate in real_estates:            
+            if real_estate.status_id == 3 and real_estate.update_record < datetime.datetime(2011, 11, 1, 0, 0, 0):
                 continue 
             clients_id = []
             for customer_id in real_estate.customers.values_list('customer_id', flat=True):
@@ -102,6 +101,7 @@ class Command(BaseCommand):
             if len(clients_id) == 0:                                                
                 continue
             with transaction.commit_on_success():
+                print real_estate.pk                
                 history = HistoryMeta()        
                 history.created = real_estate.creation_date or datetime.datetime.now()                
                 history.created_by_id = UserUser.objects.get(pk=real_estate.creator_id).user_id
@@ -144,16 +144,16 @@ class Command(BaseCommand):
                     if d:
                         dlist.append(d)                                     
                 e.description = '; '.join(dlist)                              
-                e.save()                
-                prop_map = PropMap(e)
-                properties = Properties.objects.filter(real_estate=real_estate)
+                e.save()           
+                prop_map = PropMap(e)                
+                properties = Properties.objects.filter(real_estate=real_estate)                
                 for prop in properties:                     
                     prop_map.set_param(prop)              
                 if real_estate.type_id == 9:
-                    prop_map.set_state('недостроено')
+                    prop_map.set_state(u'недостроено')
                 if real_estate.type_id == 8:
-                    prop_map.set_state('ветхое')
-                prop_map.save_params()
+                    prop_map.set_state(u'ветхое')
+                prop_map.save_params()                
                 for client_id in clients_id:
                     EstateClient.objects.create(client_id=client_id,
                                         estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
@@ -161,8 +161,7 @@ class Command(BaseCommand):
                 for file_name in real_estate.images.values_list('file_name', flat=True):                                        
                     if os.path.isfile(os.path.join(MEDIA_ROOT, 'photos', str(e.pk), file_name)):
                         EstatePhoto.objects.create(estate=e, image=os.path.join('photos', str(e.pk), file_name))                  
-                i+=1
-                print i    
+                    
     
     def _contact_state(self, contact):
         mapper = {u'доступен':1,u'заблокирован':3,u'недоступен':2,u'нет ответа':4}

@@ -27,7 +27,10 @@ class PropMap(object):
     def estate(self, value):
         self._estate = value
         self._bidg = value.basic_bidg
-        self._stead = value.stead
+        try:
+            self._stead = value.stead
+        except Stead.DoesNotExist:
+            self._stead = None
         self._estate_type = value._estate_type_id            
         
     @property
@@ -56,13 +59,16 @@ class PropMap(object):
         value = param.value.strip()
         if not value or value == '0':
             return         
-        #print 'Call setter %s' % param.name
-        param_setter = self.get_setter(param.name)
+#        print 'Call setter %s' % param.name
+        param_setter = self.get_setter(param.name)        
         if not param_setter:
             if param.name not in ['old_id', 'correct', 'site']:
-                print 'Setter for %s not found!' % param.name
+                print u'Setter for %s not found!' % param.name
         else:
-            param_setter(param.value)
+            try:
+                param_setter(param.value)
+            except AttributeError:
+                print u'%s %s' % (param.name, param.value)
     
     def save_params(self):            
         if self._bidg:
