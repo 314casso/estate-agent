@@ -1,27 +1,147 @@
 [
 	{
-		"pk": 3,
-		"model": "estatebase.office",
+		"pk": 10,
+		"model": "migrate_app.typesestatetype",
 		"fields": {
-			"regions": [1],
-			"name": "Дом в Анапе",
-			"address": "Агентство недвижимости \"Дом в Анапе\" Офис в Анапе: улица Астраханская, дом 100, этаж 2, офис 3 тел. (86133) 3 77 97, 8 918 647 27 27, 8 961 859 97 96, dom@vanape.ru, сайт www.domnatamani.ru"
+			"estate_type": 1
 		}
 	}, {
-		"pk": 2,
-		"model": "estatebase.office",
+		"pk": 11,
+		"model": "migrate_app.typesestatetype",
 		"fields": {
-			"regions": [1, 2],
-			"name": "Дом в Новороссийске",
-			"address": "Агентство недвижимости \"Дом в Новороссийске\" Офис в Новороссийске: улица Анапское шоссе, д. 15, эт. 3, оф. 301, бизнес-центр \"Приморский\" тел. 8 918 040 94 94, 8 918 041 06 66, pochta@domvnovorossiyske.ru, сайт www.domnatamani.ru"
+			"estate_type": 4
+		}
+	}, {
+		"pk": 12,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 12
+		}
+	}, {
+		"pk": 7,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 13
+		}
+	}, {
+		"pk": 18,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 14
+		}
+	}, {
+		"pk": 5,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 16
 		}
 	}, {
 		"pk": 1,
-		"model": "estatebase.office",
+		"model": "migrate_app.typesestatetype",
 		"fields": {
-			"regions": [4],
-			"name": "Дом на Тамани",
-			"address": "Агентство недвижимости \"Дом на Тамани\" Офис в Темрюке: улица Ленина, дом 180, офис 2 (86148) 5 44 55, 8 918 980 28 70, 8 906 187 74 03, dom@natamani.ru, domnatamani@yandex.ru, сайт www.domnatamani.ru"
+			"estate_type": 6
+		}
+	}, {
+		"pk": 2,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 18
+		}
+	}, {
+		"pk": 13,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 52
+		}
+	}, {
+		"pk": 23,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 21
+		}
+	}, {
+		"pk": 24,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 22
+		}
+	}, {
+		"pk": 14,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 27
+		}
+	}, {
+		"pk": 3,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 28
+		}
+	}, {
+		"pk": 15,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 33
+		}
+	}, {
+		"pk": 4,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 34
+		}
+	}, {
+		"pk": 16,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 36
+		}
+	}, {
+		"pk": 21,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 39
+		}
+	}, {
+		"pk": 6,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 45
+		}
+	}, {
+		"pk": 17,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 15
+		}
+	}, {
+		"pk": 20,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 15
+		}
+	}, {
+		"pk": 19,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 42
+		}
+	}, {
+		"pk": 22,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 18
+		}
+	}, {
+		"pk": 9,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 16
+		}
+	}, {
+		"pk": 8,
+		"model": "migrate_app.typesestatetype",
+		"fields": {
+			"estate_type": 16
 		}
 	}
 ]
