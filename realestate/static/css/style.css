@@ -143,7 +143,7 @@ span.contact-inline label, .bidg-list label {
 }
 
 .confirm-dialog-content {
-	padding: 4px;
+	padding: 3px;
 }
 
 .confirm-dialog-title {
@@ -441,7 +441,7 @@ legend {
 }
 
 #tabs {
-	width: 730px;
+	/*width: 730px;*/
 }
 
 .style-table {
