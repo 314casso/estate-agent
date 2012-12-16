@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
 import sys
-from maxim_base.models import Source, Users, Customers, Contacts, RealEstate
+from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
+    Properties, Descriptions, Images
 from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
-    ContactHistory, Estate, Locality, Street, Microdistrict
+    ContactHistory, Estate, Locality, Street, Microdistrict, EstateClient,\
+    EstatePhoto
 from django.contrib.auth.models import User
 import datetime
 from django.db import transaction
 import re
+from migrate_app.prop_map import PropMap
+import os
+from settings import MEDIA_ROOT
 
 class Command(BaseCommand):
     args = '<function_name function_name ...>'
@@ -79,51 +84,85 @@ class Command(BaseCommand):
         mapper = {1: 1, 2: 3, 3: 2, 4: 4}                
         return mapper[value]        
     
-    def estate(self):
-        estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
+    def estate(self):        
+        real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
         imported = list(Estate.objects.values_list('id', flat=True))
-        estates = estates.exclude(pk__in=imported).distinct()[:10]
-        for estate in estates:
-            print estate.pk
-            if estate.customers.count() == 0:
+        real_estates = real_estates.exclude(pk__in=imported).distinct()[:10]
+        i = 0        
+        for real_estate in real_estates:
+            if real_estate.status_id == 3 and real_estate.update_record < datetime.date(2011, 11, 1):
+                continue 
+            clients_id = []
+            for customer_id in real_estate.customers.values_list('customer_id', flat=True):
+                try:
+                    client = Client.objects.get(pk=customer_id)
+                    clients_id.append(client.pk)
+                except Client.DoesNotExist:                    
+                    pass                
+            if len(clients_id) == 0:                                                
                 continue
             with transaction.commit_on_success():
                 history = HistoryMeta()        
-                history.created = estate.creation_date or datetime.datetime.now()                
-                history.created_by_id = UserUser.objects.get(pk=estate.creator_id).user_id
-                history.updated = estate.update_record
-                history.updated_by_id = UserUser.objects.get(pk=estate.last_editor_id).user_id                 
+                history.created = real_estate.creation_date or datetime.datetime.now()                
+                history.created_by_id = UserUser.objects.get(pk=real_estate.creator_id).user_id
+                history.updated = real_estate.update_record
+                history.updated_by_id = UserUser.objects.get(pk=real_estate.last_editor_id).user_id                 
                 history.save()
                 e = Estate()
                 e.history = history 
-                estate_type = TypesEstateType.objects.get(pk=estate.type_id).estate_type
+                estate_type = TypesEstateType.objects.get(pk=real_estate.type_id).estate_type
                 e.estate_category_id = estate_type.estate_type_category_id
                 e._estate_type_id = estate_type.pk
-                e.origin_id = SourceOrigin.objects.get(pk=estate.source_id or 14).origin_id                
+                e.origin_id = SourceOrigin.objects.get(pk=real_estate.source_id or 14).origin_id                
                 locality = None
-                if estate.place_id == 26: #Виноградный дублируется
-                    if estate.region_id == 1:
+                if real_estate.place_id == 26: #Виноградный дублируется
+                    if real_estate.region_id == 1:
                         locality = Locality.objects.get(pk=28)
-                    elif estate.region_id == 4:
+                    elif real_estate.region_id == 4:
                         locality = Locality.objects.get(pk=29)
                     else:
                         locality = Locality.objects.get(pk=27)                       
                 else:
-                    locality = Locality.objects.get(name__iexact=estate.place.name.strip())
+                    locality = Locality.objects.get(name__iexact=real_estate.place.name.strip())
                 e.locality = locality                                                 
                 e.region_id = locality.region_id
-                if estate.street_id and estate.street_id != 1:
-                    street, created = Street.objects.get_or_create(name=estate.street.name.strip(), locality=locality) # @UnusedVariable
+                if real_estate.street_id and real_estate.street_id != 1:
+                    street, created = Street.objects.get_or_create(name=real_estate.street.name.strip(), locality=locality) # @UnusedVariable
                     e.street = street                
-                if estate.area_id and estate.area_id != 1:
-                    microdistrict, created = Microdistrict.objects.get_or_create(name=estate.area.name.strip(), locality=locality) # @UnusedVariable
+                if real_estate.area_id and real_estate.area_id != 1:
+                    microdistrict, created = Microdistrict.objects.get_or_create(name=real_estate.area.name.strip(), locality=locality) # @UnusedVariable
                     e.microdistrict = microdistrict
-                e.estate_number = estate.house_number.strip()
-                e.saler_price = estate.cost
-                e.agency_price = estate.cost_markup
-                e.estate_status_id = estate.status_id
-                e.id = estate.pk
-                e.save()
+                e.estate_number = real_estate.house_number.strip()
+                e.saler_price = real_estate.cost
+                e.agency_price = real_estate.cost_markup
+                e.estate_status_id = real_estate.status_id
+                e.id = real_estate.pk       
+                descriptions = Descriptions.objects.filter(real_estate=real_estate)
+                dlist = []
+                for description in descriptions:
+                    d = description.description.strip()
+                    if d:
+                        dlist.append(d)                                     
+                e.description = '; '.join(dlist)                              
+                e.save()                
+                prop_map = PropMap(e)
+                properties = Properties.objects.filter(real_estate=real_estate)
+                for prop in properties:                     
+                    prop_map.set_param(prop)              
+                if real_estate.type_id == 9:
+                    prop_map.set_state('недостроено')
+                if real_estate.type_id == 8:
+                    prop_map.set_state('ветхое')
+                prop_map.save_params()
+                for client_id in clients_id:
+                    EstateClient.objects.create(client_id=client_id,
+                                        estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
+                                        estate=e)
+                for file_name in real_estate.images.values_list('file_name', flat=True):                                        
+                    if os.path.isfile(os.path.join(MEDIA_ROOT, 'photos', str(e.pk), file_name)):
+                        EstatePhoto.objects.create(estate=e, image=os.path.join('photos', str(e.pk), file_name))                  
+                i+=1
+                print i    
     
     def _contact_state(self, contact):
         mapper = {u'доступен':1,u'заблокирован':3,u'недоступен':2,u'нет ответа':4}

@@ -7,7 +7,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
     Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup, Bid,\
     ComStatus, Office, Appliance, BidEventCategory, RegisterCategory,\
-    WallConstrucion
+    WallConstrucion, ExteriorFinish, Interior
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -87,3 +87,5 @@ admin.site.register(Appliance)
 admin.site.register(BidEventCategory)
 admin.site.register(RegisterCategory)
 admin.site.register(WallConstrucion)
+admin.site.register(ExteriorFinish)
+admin.site.register(Interior)

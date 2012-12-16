@@ -6,12 +6,13 @@ from estatebase.models import Electricity, Gassupply, Interior, WallConstrucion,
     Ceiling, EstateStatus , Locality, Origin, Region as R
 from maxim_base.models import Place, Source, Users, Region, Types
 from django.contrib.auth.models import User
+from migrate_app.models import TypesEstateType
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        #self.make_mapper_estate_type()
+        self.make_mapper_estate_type()
         #self.make_mapper_origin()
-        self.make_mapper_locality()
+        #self.make_mapper_locality()
         #self.make_mapper_user()
         #self.make_mapper_region()
    
@@ -20,7 +21,7 @@ class Command(BaseCommand):
         mapper = {}
         for etype in Types.objects.all():
             try:            
-                mapper[int(etype.id)] = EstateType.objects.get(name__iexact=etype.name.strip()).pk
+                mapper[int(etype.id)] = TypesEstateType.objects.get(source_id=etype.pk).estate_type.pk
             except:
                 print etype.name, etype.id                                
         print mapper

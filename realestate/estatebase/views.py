@@ -79,8 +79,7 @@ def upload_images(request):
             file_content = ContentFile(upfile.read()) 
             estate_photo.image.save(upfile.name, file_content)
             estate_photo.save()  
-            next_url = request.REQUEST.get('next', '')
-            print next_url
+            next_url = request.REQUEST.get('next', '')            
     return HttpResponseRedirect(next_url)         
 
 
@@ -247,7 +246,7 @@ class EstateDetailView(DetailView):
         p = float(r) / (self.object.saler_price or 1) * 100              
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'margin': '%d (%d%%)' % (r, p),
+            'margin': '%s (%s%%)' % (r, int(p)),
             'images': self.object.images.all()[:6],
         })        
         return context
@@ -346,7 +345,7 @@ class EstateListDetailsView(EstateListView):
             p = float(r) / (self.estate.saler_price or 1) * 100                                           
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'margin': '%s (%s%%)' % (intcomma(r), intcomma(p)),
+            'margin': '%s (~%s%%)' % (intcomma(r), int(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
             'estate': self.estate,
         })                

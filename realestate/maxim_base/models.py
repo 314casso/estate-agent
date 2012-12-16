@@ -112,4 +112,28 @@ class CustomerHasRealEstate(models.Model):
     customer = models.ForeignKey(Customers)
     class Meta:
         db_table = u'customer_has_real_estate'
-        managed = False                                
+        managed = False
+
+class Images(models.Model):    
+    real_estate = models.ForeignKey(RealEstate, related_name='images')
+    file_name = models.CharField(max_length=96)
+    class Meta:
+        db_table = u'images'
+        managed = False     
+
+class Properties(models.Model):
+    real_estate = models.ForeignKey(RealEstate, unique=True)
+    name = models.CharField(max_length=75, unique=True)
+    value = models.CharField(max_length=765)
+    class Meta:
+        db_table = u'properties'
+        managed = False
+
+class Descriptions(models.Model):
+    real_estate = models.ForeignKey(RealEstate, unique=True)
+    description = models.TextField()
+    def __unicode__(self):
+        return u'%s' % self.description.strip()
+    class Meta:
+        db_table = u'descriptions'
+        managed = False                                                       

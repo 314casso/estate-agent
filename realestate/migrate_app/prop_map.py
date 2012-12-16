@@ -5,7 +5,7 @@ class PropMap(object):
     _estate = None
     _bidg = None
     _stead = None
-    _estate_type = None
+    _estate_type = None    
     params= ('comments', 'destination', 'distance', 'electricity_status', 'gas_status', 
     'land_area', 'land_front', 'living_area', 'rooms_count', 'state', 
     'total_area', 'wall_material', 'water_status', 'year_built', 'all_floors', 'apartment_number', 
@@ -15,7 +15,10 @@ class PropMap(object):
     'land_plan', 'technical_certificate', 'wall', 'take_a_photo', 'exchange', 'ceiling_height', 
     'electricity_distance', 'water_distance', 'ceiling', 'gas_distance', 'porch_distance', 'elevator', 
     'sewerage_distance', 'exclusive')    
-        
+    
+    def __init__(self, estate):
+        self.estate = estate        
+            
     @property
     def estate(self):
         return self._estate
@@ -34,30 +37,45 @@ class PropMap(object):
     @property    
     def bidg(self):
         if not self._bidg:
-            self._bidg = Bidg.objects.create(estate=self.estate, estate_type=self.estate_type, basic=True)
+            if not self.estate.estate_category.is_stead:
+                self._bidg = Bidg.objects.create(estate=self.estate, estate_type_id=self.estate_type, basic=True)
         return self._bidg
    
     @property    
     def stead(self):
         if not self._stead:
-            self._stead = Bidg.objects.create(estate=self.estate, estate_type=Stead.DEFAULT_TYPE_ID)
+            if not self.estate.estate_category.can_has_stead:
+                self._stead = Bidg.objects.create(estate=self.estate, estate_type_id=Stead.DEFAULT_TYPE_ID)
         return self._stead    
        
     def get_setter(self, param):
         template = 'set_%s'
         return getattr(self, template % param, None)
     
-    def test_param(self):
-        for param in self.params:
-            if not self.get_setter(param):
-                print 'Setter for %s not found!' % param
+    def set_param(self, param):
+        value = param.value.strip()
+        if not value or value == '0':
+            return         
+        #print 'Call setter %s' % param.name
+        param_setter = self.get_setter(param.name)
+        if not param_setter:
+            if param.name not in ['old_id', 'correct', 'site']:
+                print 'Setter for %s not found!' % param.name
+        else:
+            param_setter(param.value)
+    
+    def save_params(self):            
+        if self._bidg:
+            self._bidg.save()
+        if self._stead:
+            self._stead.save()    
                     
-    def set_comments(self, obj, value):
+    def set_comments(self, value):        
         if value:
-            if obj.comment:                
-                obj.comment = obj.comment + ', ' +  value
+            if self.estate.comment:                
+                self.estate.comment = self.estate.comment + ', ' +  value
             else:
-                obj.comment = value
+                self.estate.comment = value
     
     def _destination_map(self, value):
         dest_map = {
@@ -77,7 +95,7 @@ class PropMap(object):
         return dest_map[value] 
     
     def set_destination(self, value):       
-        self.estate.beside_id = self._destination_map[value]
+        self.estate.beside_id = self._destination_map(value)
     
     def set_distance(self, value):
         self.estate.beside_distance = parse_decimal(value)                       
@@ -92,14 +110,20 @@ class PropMap(object):
         self.bidg.room_count = parse_decimal(value)
     
     def set_year_built(self, value):
-        if not 2100 > value > 1800:
-            value = None
-        self.bidg.year_built = int(value)
+        int_value = None
+        if value:
+            try:
+                int_value = int(value)
+            except:
+                return            
+        if not 2100 > int_value > 1800:
+            return       
+        self.bidg.year_built = int_value
     
     def set_all_floors(self, value):        
         self.bidg.floor_count = parse_decimal(value,'/')                   
         
-    def set_apartment_number(self, value):
+    def set_apartment_number(self, value):         
         self.bidg.room_number = value
     
     def set_floor(self, value):
@@ -107,7 +131,7 @@ class PropMap(object):
     
     def set_ceiling_height(self, value):
         self.bidg.ceiling_height = parse_decimal(value)
-    
+
     def set_state(self, value):
         state_map = {
         u'1' : None,
@@ -122,8 +146,11 @@ class PropMap(object):
         u'ремонт': 9,
         u'удовлетворительное': 10,
         u'хорошее': 11,
+        u'недостроено': 12
         }
-        self.bidg.interior_id = state_map[value]           
+        m_val = state_map[value]
+        if m_val:
+            self.bidg.interior_id = state_map[value]           
     
     def set_wall_material(self, value):
         p_map = {
@@ -140,7 +167,9 @@ class PropMap(object):
         u'шлакоблок': 10,
         u'щитовой': 11,
         }
-        self.bidg.wall_construcion_id = p_map[value]
+        m_val = p_map[value]
+        if m_val:
+            self.bidg.wall_construcion_id = p_map[value]
             
     def _status_map(self, value):
         status_map = {
