@@ -689,8 +689,8 @@ class Bidg(models.Model):
     heating = models.ForeignKey(Heating, verbose_name=_('Heating'), blank=True, null=True, on_delete=models.PROTECT)
     ceiling_height = models.DecimalField(_('Ceiling height'), blank=True, null=True, max_digits=5, decimal_places=2)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
-    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=7, decimal_places=2)
-    used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=7, decimal_places=2)
+    total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=10, decimal_places=2)
+    used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=10, decimal_places=2)
     documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
     #Внутренняя отделка    
     wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True, on_delete=models.PROTECT)
