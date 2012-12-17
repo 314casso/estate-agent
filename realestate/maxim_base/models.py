@@ -46,7 +46,7 @@ class Users(models.Model):
 class Types(models.Model):
     name = models.CharField(max_length=90, unique=True)
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s: %s' % (self.id, self.name)
     class Meta:
         db_table = u'types'
         managed = False

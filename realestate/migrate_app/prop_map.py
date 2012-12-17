@@ -446,7 +446,7 @@ class PropMap(object):
         u'пластик': 8,
         u'побелены': 9,
         }
-        self.bidg.estate_type_id = p_map[value]
+        self.bidg.wall_finish_id = p_map[value]
         
         
 

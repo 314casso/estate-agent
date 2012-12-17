@@ -53,6 +53,15 @@ class Command(BaseCommand):
                 print user.name, user.id, user.user                                
         print mapper    
         
+    def make_mapper_wallfinish(self):
+        mapper = {}
+        for wf in WallFinish.objects.all():
+            try:            
+                mapper[int(wf.id)] = WallFinish.objects.get(name__iexact=wf.name).pk
+            except:
+                print wf.name                                
+        print mapper      
+        
     def make_mapper_origin(self):
         mapper = {}
         for origin in Source.objects.all():
