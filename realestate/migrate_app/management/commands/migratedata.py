@@ -88,7 +88,9 @@ class Command(BaseCommand):
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
         imported = list(Estate.objects.values_list('id', flat=True))
         real_estates = real_estates.exclude(pk__in=imported).distinct()
-        for real_estate in real_estates:            
+        for real_estate in real_estates: 
+            if real_estate.type_id == 0:
+                continue            
             if real_estate.status_id == 3 and real_estate.update_record < datetime.datetime(2011, 11, 1, 0, 0, 0):
                 continue 
             clients_id = []
