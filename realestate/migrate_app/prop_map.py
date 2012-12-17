@@ -64,11 +64,12 @@ class PropMap(object):
         if not param_setter:
             if param.name not in ['old_id', 'correct', 'site']:
                 print u'Setter for %s not found!' % param.name
+                pass
         else:
             try:
                 param_setter(param.value)
             except AttributeError:
-                print u'%s %s' % (param.name, param.value)
+                print u'%s' % (param.name)
     
     def save_params(self):        
         if self._bidg:            
@@ -445,7 +446,7 @@ class PropMap(object):
         u'пластик': 8,
         u'побелены': 9,
         }
-        self.bidg.estate_type_id = p_map[value]
+        self.bidg.wall_finish_id = p_map[value]
         
         
 

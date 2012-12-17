@@ -87,8 +87,10 @@ class Command(BaseCommand):
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
         imported = list(Estate.objects.values_list('id', flat=True))
-        real_estates = real_estates.exclude(pk__in=imported).distinct()
-        for real_estate in real_estates:            
+        real_estates = real_estates.exclude(pk__in=imported).distinct()        
+        for real_estate in real_estates: 
+            if real_estate.type_id == 0:
+                continue            
             if real_estate.status_id == 3 and real_estate.update_record < datetime.datetime(2011, 11, 1, 0, 0, 0):
                 continue 
             clients_id = []
@@ -99,7 +101,7 @@ class Command(BaseCommand):
                 except Client.DoesNotExist:                    
                     pass                
             if len(clients_id) == 0:                                                
-                continue
+                continue            
             with transaction.commit_on_success():
                 print real_estate.pk                
                 history = HistoryMeta()        
@@ -109,8 +111,9 @@ class Command(BaseCommand):
                 history.updated_by_id = UserUser.objects.get(pk=real_estate.last_editor_id).user_id                 
                 history.save()
                 e = Estate()
-                e.history = history 
-                estate_type = TypesEstateType.objects.get(pk=real_estate.type_id).estate_type
+                e.history = history
+                estate_type_type = TypesEstateType.objects.get(source_id=real_estate.type_id)
+                estate_type = estate_type_type.estate_type
                 e.estate_category_id = estate_type.estate_type_category_id
                 e._estate_type_id = estate_type.pk
                 e.origin_id = SourceOrigin.objects.get(pk=real_estate.source_id or 14).origin_id                
