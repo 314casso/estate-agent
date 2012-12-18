@@ -20,7 +20,9 @@ from collections import OrderedDict
 from django.template.base import Template
 from django.utils.safestring import mark_safe
 from django.template.context import Context
-from django.utils.encoding import smart_text
+from django.utils.encoding import force_unicode
+
+
 
 class ExUser(User):
     def __unicode__(self):
@@ -516,7 +518,7 @@ class Estate(ProcessDeletedModel):
         )
 
 def get_upload_to(instance, filename):    
-    return os.path.join(u'photos', smart_text(instance.estate_id), smart_text(filename))
+    return os.path.join(u'photos',  force_unicode(instance.estate_id),  force_unicode(filename))
 
 class EstatePhoto(OrderedModel):
     '''

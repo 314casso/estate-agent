@@ -133,9 +133,10 @@
     <tbody>
         {% for estate_item in estate_list %}
         <tr class="ui-widget-content">
-            <td><a href="{% url estate_list_details estate_item.pk %}?estates_1={{ estate_item.pk }}&{{ next_url }}">{{ estate_item.pk }}</a></td>
+        	{% load l10n %}
+            <td><a href="{% url estate_list_details estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.pk }}</a></td>
             <td>
-            	<a href="{% url estate_list_details estate_item.pk %}?estates_1={{ estate_item.pk }}&{{ next_url }}">{{ estate_item.estate_type }}</a>
+            	<a href="{% url estate_list_details estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.estate_type }}</a>
             	<div style="font-size: 90%; font-style: italic">{% address estate_item %}</div>
             </td>
             <td>{{ estate_item.history.modificated|date:"d M Y" }} </td>

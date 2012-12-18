@@ -1,6 +1,7 @@
 {% load humanize %}
 {% load link_helper %}
 {% load sorting_tags %}
+{% load l10n %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>
         <tr>
@@ -20,7 +21,7 @@
             <td> {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} </td>
             <td><a title="Редактирование лота" href="{% url estate_update estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a></td>
             <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
-            <td><a title="Просмотр лота" href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={{ estate_item.pk }}"> {{ estate_item.estate_type }} </a></td>
+            <td><a title="Просмотр лота" href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}"> {{ estate_item.estate_type }} </a></td>
             <td><span class="inline-span"> <small> {% with estate_item=estate_item %}
                     {% address estate_item %}
                     {% endwith %} </small> </span></td>
