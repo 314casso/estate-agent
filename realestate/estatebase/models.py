@@ -302,7 +302,7 @@ class EstateClient(models.Model):
     estate = models.ForeignKey('Estate')    
     estate_client_status = models.ForeignKey(EstateClientStatus, verbose_name=_('EstateClientStatus'))
     class Meta:
-        unique_together = ('client', 'estate')
+        unique_together = ('client', 'estate')       
 
 class BaseModelManager(models.Manager):
     def get_query_set(self):

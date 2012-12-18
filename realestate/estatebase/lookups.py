@@ -10,7 +10,7 @@ from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
 
 class SimpleIdLookup(ModelLookup):
-    search_fields = ('id__icontains',)
+    search_fields = ('id__startswith',)
     def get_item_label(self, item):
         if hasattr(item, 'name'):            
             return u"%s, %s" % (item.pk, getattr(item, 'name'))
@@ -33,7 +33,7 @@ class SimpleNameLookup(ModelLookup):
     
 class EstateLookup(ModelLookup):
     model = Estate
-    search_fields = ('id__icontains',)
+    search_fields = ('id__startswith',)
     def get_query(self, request, term):
         results = super(EstateLookup, self).get_query(request, term)        
         if request.user:
