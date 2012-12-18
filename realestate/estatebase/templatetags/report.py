@@ -47,6 +47,8 @@ def wrapper_fieldset(obj, fieldset_name):
         return ''
     details = OrderedDict()
     wrapper = get_wrapper(obj)
+    if not wrapper:
+        return '' 
     field_list = getattr(wrapper, fieldset_name)
     for field in field_list:
         obj_field = obj._meta.get_field(field)
