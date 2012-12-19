@@ -7,7 +7,7 @@
 <form class="button" method="post" action="{% url upload_images %}" enctype="multipart/form-data">
     {% csrf_token %}
     <input required type="file" name="form_file" id="form_file" multiple="multiple"/>
-    <input type="hidden" name="next" id="next_after" value="{{ request.path }}{% query_string '' '' %}"/>
+    <input type="hidden" name="next" id="next_after" value="{{ request.get_full_path }}"/>
     <input type="hidden" name="estate" id="estate_pk" value="{{ estate.pk }}"/>
     <button type="submit">
         Загрузить

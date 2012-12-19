@@ -441,7 +441,7 @@ class ObjectForm(ModelForm):
     ceiling_height = LocalDecimalField(label=_('Ceiling height'))
     year_built = LocalIntegerField(label=_('Year built'))
     floor = LocalIntegerField(label=_('Floor'))
-    floor_count = LocalIntegerField(label=_('Floor count'))
+    floor_count = LocalDecimalField(label=_('Floor count'))
     room_count = LocalIntegerField(label=_('Room count'))
     def __init__(self, *args, **kwargs):
         super(ObjectForm, self).__init__(*args, **kwargs)
