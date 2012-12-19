@@ -44,8 +44,14 @@ class EstateStatusLookup(ModelLookup):
     model = EstateStatus
     search_fields = ('id__icontains',)    
     
-class RegionLookup(SimpleNameLookup):
+class RegionLookup(ModelLookup):
     model = Region
+    search_fields = ('name__icontains',)
+    def get_query(self, request, term):
+        results = super(RegionLookup, self).get_query(request, term)        
+        if request.user:
+            results = results.filter(geo_group__userprofile__user__exact=request.user)
+        return results
 
 class StreetLookup(ModelLookup):
     model = Street

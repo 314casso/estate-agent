@@ -51,7 +51,7 @@ class BaseWrapper(object):
         return getattr(self, field, None)
                    
 class BidgWrapper(BaseWrapper):
-    summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built']
+    summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built', 'floor', 'floor_count']
     def __init__(self):                
         self.exterior_set = ['estate_type', 'room_number', 'year_built', 'floor', 'floor_count', 'elevator', 'wall_construcion', 'exterior_finish', 'window_type', 'roof', 'heating', 'ceiling_height', 'room_count', 'total_area', 'used_area']    
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior', 'appliances']

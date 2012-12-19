@@ -382,7 +382,7 @@ class EstateFilterForm(BetterForm):
     class Meta:
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
-                                         'com_status', 'locality', 'street', 'estate_number', 'room_number', 
+                                         'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
                                          'microdistrict', 'beside', 'agency_price',
                                          ]}),
                      ('center', {'fields': [

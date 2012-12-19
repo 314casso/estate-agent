@@ -11,8 +11,11 @@ class Command(BaseCommand):
         self.test_func()        
     
     def test_func(self):    
-        estates = Estate.objects.annotate(num_bidgs=Count('bidgs')).filter(num_bidgs__gt=1)        
-        estates.delete()            
+        #estates = Estate.objects.annotate(num_bidgs=Count('bidgs')).filter(num_bidgs__gt=1)        
+        estates = Estate.objects.all()
+        for e in estates:
+            e.save() 
+                    
                       
         
           

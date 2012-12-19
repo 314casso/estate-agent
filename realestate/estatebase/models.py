@@ -401,7 +401,7 @@ class Estate(ProcessDeletedModel):
             report[self.DRAFT].append(unicode(_('Electricity')))    
         if not self.agency_price:
             report[self.DRAFT].append(unicode(_('Agency price')))
-        if self.basic_bidg:
+        if self.basic_bidg and self.basic_bidg.is_independent:
             if not self.basic_bidg.year_built:
                 report[self.DRAFT].append(unicode(_('Year built')))
             if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template == HOUSE:                                
