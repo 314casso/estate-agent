@@ -20,9 +20,13 @@ def set_validity(sender, instance, created, **kwargs):
     estate.save()
     post_save.connect(set_validity, sender=Estate)
 
-def estate_client_handler(sender, instance, **kwargs):    
-    instance.estate.set_contact()
-    instance.estate.save()        
+def estate_client_handler(sender, instance, **kwargs):
+    try:     
+        instance.estate.set_contact()
+        instance.estate.save()
+    except Estate.DoesNotExist:
+        pass
+                
 
 def update_deleted(sender, instance, created, **kwargs):
     if instance.deleted:                     

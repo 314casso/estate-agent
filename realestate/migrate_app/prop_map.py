@@ -48,7 +48,7 @@ class PropMap(object):
     def stead(self):
         if not self._stead:
             if self.estate.estate_category.can_has_stead:
-                self._stead = Bidg.objects.create(estate=self.estate, estate_type_id=Stead.DEFAULT_TYPE_ID)
+                self._stead = Stead.objects.create(estate=self.estate, estate_type_id=Stead.DEFAULT_TYPE_ID)
         return self._stead    
        
     def get_setter(self, param):
