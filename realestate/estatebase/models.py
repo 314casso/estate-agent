@@ -346,7 +346,7 @@ class Estate(ProcessDeletedModel):
     VALID = 1
     NOTFREE = 2
     NOCONACT = 3
-    DRAFT = 4
+    DRAFT = 4    
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -702,7 +702,7 @@ class Bidg(models.Model):
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
     #param
-    basic = models.BooleanField(_('Basic'), default=False, editable=False)    
+    basic = models.BooleanField(_('Basic'), default=False, editable=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
     class Meta:
         verbose_name = _('bidg')
@@ -717,6 +717,8 @@ class Bidg(models.Model):
     @property
     def is_independent(self):
         return self.estate_type.estate_type_category.independent
+    def __unicode__(self):
+        return u'%s' % self.pk
            
     
 class Shape(SimpleDict):

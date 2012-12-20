@@ -33,6 +33,24 @@ class EstateTypeCategoryAdmin(OrderedModelAdmin):
 class EstateParamAdmin(OrderedModelAdmin):
     list_display = ['name', 'reorder']
 
+class BidgInline(admin.StackedInline):
+    model = Bidg    
+    extra = 0
+    fields = ['estate_type', 'basic']
+    
+class SteadInline(admin.StackedInline):
+    model = Stead    
+    extra = 0
+    fields = ['estate_type', 'total_area']
+    
+class EstateAdmin(admin.ModelAdmin):
+    search_fields = ['id',]
+    fields = ['estate_category']
+    inlines = [BidgInline, SteadInline]
+
+class BidgAdmin(admin.ModelAdmin):
+    search_fields = ['estate__id']
+    fields = ['estate_type', 'basic']    
 
 admin.site.unregister(User)
 
@@ -40,7 +58,7 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
 
 class UserProfileAdmin(UserAdmin):
-    inlines = [ UserProfileInline, ]
+    inlines = [UserProfileInline,]
 
 admin.site.register(User, UserProfileAdmin)
 
@@ -49,7 +67,7 @@ admin.site.register(Locality)
 admin.site.register(Microdistrict)
 admin.site.register(Street, StreetAdmin)
 admin.site.register(ContentType)
-#admin.site.register(Estate)
+admin.site.register(Estate, EstateAdmin)
 admin.site.register(EstateType,EstateTypeAdmin)
 admin.site.register(EstateTypeCategory,EstateTypeCategoryAdmin)
 
@@ -60,7 +78,7 @@ admin.site.register(Origin)
 admin.site.register(Contact)
 admin.site.register(ContactState)
 admin.site.register(ContactHistory)
-#admin.site.register(Bidg)
+#admin.site.register(Bidg, BidgAdmin)
 admin.site.register(EstateStatus)
 admin.site.register(Document)
 admin.site.register(EstateParam,EstateParamAdmin)

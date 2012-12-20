@@ -223,3 +223,37 @@ class Users(models.Model):
     class Meta:
         db_table = u'users'
 
+===============
+    post_save.disconnect(set_validity, sender=Bidg)
+    post_save.disconnect(set_validity, sender=Stead)     
+    estate_type = getattr(instance,'_estate_type_id', None) and EstateType.objects.get(pk=instance._estate_type_id) or None
+    if estate_type:             
+        if estate_type.estate_type_category.has_bidg == YES:
+            if not instance.basic_bidg:
+                Bidg.objects.create(estate=instance, estate_type=estate_type, basic=True)
+            elif instance.basic_bidg.estate_type != estate_type:
+                instance.basic_bidg.estate_type=estate_type
+                instance.basic_bidg.save()                
+        if estate_type.estate_type_category.has_stead == YES:
+            stead_type_id = instance.estate_category.is_stead and estate_type.pk or Stead.DEFAULT_TYPE_ID
+            try:
+                stead = instance.stead
+            except Stead.DoesNotExist:
+                stead = None                 
+            if not stead:                 
+                Stead.objects.create(estate=instance, estate_type_id=stead_type_id)
+            elif stead.estate_type_id != stead_type_id:
+                stead.estate_type_id=stead_type_id
+                stead.save()         
+        if estate_type.estate_type_category.is_stead and instance.bidgs.filter(estate_type__estate_type_category__independent=True):
+            instance.bidgs.filter(estate_type__estate_type_category__independent=True).delete()            
+        if not estate_type.estate_type_category.can_has_stead:
+            try:
+                stead = instance.stead
+            except Stead.DoesNotExist:
+                stead = None
+            if stead:
+                stead.delete()
+    post_save.connect(set_validity, sender=Bidg)
+    post_save.connect(set_validity, sender=Stead) 
+===============
