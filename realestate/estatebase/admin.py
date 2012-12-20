@@ -7,7 +7,9 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     Beside, Electricity, Watersupply, Gassupply, Sewerage, Telephony, Internet,\
     Driveway, LevelName, EstatePhoto, Stead, UserProfile, GeoGroup, Bid,\
     ComStatus, Office, Appliance, BidEventCategory, RegisterCategory,\
-    WallConstrucion, ExteriorFinish, Interior, WallFinish, EstateClientStatus
+    WallConstrucion, ExteriorFinish, Interior, WallFinish, EstateClientStatus,\
+    BidEvent, BidStatus, Layout, LayoutFeature, Furniture, Level, LayoutType,\
+    Ceiling, Flooring, Heating, Roof, WindowType
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -93,9 +95,9 @@ admin.site.register(Driveway)
 admin.site.register(LevelName)
 admin.site.register(EstatePhoto)
 #admin.site.register(Stead)
-admin.site.register(UserProfile)
+#admin.site.register(UserProfile)
 admin.site.register(GeoGroup)
-admin.site.register(Bid)
+#admin.site.register(Bid)
 admin.site.register(ComStatus)
 admin.site.register(Office)
 admin.site.register(Appliance)
@@ -106,4 +108,18 @@ admin.site.register(ExteriorFinish)
 admin.site.register(Interior)
 admin.site.register(WallFinish)
 admin.site.register(EstateClientStatus)
+admin.site.register(BidEvent)
+admin.site.register(BidStatus)
+admin.site.register(LayoutType)
+admin.site.register(LayoutFeature)
+admin.site.register(Furniture)
+admin.site.register(Ceiling)
+admin.site.register(Flooring)
+admin.site.register(Heating)
+admin.site.register(Roof)
+admin.site.register(WindowType)
+
+
+
+
 

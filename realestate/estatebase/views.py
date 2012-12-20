@@ -328,7 +328,7 @@ class EstateListView(ListView):
         return context
        
 class EstateListDetailsView(EstateListView):   
-    paginate_by = 10 
+    paginate_by = 6 
     template_name = 'estate_list.html'
     estate = None 
     def get_context_data(self, **kwargs):        

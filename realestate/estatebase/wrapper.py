@@ -101,7 +101,7 @@ class ApartmentSteadWrapper(BidgWrapper):
     @BidgWrapper.exterior_set.getter
     def exterior_set(self):
         result = super(BidgWrapper, self).exterior_set[:]
-        exclude_set = ('elevator',)
+        exclude_set = ('elevator','room_number')
         for f in exclude_set:
             try:             
                 result.remove(f)

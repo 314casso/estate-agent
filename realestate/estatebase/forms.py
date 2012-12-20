@@ -297,6 +297,8 @@ class EstateFilterForm(BetterForm):
     
     FOTO_CHOICES = ((3, u'Все',), (0, u'Нет фото',), (1, u'Есть фото',))
     foto_choice = forms.ChoiceField(label=_('EstatePhoto'), widget=forms.RadioSelect, choices=FOTO_CHOICES, initial=3, required=False,)
+    description = forms.CharField(required=False, label=_('Description'))
+    comment = forms.CharField(required=False, label=_('Comment'))
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -368,9 +370,11 @@ class EstateFilterForm(BetterForm):
             if int(self['foto_choice'].value()) == 1:                
                 f['images__id__isnull'] = False
             elif int(self['foto_choice'].value()) == 0:
-                f['images__id__isnull'] = True    
-                
-                    
+                f['images__id__isnull'] = True            
+        if self['description'].value():                                 
+            f['description__icontains'] = self['description'].value()       
+        if self['comment'].value():                                 
+            f['comment__icontains'] = self['comment'].value()    
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
         for fld in complex_fields:
@@ -392,7 +396,8 @@ class EstateFilterForm(BetterForm):
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
-                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 'foto_choice', 'next' 
+                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
+                                           'description', 'comment', 'next', 'foto_choice' 
                                           ]})
                      ]
 
