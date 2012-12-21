@@ -120,7 +120,7 @@ def floor_compact(bidg):
     result = pref = ''   
     if bidg.floor_count:
         pref = u'этажность'
-        result = u'%s' % Decimal(bidg.floor_count).normalize()
+        result = u'%s' % bidg.floor_count
     if bidg.floor:
         pref =  u'этаж'      
         result = u'%s/%s' % (bidg.floor, result or '---')
@@ -131,7 +131,7 @@ def area_compact(bidg):
     result = pref = '' 
     if bidg.total_area:
         pref = u'общ. пл.'        
-        result = u'%s' % Decimal(bidg.total_area).normalize()
+        result = u'%s' % bidg.total_area
     if bidg.used_area:       
         pref = u'общ./жил. пл.'       
         result = u'%s/%s' % (result or '---', bidg.used_area)
