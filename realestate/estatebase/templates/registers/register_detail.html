@@ -29,11 +29,12 @@
 	{% history estateregister.history %}   
 </table>
 <div class="topbar button">
-    <a target="_blaank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
-    <a target="_blaank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
-    <a target="_blaank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
-    <a target="_blaank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Для покупателей без фото</a>
-    <a target="_blaank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">Для покупателей с фото</a>
+    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
+    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
+    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
+    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Для покупателей без фото</a>
+    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">Для покупателей с фото</a>
+    <a target="_blank" href="{% url orbita_report estateregister.pk %}?{{ next_url }}">Орбита</a>
 </div>  
 </fieldset>
 <!-- -->

@@ -121,4 +121,5 @@ urlpatterns += patterns('',
     url (r'^privateshortreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_short.html'), name='private_short_report'),
     url (r'^privatedetailreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_detail.html'), name='private_detail_report'),
     url (r'^publicreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/public.html'), name='public_report'),
+    url (r'^orbitareport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/newspapers/orbita.html'), name='orbita_report'),
 )

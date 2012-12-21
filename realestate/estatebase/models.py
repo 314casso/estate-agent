@@ -69,6 +69,7 @@ class Office(SimpleDict):
     '''
     regions = models.ManyToManyField(Region, verbose_name=_('Region'))
     address = models.TextField(_('Address'))
+    address_short = models.TextField(_('Short address'))
     class Meta(SimpleDict.Meta):
         verbose_name = _('Office')
         verbose_name_plural = _('Offices')
@@ -452,8 +453,8 @@ class Estate(ProcessDeletedModel):
         return reverse('estate_list_details', args=[self.pk]) 
     @property
     def basic_bidg(self):        
-        #bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
-        bidgs = list(self.bidgs.all()[:1])
+        bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
+        #bidgs = list(self.bidgs.all()[:1])
         if bidgs:
             return bidgs[0]                                  
     @property
@@ -761,7 +762,10 @@ class Stead(models.Model):
     @property
     def field_list(self):
         wrapper = get_wrapper(self)                          
-        return wrapper.field_list()       
+        return wrapper.field_list()
+    @property
+    def total_area_sotka(self):
+        return float(self.total_area / 100)       
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):
@@ -963,6 +967,6 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
-
+   
 from estatebase.signals import connect_signals
 connect_signals()

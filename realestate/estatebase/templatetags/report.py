@@ -5,6 +5,7 @@ from estatebase.wrapper import get_wrapper
 from collections import OrderedDict
 from copy import deepcopy
 from estatebase.models import MAYBE
+from decimal import Decimal
 
 register = template.Library()
 
@@ -98,6 +99,45 @@ def to_comma_sep(iterval):
     if result:
         return ', '.join(result)
     return u'не готовы'
+
+@register.simple_tag
+def newspaper_address(estate):
+    items = []    
+    if estate.locality:     
+        items.append(estate.locality.name)
+    if estate.microdistrict:         
+        items.append(estate.microdistrict.name)
+    return ', '.join(items) + ', '
+            
+@register.simple_tag
+def show_not_none(value, measure='', pref=''):
+    if value:
+        return u'%s %s %s' % (pref, value, measure)
+    return ''
+
+@register.simple_tag
+def floor_compact(bidg):
+    result = pref = ''   
+    if bidg.floor_count:
+        pref = u'этажность'
+        result = u'%s' % Decimal(bidg.floor_count).normalize()
+    if bidg.floor:
+        pref =  u'этаж'      
+        result = u'%s/%s' % (bidg.floor, result or '---')
+    return u'%s %s,' % (pref, result)        
+
+@register.simple_tag
+def area_compact(bidg):
+    result = pref = '' 
+    if bidg.total_area:
+        pref = u'общ. пл.'        
+        result = u'%s' % Decimal(bidg.total_area).normalize()
+    if bidg.used_area:       
+        pref = u'общ./жил. пл.'       
+        result = u'%s/%s' % (result or '---', bidg.used_area)
+    return u'%s %s кв.м,' % (pref, result)
+    
+    
             
 #@register.simple_tag            
 #def office_address(region):

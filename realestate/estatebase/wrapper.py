@@ -49,6 +49,9 @@ class BaseWrapper(object):
         return result
     def get_label(self, field):
         return getattr(self, field, None)
+    def get_short_label(self, field):
+        short_field_name = '%s_short' % (field) 
+        return getattr(self, short_field_name, None)
                    
 class BidgWrapper(BaseWrapper):
     summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built', 'floor', 'floor_count']

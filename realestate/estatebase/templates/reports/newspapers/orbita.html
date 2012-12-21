@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load l10n %}
+{% load link_helper %}
+{% load report %}
+<html lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <title> {% block title %}{% endblock title %} </title>
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/report.css">
+    </head>
+    <body>
+        <table class="newspaper-report-table">
+            {% for estate_item in estate_list %}
+            <tr>
+                <td>
+                {{ estate_item.estate_type }}, {% newspaper_address estate_item %}
+                
+                {% if estate_item.basic_bidg %}
+                {% show_not_none estate_item.basic_bidg.year_built 'г.п., ' %}                
+                {% floor_compact estate_item.basic_bidg %}                
+                {% show_not_none estate_item.basic_bidg.wall_construcion ', ' %}
+                {% area_compact estate_item.basic_bidg %}
+                {% show_not_none estate_item.basic_bidg.room_count 'комн., '  %}
+                {% show_not_none estate_item.basic_bidg.interior ', ' 'сост. '  %}
+                {% endif %} 
+                
+                {% if estate_item.stead %}
+                {% show_not_none estate_item.stead.total_area_sotka|floatformat 'сот.,' %}
+                {% show_not_none estate_item.stead.face_area 'м,' %}
+                {% endif %} 
+                {% if estate_item.estate_category.is_stead %}                
+                {% show_not_none estate_item.description '' 'описание: ' %}
+                {% endif %}
+                {% communication estate_item %},
+                код {{ estate_item.pk|unlocalize }},
+                цена {{ estate_item.agency_price|rubble }},
+                кредит ОАО СБ РФ,
+                {% for office in estate_item.region.office_set.all %}
+                {{ office.address_short|safe }}
+                {% endfor %} 
+                </td>
+            </tr>          
+            {% endfor %}
+        </table>
+
+    </body>
+</html>
