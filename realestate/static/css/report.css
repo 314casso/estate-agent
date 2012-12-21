@@ -13,7 +13,7 @@ td, th {
 	padding: 1px 3px;
 }
 
-.report-table, .report-table table {
+.report-table, .report-table table, .newspaper-report-table {
 	border-collapse: collapse;
 }
 
@@ -101,4 +101,18 @@ td, th {
 	padding-top: 15px;		
 	border: 1px solid #ccc;
 	background: #eee;
+}
+
+.newspaper-report-table {
+	border: 1px double #999;	
+}
+
+.newspaper-report-table td{
+	border-top: 1px double #999;	
+	font-size: 13px;
+	padding: 4px;
+}
+
+.newspaper-report-table tr:first-child td{
+	border-top: 0;
 }
