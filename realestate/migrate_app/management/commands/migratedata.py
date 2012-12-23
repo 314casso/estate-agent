@@ -48,7 +48,7 @@ class Command(BaseCommand):
         
     def client(self):        
         customers = Customers.objects.using('maxim_db').filter(contacts__id__isnull=False)
-        imported = list(Client.objects.using('default').values_list('id', flat=True))
+        imported = list(Client.all_objects.using('default').values_list('id', flat=True))
         customers = customers.exclude(pk__in=imported).distinct()        
         for customer in customers:
             with transaction.commit_on_success():            
@@ -88,7 +88,7 @@ class Command(BaseCommand):
     
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
-        imported = list(Estate.objects.values_list('id', flat=True))
+        imported = list(Estate.all_objects.values_list('id', flat=True))
         real_estates = real_estates.exclude(pk__in=imported).distinct()        
         for real_estate in real_estates: 
             if real_estate.type_id == 0:
