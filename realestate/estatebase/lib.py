@@ -1,3 +1,5 @@
+from estatebase.forms import BidPicleForm
+
 def first_last(iterable):
     i = iter(iterable)
     f = next(i)
@@ -7,3 +9,4 @@ def first_last(iterable):
         yield n, None
         n = another
     yield n, "last"
+

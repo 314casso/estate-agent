@@ -261,7 +261,7 @@ class EstateType(OrderedModel):
         (FACILITIES, u'Сооружение'),
         )    
     name = models.CharField(_('Name'), max_length=100)
-    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT)   
+    estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     placeable = models.BooleanField(_('Placeable'), default=True)        
@@ -898,16 +898,29 @@ class Bid(ProcessDeletedModel):
     '''      
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
     estate_filter = PickledObjectField(blank=True, null=True)
+    cleaned_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='brokers', blank=True, null=True, on_delete=models.PROTECT)
+    broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='broker_list', blank=True, null=True, on_delete=models.PROTECT)
+    brokers = models.ManyToManyField (ExUser, verbose_name=_('User'), blank=True, null=True)
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
+    estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), blank=True, null=True)
     estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    note = models.TextField(_('Note'), blank=True, null=True)
     bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True,null=True)
+    @property
+    def mixed_estate_types(self):
+        result = []        
+        cats_with_type = self.estate_types.values_list('estate_type_category_id', flat=True)
+        cats_no_type = self.estate_categories.exclude(id__in=cats_with_type)
+        result.extend(cats_no_type.values_list('types__name', flat=True).order_by('types__order'))
+        result.extend(self.estate_types.values_list('name', flat=True).order_by('order'))
+        return ', '.join(result)
+        
+        
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      

@@ -87,3 +87,10 @@ def estate_client_status(estate_pk,client_pk):
 def history(history):        
     if history:
         return {'history': history}
+
+@register.simple_tag
+def comma_list(q, limit=None, field = 'name'):    
+    q = q.values_list(field, flat=True)
+    if limit:
+        q = q[:limit]     
+    return ', '.join(q)

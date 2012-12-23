@@ -2,11 +2,11 @@
 from django.core.management.base import BaseCommand, CommandError
 import sys
 from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
-    Properties, Descriptions, Images
+    Properties, Descriptions, Images, Orders
 from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
     ContactHistory, Estate, Locality, Street, Microdistrict, EstateClient,\
-    EstatePhoto
+    EstatePhoto, Bid
 from django.contrib.auth.models import User
 import datetime
 from django.db import transaction
@@ -56,7 +56,8 @@ class Command(BaseCommand):
                 history.created = customer.treatment_date or datetime.datetime.now()                
                 history.created_by_id = UserUser.objects.get(pk=customer.creator_id).user_id                
                 history.save()                
-                Client.objects.create(id=customer.id, history=history, name=customer.name, client_type_id=3, 
+                Client.objects.create(id=customer.id, history=history, name=customer.name, 
+                                      client_type_id=self.client_type_parser(customer.name) or 3, 
                                       origin_id=SourceOrigin.objects.get(pk=customer.source_id or 14).origin_id, 
                                       address=customer.from_where, note=customer.comments)
     
@@ -74,7 +75,8 @@ class Command(BaseCommand):
                 c.contact = contact.contact 
                 c.updated = contact.update_record or datetime.datetime.now() 
                 c.contact_state_id = self._contact_state(contact.status)
-                c.save()                
+                c.save()
+        self.contact_history()                
     
     
     def estate_check(self):
@@ -222,8 +224,43 @@ class Command(BaseCommand):
         for h in histories:
             if not h.user_id:
                 h.user_id = h.contact.client.history.created_by_id
-                h.save()         
-            
+                h.save()      
+    
+    def set_bid_status(self, value):
+        pass
+        #mapper = {'новая': ,'передана':, 'отказ': }
+        
+    
+    def bid(self):
+        orders = Orders.objects.using('maxim_db').all()
+        imported = list(Bid.objects.values_list('id', flat=True))
+        orders = orders.exclude(pk__in=imported).distinct()
+        for order in orders:
+            with transaction.commit_on_success():
+                history = HistoryMeta()        
+                history.created = order.creation_date or datetime.datetime.now()                
+                history.created_by_id = UserUser.objects.get(pk=order.creator_id).user_id
+                history.updated = order.update_record
+                history.updated_by_id = UserUser.objects.get(pk=order.last_editor_id).user_id                 
+                history.save()
+                bid = Bid()
+                bid.id = order.id
+                bid.history = history
+                                   
+        
+                
+#    Кол заявки, Дата создания, создатель, Коды, тип объекта, район, населенные пункты, цена, 
+#дополнительное описание к внешнему описанию и участку в одно поле в новой базе.
+#Остальные поля, если не затратно по времени и силам: 
+#общ площадь, колво комнат, материал стен, площадь участка, год постройки Но не обязательно!
+
+#customer = models.ForeignKey(Customers)
+
+#    status = models.CharField(max_length=60)
+#    cost_from = models.IntegerField(null=True, blank=True)
+#    cost_to = models.IntegerField(null=True, blank=True)
+#    operation = models.TextField(blank=True)
+#    result = models.TextField(blank=True)            
     
                 
         

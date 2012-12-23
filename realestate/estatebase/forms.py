@@ -303,14 +303,24 @@ class EstateFilterForm(BetterForm):
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''
+    def type_filter(self):
+        q = Q()
+        cats = self['estate_category'].field.clean(self['estate_category'].value())         
+        types = self['estate_type'].field.clean(self['estate_type'].value())        
+        for t in types:
+            if t.estate_type_category in cats:
+                cats.remove(t.estate_type_category)
+            q = Q(bidgs__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
+            q = q | Q(stead__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
+        if len(cats):
+            q = q | Q(estate_category__in=cats)
+        return q
+        
     def get_filter(self):
-        f = {}  
-        if self['estate_type'].value():
-            q = Q(bidgs__estate_type_id__in=self['estate_type'].value())
-            q = q | Q(stead__estate_type_id__in=self['estate_type'].value()) 
-            f['Q'] = q 
-        if self['estate_category'].value():
-            f['estate_category_id__in'] = self['estate_category'].value()
+        f = {}
+        q = self.type_filter()        
+        if len(q):
+            f['Q'] = q       
         if self['com_status'].value():
             f['com_status_id__in'] = self['com_status'].value()
         if self['validity'].value():
@@ -493,6 +503,7 @@ class SteadForm(ObjectForm):
         }
                
 class LayoutForm(ModelForm):
+    area = LocalDecimalField(label=_('Area'))
     class Meta:
         model = Layout  
         widgets = {
@@ -516,8 +527,8 @@ class ImageUpdateForm(ModelForm):
         fields = ('name', 'note', 'image')     
 
 class BidForm(ModelForm):
-    client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')
-    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор')
+    client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')    
+    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлторы')
     bid_status = AutoComboboxSelectMultipleField(
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
@@ -528,7 +539,7 @@ class BidForm(ModelForm):
         self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
-        fields = ('client', 'broker', 'bid_status' , 'note') 
+        fields = ('client', 'brokers', 'bid_status' , 'note') 
         widgets = {
             'note': TextInput(attrs={'class': 'long-input'}) 
         }                         
@@ -669,18 +680,20 @@ class BidPicleForm(EstateFilterForm):
     def __init__(self, *args, **kwargs):
         super(BidPicleForm, self).__init__(*args, **kwargs)
         self.fields['estates'].label = u'Коды на осмотр'
-        required_fields = ('estate_type',)
+        required_fields = []
         for field in required_fields:             
             self.fields[field].required=True
-    def clean(self):
-        cleaned_data = super(BidPicleForm, self).clean()
-        region = cleaned_data.get("region")
-        locality = cleaned_data.get("locality")
-        agency_price = cleaned_data.get("agency_price")
-        if not (agency_price[0] or agency_price[1]):
+    def clean(self):        
+        cleaned_data = super(BidPicleForm, self).clean()        
+        region = cleaned_data.get('region')
+        locality = cleaned_data.get('locality')
+        agency_price = cleaned_data.get("agency_price")     
+        if not agency_price or not (agency_price[0] or agency_price[1]):
             raise forms.ValidationError(u'Цена не указана')
         if not (region or locality):
             raise forms.ValidationError(u'Необходимо указать район или населенный пункт')
+        if not (cleaned_data.get('estate_category') or cleaned_data.get('estate_type')):
+            raise forms.ValidationError(u'Необходимо указать категорию или вид недвижимости')
         return cleaned_data    
     class Meta:        
         fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),

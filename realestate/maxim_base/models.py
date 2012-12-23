@@ -136,4 +136,55 @@ class Descriptions(models.Model):
         return u'%s' % self.description.strip()
     class Meta:
         db_table = u'descriptions'
-        managed = False                                                       
+        managed = False       
+        
+class OrderProperties(models.Model):    
+    order = models.ForeignKey('Orders')
+    name = models.CharField(max_length=90, unique=True)
+    value = models.CharField(max_length=765)
+    class Meta:
+        db_table = u'order_properties'
+        managed = False
+
+class Orders(models.Model):    
+    customer = models.ForeignKey(Customers)
+    creator_id = models.IntegerField()
+    creation_date = models.DateTimeField()
+    last_editor_id = models.IntegerField(null=True, blank=True)
+    update_record = models.DateTimeField()
+    status = models.CharField(max_length=60)
+    cost_from = models.IntegerField(null=True, blank=True)
+    cost_to = models.IntegerField(null=True, blank=True)
+    operation = models.TextField(blank=True)
+    result = models.TextField(blank=True)
+    class Meta:
+        db_table = u'orders'
+        managed = False
+
+class OrderHasPlace(models.Model):
+    order = models.ForeignKey(Orders)
+    place = models.ForeignKey(Place)
+    class Meta:
+        db_table = u'order_has_place'
+        managed = False
+
+class OrderHasRegion(models.Model):
+    order = models.ForeignKey(Orders)
+    region = models.ForeignKey(Region)
+    class Meta:
+        db_table = u'order_has_region'
+        managed = False
+
+class OrderHasType(models.Model):
+    order = models.ForeignKey(Orders)
+    type = models.ForeignKey(Types)
+    class Meta:
+        db_table = u'order_has_type'
+        managed = False
+
+class OrderHasUser(models.Model):
+    order = models.ForeignKey(Orders)
+    user = models.ForeignKey(Users)
+    class Meta:
+        db_table = u'order_has_user'
+        managed = False

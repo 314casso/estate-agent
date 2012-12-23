@@ -76,6 +76,13 @@ $(document).ready(function() {
 		aDec : ',',
 		mDec : 2
 	});
+	
+	$('.local-int, .local-decimal').each(function() {
+		if ($(this).val()) {
+			$(this).autoNumericSet($(this).val());
+		}
+	});
+	
 	$('#loadingMask').fadeOut();
 
 	$(".errorlist a").click(function() {

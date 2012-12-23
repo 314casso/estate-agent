@@ -739,11 +739,7 @@ class SteadRemoveView(BidgAppendView):
 class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'
     form_class = BidForm
-    model = Bid
-    def get_initial(self):        
-        initial = super(BidMixin, self).get_initial()                
-        initial['broker'] = self.request.user.pk
-        return initial
+    model = Bid    
     def get_context_data(self, **kwargs):
         client = None
         if 'client' in self.kwargs:
@@ -759,10 +755,10 @@ class BidMixin(ModelFormMixin):
         if self.request.POST:
             context['estate_filter_form'] = BidPicleForm(self.request.POST)            
         else:
-            data = None
+            initial = None
             if self.object:
-                data = self.object.estate_filter                   
-            context['estate_filter_form'] = BidPicleForm(data)                      
+                initial = self.object.cleaned_filter                  
+            context['estate_filter_form'] = BidPicleForm(initial=initial)                      
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -775,18 +771,18 @@ class BidMixin(ModelFormMixin):
         if estate_filter_form.is_valid():
             self.object = form.save()                      
             # Запаковываем фильтр в поле
-            self.object.estate_filter = estate_filter_form.data.copy()                        
+            cleaned_data = estate_filter_form.cleaned_data
+            self.object.cleaned_filter = cleaned_data                        
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
-            self.object.estates = estate_filter_form['estates'].value()
-            self.object.clients = estate_filter_form['clients'].value()
-            self.object.contacts = estate_filter_form['contacts'].value()
-            self.object.estate_types = estate_filter_form['estate_type'].value()
-            self.object.regions = estate_filter_form['region'].value()            
-            self.object.localities = estate_filter_form['locality'].value()
-            if check_value_list(estate_filter_form['agency_price'].value()):                
-                values = estate_filter_form['agency_price'].field.clean(estate_filter_form['agency_price'].value())                                  
-                self.object.agency_price_min = values[0]                        
-                self.object.agency_price_max = values[1]
+            self.object.estates = cleaned_data['estates']
+            #self.object.clients = cleaned_data['clients']
+            #self.object.contacts = cleaned_data['contacts']
+            self.object.estate_types = cleaned_data['estate_type']
+            self.object.estate_categories = cleaned_data['estate_category']
+            self.object.regions = cleaned_data['region']            
+            self.object.localities = cleaned_data['locality']
+            self.object.agency_price_min = cleaned_data['agency_price'][0]                        
+            self.object.agency_price_max = cleaned_data['agency_price'][1]
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:
@@ -800,6 +796,7 @@ class BidCreateView(BidMixin, CreateView):
             if not Client.objects.filter(pk=client_pk).exists():
                 raise Exception(u'Заказчик с id %s не найден!' % client_pk)                
             initial['client'] = client_pk
+        initial['broker'] = self.request.user.pk
         return initial
 
 class BidUpdateView(BidMixin, UpdateView):    
@@ -845,7 +842,7 @@ class BidListView(ListView):
         if filter_dict:
             self.filtered = True
 #        Если нужно и заявки только по гео-фактору показывать
-#        filter_dict.update({'localities__geo_group__userprofile__user__exact': self.request.user })                                        
+#TODO:        filter_dict.update({'history__created_by__userprofile__geo_groups__id__exact': self.request.user. })                                        
         if len(filter_dict):
             q = q.filter(**filter_dict)
         order_by = self.request.fields 

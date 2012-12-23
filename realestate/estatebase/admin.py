@@ -50,6 +50,15 @@ class EstateAdmin(admin.ModelAdmin):
     fields = ['estate_category']
     inlines = [BidgInline, SteadInline]
 
+class ClientAdmin(admin.ModelAdmin):
+    search_fields = ['id',]
+    fields = ['name', 'deleted']
+    list_display = ('id', '__unicode__')
+    list_filter = ('deleted',)
+    def queryset(self, request):
+        #q = super(ClientAdmin, self).queryset(request)        
+        return Client.all_objects    
+
 class BidgAdmin(admin.ModelAdmin):
     search_fields = ['estate__id']
     fields = ['estate_type', 'basic']    
@@ -74,13 +83,12 @@ admin.site.register(EstateType,EstateTypeAdmin)
 admin.site.register(EstateTypeCategory,EstateTypeCategoryAdmin)
 
 admin.site.register(ClientType)
-admin.site.register(Client)
 admin.site.register(ContactType)
 admin.site.register(Origin)
 admin.site.register(Contact)
 admin.site.register(ContactState)
 admin.site.register(ContactHistory)
-#admin.site.register(Bidg, BidgAdmin)
+admin.site.register(Bidg, BidgAdmin)
 admin.site.register(EstateStatus)
 admin.site.register(Document)
 admin.site.register(EstateParam,EstateParamAdmin)
@@ -118,6 +126,7 @@ admin.site.register(Flooring)
 admin.site.register(Heating)
 admin.site.register(Roof)
 admin.site.register(WindowType)
+admin.site.register(Client, ClientAdmin)
 
 
 

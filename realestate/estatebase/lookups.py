@@ -80,8 +80,12 @@ class LocalityLookup(ModelLookup):
     def get_item_label(self, item):
         return u"%s, %s" % (item.name, item.region or '')
 
-class EstateTypeCategoryLookup(SimpleNameLookup):
+class EstateTypeCategoryLookup(ModelLookup):
+    search_fields = ('name__icontains',)
     model = EstateTypeCategory
+    def get_query(self, request, term):
+        results = super(EstateTypeCategoryLookup, self).get_query(request, term)
+        return results.filter(independent=True)
 
 class EstateTypeLookup(SimpleNameLookup):   
     model = EstateType 

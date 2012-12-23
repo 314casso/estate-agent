@@ -23,6 +23,14 @@ def parse_decimal(value, splitter=None, index=1):
                 return result
     else:
         return Decimal(value)
-              
+
+def split_digit(values):
+    result = []
+    parts = re.split('\D', values)
+    for part in parts:
+        if part.isdigit(): 
+            result.append(part)
+    return result
+    
                           
 #print parse_decimal("2, 5")        
