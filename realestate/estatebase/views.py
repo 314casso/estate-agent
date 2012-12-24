@@ -921,13 +921,13 @@ class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
         elif rtype == 'based':
             initial['name'] = u'По заявке [%s]' % self.kwargs['bid']
             bid = Bid.objects.get(pk=self.kwargs['bid'])
-            fltr = bid.estate_filter
+            fltr = bid.cleaned_filter
             if fltr:            
-                pickle_form = BidPicleForm(fltr)
+                pickle_form = BidPicleForm(initial=fltr)
                 f = pickle_form.get_filter()
                 q = Estate.objects
-                q = set_estate_filter(q, f, True)   
-                initial['estates'] = q.values_list('id', flat=True)
+                q = set_estate_filter(q, f, True)                   
+                initial['estates'] = q.values_list('id', flat=True)                
         return initial     
 
 class EstateRegisterUpdateView(EstateRegisterMixin, UpdateView):

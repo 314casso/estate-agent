@@ -304,9 +304,10 @@ class EstateFilterForm(BetterForm):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''
     def type_filter(self):
-        q = Q()
-        cats = self['estate_category'].field.clean(self['estate_category'].value())         
-        types = self['estate_type'].field.clean(self['estate_type'].value())        
+#        TODO: Все можно переделать на cleaned_data!!
+        q = Q()        
+        cats = self['estate_category'].field.clean(self['estate_category'].value()) if self.is_bound else self['estate_category'].value()       
+        types = self['estate_type'].field.clean(self['estate_type'].value()) if self.is_bound else self['estate_type'].value()        
         for t in types:
             if t.estate_type_category in cats:
                 cats.remove(t.estate_type_category)
