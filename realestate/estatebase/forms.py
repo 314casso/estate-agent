@@ -600,7 +600,7 @@ class BidFilterForm(BetterForm):
         if self['created_by'].value():
             f['history__created_by_id'] = self['created_by'].value()
         if self['broker'].value():
-            f['broker_id'] = self['broker'].value()
+            f['brokers__id'] = self['broker'].value()
         if self['clients'].value():
             f['client__id__in'] = self['clients'].value()    
         if self['contacts'].value():
