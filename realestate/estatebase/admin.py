@@ -47,7 +47,7 @@ class SteadInline(admin.StackedInline):
     
 class EstateAdmin(admin.ModelAdmin):
     search_fields = ['id',]
-    fields = ['estate_category']
+    fields = ['estate_category', 'deleted']
     inlines = [BidgInline, SteadInline]
     list_filter = ('deleted',)
     def queryset(self, request):                
