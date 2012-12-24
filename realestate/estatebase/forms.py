@@ -303,11 +303,12 @@ class EstateFilterForm(BetterForm):
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''
-    def type_filter(self):
-#        TODO: Все можно переделать на cleaned_data!!
+    def type_filter(self, cleaned_data):
+        if not cleaned_data:
+            return
         q = Q()        
-        cats = self['estate_category'].field.clean(self['estate_category'].value()) if self.is_bound else self['estate_category'].value()       
-        types = self['estate_type'].field.clean(self['estate_type'].value()) if self.is_bound else self['estate_type'].value()        
+        cats = cleaned_data['estate_category']       
+        types = cleaned_data['estate_type']        
         for t in types:
             if t.estate_type_category in cats:
                 cats.remove(t.estate_type_category)
@@ -316,84 +317,80 @@ class EstateFilterForm(BetterForm):
         if len(cats):
             q = q | Q(estate_category__in=cats)
         return q
-        
+    
     def get_filter(self):
+        if self.is_valid():
+            return self.make_filter(self.cleaned_data)
+        return {}
+    
+    def make_filter(self, cleaned_data):
         f = {}
-        q = self.type_filter()        
+        if not cleaned_data:
+            return f                     
+        q = self.type_filter(cleaned_data)        
         if len(q):
-            f['Q'] = q       
-        if self['com_status'].value():
-            f['com_status_id__in'] = self['com_status'].value()
-        if self['validity'].value():
-            f['validity_id__in'] = self['validity'].value()
+            f['Q'] = q   
+        
+        if cleaned_data['validity']:
+            f['validity__in'] = cleaned_data['validity']
             f['history__modificated__gt'] = CORRECT_DELTA
-        if self['estates'].value():                                 
-            f['id__in'] = self['estates'].value()        
-        if self['region'].value():
-            f['region_id__in'] = self['region'].value()
-        if self['locality'].value():
-            f['locality_id__in'] = self['locality'].value()            
-        if self['microdistrict'].value():
-            f['microdistrict_id__in'] = self['microdistrict'].value()    
-        if self['street'].value():
-            f['street_id__in'] = self['street'].value()                    
-        if self['estate_number'].value():                                 
-            f['estate_number__in'] = split_string(self['estate_number'].value())
-        if self['room_number'].value():                                 
-            f['bidgs__room_number__contains'] = self['room_number'].value()        
-        if self['estate_status'].value():
-            f['estate_status_id__in'] = self['estate_status'].value()                                           
-        if self['clients'].value():
-            f['clients__id__in'] = self['clients'].value()    
-        if self['contacts'].value():
-            f['clients__contacts__id__in'] = self['contacts'].value()
-        if self['shape'].value():
-            f['stead__shape__id__in'] = self['shape'].value()            
-        if self['marks'].value():
-            f['estate_params__id__in'] = self['marks'].value()    
+        
+        if cleaned_data['estates']:
+            f['id__in'] = [item.pk for item in cleaned_data['estates']] 
+        
+        if cleaned_data['estate_number']:                                 
+            f['estate_number__in'] = split_string(cleaned_data['estate_number'])
+                    
+        simple_filter = {'com_status__in': 'com_status', 'region__in': 'region',
+                         'locality__in': 'locality', 'microdistrict__in': 'microdistrict',
+                         'street__in': 'street', 'bidgs__room_number__contains': 'room_number',
+                         'estate_status__in': 'estate_status', 'clients__in': 'clients',
+                         'clients__contacts__in': 'contacts', 'stead__shape__in': 'shape',
+                         'estate_params__in': 'marks', 'bidgs__wall_construcion__in': 'wall_construcion',
+                         'origin__in': 'origin', 'bidgs__interior__in': 'interior',
+                         'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
+                         'comment__icontains': 'comment'                             
+                         }
+        
+        for key, value in simple_filter.iteritems():
+            if cleaned_data[value]:
+                f[key] = cleaned_data[value]  
+                
         two_number_fields = {'agency_price':'agency_price', 'year_built':'bidgs__year_built',
                              'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
                              'total_area':'bidgs__total_area', 'used_area':'bidgs__used_area',
                              'room_count':'bidgs__room_count', 'stead_area':'stead__total_area',
                              'face_area':'stead__face_area'}
         for fld, fld_name in two_number_fields.iteritems():
-            if check_value_list(self[fld].value()):
-                result = from_to_values(self[fld].field.clean(self[fld].value()), fld_name)
+            if check_value_list(cleaned_data[fld]):
+                result = from_to_values(cleaned_data[fld], fld_name)
                 if result: 
                     f.update(result)
-        if self['wall_construcion'].value():
-            f['bidgs__wall_construcion_id__in'] = self['wall_construcion'].value()            
-        if check_value_list(self['created'].value()):            
-            value = from_to_values(self['created'].field.clean(self['created'].value()), 'history__created')            
+
+        if check_value_list(cleaned_data['created']):            
+            value = from_to_values(cleaned_data['created'], 'history__created')            
             if value:                 
                 f.update(value)        
-        if check_value_list(self['updated'].value()):            
-            value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
+        if check_value_list(cleaned_data['updated']):            
+            value = from_to_values(cleaned_data['updated'], 'history__updated')            
             if value:                 
                 f.update(value)
-        if self['origin'].value():
-            f['origin_id__in'] = self['origin'].value()                    
-        if self['interior'].value():
-            f['bidgs__interior_id__in'] = self['interior'].value()
-        if self['exterior_finish'].value():
-            f['bidgs__exterior_finish_id__in'] = self['exterior_finish'].value()
-        if self['foto_choice'].value():
-            if int(self['foto_choice'].value()) == 1:                
+        
+        if cleaned_data['foto_choice']:
+            if int(cleaned_data['foto_choice']) == 1:                
                 f['images__id__isnull'] = False
-            elif int(self['foto_choice'].value()) == 0:
+            elif int(cleaned_data['foto_choice']) == 0:
                 f['images__id__isnull'] = True            
-        if self['description'].value():                                 
-            f['description__icontains'] = self['description'].value()       
-        if self['comment'].value():                                 
-            f['comment__icontains'] = self['comment'].value()    
+            
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
         for fld in complex_fields:
-            result = complex_field_parser(self[fld].value(), fld)
+            result = complex_field_parser(cleaned_data[fld], fld)
             if result: 
                 lst.update(result)          
         f.update(lst)    
-        return f
+        return f    
+    
     class Meta:
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
@@ -685,7 +682,7 @@ class BidPicleForm(EstateFilterForm):
         for field in required_fields:             
             self.fields[field].required=True
     def clean(self):        
-        cleaned_data = super(BidPicleForm, self).clean()        
+        cleaned_data = super(BidPicleForm, self).clean()                
         region = cleaned_data.get('region')
         locality = cleaned_data.get('locality')
         agency_price = cleaned_data.get("agency_price")     

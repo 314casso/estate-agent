@@ -19,7 +19,7 @@ def from_to_values(values, field_name):
 def complex_field_parser(value, field_name):    
     if not value[0]:
         return None    
-    f = {'%s_id__exact' % field_name : value[0]}    
+    f = {'%s__exact' % field_name : value[0]}    
     if value[1]:            
         num = from_to(value[1], '%s_distance' % field_name)
         if num:
@@ -73,3 +73,4 @@ def check_value_list(values):
         if value:
             return True
     return False    
+
