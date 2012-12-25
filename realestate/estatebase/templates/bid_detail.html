@@ -31,9 +31,9 @@
 	<tr>
 		<th>Виды недвижимости:</th>
 		<td>
-                {% for estate_type in bid.estate_types.all %}
-                    <a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
-                {% endfor %}
+			<a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">
+				{{ bid.mixed_estate_types }}
+			</a>
         </td>
 	</tr>
 	<tr>
