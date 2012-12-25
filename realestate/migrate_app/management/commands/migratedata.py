@@ -14,6 +14,7 @@ import re
 from migrate_app.prop_map import PropMap
 import os
 from settings import MEDIA_ROOT
+from migrate_app.order_prop_map import OrderPropMap
 
 class Command(BaseCommand):
     args = '<function_name function_name ...>'
@@ -246,9 +247,11 @@ class Command(BaseCommand):
                 bid = Bid()
                 bid.id = order.id
                 bid.history = history
-                bid.save()
-                for t in bid.types.all():
-                    estate_type = TypesEstateType.objects.get(source_id=t.type_id).estate_type
+                b = bid.save()
+                prop_map = OrderPropMap(b)
+                prop_map._set_types(self, order.types.all())
+                
+                    
                 
                 
                                    

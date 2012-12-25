@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from estatebase.helpers.functions import parse_decimal, split_digit
 from estatebase.models import EstateParam, Document, Bidg, Stead, Estate
-class PropMap(object):
+from migrate_app.models import TypesEstateType
+class OrderPropMap(object):
     params = ('all_floor', 'description', 'electricity_status', 'gas_status', 'land_description', 
               'sewerage_status', 'state', 'wall_material', 'water_status', 'real_estate_id', 
               'destination', 'distance_from', 'distance_to', 'electricity_distance', 'floor_from', 
@@ -60,6 +61,17 @@ class PropMap(object):
             ids = split_digit(value)
             real_ids = Estate.objects.filter(id__in=ids).values_list('id', flat=True)
             if len(real_ids) > 0:
-                self.bid.estates = real_ids
+                self.pickle_dict['estates'] = real_ids
+    
+    def _set_types(self, types):
+        result = []
+        for t in types:
+            estate_type = TypesEstateType.objects.get(source_id=t.type_id).estate_type
+            if estate_type:
+                result.append(estate_type)
+        if len(result):
+            self.pickle_dict['estate_types'] = result
+            
+                
                 
        
