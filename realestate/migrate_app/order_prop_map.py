@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from estatebase.helpers.functions import parse_decimal, split_digit
-from estatebase.models import EstateParam, Document, Bidg, Stead
+from estatebase.models import EstateParam, Document, Bidg, Stead, Estate
 class PropMap(object):
     params = ('all_floor', 'description', 'electricity_status', 'gas_status', 'land_description', 
               'sewerage_status', 'state', 'wall_material', 'water_status', 'real_estate_id', 
@@ -58,5 +58,8 @@ class PropMap(object):
     def set_real_estate_id(self, value):
         if value:
             ids = split_digit(value)
-            if len(ids) > 0:
-                self.bid.estates = ids   
+            real_ids = Estate.objects.filter(id__in=ids).values_list('id', flat=True)
+            if len(real_ids) > 0:
+                self.bid.estates = real_ids
+                
+       

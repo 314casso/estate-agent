@@ -26,7 +26,6 @@ def estate_client_handler(sender, instance, **kwargs):
         instance.estate.save()
     except Estate.DoesNotExist:
         pass
-                
 
 def update_deleted(sender, instance, created, **kwargs):
     if instance.deleted:                     
@@ -62,6 +61,16 @@ def bid_event_history(sender, instance, created, **kwargs):
     else:
         prepare_history(instance.history, instance._user_id)
 
+def update_from_pickle(sender, instance, **kwargs):
+    cleaned_data = instance.cleaned_filter
+    instance.estates = cleaned_data['estates']
+    instance.estate_types = cleaned_data['estate_type']
+    instance.estate_categories = cleaned_data['estate_category']
+    instance.regions = cleaned_data['region']            
+    instance.localities = cleaned_data['locality']
+    instance.agency_price_min = cleaned_data['agency_price'][0]                        
+    instance.agency_price_max = cleaned_data['agency_price'][1]
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
@@ -72,4 +81,6 @@ def connect_signals():
     post_save.connect(estate_client_handler, sender=EstateClient)
     post_delete.connect(estate_client_handler, sender=EstateClient)
     pre_save.connect(update_localities, sender=Bid)
+    pre_save.connect(update_from_pickle, sender=Bid)
     post_save.connect(bid_event_history, sender=BidEvent)
+    

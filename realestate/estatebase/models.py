@@ -902,13 +902,15 @@ class Bid(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='broker_list', blank=True, null=True, on_delete=models.PROTECT)
     brokers = models.ManyToManyField (ExUser, verbose_name=_('User'), blank=True, null=True)
+    #Для поиска из пикле
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
     estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), blank=True, null=True)
     estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
     regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
-    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)    
+    agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
+    #Конец из пикле    
     note = models.TextField(_('Note'), blank=True, null=True)
     bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True,null=True)
     @property

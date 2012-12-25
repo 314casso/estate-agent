@@ -176,7 +176,7 @@ class OrderHasRegion(models.Model):
         managed = False
 
 class OrderHasType(models.Model):
-    order = models.ForeignKey(Orders)
+    order = models.ForeignKey(Orders, related_name='types')
     type = models.ForeignKey(Types)
     class Meta:
         db_table = u'order_has_type'

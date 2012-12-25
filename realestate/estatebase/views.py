@@ -773,16 +773,7 @@ class BidMixin(ModelFormMixin):
             # Запаковываем фильтр в поле
             cleaned_data = estate_filter_form.cleaned_data
             self.object.cleaned_filter = cleaned_data                        
-            self.object.history = prepare_history(self.object.history, self.request.user.pk)
-            self.object.estates = cleaned_data['estates']
-            #self.object.clients = cleaned_data['clients']
-            #self.object.contacts = cleaned_data['contacts']
-            self.object.estate_types = cleaned_data['estate_type']
-            self.object.estate_categories = cleaned_data['estate_category']
-            self.object.regions = cleaned_data['region']            
-            self.object.localities = cleaned_data['locality']
-            self.object.agency_price_min = cleaned_data['agency_price'][0]                        
-            self.object.agency_price_max = cleaned_data['agency_price'][1]
+            self.object.history = prepare_history(self.object.history, self.request.user.pk)            
             self.object.save()            
             return super(ModelFormMixin, self).form_valid(form)
         else:
@@ -816,11 +807,6 @@ class BidDetailView(BidMixin, DetailView):
     template_name = 'bid_detail.html'
     def get_context_data(self, **kwargs):
         context = super(BidDetailView, self).get_context_data(**kwargs)
-#        form = BidPicleForm(self.object.estate_filter)
-#        if form.is_valid():         
-#            context.update({
-#                'picle_form' : form.cleaned_data            
-#            })
         q = self.object.estate_registers.all()
         order_by = self.request.fields
         if order_by:      

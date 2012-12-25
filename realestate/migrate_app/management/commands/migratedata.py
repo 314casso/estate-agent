@@ -246,6 +246,11 @@ class Command(BaseCommand):
                 bid = Bid()
                 bid.id = order.id
                 bid.history = history
+                bid.save()
+                for t in bid.types.all():
+                    estate_type = TypesEstateType.objects.get(source_id=t.type_id).estate_type
+                
+                
                                    
         
                 
