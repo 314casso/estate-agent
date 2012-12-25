@@ -48,9 +48,9 @@ def update_localities(sender, instance, **kwargs):
     if instance.pk:
         if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
             for region in instance.regions.all():
-                for locality in region.locality_set.all(): 
-                    instance.localities.add(locality)
-                    instance.estate_filter.update({'locality_1' : locality.pk})                    
+                localities = list(region.locality_set.values_list('id',flat=True))
+                instance.localities = localities                 
+                instance.cleaned_filter.update({'locality' : localities})                    
 
 def bid_event_history(sender, instance, created, **kwargs):
     if created:

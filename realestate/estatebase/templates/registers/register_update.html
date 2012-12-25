@@ -24,7 +24,7 @@
 				</div></td>
 			</tr>
 			</thead>
-			<tbody>								
+			<tbody>
 			<tr>
 				<td colspan="100%">
 					<table>
@@ -42,5 +42,16 @@
 			</tr>
 			</tfoot>
         </table>
-    </form>
+    </form>       
 {% endblock %}
+
+{% block right %}
+{% if addlist %}
+    <div class="ui-widget-content" style="margin-top: 5px; padding: 3px">
+    <h3>Следующие лоты будут добавлены в подборку:</h3>
+    {% for estate_item in addlist %}
+	{{ estate_item }}{% include 'comma.html' %}
+	{% endfor %}
+	</div>
+	{% endif %}
+{% endblock right %}

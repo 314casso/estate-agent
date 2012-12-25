@@ -59,7 +59,10 @@
         <tr class="ui-widget-content">
             <td><a title="Редактирование заявки" href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
             <td style="white-space: nowrap">{{ bid_item.history.modificated|date:"d M Y" }} </td>
-            <td>{{ bid_item.broker }} </td>
+            <td>{% for broker in bid_item.brokers.all %}
+            	{{ broker }}
+            	{% endfor %}
+        	</td>
             <td>
             	<a title="Просмотр заявки" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">
             	{{ bid_item.mixed_estate_types }}

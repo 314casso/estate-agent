@@ -405,7 +405,7 @@ class Estate(ProcessDeletedModel):
         if self.basic_bidg and self.basic_bidg.is_independent:
             if not self.basic_bidg.year_built:
                 report[self.DRAFT].append(unicode(_('Year built')))
-            if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template == HOUSE:                                
+            if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template in (HOUSE, OUTBUILDINGS):                                
                 report[self.DRAFT].append(unicode(_('Floor')))
             if not self.basic_bidg.floor_count:
                 report[self.DRAFT].append(unicode(_('Floor count')))

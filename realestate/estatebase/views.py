@@ -751,14 +751,10 @@ class BidMixin(ModelFormMixin):
             'next_url': safe_next_link(self.request.get_full_path()),
             'client': client,
         })       
-                           
         if self.request.POST:
             context['estate_filter_form'] = BidPicleForm(self.request.POST)            
-        else:
-            initial = None
-            if self.object:
-                initial = self.object.cleaned_filter                  
-            context['estate_filter_form'] = BidPicleForm(initial=initial)                      
+        else:           
+            context['estate_filter_form'] = BidPicleForm(initial=self.object.cleaned_filter if self.object else None)                      
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -876,7 +872,8 @@ class ClientStatusUpdateView(BaseMixin, UpdateView):
 class EstateRegisterMixin(ModelFormMixin):
     template_name = 'registers/register_update.html'
     form_class = EstateRegisterForm 
-    model = EstateRegister   
+    model = EstateRegister
+    _addlist = None   
     def get_initial(self):        
         initial = super(EstateRegisterMixin, self).get_initial()        
         if 'bid' in self.kwargs:                  
@@ -886,6 +883,7 @@ class EstateRegisterMixin(ModelFormMixin):
         context = super(EstateRegisterMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
+            'addlist' : self._addlist,
         })
         return context
     def get_success_url(self):   
@@ -907,13 +905,14 @@ class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
         elif rtype == 'based':
             initial['name'] = u'По заявке [%s]' % self.kwargs['bid']
             bid = Bid.objects.get(pk=self.kwargs['bid'])
-            fltr = bid.estate_filter
+            fltr = bid.cleaned_filter            
             if fltr:            
-                pickle_form = BidPicleForm(fltr)
-                f = pickle_form.get_filter()
+                pickle_form = BidPicleForm()
+                f = pickle_form.make_filter(fltr)
                 q = Estate.objects
-                q = set_estate_filter(q, f, True)   
+                q = set_estate_filter(q, f, True)
                 initial['estates'] = q.values_list('id', flat=True)
+                self._addlist = initial['estates']                
         return initial     
 
 class EstateRegisterUpdateView(EstateRegisterMixin, UpdateView):
