@@ -23,9 +23,9 @@
 		<td style="font-weight: bold"><a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
 	</tr>
 	<tr>
-        <th>Риэлтор:</th>
+        <th>Риэлторы:</th>
         <td>
-         {{ bid.broker }}
+         {% for broker in bid_item.brokers.all %}{{ broker }}{% endfor %}
         </td>
     </tr>
 	<tr>
