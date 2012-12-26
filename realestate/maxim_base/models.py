@@ -162,14 +162,14 @@ class Orders(models.Model):
         managed = False
 
 class OrderHasPlace(models.Model):
-    order = models.ForeignKey(Orders)
+    order = models.ForeignKey(Orders, related_name='places')
     place = models.ForeignKey(Place)
     class Meta:
         db_table = u'order_has_place'
         managed = False
 
 class OrderHasRegion(models.Model):
-    order = models.ForeignKey(Orders)
+    order = models.ForeignKey(Orders, related_name='regions')
     region = models.ForeignKey(Region)
     class Meta:
         db_table = u'order_has_region'

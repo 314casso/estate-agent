@@ -86,6 +86,17 @@ class Command(BaseCommand):
     def _get_region_id(self, value):
         mapper = {1: 1, 2: 3, 3: 2, 4: 4}                
         return mapper[value]        
+
+    def get_locality(self, place_id, region_id, place_name):
+        if place_id == 26: #Виноградный дублируется
+            if region_id == 1:
+                return Locality.objects.get(pk=28)
+            elif region_id == 4:
+                return Locality.objects.get(pk=29)
+            else:
+                return Locality.objects.get(pk=27)                       
+        else:
+            return Locality.objects.get(name__iexact=place_name)
     
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
@@ -119,24 +130,14 @@ class Command(BaseCommand):
                 estate_type = estate_type_type.estate_type
                 e.estate_category_id = estate_type.estate_type_category_id
                 e._estate_type_id = estate_type.pk
-                e.origin_id = SourceOrigin.objects.get(pk=real_estate.source_id or 14).origin_id                
-                locality = None
-                if real_estate.place_id == 26: #Виноградный дублируется
-                    if real_estate.region_id == 1:
-                        locality = Locality.objects.get(pk=28)
-                    elif real_estate.region_id == 4:
-                        locality = Locality.objects.get(pk=29)
-                    else:
-                        locality = Locality.objects.get(pk=27)                       
-                else:
-                    locality = Locality.objects.get(name__iexact=real_estate.place.name.strip())
-                e.locality = locality                                                 
-                e.region_id = locality.region_id
+                e.origin_id = SourceOrigin.objects.get(pk=real_estate.source_id or 14).origin_id               
+                e.locality = self.get_locality(real_estate.place_id, real_estate.region_id, real_estate.place.name.strip())                                                 
+                e.region_id = e.locality.region_id
                 if real_estate.street_id and real_estate.street_id != 1:
-                    street, created = Street.objects.get_or_create(name=real_estate.street.name.strip(), locality=locality) # @UnusedVariable
+                    street, created = Street.objects.get_or_create(name=real_estate.street.name.strip(), locality=e.locality) # @UnusedVariable
                     e.street = street                
                 if real_estate.area_id and real_estate.area_id != 1:
-                    microdistrict, created = Microdistrict.objects.get_or_create(name=real_estate.area.name.strip(), locality=locality) # @UnusedVariable
+                    microdistrict, created = Microdistrict.objects.get_or_create(name=real_estate.area.name.strip(), locality=e.locality) # @UnusedVariable
                     e.microdistrict = microdistrict
                 e.estate_number = real_estate.house_number.strip()
                 e.saler_price = real_estate.cost
@@ -230,8 +231,7 @@ class Command(BaseCommand):
     def set_bid_status(self, value):
         pass
         #mapper = {'новая': ,'передана':, 'отказ': }
-        
-    
+
     def bid(self):
         orders = Orders.objects.using('maxim_db').all()
         imported = list(Bid.objects.values_list('id', flat=True))
@@ -251,26 +251,24 @@ class Command(BaseCommand):
                 prop_map = OrderPropMap(b)
                 prop_map._set_types(self, order.types.all())
                 
-                    
+                regions = list(order.regions.values_list('region_id', flat=True))
+                first_region = regions[0] if len(regions) else None
+                clear_localities = []
+                clear_regions = set()                
+                for place in order.places.all():
+                    locality = self.get_locality(place.place_id, first_region, place.place.name)
+                    clear_localities.append(locality)
+                    clear_regions.add(locality.region)                    
+                prop_map.pickle_dict['region'] = clear_regions 
+                prop_map.pickle_dict['locality'] = clear_localities
                 
+                prop_map.pickle_dict['agency_price'] = [order.cost_from, order.cost_to]     
                 
-                                   
-        
                 
 #    Кол заявки, Дата создания, создатель, Коды, тип объекта, район, населенные пункты, цена, 
 #дополнительное описание к внешнему описанию и участку в одно поле в новой базе.
 #Остальные поля, если не затратно по времени и силам: 
 #общ площадь, колво комнат, материал стен, площадь участка, год постройки Но не обязательно!
-
-#customer = models.ForeignKey(Customers)
-
-#    status = models.CharField(max_length=60)
-#    cost_from = models.IntegerField(null=True, blank=True)
-#    cost_to = models.IntegerField(null=True, blank=True)
-#    operation = models.TextField(blank=True)
-#    result = models.TextField(blank=True)            
-    
-                
         
         
             
