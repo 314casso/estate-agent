@@ -73,11 +73,7 @@ $(document).ready(function() {
 		mDec : 0
 	}).trigger('focusout');
 	
-	$('.local-decimal').autoNumeric({
-		aSep : String.fromCharCode(160),
-		aDec : ',',
-		mDec : 2
-	}).trigger('focusout');
+	localDecimal();
 	
 	$('#loadingMask').fadeOut();
 
@@ -86,6 +82,14 @@ $(document).ready(function() {
 	});
 
 });
+
+function localDecimal() {
+$('.local-decimal').autoNumeric({
+		aSep : String.fromCharCode(160),
+		aDec : ',',
+		mDec : 2
+	}).trigger('focusout');
+}
 
 function setAnchor(obj, clazz) {
 	$(obj).addClass(clazz);

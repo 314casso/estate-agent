@@ -8,13 +8,14 @@
 {% block js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
 <script type="text/javascript">
-    $(function() {
+    $(function() {    	
         $('#level-layouts tbody tr').formset({
             prefix : '{{ layout_formset.prefix }}',
             addText : 'Добавить элемент планировки',
             deleteText : 'Удалить',
             added: function(row) {
-                        bindSelectables($(row));                                                
+                        bindSelectables($(row));
+                        localDecimal();                                                
                 } 
         });
     })
@@ -22,21 +23,6 @@
     $(function() {
         $(".table-grid tbody").find('.level-list-{{ object.id }}').addClass('ui-state-highlight');
     });
-    
-    function rebind_n() {    
-    $('.local-decimal').each(function() {
-    	console.log(this);
-    	$(this).unbind();
-		$(this).autoNumeric({
-							aSep : String.fromCharCode(160),
-							aDec : ',',
-							mDec : 4
-						}).trigger('focusout');
-	});
-    
-       
-    }
-    
             
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
@@ -47,7 +33,6 @@
 {% endblock linkback %}
 
 {% block left %}
-<button onclick="rebind_n()">GO</button>
 <form action="" method="post" class="table-form">
     <table class="ui-widget ui-widget-content ui-corner-all">
         <thead>
