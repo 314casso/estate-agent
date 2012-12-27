@@ -84,11 +84,9 @@
             <td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
             <td>{% for broker in bid_item.brokers.all %}{{ broker }}{% endfor %}</td>
             <td>
-                {% for estate_type in bid_item.estate_types.all %}
-                    <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ estate_type }}</a>{% include 'comma.html' %}
-                {% empty %}
-                <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">---------</a>    
-                {% endfor %}
+                <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">
+                	{{ bid_item.mixed_estate_types }}
+                </a>
             </td>
             <td> {% comma_list bid_item.regions %} </td>
             <td> {% comma_list bid_item.localities %} </td>
