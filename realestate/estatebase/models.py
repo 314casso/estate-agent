@@ -844,7 +844,7 @@ class Contact(models.Model):
         css = {self.AVAILABLE:'available-state', self.NONAVAILABLE:'non-available-state', self.BAN:'ban-state', self.NOTRESPONDED:'not-responded-state', self.NOTCHECKED:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
     def clean(self):   
-        q = Contact.objects.filter(contact=self.contact)
+        q = Contact.objects.filter(contact__iexact=self.contact)
         if self.id:
             q = q.exclude(pk=self.id)
         if q.count() > 0:

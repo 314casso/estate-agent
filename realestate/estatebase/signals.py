@@ -44,13 +44,13 @@ def update_estate(sender, instance, created, **kwargs):
             estate.save()            
             prepare_history(estate.history, instance.user_id)                                
 
-def update_localities(sender, instance, **kwargs):
+def update_localities(sender, instance, **kwargs):   
     if instance.pk:
         if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
             for region in instance.regions.all():
                 localities = list(region.locality_set.values_list('id',flat=True))
                 instance.localities = localities                 
-                instance.cleaned_filter.update({'locality' : localities})                    
+                instance.cleaned_filter.update({'locality' : localities}) #FIXME: cleaned_filter                     
 
 def bid_event_history(sender, instance, created, **kwargs):
     if created:

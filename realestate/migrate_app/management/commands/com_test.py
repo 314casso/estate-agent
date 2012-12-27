@@ -4,18 +4,27 @@ from migrate_app.prop_map import PropMap
 import os
 from settings import MEDIA_ROOT
 from django.db.models.aggregates import Count
-from estatebase.models import Estate, Bid, Region
+from estatebase.models import Estate, Bid, Region, Contact
 from estatebase.forms import BidPicleForm
 from django.http import QueryDict
 import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        from django.utils import translation
-        translation.activate(settings.LANGUAGE_CODE)
-        
-        self.new_pickle()
-        self.test_func()        
+        self.contact_duplicates()
+#        from django.utils import translation
+#        translation.activate(settings.LANGUAGE_CODE)
+#        
+#        self.new_pickle()
+#        self.test_func()        
+    
+    
+    def contact_duplicates(self):
+        contacts = Contact.objects.values('contact').annotate(dup=Count('contact')).filter(dup__gt=1).order_by('dup')
+        for c in contacts:
+            clist = Contact.objects.filter(contact=c['contact'])
+            for contact in clist:
+                print contact.client.pk,  contact.client
     
     def test_func(self):    
         #estates = Estate.objects.annotate(num_bidgs=Count('bidgs')).filter(num_bidgs__gt=1)        
