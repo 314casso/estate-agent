@@ -18,6 +18,11 @@ class Command(BaseCommand):
 #        self.new_pickle()
 #        self.test_func()        
     
+#select id FROM estatebase_contact t1
+#WHERE t1.id not in (select min(t2.id)
+#                     from estatebase_contact t2
+#                     group by lower(t2.contact));    
+    
     
     def contact_duplicates(self):
         contacts = Contact.objects.values('contact').annotate(dup=Count('contact')).filter(dup__gt=1).order_by('dup')
