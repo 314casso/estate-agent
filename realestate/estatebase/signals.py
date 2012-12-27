@@ -63,13 +63,14 @@ def bid_event_history(sender, instance, created, **kwargs):
 
 def update_from_pickle(sender, instance, **kwargs):
     cleaned_data = instance.cleaned_filter
-    instance.estates = cleaned_data['estates']
-    instance.estate_types = cleaned_data['estate_type']
-    instance.estate_categories = cleaned_data['estate_category']
-    instance.regions = cleaned_data['region']            
-    instance.localities = cleaned_data['locality']
-    instance.agency_price_min = cleaned_data['agency_price'][0]                        
-    instance.agency_price_max = cleaned_data['agency_price'][1]
+    if cleaned_data:
+        instance.estates = cleaned_data['estates']
+        instance.estate_types = cleaned_data['estate_type']
+        instance.estate_categories = cleaned_data['estate_category']
+        instance.regions = cleaned_data['region']            
+        instance.localities = cleaned_data['locality']
+        instance.agency_price_min = cleaned_data['agency_price'][0]                        
+        instance.agency_price_max = cleaned_data['agency_price'][1]
 
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
