@@ -2,7 +2,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import sys
 from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
-    Properties, Descriptions, Images, Orders
+    Properties, Descriptions, Images, Orders, OrderProperties
 from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
     ContactHistory, Estate, Locality, Street, Microdistrict, EstateClient,\
@@ -244,26 +244,42 @@ class Command(BaseCommand):
                 history.updated = order.update_record
                 history.updated_by_id = UserUser.objects.get(pk=order.last_editor_id).user_id                 
                 history.save()
-                bid = Bid()
+                bid = Bid()               
                 bid.id = order.id
-                bid.history = history
-                b = bid.save()
-                prop_map = OrderPropMap(b)
-                prop_map._set_types(self, order.types.all())
                 
+                bid.client_id = order.customer_id 
+                bid.history = history
+                
+                b = bid.save()
+                
+                prop_map = OrderPropMap(b)
+                prop_map._set_types(self, order.types.all())                
                 regions = list(order.regions.values_list('region_id', flat=True))
                 first_region = regions[0] if len(regions) else None
-                clear_localities = []
-                clear_regions = set()                
+                clean_localities = []
+                clean_regions = [self._get_region_id(pk) for pk in regions]               
                 for place in order.places.all():
                     locality = self.get_locality(place.place_id, first_region, place.place.name)
-                    clear_localities.append(locality)
-                    clear_regions.add(locality.region)                    
-                prop_map.pickle_dict['region'] = clear_regions 
-                prop_map.pickle_dict['locality'] = clear_localities
+                    clean_localities.append(locality)
+                if len(clean_localities):   
+                    prop_map.pickle_dict['locality'] = clean_localities
+                else:
+                    prop_map.pickle_dict['region'] = clean_regions
                 
                 prop_map.pickle_dict['agency_price'] = [order.cost_from, order.cost_to]     
                 
+                properties = OrderProperties.objects.filter(order=order)                
+                for prop in properties:                     
+                    prop_map.set_param(prop)
+                
+                clean_users = []
+                for user in order.users.all():
+                    clean_users.append(UserUser.objects.get(pk=user.id).user_id)
+                
+                if len(clean_users):
+                    b.brokers = clean_users
+                
+                b.save()
                 
 #    Кол заявки, Дата создания, создатель, Коды, тип объекта, район, населенные пункты, цена, 
 #дополнительное описание к внешнему описанию и участку в одно поле в новой базе.

@@ -3,20 +3,12 @@ from estatebase.helpers.functions import parse_decimal, split_digit
 from estatebase.models import EstateParam, Document, Bidg, Stead, Estate
 from migrate_app.models import TypesEstateType
 class OrderPropMap(object):
-    params = ('all_floor', 'description', 'electricity_status', 'gas_status', 'land_description', 
-              'sewerage_status', 'state', 'wall_material', 'water_status', 'real_estate_id', 
-              'destination', 'distance_from', 'distance_to', 'electricity_distance', 'floor_from', 
-              'floor_to', 'gas_distance', 'internet_status', 'land_area_from', 'land_area_to', 
-              'land_front', 'living_area_from', 'living_area_to', 'phone_status', 'porch_distance', 
-              'porch_status', 'rooms_from', 'rooms_to', 'sewerage_distance', 'total_area_from', 
-              'total_area_to', 'water_distance', 'year_built_from', 'year_built_to', 'mortgage', 
-              'floor_not_end', 'facing', 'evidence', 'exchange', 'elevator', 'land_evidence')
-    
-#Кол заявки, Дата создания, создатель, Коды, тип объекта, район, населенные пункты, цена, 
-#дополнительное описание к внешнему описанию и участку в одно поле в новой базе.
-#Остальные поля, если не затратно по времени и силам: 
-#общ площадь, колво комнат, материал стен, площадь участка, год постройки Но не обязательно! 
-
+    params = ('description', 'land_description', 
+               'wall_material', 'real_estate_id', 
+              'land_area_from', 'land_area_to', 
+              'living_area_from', 'living_area_to'
+               'total_area_from', 'total_area_to', 
+               'year_built_from', 'year_built_to', )
     
     def __init__(self, bid):
         self.estate = bid
@@ -27,6 +19,8 @@ class OrderPropMap(object):
         return getattr(self, template % param, None)
     
     def set_param(self, param):
+        if param not in self.params:
+            return
         value = param.value.strip()
         if not value or value == '0':
             return         

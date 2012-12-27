@@ -183,7 +183,7 @@ class OrderHasType(models.Model):
         managed = False
 
 class OrderHasUser(models.Model):
-    order = models.ForeignKey(Orders)
+    order = models.ForeignKey(Orders, related_name='users')
     user = models.ForeignKey(Users)
     class Meta:
         db_table = u'order_has_user'
