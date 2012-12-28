@@ -377,10 +377,10 @@ class EstateFilterForm(BetterForm):
                 f.update(value)
         
         if cleaned_data['foto_choice']:
-            if int(cleaned_data['foto_choice']) == 1:                
-                f['images__id__isnull'] = False
+            if int(cleaned_data['foto_choice']) == 1:
+                f['images__isnull'] = False
             elif int(cleaned_data['foto_choice']) == 0:
-                f['images__id__isnull'] = True            
+                f['images__isnull'] = True            
             
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}

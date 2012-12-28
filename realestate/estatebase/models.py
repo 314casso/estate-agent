@@ -852,10 +852,10 @@ class Contact(models.Model):
             extra = ''
             t = None
             if not client.deleted:
-                t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">{{ name }}</a>')
+                t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">[{{ pk }}] {{ name }}</a>')
                 t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
             else:
-                t = '"%s"' % client.name                
+                t = '"[%s] %s"' % (client.pk, client.name)                
                 extra = u' - находится в корзине! %s'
                 restore = Template(u'<a target="_blank" href="{% url client_restore pk %}">Восстановить</a>')
                 extra = extra % restore.render(Context({ 'pk': client.pk }))

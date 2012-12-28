@@ -30,6 +30,7 @@
 							{% for bidg in estate_item.bidgs.all %}
 							<strong>{{ bidg.estate_type }}:</strong>
 							{% wrapper_fieldset_comma bidg 'exterior_report_set' %};
+							{% wrapper_fieldset_comma bidg 'interior_set' %};
 							{% if bidg.is_independent %}
 							документы:
 							<strong> {{ bidg.documents.all|to_comma_sep }} </strong>
@@ -41,13 +42,18 @@
 							</div>
 							{% endfor %}
 						</div>
+						{% if estate_item.description %}                              
+                        <div style="border-top: 1px dotted #ccc;">
+                        <strong>Дополнительно:</strong> {{ estate_item.description|default:'' }}
+                        </div>
+                        {% endif %}												
 						{% with stead=estate_item.stead %}
 						{% if stead %}
 						<strong>Участок:</strong>
 						{% wrapper_fieldset_comma stead 'field_report_set' %};
 						документы: <strong>{{ stead.documents.all|to_comma_sep }}</strong>
 						{% endif %}
-						{% endwith %}
+						{% endwith %}						
 						<div style="border-top: 1px dotted #ccc;">
 							<strong>Кредит ОАО "Сбербанк России":</strong>
 							ежемесячный платеж <strong>{{ estate_item.credit_sum|intcomma }} руб.</strong>, максимальный срок <strong>30 лет</strong>, максимальная сумма кредита <strong>{{ estate_item.max_credit_sum|intcomma }} руб. </strong>

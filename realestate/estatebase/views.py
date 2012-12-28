@@ -295,6 +295,9 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None):
         filter_dict.update({'region__geo_group__userprofile__user__exact': user })  
     if len(filter_dict):
         q = q.filter(**filter_dict)
+        if 'images__isnull' in filter_dict:
+            if not filter_dict['images__isnull']:
+                return q.distinct('id')
     return q.distinct()
 
 class EstateListView(ListView):    
@@ -312,7 +315,7 @@ class EstateListView(ListView):
         q = set_estate_filter(q, filter_dict, user=self.request.user)
         order_by = self.request.fields 
         if order_by:      
-            return q.order_by(','.join(order_by))    
+            return q.order_by(','.join(order_by))
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)

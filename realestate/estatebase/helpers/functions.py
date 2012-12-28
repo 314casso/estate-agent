@@ -2,20 +2,21 @@ from django.http import QueryDict
 import re
 from decimal import Decimal
 from urlparse import urlparse
+from django.utils.encoding import iri_to_uri
 
 def safe_next_link(full_path):
-    q = QueryDict('', mutable=True)        
-    #q['next'] = full_path
-    next_query = QueryDict(urlparse(full_path).query).get('next', None)
-    if next_query:        
-        next_url = urlparse(next_query).path
-        next_query_dict = QueryDict(urlparse(next_query).query).copy()
-        print next_query_dict
+    q = QueryDict('', mutable=True)      
+    next_url = urlparse(full_path).path
+    next_query = iri_to_uri(urlparse(full_path).query)
+    next_query_dict = None   
+    if next_query:       
+        next_query_dict = QueryDict(next_query).copy()
         for k,v in next_query_dict.iteritems():          
             if not v:
-                next_query_dict.pop(k)                          
-        q['next'] = u'%s?%s' % (next_url, next_query_dict.urlencode())             
-    return q.urlencode(safe='/')
+                del(next_query_dict[k])
+    params =  '?%s' % next_query_dict.urlencode() if next_query_dict else ''
+    q['next'] = '%s%s' % (next_url, params)            
+    return q.urlencode()
 
 def parse_decimal(value, splitter=None, index=1):
     pattern = u"[^\d,.-/'%s]" % (splitter or '')    
