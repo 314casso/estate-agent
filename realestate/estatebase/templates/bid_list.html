@@ -47,6 +47,7 @@
             <th style="white-space: nowrap">{% anchor history__modificated 'Обновлено' %}</th>
             <th>Риэлтор</th>
             <th>Вид недвижимости</th>
+            <th>Районы</th>
             <th>Населенные пункты</th>
             <th>Цена</th>
             <th>Заказчик</th>
@@ -68,6 +69,7 @@
             	{{ bid_item.mixed_estate_types }}
             	</a>
             </td>
+            <td> {% comma_list bid_item.regions %} </td>
             <td> {% comma_list bid_item.localities %} </td>
             <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
             <td><a title="Просмотр карточки заказчика" href="{% url client_detail bid_item.client.pk %}?{{ next_url }}">{{ bid_item.client.name }}</a></td>

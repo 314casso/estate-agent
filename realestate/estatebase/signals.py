@@ -44,6 +44,7 @@ def update_estate(sender, instance, created, **kwargs):
             estate.save()            
             prepare_history(estate.history, instance.user_id)                                
 
+#Depricated
 def update_localities(sender, instance, **kwargs):   
     if instance.pk:
         if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
@@ -81,7 +82,8 @@ def connect_signals():
     post_save.connect(update_estate, sender=Contact)
     post_save.connect(estate_client_handler, sender=EstateClient)
     post_delete.connect(estate_client_handler, sender=EstateClient)
-    pre_save.connect(update_localities, sender=Bid)
+    #Depricated
+    #pre_save.connect(update_localities, sender=Bid)
     pre_save.connect(update_from_pickle, sender=Bid)
     post_save.connect(bid_event_history, sender=BidEvent)
     
