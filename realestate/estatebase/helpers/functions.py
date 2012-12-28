@@ -1,10 +1,20 @@
 from django.http import QueryDict
 import re
 from decimal import Decimal
+from urlparse import urlparse
 
 def safe_next_link(full_path):
     q = QueryDict('', mutable=True)        
-    q['next'] = full_path
+    #q['next'] = full_path
+    next_query = QueryDict(urlparse(full_path).query).get('next', None)
+    if next_query:        
+        next_url = urlparse(next_query).path
+        next_query_dict = QueryDict(urlparse(next_query).query).copy()
+        print next_query_dict
+        for k,v in next_query_dict.iteritems():          
+            if not v:
+                next_query_dict.pop(k)                          
+        q['next'] = u'%s?%s' % (next_url, next_query_dict.urlencode())             
     return q.urlencode(safe='/')
 
 def parse_decimal(value, splitter=None, index=1):

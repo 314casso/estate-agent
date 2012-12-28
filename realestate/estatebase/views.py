@@ -535,7 +535,7 @@ class ClientMixin(ModelFormMixin):
         else:
             return self.render_to_response(self.get_context_data(form=form,contact_formset=contact_form))
     def get_success_url(self):   
-        next_url = self.request.REQUEST.get('next', '')         
+        next_url = self.request.REQUEST.get('next', '')                  
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse('client_update', args=[self.object.id]), safe_next_link(next_url))
         return next_url
