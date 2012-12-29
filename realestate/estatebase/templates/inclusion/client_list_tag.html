@@ -3,7 +3,7 @@
 {% for client in estate.clients.all %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px">
     <legend>
-        <a title="{{ client.origin|default_if_none:'' }} {{ client.address }}" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>
+        <a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>
         ({{ client.client_type }}: <a href="{% url client_status estate.pk client.pk %}?{{ next_url }}">{% estate_client_status estate.pk client.pk %}</a>)
         <a href="{% url client_estate_unbind client.pk estate.pk %}?{{ next_url }}">Отвязать</a>
     </legend>
