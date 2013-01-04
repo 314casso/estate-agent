@@ -6,14 +6,14 @@ class PropMap(object):
     _bidg = None
     _stead = None
     _estate_type = None    
-    params= ('comments', 'destination', 'distance', 'electricity_status', 'gas_status', 
-    'land_area', 'land_front', 'living_area', 'rooms_count', 'state', 
-    'total_area', 'wall_material', 'water_status', 'year_built', 'all_floors', 'apartment_number', 
-    'floor', 'phone_status', 'porch_status', 'sewerage_status', 'advertise', 'land_category', 
-    'land_distanation', 'land_evidence', 'land_form', 'evidence', 'mortgage', 'internet_status', 
-    'heating', 'facing', 'roof', 'windows', 'land_cadastral_number', 'cadastral_number', 'ground', 
-    'land_plan', 'technical_certificate', 'wall', 'take_a_photo', 'exchange', 'ceiling_height', 
-    'electricity_distance', 'water_distance', 'ceiling', 'gas_distance', 'porch_distance', 'elevator', 
+    params = ('comments', 'destination', 'distance', 'electricity_status', 'gas_status',
+    'land_area', 'land_front', 'living_area', 'rooms_count', 'state',
+    'total_area', 'wall_material', 'water_status', 'year_built', 'all_floors', 'apartment_number',
+    'floor', 'phone_status', 'porch_status', 'sewerage_status', 'advertise', 'land_category',
+    'land_distanation', 'land_evidence', 'land_form', 'evidence', 'mortgage', 'internet_status',
+    'heating', 'facing', 'roof', 'windows', 'land_cadastral_number', 'cadastral_number', 'ground',
+    'land_plan', 'technical_certificate', 'wall', 'take_a_photo', 'exchange', 'ceiling_height',
+    'electricity_distance', 'water_distance', 'ceiling', 'gas_distance', 'porch_distance', 'elevator',
     'sewerage_distance', 'exclusive')    
     
     def __init__(self, estate):
@@ -59,7 +59,7 @@ class PropMap(object):
         value = param.value.strip()
         if not value or value == '0':
             return         
-        #print 'Call setter %s' % param.name
+        # print 'Call setter %s' % param.name
         param_setter = self.get_setter(param.name)  
         if not param_setter:
             if param.name not in ['old_id', 'correct', 'site']:
@@ -80,25 +80,12 @@ class PropMap(object):
     def set_comments(self, value):        
         if value:
             if self.estate.comment:                
-                self.estate.comment = self.estate.comment + ', ' +  value
+                self.estate.comment = self.estate.comment + ', ' + value
             else:
                 self.estate.comment = value
     
     def _destination_map(self, value):
-        dest_map = {
-        u'Азовское море': 2,
-        u'Черное море':12,
-        u'Курчанский лиман':8,
-        u'Таманский залив':10,
-        u'лиман Цокур': 11,
-        u'озеро Абрау': 1,
-        u'Ахтанизовский лиман': 3,
-        u'Динской  залив': 5,
-        u'Старотитаровский лиман': 9,
-        u'Витязевский лиман': 4,
-        u'Кизилташский лиман': 6,
-        u'река Кубань': 7,
-        }
+        dest_map = get_destination_map()
         return dest_map[value] 
     
     def set_destination(self, value):       
@@ -128,7 +115,7 @@ class PropMap(object):
         self.bidg.year_built = int_value
     
     def set_all_floors(self, value):        
-        self.bidg.floor_count = parse_decimal(value,'/')                   
+        self.bidg.floor_count = parse_decimal(value, '/')                   
         
     def set_apartment_number(self, value):         
         self.bidg.room_number = value
@@ -140,53 +127,19 @@ class PropMap(object):
         self.bidg.ceiling_height = parse_decimal(value)
 
     def set_state(self, value):
-        state_map = {
-        u'1' : None,
-        u'без отделки': 1,
-        u'ветхое': 2,
-        u'евроремонт': 3,
-        u'жилое': 4,
-        u'капитальный ремонт': 5,
-        u'косметический ремонт': 6,
-        u'отличное': 7,
-        u'предчистовая отделка': 8,
-        u'ремонт': 9,
-        u'удовлетворительное': 10,
-        u'хорошее': 11,
-        u'недостроено': 12
-        }
+        state_map = get_state_map()
         m_val = state_map[value]
         if m_val:
             self.bidg.interior_id = state_map[value]           
     
     def set_wall_material(self, value):
-        p_map = {
-        u'1': None,
-        u'блок': 1,
-        u'газоблок': 2,
-        u'дерево': 3,
-        u'камень': 4,
-        u'каркас': 5,
-        u'кирпич': 6,
-        u'монолит': 7,
-        u'панель': 8,
-        u'саман': 9,
-        u'шлакоблок': 10,
-        u'щитовой': 11,
-        }
+        p_map = get_wall_map()
         m_val = p_map[value]
         if m_val:
             self.bidg.wall_construcion_id = p_map[value]
             
     def _status_map(self, value):
-        status_map = {
-        u'подключено': 5,
-        u'подведено': 3,
-        u'по меже': 2,
-        u'на расстоянии': 1,
-        u'технические условия': 6,
-        u'подключение оплачено': 4,    
-        }       
+        status_map = get_commun_status_map()       
         return status_map[value]  
     
     def set_electricity_status(self, value):
@@ -196,56 +149,23 @@ class PropMap(object):
         self.estate.gassupply_id = self._status_map(value)         
     
     def set_water_status(self, value):
-        p_map = {
-        u'водопровод': 1,
-        u'колодец': 2,
-        u'на расстоянии': 3,
-        u'подведено': 5,
-        u'подключение оплачено': 6,
-        u'подключено': 7,
-        u'по меже': 4,
-        u'скважина': 8,
-        u'технические условия': 9,
-        }
+        p_map = get_water_map()
         self.estate.watersupply_id = p_map[value] 
         
     def set_phone_status(self, value):
-        p_map = {
-        u'есть возможность': 1,
-        u'нет': 2,
-        u'подключено': 3,
-        }
+        p_map = get_commun_simple_map()
         self.estate.telephony_id = p_map[value]
 
     def set_porch_status(self, value):
-        p_map = {
-        u'асфальт': 1,
-        u'гравийный': 2,
-        u'грунтовый': 3,
-        u'нет': 4,
-        u'хороший': 5,
-        }
+        p_map = get_porch_map() 
         self.estate.driveway_id = p_map[value]
         
     def set_sewerage_status(self, value):
-        p_map = {
-        u'на расстоянии': 1,
-        u'подведено': 3,
-        u'подключение оплачено': 4,
-        u'подключено': 5,
-        u'по меже': 2,
-        u'септик': 7,
-        u'технические условия': 6,
-        u'центральная': 8,         
-        }
+        p_map = get_sewerage_map()
         self.estate.sewerage_id = p_map[value]
         
     def set_internet_status(self, value):
-        p_map = {
-        u'есть возможность': 1,
-        u'нет': 2,
-        u'подключено': 3,
-        }
+        p_map = get_commun_simple_map()
         self.estate.internet_id = p_map[value]
         
     def set_electricity_distance(self, value):
@@ -265,7 +185,7 @@ class PropMap(object):
 
     def set_elevator(self, value):
         if value:
-            self.bidg.elevator =  True
+            self.bidg.elevator = True
 
     def set_ceiling(self, value):
         p_map = {
@@ -285,7 +205,7 @@ class PropMap(object):
         u'индивидуальное газовое': 1,
         u'индивидуальное твердотоплевное': 2,
         u'индивидуальное электрическое': 3,
-        u'центральное': 4,         
+        u'центральное': 4,
         }        
         self.bidg.heating_id = p_map[value]
 
@@ -448,5 +368,102 @@ class PropMap(object):
         }
         self.bidg.wall_finish_id = p_map[value]
         
-        
+def get_wall_map():    
+    return {
+    u'1': None,
+    u'блок': 1,
+    u'газоблок': 2,
+    u'дерево': 3,
+    u'камень': 4,
+    u'каркас': 5,
+    u'кирпич': 6,
+    u'монолит': 7,
+    u'панель': 8,
+    u'саман': 9,
+    u'шлакоблок': 10,
+    u'щитовой': 11,
+    }        
 
+def get_state_map():
+    return {
+    u'1' : None,
+    u'без отделки': 1,
+    u'ветхое': 2,
+    u'евроремонт': 3,
+    u'жилое': 4,
+    u'капитальный ремонт': 5,
+    u'косметический ремонт': 6,
+    u'отличное': 7,
+    u'предчистовая отделка': 8,
+    u'ремонт': 9,
+    u'удовлетворительное': 10,
+    u'хорошее': 11,
+    u'недостроено': 12
+    }
+
+def get_commun_status_map():
+    return {
+    u'подключено': 5,
+    u'подведено': 3,
+    u'по меже': 2,
+    u'на расстоянии': 1,
+    u'технические условия': 6,
+    u'подключение оплачено': 4,
+    }
+    
+def get_water_map(): 
+    return {
+    u'водопровод': 1,
+    u'колодец': 2,
+    u'на расстоянии': 3,
+    u'подведено': 5,
+    u'подключение оплачено': 6,
+    u'подключено': 7,
+    u'по меже': 4,
+    u'скважина': 8,
+    u'технические условия': 9,
+    }    
+    
+def get_commun_simple_map(): 
+    return {
+    u'есть возможность': 1,
+    u'нет': 2,
+    u'подключено': 3,
+    }    
+    
+def get_porch_map():
+    return {
+    u'асфальт': 1,
+    u'гравийный': 2,
+    u'грунтовый': 3,
+    u'нет': 4,
+    u'хороший': 5,
+    }    
+    
+def get_sewerage_map():
+    return {
+    u'на расстоянии': 1,
+    u'подведено': 3,
+    u'подключение оплачено': 4,
+    u'подключено': 5,
+    u'по меже': 2,
+    u'септик': 7,
+    u'технические условия': 6,
+    u'центральная': 8,
+    }
+    
+def get_destination_map():
+    return {
+    u'Азовское море': 2,
+    u'Черное море':12,
+    u'Курчанский лиман':8,
+    u'Таманский залив':10,
+    u'лиман Цокур': 11,
+    u'озеро Абрау': 1,
+    u'Ахтанизовский лиман': 3,
+    u'Динской  залив': 5,
+    u'Старотитаровский лиман': 9,
+    u'Витязевский лиман': 4,
+    u'Кизилташский лиман': 6,
+    u'река Кубань': 7,
+    }    

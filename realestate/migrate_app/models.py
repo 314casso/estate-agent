@@ -1,5 +1,5 @@
 from django.db import models
-from estatebase.models import Origin, EstateType
+from estatebase.models import Origin, EstateType, Bid
 from maxim_base.models import Source, Users, Types
 from django.contrib.auth.models import User
 
@@ -29,4 +29,9 @@ class TypesEstateType(models.Model):
         return Types.objects.get(pk=self.source_id)
     def __unicode__(self):
         return u'%s, %s'  % (self.estate_type, self.source)
+
+class BidImport(models.Model):
+    bid = models.ForeignKey(Bid)
+    external_id = models.IntegerField(unique=True)
+
         

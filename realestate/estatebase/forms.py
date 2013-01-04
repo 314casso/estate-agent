@@ -539,7 +539,7 @@ class BidForm(ModelForm):
         model = Bid    
         fields = ('client', 'brokers', 'bid_status' , 'note') 
         widgets = {
-            'note': TextInput(attrs={'class': 'long-input'}) 
+            'note': Textarea() 
         }                         
 
 class BidFilterForm(BetterForm):

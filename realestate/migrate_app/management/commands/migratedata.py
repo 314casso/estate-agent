@@ -2,8 +2,9 @@
 from django.core.management.base import BaseCommand, CommandError
 import sys
 from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
-    Properties, Descriptions, Images, Orders, OrderProperties
-from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
+    Properties, Descriptions, Images, Orders, OrderProperties, Place
+from migrate_app.models import SourceOrigin, UserUser, TypesEstateType,\
+    BidImport
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
     ContactHistory, Estate, Locality, Street, Microdistrict, EstateClient,\
     EstatePhoto, Bid
@@ -96,7 +97,10 @@ class Command(BaseCommand):
             else:
                 return Locality.objects.get(pk=27)                       
         else:
-            return Locality.objects.get(name__iexact=place_name)
+            try: 
+                return Locality.objects.get(name__iexact=place_name)
+            except Locality.DoesNotExist:
+                return None
     
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
@@ -234,59 +238,66 @@ class Command(BaseCommand):
 
     def bid(self):
         orders = Orders.objects.using('maxim_db').all()
-        imported = list(Bid.objects.values_list('id', flat=True))
+        
+        imported = list(BidImport.objects.values_list('external_id', flat=True))
         orders = orders.exclude(pk__in=imported).distinct()
         for order in orders:
             with transaction.commit_on_success():
+                if not Client.objects.filter(pk=order.customer_id):
+                    continue                    
                 history = HistoryMeta()        
                 history.created = order.creation_date or datetime.datetime.now()                
                 history.created_by_id = UserUser.objects.get(pk=order.creator_id).user_id
                 history.updated = order.update_record
                 history.updated_by_id = UserUser.objects.get(pk=order.last_editor_id).user_id                 
                 history.save()
-                bid = Bid()               
-                bid.id = order.id
+                bid = Bid()  
+                external_id = None
+                try:
+                    Bid.objects.get(pk=order.id)                    
+                except Bid.DoesNotExist:
+                    external_id = order.id
                 
+                if external_id:  
+                    bid.id = external_id
+                                    
                 bid.client_id = order.customer_id 
                 bid.history = history
                 
-                b = bid.save()
+                bid.save()
                 
-                prop_map = OrderPropMap(b)
-                prop_map._set_types(self, order.types.all())                
+                prop_map = OrderPropMap(bid)               
+                
+                prop_map._set_types(order.types.values_list('type_id',flat=True))                
                 regions = list(order.regions.values_list('region_id', flat=True))
                 first_region = regions[0] if len(regions) else None
                 clean_localities = []
-                clean_regions = [self._get_region_id(pk) for pk in regions]               
-                for place in order.places.all():
-                    locality = self.get_locality(place.place_id, first_region, place.place.name)
-                    clean_localities.append(locality)
+                clean_regions = [self._get_region_id(pk) for pk in regions]
+                               
+                for place_id in order.places.values_list('place_id', flat=True):
+                    locality = self.get_locality(place_id, first_region, Place.objects.get(pk=place_id).name)
+                    if locality:
+                        clean_localities.append(locality)
                 if len(clean_localities):   
                     prop_map.pickle_dict['locality'] = clean_localities
                 else:
                     prop_map.pickle_dict['region'] = clean_regions
-                
-                prop_map.pickle_dict['agency_price'] = [order.cost_from, order.cost_to]     
+                if order.cost_from or order.cost_to:
+                    prop_map.pickle_dict['agency_price'] = [order.cost_from, order.cost_to]     
                 
                 properties = OrderProperties.objects.filter(order=order)                
                 for prop in properties:                     
                     prop_map.set_param(prop)
                 
                 clean_users = []
-                for user in order.users.all():
-                    clean_users.append(UserUser.objects.get(pk=user.id).user_id)
+                for user_id in order.users.values_list('user_id', flat=True):
+                    clean_users.append(UserUser.objects.get(pk=user_id).user_id)
                 
                 if len(clean_users):
-                    b.brokers = clean_users
-                
-                b.save()
-                
-#    Кол заявки, Дата создания, создатель, Коды, тип объекта, район, населенные пункты, цена, 
-#дополнительное описание к внешнему описанию и участку в одно поле в новой базе.
-#Остальные поля, если не затратно по времени и силам: 
-#общ площадь, колво комнат, материал стен, площадь участка, год постройки Но не обязательно!
-        
-        
-            
-    
-             
+                    bid.brokers = clean_users
+
+                #print prop_map.pickle_dict
+                bid.cleaned_filter = prop_map.pickle_dict
+                bid.bid_status = [9]
+                bid.save()
+                BidImport.objects.create(external_id=order.id, bid=bid)
