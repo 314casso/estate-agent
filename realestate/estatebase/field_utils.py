@@ -27,7 +27,7 @@ def complex_field_parser(value, field_name):
     return f or None    
 
 def split_string(value):                 
-    return [int(x.strip()) for x in value.split(',')]
+    return [x.strip() for x in value.split(',')]
 
 '''
 Для формирование поля от до
