@@ -584,7 +584,9 @@ class BidFilterForm(BetterForm):
         if self['pk'].value():
             f['id__in'] = self['pk'].value()
         if self['region'].value():
-            f['regions__id__in'] = self['region'].value()
+            #f['regions__id__in'] = self['region'].value()
+            q = Q(regions__id__in=self['region'].value()) | Q(localities__region__id__in=self['region'].value())
+            f['Q'] = q
         if self['locality'].value():
             f['localities__id__in'] = self['locality'].value()
         if self['created'].value():            

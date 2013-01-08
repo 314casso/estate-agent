@@ -829,7 +829,9 @@ class BidListView(ListView):
 #        Если нужно и заявки только по гео-фактору показывать
 #TODO:        filter_dict.update({'history__created_by__userprofile__geo_groups__id__exact': self.request.user. })                                        
         if len(filter_dict):
-            q = q.filter(**filter_dict)
+            if 'Q' in filter_dict:
+                q = q.filter(filter_dict.pop('Q'))
+            q = q.filter(**filter_dict)            
         order_by = self.request.fields 
         if order_by:      
             q = q.order_by(','.join(order_by))    
