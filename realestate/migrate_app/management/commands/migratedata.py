@@ -47,6 +47,12 @@ class Command(BaseCommand):
             except User.DoesNotExist:
                 user = User.objects.using('default').get(username__exact='migrated')
             UserUser.objects.using('default').create(user=user, source_id=source.pk)
+    
+    def create_client(self,customer_id):
+        customer = Customers.objects.using('maxim_db').get(pk=customer_id)
+        
+        
+        
         
     def client(self):        
         customers = Customers.objects.using('maxim_db').filter(contacts__id__isnull=False)
