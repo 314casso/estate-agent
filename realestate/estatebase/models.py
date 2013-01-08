@@ -926,7 +926,7 @@ class Bid(ProcessDeletedModel):
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      
-        ordering = ['-id']    
+        ordering = ['-history__created']    
 
 class BidStatus(SimpleDict):
     '''
