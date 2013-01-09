@@ -48,11 +48,45 @@ class Command(BaseCommand):
                 user = User.objects.using('default').get(username__exact='migrated')
             UserUser.objects.using('default').create(user=user, source_id=source.pk)
     
-    def create_client(self,customer_id):
-        customer = Customers.objects.using('maxim_db').get(pk=customer_id)
+    def _create_client_with_contacts(self,customer_id):
+        customer = Customers.objects.using('maxim_db').get(pk=customer_id)        
+        contact_exists = False        
+        for contact in customer.contacts.all():            
+            try:            
+                Contact.objects.get(contact__exact=contact.contact)                                
+                contact_exists = True                
+                return False
+            except Contact.DoesNotExist:                
+                continue        
+        if not contact_exists:
+            client = self._create_client(customer)
+            for c in customer.contacts.all():
+                self._create_contact(c, client.id, client.history.created_by_id)
+            return client
+                    
+    def _create_client(self, customer):
+        history = HistoryMeta()        
+        history.created = customer.treatment_date or datetime.datetime.now()                
+        history.created_by_id = UserUser.objects.get(pk=customer.creator_id).user_id                
+        history.save()                
+        client = Client.objects.create(history=history, name=customer.name, 
+                              client_type_id=self.client_type_parser(customer.name) or 3, 
+                              origin_id=SourceOrigin.objects.get(pk=customer.source_id or 14).origin_id, 
+                              address=customer.from_where, note=customer.comments)
+        return client
         
-        
-        
+    def _create_contact(self, contact, customer_id, user_id=None):
+        c = Contact()
+        c.migration = True
+        c.user_id = user_id         
+        c.client_id = customer_id
+        c.contact_type_id = self._contact_type(contact.contact) 
+        c.contact = contact.contact 
+        c.updated = contact.update_record or datetime.datetime.now() 
+        c.contact_state_id = self._contact_state(contact.status)
+        c.save()
+        return c
+            
         
     def client(self):        
         customers = Customers.objects.using('maxim_db').filter(contacts__id__isnull=False)
@@ -60,14 +94,7 @@ class Command(BaseCommand):
         customers = customers.exclude(pk__in=imported).distinct()        
         for customer in customers:
             with transaction.commit_on_success():            
-                history = HistoryMeta()        
-                history.created = customer.treatment_date or datetime.datetime.now()                
-                history.created_by_id = UserUser.objects.get(pk=customer.creator_id).user_id                
-                history.save()                
-                Client.objects.create(id=customer.id, history=history, name=customer.name, 
-                                      client_type_id=self.client_type_parser(customer.name) or 3, 
-                                      origin_id=SourceOrigin.objects.get(pk=customer.source_id or 14).origin_id, 
-                                      address=customer.from_where, note=customer.comments)
+                self.create_client(customer)
     
     def contact(self):
         contacts = Contacts.objects.using('maxim_db').all()
@@ -75,15 +102,7 @@ class Command(BaseCommand):
         contacts = contacts.exclude(pk__in=imported).distinct()
         for contact in contacts:
             with transaction.commit_on_success():
-                c = Contact()
-                c.migration = True
-                c.id = contact.id 
-                c.client_id = contact.customer_id
-                c.contact_type_id = self._contact_type(contact.contact) 
-                c.contact = contact.contact 
-                c.updated = contact.update_record or datetime.datetime.now() 
-                c.contact_state_id = self._contact_state(contact.status)
-                c.save()
+                self._create_contact(contact, contact.customer_id)
         self.contact_history()                
     
     
@@ -111,19 +130,18 @@ class Command(BaseCommand):
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
         imported = list(Estate.all_objects.values_list('id', flat=True))
-        real_estates = real_estates.exclude(pk__in=imported).distinct()        
-        for real_estate in real_estates: 
+        real_estates = real_estates.filter(pk=78080).distinct() 
+        #real_estates = real_estates.exclude(pk__in=imported).distinct()              
+        for real_estate in real_estates:            
             if real_estate.type_id == 0:
                 continue            
             if real_estate.status_id == 3 and real_estate.update_record < datetime.datetime(2011, 11, 1, 0, 0, 0):
                 continue 
             clients_id = []
-            for customer_id in real_estate.customers.values_list('customer_id', flat=True):
-                try:
-                    client = Client.objects.get(pk=customer_id)
-                    clients_id.append(client.pk)
-                except Client.DoesNotExist:                    
-                    pass                
+            for customer_id in real_estate.customers.values_list('customer_id', flat=True):                              
+                client = self._create_client_with_contacts(customer_id)
+                if client:
+                    clients_id.append(client.pk)                    
             if len(clients_id) == 0:                                                
                 continue            
             with transaction.commit_on_success():
@@ -152,8 +170,7 @@ class Command(BaseCommand):
                 e.estate_number = real_estate.house_number.strip()
                 e.saler_price = real_estate.cost
                 e.agency_price = real_estate.cost_markup
-                e.estate_status_id = real_estate.status_id
-                e.id = real_estate.pk       
+                e.estate_status_id = real_estate.status_id                       
                 descriptions = Descriptions.objects.filter(real_estate=real_estate)
                 dlist = []
                 for description in descriptions:
