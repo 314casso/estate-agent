@@ -4,7 +4,7 @@ import sys
 from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
     Properties, Descriptions, Images, Orders, OrderProperties, Place
 from migrate_app.models import SourceOrigin, UserUser, TypesEstateType,\
-    BidImport
+    BidImport, EstateImport
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\
     ContactHistory, Estate, Locality, Street, Microdistrict, EstateClient,\
     EstatePhoto, Bid
@@ -16,6 +16,7 @@ from migrate_app.prop_map import PropMap
 import os
 from settings import MEDIA_ROOT
 from migrate_app.order_prop_map import OrderPropMap
+from django.db.models.aggregates import Max
 
 class Command(BaseCommand):
     args = '<function_name function_name ...>'
@@ -128,15 +129,13 @@ class Command(BaseCommand):
                 return None
     
     def estate(self):        
-        real_estates = RealEstate.objects.using('maxim_db').exclude(place_id__in=[133,54])
-        imported = list(Estate.all_objects.values_list('id', flat=True))
-        real_estates = real_estates.filter(pk=78080).distinct() 
-        #real_estates = real_estates.exclude(pk__in=imported).distinct()              
-        for real_estate in real_estates:            
-            if real_estate.type_id == 0:
-                continue            
-            if real_estate.status_id == 3 and real_estate.update_record < datetime.datetime(2011, 11, 1, 0, 0, 0):
-                continue 
+        real_estates = RealEstate.objects.using('maxim_db').all()        
+        max_imported = EstateImport.objects.all().aggregate(Max('external_id'))           
+        real_estates = real_estates.filter(pk__gt=max_imported['external_id__max']).distinct() 
+        print real_estates.query
+        for real_estate in real_estates:
+            print 'try: %s' % real_estate.pk
+            estate_import = EstateImport.objects.create(external_id=real_estate.pk)                       
             clients_id = []
             for customer_id in real_estate.customers.values_list('customer_id', flat=True):                              
                 client = self._create_client_with_contacts(customer_id)
@@ -145,7 +144,7 @@ class Command(BaseCommand):
             if len(clients_id) == 0:                                                
                 continue            
             with transaction.commit_on_success():
-                print real_estate.pk                
+                print 'create: %s' % real_estate.pk                
                 history = HistoryMeta()        
                 history.created = real_estate.creation_date or datetime.datetime.now()                
                 history.created_by_id = UserUser.objects.get(pk=real_estate.creator_id).user_id
@@ -195,8 +194,9 @@ class Command(BaseCommand):
                 for file_name in real_estate.images.values_list('file_name', flat=True):                                        
                     if os.path.isfile(os.path.join(MEDIA_ROOT, 'photos', str(e.pk), file_name)):
                         EstatePhoto.objects.create(estate=e, image=os.path.join('photos', str(e.pk), file_name))                  
-                    
-    
+                estate_import.estate = e
+                estate_import.save()
+                        
     def _contact_state(self, contact):
         mapper = {u'доступен':1,u'заблокирован':3,u'недоступен':2,u'нет ответа':4}
         if contact in mapper:
@@ -257,8 +257,7 @@ class Command(BaseCommand):
     
     def set_bid_status(self, value):
         pass
-        #mapper = {'новая': ,'передана':, 'отказ': }
-
+        
     def bid(self):
         orders = Orders.objects.using('maxim_db').all()
         
@@ -324,3 +323,8 @@ class Command(BaseCommand):
                 bid.bid_status = [9]
                 bid.save()
                 BidImport.objects.create(external_id=order.id, bid=bid)
+    
+    def estate_log(self):
+        for e in Estate.all_objects.filter(id__lt=80000):
+            EstateImport.objects.create(estate=e, external_id=e.pk)
+        

@@ -826,8 +826,8 @@ class BidListView(ListView):
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
-#        Если нужно и заявки только по гео-фактору показывать
-#TODO:        filter_dict.update({'history__created_by__userprofile__geo_groups__id__exact': self.request.user. })                                        
+        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)
+        filter_dict.update({'regions__geo_group__id__in': geo_list})                                        
         if len(filter_dict):
             if 'Q' in filter_dict:
                 q = q.filter(filter_dict.pop('Q'))

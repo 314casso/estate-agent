@@ -1,5 +1,5 @@
 from django.db import models
-from estatebase.models import Origin, EstateType, Bid
+from estatebase.models import Origin, EstateType, Bid, Estate
 from maxim_base.models import Source, Users, Types
 from django.contrib.auth.models import User
 
@@ -34,4 +34,7 @@ class BidImport(models.Model):
     bid = models.ForeignKey(Bid)
     external_id = models.IntegerField(unique=True)
 
+class EstateImport(models.Model):
+    estate = models.ForeignKey(Estate, blank=True, null=True, on_delete=models.SET_NULL)
+    external_id = models.IntegerField(unique=True)
         
