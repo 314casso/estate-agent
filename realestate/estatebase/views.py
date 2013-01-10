@@ -31,6 +31,7 @@ from django.utils.html import escape, escapejs
 import urlparse
 from django.utils.encoding import smart_str
 from django.db.utils import IntegrityError
+from django.db.models.query_utils import Q
 
 
 class BaseMixin(object):
@@ -826,11 +827,12 @@ class BidListView(ListView):
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
-        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)
-        filter_dict.update({'regions__geo_group__id__in': geo_list})                                        
+        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)                    
+        rq = Q(regions__geo_group__id__in=geo_list) | Q(localities__region__geo_group__id__in=geo_list)
+        q = q.filter(rq)                                         
         if len(filter_dict):
             if 'Q' in filter_dict:
-                q = q.filter(filter_dict.pop('Q'))
+                q = q.filter(filter_dict.pop('Q'))                
             q = q.filter(**filter_dict)            
         order_by = self.request.fields 
         if order_by:      
