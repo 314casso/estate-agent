@@ -379,6 +379,7 @@ class Estate(ProcessDeletedModel):
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
     description = models.TextField(_('Description'), blank=True, null=True)
+    client_description = models.TextField(_('Client description'), blank=True, null=True)
     comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)  
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)

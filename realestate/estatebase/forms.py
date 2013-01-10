@@ -107,7 +107,7 @@ class EstateCommunicationForm(ModelForm):
 class EstateParamForm(ModelForm):
     class Meta:                
         model = Estate
-        fields = ('estate_params', 'description', 'comment')
+        fields = ('estate_params', 'description', 'client_description' , 'comment')
         widgets = {
            'estate_params' : forms.CheckboxSelectMultiple()        
         }

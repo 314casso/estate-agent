@@ -42,9 +42,9 @@
 							</div>
 							{% endfor %}
 						</div>
-						{% if estate_item.description %}                              
+						{% if estate_item.client_description %}                              
                         <div style="border-top: 1px dotted #ccc;">
-                        <strong>Дополнительно:</strong> {{ estate_item.description|default:'' }}
+                        <strong>Дополнительно:</strong> {{ estate_item.client_description|default:'' }}
                         </div>
                         {% endif %}												
 						{% with stead=estate_item.stead %}

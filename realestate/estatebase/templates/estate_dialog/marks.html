@@ -20,6 +20,17 @@
         Описание
     </legend>
     {{ estate.description }}
+    
+</fieldset>
+{% endif %}
+
+{% if estate.client_description %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Описание заказчику
+    </legend>
+    {{ estate.client_description }}
+    
 </fieldset>
 {% endif %}
 
