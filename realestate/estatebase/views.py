@@ -827,9 +827,9 @@ class BidListView(ListView):
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
-        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)                    
-        rq = Q(regions__geo_group__id__in=geo_list) | Q(localities__region__geo_group__id__in=geo_list)
-        q = q.filter(rq).distinct()                                         
+#        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)                    
+#        rq = Q(regions__geo_group__id__in=geo_list) | Q(localities__region__geo_group__id__in=geo_list)
+#        q = q.filter(rq).distinct()                                         
         if len(filter_dict):
             if 'Q' in filter_dict:
                 q = q.filter(filter_dict.pop('Q'))                
@@ -837,7 +837,7 @@ class BidListView(ListView):
         order_by = self.request.fields 
         if order_by:      
             q = q.order_by(','.join(order_by))    
-        return q
+        return q.distinct()
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
         bid_filter_form = BidFilterForm(self.request.GET)                                                                    
