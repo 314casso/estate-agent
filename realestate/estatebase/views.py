@@ -820,9 +820,10 @@ class BidDetailView(BidMixin, DetailView):
 class BidListView(ListView):
     filtered = False    
     template_name = 'bid_list.html'
-    paginate_by = 20   
+    paginate_by = 15   
     def get_queryset(self):        
-        q = Bid.objects.prefetch_related('regions', 'localities__region__geo_group', 'history', 'localities__region')        
+        #'localities__region__geo_group',  'localities', 'estate_categories__types'
+        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
