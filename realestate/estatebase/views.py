@@ -837,7 +837,7 @@ class BidListView(ListView):
         order_by = self.request.fields 
         if order_by:      
             q = q.order_by(','.join(order_by))    
-        return q
+        return q.distinct()
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
         bid_filter_form = BidFilterForm(self.request.GET)                                                                    
