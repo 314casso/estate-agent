@@ -273,11 +273,11 @@ class EstateType(OrderedModel):
         ordering = ['estate_type_category__order', 'name']    
     
 class HistoryMeta(models.Model):
-    created = models.DateTimeField(_('Created'),)
+    created = models.DateTimeField(_('Created'), db_index=True)
     created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators', on_delete=models.PROTECT)
-    updated = models.DateTimeField(_('Updated'), blank=True, null=True)
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True, db_index=True)
     updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)
-    modificated = models.DateTimeField(_('Modificated'),)     
+    modificated = models.DateTimeField(_('Modificated'), db_index=True)     
     @property
     def user_id(self):
         return self.updated_by and self.updated_by.pk or self.created_by.pk                                        
