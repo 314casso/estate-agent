@@ -822,7 +822,7 @@ class BidListView(ListView):
     template_name = 'bid_list.html'
     paginate_by = 20   
     def get_queryset(self):        
-        q = Bid.objects.select_related().all()        
+        q = Bid.objects.prefetch_related('regions', 'localities__region__geo_group', 'history')        
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
