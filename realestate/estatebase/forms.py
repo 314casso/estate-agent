@@ -312,7 +312,7 @@ class EstateFilterForm(BetterForm):
         for t in types:
             if t.estate_type_category in cats:
                 cats.remove(t.estate_type_category)
-            q = Q(bidgs__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
+            q = q | Q(bidgs__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
             q = q | Q(stead__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
         if len(cats):
             q = q | Q(estate_category__in=cats)
