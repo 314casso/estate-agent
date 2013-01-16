@@ -758,7 +758,8 @@ class BidMixin(ModelFormMixin):
         if self.request.POST:
             context['estate_filter_form'] = BidPicleForm(self.request.POST)            
         else:           
-            context['estate_filter_form'] = BidPicleForm(initial=self.object.cleaned_filter if self.object else None)                      
+            bf = BidPicleForm(initial=self.object.cleaned_filter if self.object else None)            
+            context['estate_filter_form'] = bf                       
         return context  
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         

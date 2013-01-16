@@ -21,7 +21,7 @@
 			<th>Продавцы</th>
 			<td>
 				{% for client in estate_item.clients.all %}				
-					{{ client }} ({% estate_client_status estate_item.pk client.id %}):
+					{{ client.name }} ({% estate_client_status estate_item.pk client.id %}):
 					{% for contact in client.contacts.all %}
 					{{ contact.contact }}{% include 'comma.html' %}			
 					{% endfor %}

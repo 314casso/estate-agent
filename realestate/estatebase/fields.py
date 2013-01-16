@@ -76,6 +76,7 @@ class DateRangeField(MultiValueField):
         return [None, None]
     
 class NumberRangeWidget(forms.MultiWidget):
+    is_localized = True
     def __init__(self, attrs=None):
         text_input = TextInput(attrs=attrs)
         widgets = (text_input, text_input)
