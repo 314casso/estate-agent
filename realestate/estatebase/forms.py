@@ -21,7 +21,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ComChoiceLookup, InternetLookup, TelephonyLookup, LayoutTypeLookup, \
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
-    RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup
+    RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
+    OutbuildingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent
@@ -203,6 +204,11 @@ class EstateFilterForm(BetterForm):
             label=_('Estate type'),
             required=False,
         )
+    outbuildings = AutoCompleteSelectMultipleField(
+            lookup_class=OutbuildingLookup,
+            label=_('Outbuildings'),
+            required=False,
+        ) 
     com_status = AutoComboboxSelectMultipleField(
             lookup_class=ComChoiceLookup,
             label=_('Commerce'),
@@ -349,7 +355,7 @@ class EstateFilterForm(BetterForm):
                          'estate_params__in': 'marks', 'bidgs__wall_construcion__in': 'wall_construcion',
                          'origin__in': 'origin', 'bidgs__interior__in': 'interior',
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
-                         'comment__icontains': 'comment'                             
+                         'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings'                             
                          }
         
         for key, value in simple_filter.iteritems():
@@ -400,7 +406,7 @@ class EstateFilterForm(BetterForm):
                      ('center', {'fields': [
                                             'clients', 'contacts', 'created', 'updated', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 
+                                            'room_count', 'interior', 'outbuildings', 
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 

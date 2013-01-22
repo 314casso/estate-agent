@@ -254,7 +254,13 @@ class Command(BaseCommand):
             if not h.user_id:
                 h.user_id = h.contact.client.history.created_by_id
                 h.save()      
-    
+        
+    @transaction.commit_on_success
+    def estate_marks(self):
+        estates = Estate.objects.filter(history__created__lte=datetime.datetime(2012, 12, 18, 0, 0, 0))        
+        for e in estates:            
+            e.estate_params.remove(4)
+                
     def set_bid_status(self, value):
         pass
         

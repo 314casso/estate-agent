@@ -89,9 +89,10 @@ class EstateTypeCategoryLookup(ModelLookup):
 
 class EstateTypeLookup(SimpleNameLookup):   
     model = EstateType 
+    independence = True
     def get_query(self, request, term):
         results = super(EstateTypeLookup, self).get_query(request, term)
-        results = results.filter(estate_type_category__independent=True)        
+        results = results.filter(estate_type_category__independent=self.independence)        
         self.category = request.GET.get('category', '')        
         if self.category:
             results = results.filter(estate_type_category_id=self.category)
@@ -100,6 +101,9 @@ class EstateTypeLookup(SimpleNameLookup):
         if self.category:
             return u"%s" % (item.name)
         return u"%s, %s" % (item.name, item.estate_type_category or '')
+
+class OutbuildingLookup(EstateTypeLookup):
+    independence = False
 
 class WallConstrucionLookup(SimpleNameLookup):
     model = WallConstrucion       
@@ -231,6 +235,7 @@ try:
     registry.register(RegisterCategoryLookup)
     registry.register(ExteriorFinishLookup)
     registry.register(BidStatusLookup)
+    registry.register(OutbuildingLookup)    
     
 except LookupAlreadyRegistered:
     pass    
