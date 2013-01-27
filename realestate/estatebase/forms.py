@@ -184,6 +184,7 @@ class ClientFilterForm(Form):
         return f   
                
 class EstateFilterForm(BetterForm):
+    _filter_by_pk = True
     validity = AutoComboboxSelectMultipleField(
             lookup_class=ValidityLookup,
             label=_('Validity'),
@@ -341,7 +342,7 @@ class EstateFilterForm(BetterForm):
             f['validity__in'] = cleaned_data['validity']
             f['history__modificated__gt'] = CORRECT_DELTA
         
-        if cleaned_data['estates']:
+        if cleaned_data['estates'] and self._filter_by_pk:
             f['id__in'] = [item.pk for item in cleaned_data['estates']] 
         
         if cleaned_data['estate_number']:                                 
@@ -569,6 +570,11 @@ class BidFilterForm(BetterForm):
             label=_('Locality'),
             required=False,
         )
+    estates = AutoCompleteSelectMultipleField(
+            lookup_class=EstateLookup,
+            label=u'Коды на осмотр',
+            required=False,
+        )
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))    
     created_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)
@@ -610,7 +616,9 @@ class BidFilterForm(BetterForm):
         if self['clients'].value():
             f['client__id__in'] = self['clients'].value()    
         if self['contacts'].value():
-            f['client__contacts__id__in'] = self['contacts'].value()    
+            f['client__contacts__id__in'] = self['contacts'].value()
+        if self['estates'].value():
+            f['estates__id__in'] = self['estates'].value()            
         if self['estate_type'].value():
             f['estate_types__id__in'] = self['estate_type'].value()   
         if check_value_list(self['agency_price'].value()):
@@ -622,7 +630,7 @@ class BidFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [
-                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'estate_type', 
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
                                           'next' ], 'legend': ''}),                    
                     ]
@@ -682,7 +690,8 @@ class EstateRegisterFilterForm(BidFilterForm):
                                           'region', 'locality', 'agency_price', 'next' ], 'legend': ''}),                    
                     ]
 
-class BidPicleForm(EstateFilterForm):   
+class BidPicleForm(EstateFilterForm):
+    _filter_by_pk = False   
     def __init__(self, *args, **kwargs):
         super(BidPicleForm, self).__init__(*args, **kwargs)
         self.fields['estates'].label = u'Коды на осмотр'
@@ -703,7 +712,7 @@ class BidPicleForm(EstateFilterForm):
         return cleaned_data    
     class Meta:        
         fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
-                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', ]}),
+                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'outbuildings']}),
                      ('right', {'fields': ['stead_area', 'face_area', 'shape' , 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 

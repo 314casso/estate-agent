@@ -91,6 +91,7 @@ def history(history):
 @register.simple_tag
 def comma_list(q, limit=None, field = 'name'):    
     q = q.values_list(field, flat=True)
+    l = [str(x) for x in q]
     if limit:
-        q = q[:limit]     
-    return ', '.join(q)
+        l = l[:limit]     
+    return ', '.join(l)
