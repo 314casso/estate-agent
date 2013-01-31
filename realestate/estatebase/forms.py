@@ -306,6 +306,7 @@ class EstateFilterForm(BetterForm):
     foto_choice = forms.ChoiceField(label=_('EstatePhoto'), widget=forms.RadioSelect, choices=FOTO_CHOICES, initial=3, required=False,)
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
+    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -356,7 +357,8 @@ class EstateFilterForm(BetterForm):
                          'estate_params__in': 'marks', 'bidgs__wall_construcion__in': 'wall_construcion',
                          'origin__in': 'origin', 'bidgs__interior__in': 'interior',
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
-                         'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings'                             
+                         'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings',
+                         'broker__in' : 'brokers'                             
                          }
         
         for key, value in simple_filter.iteritems():
@@ -407,7 +409,7 @@ class EstateFilterForm(BetterForm):
                      ('center', {'fields': [
                                             'clients', 'contacts', 'created', 'updated', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 'outbuildings', 
+                                            'room_count', 'interior', 'outbuildings', 'brokers'
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
