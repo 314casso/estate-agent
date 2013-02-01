@@ -917,9 +917,9 @@ class EstateRegisterCreateView(EstateRegisterMixin, CreateView):
             fltr = bid.cleaned_filter            
             if fltr:            
                 pickle_form = BidPicleForm()
-                f = pickle_form.make_filter(fltr)
+                f = pickle_form.make_filter(fltr)                
                 q = Estate.objects
-                q = set_estate_filter(q, f, True)
+                q = set_estate_filter(q, f, True)                
                 estates = list(q.values_list('id', flat=True))
                 estates.extend(bid.estates.values_list('id', flat=True))
                 initial['estates'] = estates 

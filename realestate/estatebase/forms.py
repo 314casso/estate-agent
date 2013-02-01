@@ -184,7 +184,7 @@ class ClientFilterForm(Form):
         return f   
                
 class EstateFilterForm(BetterForm):
-    _filter_by_pk = True
+    _filter_by_pk = True    
     validity = AutoComboboxSelectMultipleField(
             lookup_class=ValidityLookup,
             label=_('Validity'),
@@ -306,7 +306,7 @@ class EstateFilterForm(BetterForm):
     foto_choice = forms.ChoiceField(label=_('EstatePhoto'), widget=forms.RadioSelect, choices=FOTO_CHOICES, initial=3, required=False,)
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
-    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
+    broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -358,13 +358,12 @@ class EstateFilterForm(BetterForm):
                          'origin__in': 'origin', 'bidgs__interior__in': 'interior',
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
                          'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings',
-                         'broker__in' : 'brokers'                             
+                         'broker__in' : 'broker'                             
                          }
         
         for key, value in simple_filter.iteritems():
-            if value in cleaned_data: 
-                if cleaned_data[value]:
-                    f[key] = cleaned_data[value]  
+            if value in cleaned_data and cleaned_data[value]:                
+                f[key] = cleaned_data[value]  
                 
         two_number_fields = {'agency_price':'agency_price', 'year_built':'bidgs__year_built',
                              'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
@@ -410,7 +409,7 @@ class EstateFilterForm(BetterForm):
                      ('center', {'fields': [
                                             'clients', 'contacts', 'created', 'updated', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 'outbuildings', 'brokers'
+                                            'room_count', 'interior', 'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
@@ -694,7 +693,7 @@ class EstateRegisterFilterForm(BidFilterForm):
                     ]
 
 class BidPicleForm(EstateFilterForm):
-    _filter_by_pk = False   
+    _filter_by_pk = False       
     def __init__(self, *args, **kwargs):
         super(BidPicleForm, self).__init__(*args, **kwargs)
         self.fields['estates'].label = u'Коды на осмотр'
