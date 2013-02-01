@@ -362,8 +362,9 @@ class EstateFilterForm(BetterForm):
                          }
         
         for key, value in simple_filter.iteritems():
-            if cleaned_data[value]:
-                f[key] = cleaned_data[value]  
+            if value in cleaned_data: 
+                if cleaned_data[value]:
+                    f[key] = cleaned_data[value]  
                 
         two_number_fields = {'agency_price':'agency_price', 'year_built':'bidgs__year_built',
                              'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
