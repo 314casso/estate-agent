@@ -592,6 +592,8 @@ class BidFilterForm(BetterForm):
             required=False,
         )
     agency_price = IntegerRangeField(label=_('Price'), required=False)
+    bid_event_category = AutoComboboxSelectMultipleField(lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
+    date_event = DateRangeField(required=False, label=_('Event date'))
     next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
     def get_filter(self):
         f = {}
@@ -622,7 +624,13 @@ class BidFilterForm(BetterForm):
         if self['estates'].value():
             f['estates__id__in'] = self['estates'].value()            
         if self['estate_type'].value():
-            f['estate_types__id__in'] = self['estate_type'].value()   
+            f['estate_types__id__in'] = self['estate_type'].value()
+        if self['bid_event_category'].value():
+            f['bid_events__bid_event_category_id__in'] = self['bid_event_category'].value()
+        if self['date_event'].value():            
+            value = from_to_values(self['date_event'].field.clean(self['date_event'].value()), 'bid_events__date')            
+            if value:                 
+                f.update(value)    
         if check_value_list(self['agency_price'].value()):
             values = self['agency_price'].field.clean(self['agency_price'].value())                              
             if values[1]:
@@ -634,6 +642,7 @@ class BidFilterForm(BetterForm):
         fieldsets = [
                      ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
+                                          'bid_event_category', 'date_event',
                                           'next' ], 'legend': ''}),                    
                     ]
 
