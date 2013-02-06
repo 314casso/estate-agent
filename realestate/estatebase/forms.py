@@ -22,7 +22,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
-    OutbuildingLookup
+    OutbuildingLookup, PurposeLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent
@@ -307,6 +307,7 @@ class EstateFilterForm(BetterForm):
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
     broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
+    purposes = AutoComboboxSelectMultipleField(lookup_class=PurposeLookup, label=_('Purpose'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -358,7 +359,7 @@ class EstateFilterForm(BetterForm):
                          'origin__in': 'origin', 'bidgs__interior__in': 'interior',
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
                          'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings',
-                         'broker__in' : 'broker'                             
+                         'broker__in' : 'broker', 'stead__purpose__in' : 'purposes',                             
                          }
         
         for key, value in simple_filter.iteritems():
@@ -412,7 +413,7 @@ class EstateFilterForm(BetterForm):
                                             'room_count', 'interior', 'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
-                                           'stead_area', 'face_area', 'shape', 'electricity', 'watersupply', 
+                                           'stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 
                                            'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
                                            'description', 'comment', 'next', 'foto_choice' 
                                           ]})
@@ -724,7 +725,7 @@ class BidPicleForm(EstateFilterForm):
     class Meta:        
         fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
                      ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'outbuildings']}),
-                     ('right', {'fields': ['stead_area', 'face_area', 'shape' , 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
+                     ('right', {'fields': ['stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 
 class EstateRegisterForm(BetterModelForm):      

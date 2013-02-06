@@ -104,7 +104,7 @@ class ApartmentSteadWrapper(BidgWrapper):
     @BidgWrapper.exterior_set.getter
     def exterior_set(self):
         result = super(BidgWrapper, self).exterior_set[:]
-        exclude_set = ('elevator','room_number')
+        exclude_set = ('elevator',)
         for f in exclude_set:
             try:             
                 result.remove(f)
@@ -127,7 +127,7 @@ class FacilitiesWrapper(BidgWrapper):
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'    
     def __init__(self):        
-        self._field_set = ['total_area', 'face_area', 'shape', 'land_type' ]
+        self._field_set = ['total_area', 'face_area', 'shape', 'land_type', 'purpose' ]
         self.extra_set = ['documents']
         self.exterior_set = deepcopy(self._field_set)   
     @property
