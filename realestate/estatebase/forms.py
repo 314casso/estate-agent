@@ -308,6 +308,7 @@ class EstateFilterForm(BetterForm):
     comment = forms.CharField(required=False, label=_('Comment'))
     broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     purposes = AutoComboboxSelectMultipleField(lookup_class=PurposeLookup, label=_('Purpose'), required=False)
+    layouts = AutoComboboxSelectMultipleField(lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -359,7 +360,8 @@ class EstateFilterForm(BetterForm):
                          'origin__in': 'origin', 'bidgs__interior__in': 'interior',
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
                          'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings',
-                         'broker__in' : 'broker', 'stead__purpose__in' : 'purposes',                             
+                         'broker__in' : 'broker', 'stead__purpose__in' : 'purposes', 
+                         'bidgs__levels__layout__layout_type__in' : 'layouts',                            
                          }
         
         for key, value in simple_filter.iteritems():
@@ -410,7 +412,7 @@ class EstateFilterForm(BetterForm):
                      ('center', {'fields': [
                                             'clients', 'contacts', 'created', 'updated', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 'outbuildings', 'broker'
+                                            'room_count', 'interior', 'layouts' ,'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 
@@ -723,8 +725,8 @@ class BidPicleForm(EstateFilterForm):
             raise forms.ValidationError(u'Необходимо указать категорию или вид недвижимости')
         return cleaned_data    
     class Meta:        
-        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
-                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'outbuildings']}),
+        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'com_status', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
+                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'layouts', 'outbuildings']}),
                      ('right', {'fields': ['stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 

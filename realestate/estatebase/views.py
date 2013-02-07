@@ -168,7 +168,7 @@ class PlaceableTypeViewAjax(TemplateView):
             filter_dict.update({
             'estate_type_category__independent' : False
             })             
-        estate_categories = EstateType.objects.filter(**filter_dict).select_related().order_by('estate_type_category', 'order')
+        estate_categories = EstateType.objects.filter(**filter_dict).select_related().order_by('estate_type_category', 'name')
         context = super(PlaceableTypeViewAjax, self).get_context_data(**kwargs)
         context.update({            
             'estate_categories': estate_categories,
