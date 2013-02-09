@@ -37,7 +37,7 @@ class BaseWrapper(object):
         return self._interior_set
     @interior_set.setter
     def interior_set(self, val):
-        self._interior_set = val
+        self._interior_set = val    
     @property        
     def full_set(self):
         result = []
@@ -119,17 +119,14 @@ class OutbuildingsWrapper(BidgWrapper):
         self.interior_set = ['wall_finish', 'flooring', 'ceiling', 'interior', 'appliances']
         self.extra_set = []
     
-class FacilitiesWrapper(BidgWrapper):
+class FacilitiesWrapper(BidgWrapper):    
     def __init__(self):
         self.exterior_set = ['description']
         self.interior_set = []
         self.extra_set = []    
 
-class LandscapingWrapper(BaseWrapper):
-    def __init__(self):
-        self.exterior_set = ['description']
-        self.interior_set = []
-        self.extra_set = []        
+class LandscapingWrapper(FacilitiesWrapper):
+    pass        
     
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'    

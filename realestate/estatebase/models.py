@@ -716,7 +716,7 @@ class Bidg(models.Model):
         return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
     @property    
     def is_facility(self):
-        return self.estate_type.template == FACILITIES
+        return self.estate_type.template in [FACILITIES, LANDSCAPING]
     @property
     def is_independent(self):
         return self.estate_type.estate_type_category.independent

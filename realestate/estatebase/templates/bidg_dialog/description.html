@@ -1,7 +1,9 @@
 {% extends "dialog_block.html" %}
 {% load report %}
 {% block title_left %}
-<a href="{% url apartment_update bidg.pk %}?{{ next_url }}">Описание и отделка</a>
+<a href="{% url apartment_update bidg.pk %}?{{ next_url }}">
+	Описание {% if not bidg.is_facility  %} и отделка {% endif %}
+</a>
 {% endblock %}
 {% block content %}
 

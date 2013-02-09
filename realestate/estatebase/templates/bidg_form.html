@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block dialog_title %}
-Описание и отделка                   
+Описание {% if not bidg.is_facility  %} и отделка {% endif %}                   
 {% endblock %}
 
 {% block dialog_form %}
