@@ -9,6 +9,7 @@ OUTBUILDINGS = 4
 AGRICULTURAL = 5
 APARTMENTSTEAD = 6
 FACILITIES = 7
+LANDSCAPING = 8
 
 class FieldWrapper():
     def __init__(self, name, label, value=None):
@@ -123,6 +124,12 @@ class FacilitiesWrapper(BidgWrapper):
         self.exterior_set = ['description']
         self.interior_set = []
         self.extra_set = []    
+
+class LandscapingWrapper(BaseWrapper):
+    def __init__(self):
+        self.exterior_set = ['description']
+        self.interior_set = []
+        self.extra_set = []        
     
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'    
@@ -153,6 +160,7 @@ WRAPPERS = {
            AGRICULTURAL:(None, SteadWrapper()),
            APARTMENTSTEAD:(ApartmentSteadWrapper(), SteadWrapper()),
            FACILITIES:(FacilitiesWrapper(), None),
+           LANDSCAPING:(LandscapingWrapper(), None),
            }
    
 def get_wrapper(obj):    

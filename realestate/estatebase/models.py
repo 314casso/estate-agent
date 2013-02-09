@@ -14,7 +14,7 @@ from picklefield.fields import PickledObjectField
 from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS, \
     MAX_CREDIT_SUM
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD, \
-    OUTBUILDINGS, AGRICULTURAL, FACILITIES, APARTMENTSTEAD
+    OUTBUILDINGS, AGRICULTURAL, FACILITIES, APARTMENTSTEAD, LANDSCAPING
 import caching.base
 from collections import OrderedDict
 from django.template.base import Template
@@ -259,6 +259,7 @@ class EstateType(OrderedModel):
         (AGRICULTURAL, u'Сельхоз. участок'),
         (APARTMENTSTEAD, u'Квартира с участком'),
         (FACILITIES, u'Сооружение'),
+        (LANDSCAPING, u'Благоустройство'),
         )    
     name = models.CharField(_('Name'), max_length=100)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
