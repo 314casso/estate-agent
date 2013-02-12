@@ -349,7 +349,7 @@ class EstateFilterForm(BetterForm):
             f['id__in'] = [item.pk for item in cleaned_data['estates']] 
         
         if cleaned_data['estate_number']:                                 
-            f['estate_number__in'] = split_string(cleaned_data['estate_number'])
+            f['estate_number__icontains'] = cleaned_data['estate_number']
                     
         simple_filter = {'com_status__in': 'com_status', 'region__in': 'region',
                          'locality__in': 'locality', 'microdistrict__in': 'microdistrict',
