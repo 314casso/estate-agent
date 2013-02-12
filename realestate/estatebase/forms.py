@@ -353,7 +353,7 @@ class EstateFilterForm(BetterForm):
                     
         simple_filter = {'com_status__in': 'com_status', 'region__in': 'region',
                          'locality__in': 'locality', 'microdistrict__in': 'microdistrict',
-                         'street__in': 'street', 'bidgs__room_number__contains': 'room_number',
+                         'street__in': 'street', 'bidgs__room_number__icontains': 'room_number',
                          'estate_status__in': 'estate_status', 'clients__in': 'clients',
                          'clients__contacts__in': 'contacts', 'stead__shape__in': 'shape',
                          'estate_params__in': 'marks', 'bidgs__wall_construcion__in': 'wall_construcion',
