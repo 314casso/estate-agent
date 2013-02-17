@@ -78,18 +78,22 @@ td, th {
 	border: 3px solid #CCCCCC;
 }
 
-.wrapper-0 {
+.wrapper, .wrapper-0 {
 	border-top: 1px dotted #ccc;
+}
+
+.wrapper-0 {	
 	padding: 2px 15px;
 }
 
 .wrapper-1 {
-	border-bottom: 1px dotted #ccc;		
+	/*border-bottom: 1px dotted #ccc;*/
 	padding: 2px 15px;
+	font-size: 12px;
 }
 
 .wrapper-1 div {
-	padding: 0 15px;
+	/*padding: 0 15px;*/
 }
 
 .list-title {
@@ -97,22 +101,41 @@ td, th {
 	font-size: 115%;
 }
 
-.public-thead th{		
-	padding-top: 15px;		
+.public-thead th {
+	padding-top: 15px;
 	border: 1px solid #ccc;
 	background: #eee;
 }
 
 .newspaper-report-table {
-	border: 1px double #999;	
+	border: 1px double #999;
 }
 
-.newspaper-report-table td{
-	border-top: 1px double #999;	
+.newspaper-report-table td {
+	border-top: 1px double #999;
 	font-size: 13px;
 	padding: 4px;
 }
 
-.newspaper-report-table tr:first-child td{
+.newspaper-report-table tr:first-child td {
 	border-top: 0;
+}
+
+.marked-header {
+	background: #eee;
+	color: #666;
+	padding: 0 2px 0 0;
+}
+
+.strong {
+	font-weight: bold;
+	color: #000000;
+}
+
+.layout-header {
+	padding-left: 20px;
+}
+
+.layout-details {
+	padding-left: 20px;
 }
