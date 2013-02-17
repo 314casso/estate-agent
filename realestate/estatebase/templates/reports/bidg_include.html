@@ -1,0 +1,18 @@
+{% if bidg %}
+{% load report %}
+<span class="strong marked-header">{{ bidg.estate_type }}, </span>
+{% wrapper_fieldset_comma bidg 'exterior_report_set' %}
+{% wrapper_fieldset_comma bidg 'interior_set' %}
+{% if bidg.levels.count > 0 %}
+<div class="wrapper-1">
+    {% for level in bidg.levels.all %}
+    <span class="marked-header">Планировка уровня/этажа <span class="strong">"{{ level }}":</span></span>
+    {% bidg_layout level %}
+    {% endfor %}
+</div>
+{% endif %}
+{% if bidg.is_independent %}
+<span class="marked-header">Документы:</span>
+<strong> {{ bidg.documents.all|to_comma_sep }} </strong>
+{% endif %}
+{% endif %}

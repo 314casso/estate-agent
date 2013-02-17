@@ -17,8 +17,8 @@ def distance_helper(value):
 @register.inclusion_tag('inclusion/communication.html')
 def communication(estate):
     comms = []
-    two_val_template = '%s: <strong>%s%s</strong>'
-    one_val_template = '%s: <strong>%s</strong>'
+    two_val_template = '%s <strong>%s%s</strong>'
+    one_val_template = '%s <strong>%s</strong>'
     if estate.electricity:
         comms.append(two_val_template %  (u'свет', estate.electricity.name.lower(), distance_helper(estate.electricity_distance)))            
     if estate.watersupply:
@@ -65,7 +65,7 @@ def wrapper_fieldset(obj, fieldset_name):
 @register.inclusion_tag('inclusion/simple_layout.html')
 def bidg_layout(level):
     layout_fieldset = OrderedDict([                       
-                       ('area', u'%s кв.м.'),                         
+                       ('area', u'%s кв.м'),                         
                        ('layout_feature', '%s'), 
                        ('interior', '%s'),
                        ('furniture', u'мебель - %s'),
@@ -85,9 +85,9 @@ def bidg_layout(level):
 def estate_details(estate_item):
     result = []    
     if estate_item.beside:
-        result.append(u'<label>расстояние до</label> "%s": %s м' % (estate_item.beside, estate_item.beside_distance and intcomma(estate_item.beside_distance) or '---'))
-    if estate_item.com_status and estate_item.com_status.id == MAYBE:                    
-        status = u'<label>коммерч. использование:</label> %s' % estate_item.com_status
+        result.append(u'<label>Расстояние до</label> "%s": %s м.' % (estate_item.beside, estate_item.beside_distance and intcomma(estate_item.beside_distance) or '---'))
+    if estate_item.com_status:                    
+        status = u'<label>Коммерческое использование:</label> <strong>%s</strong>.' % estate_item.com_status
         result.append(status.lower())     
     return ', '.join(result) 
 

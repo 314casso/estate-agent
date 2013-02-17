@@ -1,8 +1,8 @@
 {% for key, val in layouts.items %}
 <div class="layout-details">
-	<strong>{{ key.layout_type|lower }}: </strong>
+	<span class="strong">{{ key.layout_type|lower }} </span>
 	{% for key, val in val.items %}
-	{{ val|lower }}{% include 'comma.html' %}
+	{{ val|lower }}{% if not forloop.last %}; {% else %}. {% endif %}
 	{% endfor %}
 </div>
 {% endfor %}

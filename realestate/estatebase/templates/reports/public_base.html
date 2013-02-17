@@ -3,79 +3,81 @@
 {% load link_helper %}
 {% load report %}
 <html lang="ru">
-	<head>
-		<meta charset="utf-8" />
-		<title> {% block title %}{% endblock title %} </title>
-		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/report.css">
-	</head>
-	<body>
-		{% block content %}{% endblock content %}
-		<table class="report-table">
-			{% for estate_item in estate_list %}
-			<thead class='public-thead'>
-				<tr>
-					<th style="width: 100px; background-color:#FFE45C"><span class="list-title">Код: {{ estate_item.id }}</span></th>
-					<th><span class="list-title">{{ estate_item.estate_type }}. {% no_street_address estate_item %}. Цена {{ estate_item.agency_price|rubble }} </span></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td colspan="2">
-					<div>
-						{% estate_details estate_item %}
-						<div style="border-top: 1px dotted #ccc;">
-						<span style="background: #eee; color: #666">Коммуникации</span> {% communication estate_item %}
-						</div>
-						<div class="wrapper-0">
-							{% for bidg in estate_item.bidgs.all %}
-							<strong>{{ bidg.estate_type }}:</strong>
-							{% wrapper_fieldset_comma bidg 'exterior_report_set' %};
-							{% wrapper_fieldset_comma bidg 'interior_set' %};
-							{% if bidg.is_independent %}
-							документы:
-							<strong> {{ bidg.documents.all|to_comma_sep }} </strong>
-							{% endif %}
-							<div class="wrapper-1">
-								{% for level in bidg.levels.all %}
-								<strong>{{ level }}:</strong><i>{% bidg_layout level %}{% if not forloop.last %} {% endif %}</i>
-								{% endfor %}
-							</div>
-							{% endfor %}
-						</div>
-						{% if estate_item.client_description %}                              
+    <head>
+        <meta charset="utf-8" />
+        <title> {% block title %}{% endblock title %} </title>
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/report.css">
+    </head>
+    <body>
+        {% block content %}{% endblock content %}
+        <table class="report-table">
+            {% for estate_item in estate_list %}
+            <thead class='public-thead'>
+                <tr>
+                    <th style="width: 100px; background-color:#FFE45C"><span class="list-title">Код: {{ estate_item.id }}</span></th>
+                    <th><span class="list-title">{{ estate_item.estate_type }}. {% no_street_address estate_item %}. Цена {{ estate_item.agency_price|rubble }} </span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                    <div>
+                    	Продается {{ estate_item.estate_type|lower }} в населенном пункте {{ estate_item.locality }}.
+                        {% estate_details estate_item %}
                         <div style="border-top: 1px dotted #ccc;">
-                        <strong>Дополнительно:</strong> {{ estate_item.client_description|default:'' }}
+                            <span class="marked-header">Коммуникации: </span> {% communication estate_item %}
                         </div>
-                        {% endif %}												
-						{% with stead=estate_item.stead %}
-						{% if stead %}
-						<strong>Участок:</strong>
-						{% wrapper_fieldset_comma stead 'field_report_set' %};
-						документы: <strong>{{ stead.documents.all|to_comma_sep }}</strong>
-						{% endif %}
-						{% endwith %}						
-						<div style="border-top: 1px dotted #ccc;">
-							<strong>Кредит ОАО "Сбербанк России":</strong>
-							ежемесячный платеж <strong>{{ estate_item.credit_sum|intcomma }} руб.</strong>, максимальный срок <strong>30 лет</strong>, максимальная сумма кредита <strong>{{ estate_item.max_credit_sum|intcomma }} руб. </strong>
-						</div>
-						<div style="border-top: 1px dotted #ccc;">
-							{% for office in estate_item.region.office_set.all %}
-							{{ office.address|safe }}
-							{% endfor %}
-						</div>
-					</div></td>
-				</tr>
-				{% block foto %}
-				<tr>
-					<td colspan="2"> {% if request.GET.foto %}
-					{% include 'reports/foto.html' with estate_item=estate_item %}
-					{% endif %} </td>
-				</tr>
-				{% endblock foto %}
-			</tbody>
-			{% endfor %}
-		</table>
+                        
+                        <div class="wrapper">                       	                        	
+                            {% include 'reports/bidg_include.html' with bidg=estate_item.basic_bidg %}
+                        </div>
+                        
+                        {% with stead=estate_item.stead %}
+                        {% if stead %}
+                        <div class="wrapper">
+                        <span class="strong marked-header">Участок:</span>
+                        {% wrapper_fieldset_comma stead 'field_report_set' %}
+                        <span class="marked-header">документы:</span> <strong>{{ stead.documents.all|to_comma_sep }}</strong>.
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        
+                        {% if estate_item.get_not_basic_bidgs %}
+                        <div class="wrapper-0">
+                            {% for bidg in estate_item.get_not_basic_bidgs %}
+                            {% include 'reports/bidg_include.html' with bidg=bidg %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if estate_item.client_description %}
+                        <div class="wrapper">
+                            <strong>Дополнительно:</strong> {{ estate_item.client_description|default:'' }}
+                        </div>
+                        {% endif %}
+                        
+                        <div style="border-top: 1px dotted #ccc;">
+                            <strong>Кредит ОАО "Сбербанк России":</strong>
+                            ежемесячный платеж <strong>{{ estate_item.credit_sum|intcomma }} руб.</strong>, максимальный срок <strong>30 лет</strong>, максимальная сумма кредита <strong>{{ estate_item.max_credit_sum|intcomma }} руб. </strong>
+                        </div>
+                        <div style="border-top: 1px dotted #ccc;">
+                            {% for office in estate_item.region.office_set.all %}
+                            {{ office.address|safe }}
+                            {% endfor %}
+                        </div>
+                    </div></td>
+                </tr>
+                {% block foto %}
+                <tr>
+                    <td colspan="2"> {% if request.GET.foto %}
+                    {% include 'reports/foto.html' with estate_item=estate_item %}
+                    {% endif %} </td>
+                </tr>
+                {% endblock foto %}
+            </tbody>
+            {% endfor %}
+        </table>
 
-	</body>
+    </body>
 </html>
 

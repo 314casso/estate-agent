@@ -511,7 +511,11 @@ class Estate(ProcessDeletedModel):
         return u'%s' % self.pk    
     def set_contact(self):
         self.contact = self.get_best_contact()
-        self.set_validity(self.check_validity())                                           
+        self.set_validity(self.check_validity())
+    @property
+    def get_not_basic_bidgs(self):
+        return self.bidgs.exclude(basic__exact=True)
+            
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
