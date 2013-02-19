@@ -102,7 +102,7 @@ def to_comma_sep(iterval):
         result.append(doc.name.lower())
     if result:
         return ', '.join(result)
-    return u'не готовы'
+    return u'в процессе'
 
 @register.simple_tag
 def newspaper_address(estate):
