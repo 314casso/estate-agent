@@ -1,4 +1,4 @@
 {% for key, value in details.items %}
-    <label>{{ key|lower }}:</label> <strong>{{ value|lower }}</strong>{% include 'comma.html' %}
+    {% if not forloop.first %} <label>{{ key|lower }}:</label> {% else %} <label>{{ key }}:</label> {% endif %}
+    <strong>{{ value|lower }}</strong>{% if not forloop.last %}, {% else %}. {% endif %}
 {% endfor %}
-{% if details %}; {% endif %}

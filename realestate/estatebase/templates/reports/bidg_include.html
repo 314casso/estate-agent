@@ -1,12 +1,12 @@
 {% if bidg %}
 {% load report %}
-<span class="strong marked-header">{{ bidg.estate_type }}, </span>
+<span class="strong marked-header">{{ bidg.estate_type }}. </span>
 {% wrapper_fieldset_comma bidg 'exterior_report_set' %}
 {% wrapper_fieldset_comma bidg 'interior_set' %}
 {% if bidg.levels.count > 0 %}
 <div class="wrapper-1">
     {% for level in bidg.levels.all %}
-    <span class="marked-header">Планировка уровня/этажа <span class="strong">"{{ level }}":</span></span>
+    <span class="strong marked-header">Планировка уровня/этажа "{{ level }}":</span>
     {% bidg_layout level %}
     {% endfor %}
 </div>

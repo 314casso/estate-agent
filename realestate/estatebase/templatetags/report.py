@@ -85,11 +85,15 @@ def bidg_layout(level):
 def estate_details(estate_item):
     result = []    
     if estate_item.beside:
-        result.append(u'<label>Расстояние до</label> "%s": %s м.' % (estate_item.beside, estate_item.beside_distance and intcomma(estate_item.beside_distance) or '---'))
-    if estate_item.com_status:                    
-        status = u'<label>Коммерческое использование:</label> <strong>%s</strong>.' % estate_item.com_status
-        result.append(status.lower())     
-    return ', '.join(result) 
+        result.append(u'%s: %s м. ' % (estate_item.beside, estate_item.beside_distance and intcomma(estate_item.beside_distance) or '---'))
+    if estate_item.microdistrict:
+        microdistrict = u'%s' % estate_item.microdistrict
+        result.append(u'%s. ' % microdistrict.title())
+    if estate_item.com_status:
+        status = u'%s' % estate_item.com_status                    
+        status = u'<br /><label>Коммерческое использование:</label> <strong>%s</strong>.' % status.lower() 
+        result.append(status)     
+    return ''.join(result) 
 
 @register.filter
 def to_comma_sep(iterval):

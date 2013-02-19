@@ -22,12 +22,9 @@
                 <tr>
                     <td colspan="2">
                     <div>
-                    	Продается {{ estate_item.estate_type|lower }} в населенном пункте {{ estate_item.locality }}.
+                    	Продается <strong>{{ estate_item.estate_type|lower }}</strong> в населенном пункте {{ estate_item.locality }}.
                         {% estate_details estate_item %}
-                        <div style="border-top: 1px dotted #ccc;">
-                            <span class="marked-header">Коммуникации: </span> {% communication estate_item %}
-                        </div>
-                        
+                                               
                         <div class="wrapper">                       	                        	
                             {% include 'reports/bidg_include.html' with bidg=estate_item.basic_bidg %}
                         </div>
@@ -35,9 +32,9 @@
                         {% with stead=estate_item.stead %}
                         {% if stead %}
                         <div class="wrapper">
-                        <span class="strong marked-header">Участок:</span>
+                        <span class="strong marked-header">Участок. </span>
                         {% wrapper_fieldset_comma stead 'field_report_set' %}
-                        <span class="marked-header">документы:</span> <strong>{{ stead.documents.all|to_comma_sep }}</strong>.
+                        <span class="marked-header">Документы:</span> <strong>{{ stead.documents.all|to_comma_sep }}</strong>.
                         </div>
                         {% endif %}
                         {% endwith %}
@@ -55,6 +52,14 @@
                             <strong>Дополнительно:</strong> {{ estate_item.client_description|default:'' }}
                         </div>
                         {% endif %}
+                        
+                        <div style="border-top: 1px dotted #ccc;">
+                            <span class="marked-header">Коммуникации: </span> {% communication estate_item %}
+                        </div>
+                        
+                        <div style="border-top: 1px dotted #ccc;">
+                            <span class="marked-header">Цена: </span> <strong>{{ estate_item.agency_price|rubble }}</strong>
+                        </div>
                         
                         <div style="border-top: 1px dotted #ccc;">
                             <strong>Кредит ОАО "Сбербанк России":</strong>
