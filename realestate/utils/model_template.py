@@ -55,7 +55,7 @@ class FixtureSimpleMaker(object):
         "order": "%(pk)s"                
     }
 }'''
-    template = \
+    a_template = \
 '''{
     "pk": %(pk)s,
     "model": "%(model)s",
@@ -64,10 +64,22 @@ class FixtureSimpleMaker(object):
     }
 }'''    
     
+    p_template = \
+'''{
+    "pk": %(pk)s,
+    "model": "%(model)s",
+    "fields": {
+        "name": "%(0)s",
+        "prep_name":"%(1)s" 
+    }
+}'''    
+    
+    
     def __init__(self,app_name,model_name,name_list):
         self.model_name = '%s.%s' % (app_name.lower(), model_name.lower())        
         self.name_list = name_list
-        self.fixfile = '%s.json' % model_name.lower()    
+        self.fixfile = '%s.json' % model_name.lower()
+        self.template = self.p_template    
     def get_json(self):
         pk = 1
         result = []
@@ -80,7 +92,7 @@ class FixtureSimpleMaker(object):
                 if line: 
                     fields = line.split(';')                    
                     for ind, val in enumerate(fields):
-                        json_fields['%s' % ind] = ind == 0 and capfirst(val.strip()) or val.strip()                  
+                        json_fields['%s' % ind] = capfirst(val.strip())                  
             except:                
                 pass    
             if len(json_fields):                
@@ -107,16 +119,14 @@ find . -name "*.json" -exec manage.py loaddata {} \;
 
 options = \
 '''
-ипотека
-задаток
-наличные
-обмен
-продают свое
-прицениваются
+город;городе
+село;селе
+поселок;поселке
+хутор;хуторе
 '''
 
 
-MODEL = 'BidStatus'
+MODEL = 'LocalityType'
 
 import settings
 import os

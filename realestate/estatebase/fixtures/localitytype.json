@@ -1,0 +1,31 @@
+[
+{
+    "pk": 1,
+    "model": "estatebase.localitytype",
+    "fields": {
+        "name": "Город",
+        "prep_name":"Городе" 
+    }
+},{
+    "pk": 2,
+    "model": "estatebase.localitytype",
+    "fields": {
+        "name": "Поселок",
+        "prep_name":"Поселке" 
+    }
+},{
+    "pk": 3,
+    "model": "estatebase.localitytype",
+    "fields": {
+        "name": "Село",
+        "prep_name":"Селе" 
+    }
+},{
+    "pk": 4,
+    "model": "estatebase.localitytype",
+    "fields": {
+        "name": "Хутор",
+        "prep_name":"Хуторе" 
+    }
+}
+]

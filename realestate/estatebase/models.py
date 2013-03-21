@@ -80,6 +80,7 @@ class Locality(models.Model):
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
+    locality_type = models.ForeignKey('LocalityType', blank=True, null=True, verbose_name=_('LocalityType'), on_delete=models.PROTECT)
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):
@@ -988,6 +989,15 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
+
+class LocalityType(SimpleDict):
+    '''
+    LocalityType
+    '''
+    prep_name = models.CharField(_('Prepositional Name'), db_index=True, max_length=255)
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('LocalityType')
+        verbose_name_plural = _('LocalityTypes')
    
 from estatebase.signals import connect_signals
 connect_signals()
