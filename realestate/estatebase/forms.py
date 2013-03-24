@@ -189,7 +189,7 @@ class EstateFilterForm(BetterForm):
             lookup_class=ValidityLookup,
             label=_('Validity'),
             required=False,
-        )
+        )    
     estates = AutoCompleteSelectMultipleField(
             lookup_class=EstateLookup,
             label=_('ID'),
@@ -342,8 +342,14 @@ class EstateFilterForm(BetterForm):
             f['Q'] = q   
         
         if cleaned_data['validity']:
-            f['validity__in'] = cleaned_data['validity']
-            f['history__modificated__gt'] = CORRECT_DELTA
+            ids = set(validity.id for validity in cleaned_data['validity'])
+            if Estate.EXPIRED in ids:                                
+                ids.add(Estate.VALID)
+            f['validity__in'] = ids
+            if Estate.EXPIRED in ids:
+                f['history__modificated__lte'] = CORRECT_DELTA
+            elif Estate.VALID in ids:
+                f['history__modificated__gt'] = CORRECT_DELTA
         
         if cleaned_data['estates'] and self._filter_by_pk:
             f['id__in'] = [item.pk for item in cleaned_data['estates']] 

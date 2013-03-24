@@ -349,7 +349,8 @@ class Estate(ProcessDeletedModel):
     VALID = 1
     NOTFREE = 2
     NOCONACT = 3
-    DRAFT = 4    
+    DRAFT = 4
+    EXPIRED = 5    
     #Базовые
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -469,6 +470,11 @@ class Estate(ProcessDeletedModel):
     @property
     def correct(self):
         return self.validity_id == self.VALID and (self.history.modificated > CORRECT_DELTA)
+    
+    @property
+    def expired(self):
+        return self.validity_id == self.VALID and (self.history.modificated <= CORRECT_DELTA)
+    
     @property
     def basic_contact(self):
         return self.contact 
