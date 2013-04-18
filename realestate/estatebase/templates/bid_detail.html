@@ -23,12 +23,16 @@
 		<td style="font-weight: bold"><a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
 	</tr>
 	<tr>
+        <th>Статус:</th>
+        <td>{% comma_list bid.bid_status %}</td>
+    </tr>
+	<tr>
         <th>Заказчик:</th>
         <td> <a title="Редактирование заказчика" href="{% url client_update bid.client.pk %}?{{ next_url }}">[{{ bid.client.pk }}]</a>
         	<a title="Просмотр карточки заказчика" href="{% url client_detail bid.client.pk %}?{{ next_url }}">{{ bid.client.name }}</a>
         	{% contact_list bid.client next_url %}
         	</td>
-    </tr>
+    </tr>    
 	<tr>
         <th>Риэлторы:</th>
         <td>
