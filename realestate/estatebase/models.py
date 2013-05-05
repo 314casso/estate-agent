@@ -15,14 +15,11 @@ from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS, \
     MAX_CREDIT_SUM
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD, \
     OUTBUILDINGS, AGRICULTURAL, FACILITIES, APARTMENTSTEAD, LANDSCAPING
-import caching.base
 from collections import OrderedDict
 from django.template.base import Template
 from django.utils.safestring import mark_safe
 from django.template.context import Context
 from django.utils.encoding import force_unicode
-
-
 
 class ExUser(User):
     def __unicode__(self):
@@ -35,7 +32,7 @@ class UserProfile(models.Model):
     geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)
     office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)                
 
-class SimpleDict(caching.base.CachingMixin, models.Model):
+class SimpleDict(models.Model):
     #objects = caching.base.CachingManager()
     name = models.CharField(_('Name'), unique=True, db_index=True, max_length=255)
     def __unicode__(self):

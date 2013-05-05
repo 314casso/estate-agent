@@ -332,7 +332,7 @@ class EstateListView(ListView):
         return context
        
 class EstateListDetailsView(EstateListView):   
-    paginate_by = 6 
+    paginate_by = 7 
     template_name = 'estate_list.html'
     estate = None 
     def get_context_data(self, **kwargs):        
@@ -821,7 +821,7 @@ class BidDetailView(BidMixin, DetailView):
 class BidListView(ListView):
     filtered = False    
     template_name = 'bid_list.html'
-    paginate_by = 15   
+    paginate_by = 7   
     def get_queryset(self):        
         #'localities__region__geo_group',  'localities', 'estate_categories__types'
         q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')        
@@ -979,7 +979,7 @@ class RemoveEstateFromRegisterView(AddEstateToRegisterView):
 class  EstateRegisterListView(ListView):
     context_object_name = 'register_list'
     template_name = 'registers/register_list.html'    
-    paginate_by = 5   
+    paginate_by = 20   
     filtered = False
     def get_queryset(self):        
         q = EstateRegister.objects.select_related()       
