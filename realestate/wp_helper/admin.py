@@ -10,8 +10,9 @@ from estatebase.lookups import EstateTypeLookup, LocalityLookup
 
 def load_wp_taxonomy(modeladmin, request, queryset):
     wp_service = WPService()
-    queryset.update(up_to_date=False)
+    queryset.update(up_to_date=False)    
     for taxonomy in wp_service.get_taxonomies():
+        t = None
         try:
             t = WordpressTaxonomyTree.objects.get(wp_id=taxonomy.id)
         except WordpressTaxonomyTree.DoesNotExist:        
