@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block object-tools %}
+  {{ block.super }}
+  <h2>
+  	{% if adminform.form.instance.parent  %}
+  		{{ adminform.form.instance.parent }} >
+  	{% endif %}
+  	{{ adminform.form.instance }}
+  </h2>
+{% endblock %}

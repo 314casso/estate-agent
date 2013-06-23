@@ -28,9 +28,7 @@
                 {% show_not_none estate_item.stead.total_area_sotka|floatformat 'сот.,' 'пл. участка' %}
                 {% show_not_none estate_item.stead.face_area 'м,' 'ф.' %}
                 {% endif %} 
-                {% if estate_item.estate_category.is_stead %}                
-                {% show_not_none estate_item.description '' 'описание: ' %}
-                {% endif %}
+                
                 {% communication estate_item %},
                 код {{ estate_item.pk|unlocalize }},
                 цена {{ estate_item.agency_price|rubble }},

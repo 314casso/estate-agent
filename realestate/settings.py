@@ -141,6 +141,7 @@ PROFILE_LOG_BASE = MEDIA_ROOT
 ROOT_URLCONF = 'realestate.urls'
 
 TEMPLATE_DIRS = (
+    os.path.join(SITE_ROOT,'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -171,11 +172,13 @@ INSTALLED_APPS = (
     'orderedmodel',
     'selectable',    
     'django_sorting',
-    'django.contrib.humanize',
-    'sorl.thumbnail',  
+    'django.contrib.humanize',      
     'form_utils',
     'maxim_base',
     'migrate_app',
+    'wp_helper',
+    'sorl.thumbnail',
+    'mptt',
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
