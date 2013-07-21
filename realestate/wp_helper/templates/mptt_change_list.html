@@ -2,16 +2,21 @@
 {% load admin_list i18n mptt_admin %}
 
 {% block result_list %}
-{% if unlinked_regions %}
-<strong>Несвязанные районы</strong><br>
-{{ unlinked_regions }}
-<hr>
-{% endif %}
-{% if unlinked_localities %}
-<strong>Несвязанные населенные пункты</strong><br>
-{{ unlinked_localities }}
-<hr>
-{% endif %}
+	{% if unlinked_regions %}
+		<strong>Несвязанные районы</strong><br>
+		{{ unlinked_regions }}
+		<hr>
+	{% endif %}
+	{% if unlinked_localities %}
+		<strong>Несвязанные населенные пункты</strong><br>
+		{{ unlinked_localities }}
+		<hr>
+	{% endif %}
+	{% if unlinked_meta %}
+		<strong>Несвязанные жесткие поля</strong><br>
+		{{ unlinked_meta }}
+		<hr>
+	{% endif %}
     {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
     {% mptt_result_list cl %}
     {% if action_form and actions_on_bottom and cl.full_result_count %}{% admin_actions %}{% endif %}

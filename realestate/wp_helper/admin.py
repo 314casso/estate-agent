@@ -7,6 +7,7 @@ from django import forms
 from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
 from estatebase.lookups import LocalityLookup
 from estatebase.models import Region, Locality
+from django.db.models.aggregates import Max
 
 
 def load_wp_taxonomy(modeladmin, request, queryset):
@@ -68,23 +69,56 @@ def set_localities(modeladmin, request, queryset):
 
 set_localities.short_description = u'Найти соответствия рубрик и населенных пунктов'
 
+def set_meta_localities(modeladmin, request, queryset):
+    wp_service = WPService()
+    q = WordpressTaxonomyTree.objects.filter(level__lte=2)
+    for locality in WordpressMeta.objects.filter(wordpress_meta_type=WordpressMeta.LOCALITY):            
+        taxonomy_item = wp_service.find_term(locality.name, q)
+        if taxonomy_item:
+            taxonomy_item.wp_meta_locality = locality
+            taxonomy_item.save()
+        else:
+            print '%s not found!' % locality
+
+set_meta_localities.short_description = u'Найти соответствия рубрик и жестких полей'
+
+
 class CustomMPTTModelAdmin(MPTTModelAdmin):
     change_list_template = 'mptt_change_list.html'
     form = TaxonomyAdminForm
     list_per_page = 50    
     mptt_level_indent = 20
-    actions = [load_wp_taxonomy, set_localities]
+    actions = [load_wp_taxonomy, set_localities, set_meta_localities]
     def locality(self, obj):
         return ', '.join(obj.localities.values_list('name',flat=True))
     def queryset(self, request):        
         qs = super(CustomMPTTModelAdmin, self).queryset(request)        
         return qs.filter(level__lte=2)
-    list_display = ('name', 'locality')
+    def wp_meta_locality_blank(self, obj):
+        return obj.wp_meta_locality or ''
+    wp_meta_locality_blank.short_description = u'Жесткое поле'
+    list_display = ('name', 'locality', 'wp_meta_locality_blank')    
+    search_fields = ['name']
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['unlinked_localities'] = ', '.join(Locality.objects.filter(wp_taxons=None).values_list('name',flat=True)) 
         extra_context['unlinked_regions'] = ', '.join(Region.objects.filter(wp_taxons=None).values_list('name',flat=True))
+        extra_context['unlinked_meta'] = ', '.join(WordpressMeta.objects.filter(wp_taxon=None).values_list('name',flat=True))
         return super(CustomMPTTModelAdmin, self).changelist_view(request, extra_context=extra_context)
-                
+
+class MetaAdminForm(forms.ModelForm):    
+    class Meta(object):        
+        model = WordpressMeta
+    def clean_wp_id(self):        
+        result = WordpressMeta.objects.filter(wordpress_meta_type=WordpressMeta.LOCALITY).exclude(wp_id='').values_list('wp_id', flat=True)
+        result = [int(x.strip()) for x in result]
+        return max(result) + 1        
+
+class WordpressMetaAdmin(admin.ModelAdmin): 
+    list_display = ('name', 'wp_id')
+    form = MetaAdminForm    
+    list_filter = ['wordpress_meta_type']
+    search_fields = ['name']
+    
 admin.site.register(WordpressTaxonomyTree, CustomMPTTModelAdmin)
-admin.site.register(WordpressMeta)
+admin.site.register(WordpressMeta, WordpressMetaAdmin)

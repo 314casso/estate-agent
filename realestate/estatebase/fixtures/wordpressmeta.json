@@ -1,0 +1,995 @@
+[
+	{
+		"pk": 81,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "93",
+			"name": "Абрау-Дюрсо"
+		}
+	}, {
+		"pk": 106,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "103",
+			"name": "Адербиевка"
+		}
+	}, {
+		"pk": 3,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "1",
+			"name": "___Анапа___"
+		}
+	}, {
+		"pk": 4,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "2",
+			"name": "Анапская"
+		}
+	}, {
+		"pk": 48,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "3",
+			"name": "Артющенко"
+		}
+	}, {
+		"pk": 107,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "104",
+			"name": "Архипо-Осиповка"
+		}
+	}, {
+		"pk": 108,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "105",
+			"name": "Афонка"
+		}
+	}, {
+		"pk": 49,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "4",
+			"name": "Ахтанизовская"
+		}
+	}, {
+		"pk": 50,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "5",
+			"name": "Батарейка"
+		}
+	}, {
+		"pk": 51,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "6",
+			"name": "Белый"
+		}
+	}, {
+		"pk": 109,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "106",
+			"name": "Береговое"
+		}
+	}, {
+		"pk": 52,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "7",
+			"name": "Береговой"
+		}
+	}, {
+		"pk": 110,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "107",
+			"name": "Бетта"
+		}
+	}, {
+		"pk": 5,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "8",
+			"name": "Благовещенская"
+		}
+	}, {
+		"pk": 82,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "94",
+			"name": "Большие Хутора"
+		}
+	}, {
+		"pk": 83,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "78",
+			"name": "Борисовка"
+		}
+	}, {
+		"pk": 6,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "9",
+			"name": "Бужор"
+		}
+	}, {
+		"pk": 7,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "10",
+			"name": "Варваровка"
+		}
+	}, {
+		"pk": 84,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "79",
+			"name": "Васильевка"
+		}
+	}, {
+		"pk": 85,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "99",
+			"name": "Верхнебаканский"
+		}
+	}, {
+		"pk": 17,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "11",
+			"name": "Верхнее Джемете"
+		}
+	}, {
+		"pk": 8,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "12",
+			"name": "Веселая горка"
+		}
+	}, {
+		"pk": 53,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "13",
+			"name": "Веселовка (Янтарь)"
+		}
+	}, {
+		"pk": 9,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "14",
+			"name": "Вестник"
+		}
+	}, {
+		"pk": 111,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "108",
+			"name": "Виноградное"
+		}
+	}, {
+		"pk": 10,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "15",
+			"name": "Виноградный"
+		}
+	}, {
+		"pk": 54,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "123",
+			"name": "Виноградный"
+		}
+	}, {
+		"pk": 11,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "16",
+			"name": "Витязево"
+		}
+	}, {
+		"pk": 86,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "80",
+			"name": "Владимировка"
+		}
+	}, {
+		"pk": 112,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "109",
+			"name": "Возрожение"
+		}
+	}, {
+		"pk": 55,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "17",
+			"name": "Волна"
+		}
+	}, {
+		"pk": 56,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "18",
+			"name": "Волна Революции"
+		}
+	}, {
+		"pk": 12,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "19",
+			"name": "Воскресенский"
+		}
+	}, {
+		"pk": 2,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "",
+			"name": "Все"
+		}
+	}, {
+		"pk": 57,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "20",
+			"name": "Вышестеблиевская"
+		}
+	}, {
+		"pk": 87,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "101",
+			"name": "Гайдук"
+		}
+	}, {
+		"pk": 13,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "21",
+			"name": "Гайкодзор"
+		}
+	}, {
+		"pk": 58,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "22",
+			"name": "Гаркуша"
+		}
+	}, {
+		"pk": 105,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "102",
+			"name": "___Геленджик___"
+		}
+	}, {
+		"pk": 88,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "81",
+			"name": "Глебовское"
+		}
+	}, {
+		"pk": 59,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "23",
+			"name": "Голубицкая"
+		}
+	}, {
+		"pk": 89,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "100",
+			"name": "Горный"
+		}
+	}, {
+		"pk": 14,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "24",
+			"name": "Гостагаевская"
+		}
+	}, {
+		"pk": 113,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "110",
+			"name": "Джанхот"
+		}
+	}, {
+		"pk": 16,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "25",
+			"name": "Джемете"
+		}
+	}, {
+		"pk": 18,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "26",
+			"name": "Джигинка"
+		}
+	}, {
+		"pk": 114,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "111",
+			"name": "Дивноморское"
+		}
+	}, {
+		"pk": 90,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "95",
+			"name": "Дюрсо"
+		}
+	}, {
+		"pk": 61,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "28",
+			"name": "Запорожская"
+		}
+	}, {
+		"pk": 60,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "27",
+			"name": "За Родину"
+		}
+	}, {
+		"pk": 19,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "29",
+			"name": "Заря"
+		}
+	}, {
+		"pk": 20,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "30",
+			"name": "Иваново"
+		}
+	}, {
+		"pk": 62,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "31",
+			"name": "Ильич"
+		}
+	}, {
+		"pk": 115,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "112",
+			"name": "Кабардинка"
+		}
+	}, {
+		"pk": 91,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "96",
+			"name": "Камчатка"
+		}
+	}, {
+		"pk": 21,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "32",
+			"name": "Капустино"
+		}
+	}, {
+		"pk": 22,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "33",
+			"name": "Киблерово"
+		}
+	}, {
+		"pk": 92,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "82",
+			"name": "Кирилловка"
+		}
+	}, {
+		"pk": 23,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "34",
+			"name": "Красная Горка"
+		}
+	}, {
+		"pk": 63,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "35",
+			"name": "Красноармейский"
+		}
+	}, {
+		"pk": 24,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "36",
+			"name": "Красный"
+		}
+	}, {
+		"pk": 25,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "37",
+			"name": "Красный Курган"
+		}
+	}, {
+		"pk": 64,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "38",
+			"name": "Красный Октябрь"
+		}
+	}, {
+		"pk": 116,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "113",
+			"name": "Криница"
+		}
+	}, {
+		"pk": 26,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "39",
+			"name": "Куматырь"
+		}
+	}, {
+		"pk": 27,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "40",
+			"name": "Курбацкий"
+		}
+	}, {
+		"pk": 65,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "41",
+			"name": "Курчанская"
+		}
+	}, {
+		"pk": 66,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "42",
+			"name": "Кучугуры"
+		}
+	}, {
+		"pk": 93,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "86",
+			"name": "Ленинский Путь"
+		}
+	}, {
+		"pk": 94,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "97",
+			"name": "Лесничество Абрау-Дюрсо"
+		}
+	}, {
+		"pk": 28,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "43",
+			"name": "Лиманный"
+		}
+	}, {
+		"pk": 117,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "114",
+			"name": "Марьина Роща"
+		}
+	}, {
+		"pk": 118,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "115",
+			"name": "Михайловский Перевал"
+		}
+	}, {
+		"pk": 95,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "90",
+			"name": "Мысхако"
+		}
+	}, {
+		"pk": 96,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "85",
+			"name": "Натухаевская"
+		}
+	}, {
+		"pk": 15,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "44",
+			"name": "Нижняя Гостагайка"
+		}
+	}, {
+		"pk": 80,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "77",
+			"name": "___Новороссийск___"
+		}
+	}, {
+		"pk": 29,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "45",
+			"name": "Павловка"
+		}
+	}, {
+		"pk": 67,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "46",
+			"name": "Пересыпь"
+		}
+	}, {
+		"pk": 30,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "47",
+			"name": "Песчаный"
+		}
+	}, {
+		"pk": 97,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "89",
+			"name": "Победа"
+		}
+	}, {
+		"pk": 119,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "116",
+			"name": "Прасковеевка"
+		}
+	}, {
+		"pk": 68,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "48",
+			"name": "Приазовский"
+		}
+	}, {
+		"pk": 69,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "49",
+			"name": "Приморский"
+		}
+	}, {
+		"pk": 70,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "50",
+			"name": "Прогресс"
+		}
+	}, {
+		"pk": 31,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "51",
+			"name": "Просторный"
+		}
+	}, {
+		"pk": 120,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "117",
+			"name": "Пшада"
+		}
+	}, {
+		"pk": 32,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "52",
+			"name": "Пятихатки"
+		}
+	}, {
+		"pk": 98,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "88",
+			"name": "Раевская"
+		}
+	}, {
+		"pk": 34,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "53",
+			"name": "Разнокол"
+		}
+	}, {
+		"pk": 33,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "54",
+			"name": "Рассвет"
+		}
+	}, {
+		"pk": 121,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "118",
+			"name": "Светлый"
+		}
+	}, {
+		"pk": 71,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "55",
+			"name": "Светлый Путь"
+		}
+	}, {
+		"pk": 99,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "98",
+			"name": "Северная Озереевка"
+		}
+	}, {
+		"pk": 100,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "87",
+			"name": "Семигорский"
+		}
+	}, {
+		"pk": 72,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "56",
+			"name": "Сенной"
+		}
+	}, {
+		"pk": 73,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "57",
+			"name": "Соленый"
+		}
+	}, {
+		"pk": 74,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "58",
+			"name": "Старотитаровская"
+		}
+	}, {
+		"pk": 75,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "59",
+			"name": "Стрелка"
+		}
+	}, {
+		"pk": 35,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "60",
+			"name": "Суворово-Черкесский"
+		}
+	}, {
+		"pk": 36,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "61",
+			"name": "Сукко"
+		}
+	}, {
+		"pk": 37,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "62",
+			"name": "Супсех"
+		}
+	}, {
+		"pk": 76,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "63",
+			"name": "Таманский"
+		}
+	}, {
+		"pk": 77,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "64",
+			"name": "Тамань"
+		}
+	}, {
+		"pk": 38,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "65",
+			"name": "Тарусино"
+		}
+	}, {
+		"pk": 122,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "119",
+			"name": "Текос"
+		}
+	}, {
+		"pk": 47,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "66",
+			"name": "___Темрюк___"
+		}
+	}, {
+		"pk": 123,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "120",
+			"name": "Тешебс"
+		}
+	}, {
+		"pk": 101,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "83",
+			"name": "Убых"
+		}
+	}, {
+		"pk": 39,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "67",
+			"name": "Усатова Балка"
+		}
+	}, {
+		"pk": 40,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "68",
+			"name": "Уташ"
+		}
+	}, {
+		"pk": 41,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "69",
+			"name": "Утриш"
+		}
+	}, {
+		"pk": 102,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "91",
+			"name": "Федотовка"
+		}
+	}, {
+		"pk": 78,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "70",
+			"name": "Фонталовская"
+		}
+	}, {
+		"pk": 42,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "71",
+			"name": "Цыбанобалка"
+		}
+	}, {
+		"pk": 43,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "72",
+			"name": "Чекон"
+		}
+	}, {
+		"pk": 44,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "73",
+			"name": "Чембурка"
+		}
+	}, {
+		"pk": 45,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "74",
+			"name": "Черный"
+		}
+	}, {
+		"pk": 103,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "92",
+			"name": "Широкая Балка"
+		}
+	}, {
+		"pk": 124,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "121",
+			"name": "Широкая Пшадская Щель"
+		}
+	}, {
+		"pk": 125,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "122",
+			"name": "Широкая Щель"
+		}
+	}, {
+		"pk": 79,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "75",
+			"name": "Юбилейный"
+		}
+	}, {
+		"pk": 104,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "84",
+			"name": "Южная Озереевка"
+		}
+	}, {
+		"pk": 46,
+		"model": "wp_helper.wordpressmeta",
+		"fields": {
+			"wordpress_meta_type": 1,
+			"wp_id": "76",
+			"name": "Юровка"
+		}
+	}
+]
