@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from wp_helper.models import WordpressTaxonomyTree
+from wp_helper.models import WordpressTaxonomyTree, WordpressMeta
 from mptt.admin import MPTTModelAdmin
 from wp_helper.service import WPService
 from django import forms
 from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
-from estatebase.lookups import EstateTypeLookup, LocalityLookup
+from estatebase.lookups import LocalityLookup
+from estatebase.models import Region, Locality
 
 
 def load_wp_taxonomy(modeladmin, request, queryset):
@@ -42,20 +43,48 @@ def load_wp_taxonomy(modeladmin, request, queryset):
         
 load_wp_taxonomy.short_description = u'Загрузить рубрики из WordPress'
 
-class TaxonomyAdminForm(forms.ModelForm):
+class TaxonomyAdminForm(forms.ModelForm):    
     class Meta(object):        
         model = WordpressTaxonomyTree        
-        widgets = {
-            'estate_types': AutoCompleteSelectMultipleWidget(lookup_class=EstateTypeLookup),
+        widgets = {            
             'localities': AutoCompleteSelectMultipleWidget(lookup_class=LocalityLookup),
         }
-        fields = ['estate_types', 'localities']
+        #fields = ['localities', 'wp_id']
+
+def clear_localities(modeladmin, request, queryset):
+    for t in WordpressTaxonomyTree.objects.all():
+        t.localities.clear()
+        
+def set_localities(modeladmin, request, queryset):
+    wp_service = WPService()
+    for region in Region.objects.all():
+        q = WordpressTaxonomyTree.objects.filter(level__lte=2, parent__regions__id=region.id)
+        for locality in Locality.objects.filter(region=region, wp_taxons=None):            
+            taxonomy_item = wp_service.find_term(locality.name, q)
+            if taxonomy_item:
+                taxonomy_item.localities.add(locality)
+            else:
+                print '%s not found!' % locality
+
+set_localities.short_description = u'Найти соответствия рубрик и населенных пунктов'
 
 class CustomMPTTModelAdmin(MPTTModelAdmin):
+    change_list_template = 'mptt_change_list.html'
     form = TaxonomyAdminForm
     list_per_page = 50    
     mptt_level_indent = 20
-    actions = [load_wp_taxonomy]
+    actions = [load_wp_taxonomy, set_localities]
+    def locality(self, obj):
+        return ', '.join(obj.localities.values_list('name',flat=True))
+    def queryset(self, request):        
+        qs = super(CustomMPTTModelAdmin, self).queryset(request)        
+        return qs.filter(level__lte=2)
+    list_display = ('name', 'locality')
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['unlinked_localities'] = ', '.join(Locality.objects.filter(wp_taxons=None).values_list('name',flat=True)) 
+        extra_context['unlinked_regions'] = ', '.join(Region.objects.filter(wp_taxons=None).values_list('name',flat=True))
+        return super(CustomMPTTModelAdmin, self).changelist_view(request, extra_context=extra_context)
                 
 admin.site.register(WordpressTaxonomyTree, CustomMPTTModelAdmin)
-
+admin.site.register(WordpressMeta)

@@ -18,7 +18,7 @@ MAX_CREDIT_SUM = 0.1
 
 from local_settings import * #@UnusedWildImport
 
-DATABASE_ROUTERS = ['realestate.db_routers.MaximRouter',]
+DATABASE_ROUTERS = ['db_routers.MaximRouter',]
 
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    

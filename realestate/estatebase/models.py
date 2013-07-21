@@ -75,6 +75,7 @@ class Locality(models.Model):
     '''
     Населенный пункт
     '''
+    CITY = 1
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
     locality_type = models.ForeignKey('LocalityType', blank=True, null=True, verbose_name=_('LocalityType'), on_delete=models.PROTECT)
