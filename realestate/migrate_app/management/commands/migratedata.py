@@ -153,31 +153,40 @@ class Command(BaseCommand):
                 history.save()
                 e = Estate()
                 e.history = history
+                print '0+'
                 estate_type_type = TypesEstateType.objects.get(source_id=real_estate.type_id)
+                print '0-'
                 estate_type = estate_type_type.estate_type
                 e.estate_category_id = estate_type.estate_type_category_id
                 e._estate_type_id = estate_type.pk
                 e.origin_id = SourceOrigin.objects.get(pk=real_estate.source_id or 14).origin_id               
                 e.locality = self.get_locality(real_estate.place_id, real_estate.region_id, real_estate.place.name.strip())                                                 
                 e.region_id = e.locality.region_id
+                print '1+'
                 if real_estate.street_id and real_estate.street_id != 1:
                     street, created = Street.objects.get_or_create(name=real_estate.street.name.strip(), locality=e.locality) # @UnusedVariable
                     e.street = street                
                 if real_estate.area_id and real_estate.area_id != 1:
                     microdistrict, created = Microdistrict.objects.get_or_create(name=real_estate.area.name.strip(), locality=e.locality) # @UnusedVariable
                     e.microdistrict = microdistrict
+                print '1-'
                 e.estate_number = real_estate.house_number.strip()
-                e.saler_price = real_estate.cost
+                print '2+'
+                e.saler_price = real_estate.cost                
                 e.agency_price = real_estate.cost_markup
+                print '2-'
                 e.estate_status_id = real_estate.status_id                       
                 descriptions = Descriptions.objects.filter(real_estate=real_estate)
                 dlist = []
+                print '3+'
                 for description in descriptions:
                     d = description.description.strip()
                     if d:
                         dlist.append(d)                                     
-                e.description = '; '.join(dlist)                              
-                e.save()           
+                e.description = '; '.join(dlist)
+                print '3-'                              
+                e.save() 
+                print 'save...'          
                 prop_map = PropMap(e)                
                 properties = Properties.objects.filter(real_estate=real_estate)                
                 for prop in properties:                     
