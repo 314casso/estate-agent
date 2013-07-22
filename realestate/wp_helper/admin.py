@@ -103,7 +103,7 @@ class CustomMPTTModelAdmin(MPTTModelAdmin):
         extra_context = extra_context or {}
         extra_context['unlinked_localities'] = ', '.join(Locality.objects.filter(wp_taxons=None).values_list('name',flat=True)) 
         extra_context['unlinked_regions'] = ', '.join(Region.objects.filter(wp_taxons=None).values_list('name',flat=True))
-        extra_context['unlinked_meta'] = ', '.join(WordpressMeta.objects.filter(wp_taxon=None).values_list('name',flat=True))
+        extra_context['unlinked_meta'] = ', '.join(WordpressMeta.objects.filter(wp_taxon=None, wordpress_meta_type=WordpressMeta.LOCALITY).values_list('name',flat=True))
         return super(CustomMPTTModelAdmin, self).changelist_view(request, extra_context=extra_context)
 
 class MetaAdminForm(forms.ModelForm):    

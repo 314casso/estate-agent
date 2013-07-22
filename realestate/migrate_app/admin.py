@@ -1,5 +1,6 @@
 from django.contrib import admin
-from migrate_app.models import SourceOrigin, UserUser, TypesEstateType
+from migrate_app.models import SourceOrigin, UserUser, TypesEstateType,\
+    EstateImport
 from migrate_app.forms import SourceOriginForm, UserUserForm,\
     TypesEstateTypeForm
 
@@ -24,3 +25,4 @@ class TypesEstateTypeAdmin(admin.ModelAdmin):
 admin.site.register(SourceOrigin, SourceOriginAdmin)
 admin.site.register(UserUser, UserUserAdmin)
 admin.site.register(TypesEstateType, TypesEstateTypeAdmin)
+admin.site.register(EstateImport)

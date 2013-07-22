@@ -9,15 +9,19 @@ from wp_helper.service import WPService
 from django.dispatch.dispatcher import receiver
 from django.db.utils import IntegrityError
 from django.db.models.aggregates import Max
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 class WordpressMeta(models.Model):    
-    LOCALITY = 1    
+    LOCALITY = 1
+    OBJECT_TYPE = 2    
     METATYPE_CHOICES = (
-        (LOCALITY, u'Населенные пункты'),        
+        (LOCALITY, u'Населенные пункты'),
+        (OBJECT_TYPE, u'Тип объекта'),        
     )
     name = models.CharField('Name', max_length=150)
     wp_id = models.CharField('Meta Key', max_length=10, blank=True)
-    wordpress_meta_type = models.IntegerField(u'Тип поля', choices=METATYPE_CHOICES)
+    wordpress_meta_type = models.IntegerField(u'Тип поля', choices=METATYPE_CHOICES)    
     def __unicode__(self):
         return self.name
     class Meta:
@@ -43,11 +47,11 @@ class WordpressTaxonomyTree(MPTTModel):
         verbose_name = u'Рубрика'
         verbose_name_plural = u'Рубрики'    
 
-def load_data(data, wordpress_meta_type_id):   
+def load_data(data, wordpress_meta_type):   
     list_r = data.split(',')
     for item in list_r:
         key,value = item.split(':')
-        WordpressMeta.objects.create(wp_id=key.strip(), name=value.strip(), wordpress_meta_type_id=wordpress_meta_type_id)
+        WordpressMeta.objects.create(wp_id=key.strip(), name=value.strip(), wordpress_meta_type=wordpress_meta_type)
 
 def check_localities():
     ar = [x.lower() for x in WordpressTaxonomyTree.objects.values_list('name',flat=True)]
@@ -80,5 +84,5 @@ def unique_locality(sender, instance, **kwargs):
          
 #check_localities()
 
-#reg = u":Все, 1:___Анапа___, 2:Анапская, 8:Благовещенская, 9:Бужор, 10:Варваровка, 12:Веселая горка, 14:Вестник, 15:Виноградный, 16:Витязево, 19:Воскресенский, 21:Гайкодзор, 24:Гостагаевская, 44:Нижняя Гостагайка, 25:Джемете, 11:Верхнее Джемете, 26:Джигинка, 29:Заря, 30:Иваново, 32:Капустино, 33:Киблерово, 34:Красная Горка, 36:Красный, 37:Красный Курган, 39:Куматырь, 40:Курбацкий, 43:Лиманный, 45:Павловка, 47:Песчаный, 51:Просторный, 52:Пятихатки, 54:Рассвет, 53:Разнокол, 60:Суворово-Черкесский, 61:Сукко, 62:Супсех, 65:Тарусино, 67:Усатова Балка, 68:Уташ, 69:Утриш, 71:Цыбанобалка, 72:Чекон, 73:Чембурка, 74:Черный, 76:Юровка, 66:___Темрюк___, 3:Артющенко, 4:Ахтанизовская, 5:Батарейка, 6:Белый, 7:Береговой, 13:Веселовка (Янтарь), 123:Виноградный, 17:Волна, 18:Волна Революции, 20:Вышестеблиевская, 22:Гаркуша, 23:Голубицкая, 27:За Родину, 28:Запорожская, 31:Ильич, 35:Красноармейский, 38:Красный Октябрь, 41:Курчанская, 42:Кучугуры, 46:Пересыпь, 48:Приазовский, 49:Приморский, 50:Прогресс, 55:Светлый Путь, 56:Сенной, 57:Соленый, 58:Старотитаровская, 59:Стрелка, 63:Таманский, 64:Тамань, 70:Фонталовская, 75:Юбилейный, 77:___Новороссийск___, 93:Абрау-Дюрсо, 94:Большие Хутора, 78:Борисовка, 79:Васильевка, 99:Верхнебаканский, 80:Владимировка, 101:Гайдук, 81:Глебовское, 100:Горный, 95:Дюрсо, 96:Камчатка, 82:Кирилловка, 86:Ленинский Путь, 97:Лесничество Абрау-Дюрсо, 90:Мысхако, 85:Натухаевская, 89:Победа, 88:Раевская, 98:Северная Озереевка, 87:Семигорский, 83:Убых, 91:Федотовка, 92:Широкая Балка, 84:Южная Озереевка, 102:___Геленджик___,  103:Адербиевка, 104:Архипо-Осиповка, 105:Афонка, 106:Береговое, 107:Бетта, 108:Виноградное, 109:Возрожение, 110:Джанхот, 111:Дивноморское, 112:Кабардинка, 113:Криница, 114:Марьина Роща, 115:Михайловский Перевал, 116:Прасковеевка, 117:Пшада, 118:Светлый, 119:Текос, 120:Тешебс, 121:Широкая Пшадская Щель, 122:Широкая Щель"
-#load_data(reg, 1)
+#reg = u"2:Ветхий дом, 13:Гараж, 9:Дача, 10:Дачный участок, 1:Дом, 6:Квартира, 12:Коммерческое, 16:Комната, 3:Коттедж, 15:Малосемейка, 14:Новостройки, 4:Полдома, 7:Таунхаус, 8:Участок, 11:Участок сельхозназначения, 5:Часть дома"
+#load_data(reg, 2)

@@ -37,4 +37,6 @@ class BidImport(models.Model):
 class EstateImport(models.Model):
     estate = models.ForeignKey(Estate, blank=True, null=True, on_delete=models.SET_NULL)
     external_id = models.IntegerField(unique=True)
+    def __unicode__(self):
+        return u'%s'  % self.estate
         
