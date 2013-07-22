@@ -167,8 +167,8 @@ class Command(BaseCommand):
                     microdistrict, created = Microdistrict.objects.get_or_create(name=real_estate.area.name.strip(), locality=e.locality) # @UnusedVariable
                     e.microdistrict = microdistrict
                 e.estate_number = real_estate.house_number.strip()
-                e.saler_price = real_estate.cost                
-                e.agency_price = real_estate.cost_markup
+                #e.saler_price = real_estate.cost                
+                #e.agency_price = real_estate.cost_markup
                 e.estate_status_id = real_estate.status_id                       
                 descriptions = Descriptions.objects.filter(real_estate=real_estate)
                 dlist = []
@@ -176,8 +176,7 @@ class Command(BaseCommand):
                     d = description.description.strip()
                     if d:
                         dlist.append(d)                                     
-                e.description = '; '.join(dlist)
-                print vars(e)                              
+                e.description = '; '.join(dlist)                                              
                 e.save() 
                 print 'save...'          
                 prop_map = PropMap(e)                
