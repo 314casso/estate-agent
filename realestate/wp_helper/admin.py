@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from wp_helper.models import WordpressTaxonomyTree, WordpressMeta
+from wp_helper.models import WordpressTaxonomyTree, WordpressMeta,\
+    WordpressMetaEstateType
 from mptt.admin import MPTTModelAdmin
 from wp_helper.service import WPService
 from django import forms
 from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
-from estatebase.lookups import LocalityLookup
-from estatebase.models import Region, Locality
-from django.db.models.aggregates import Max
-
+from estatebase.lookups import LocalityLookup, EstateTypeLookup
+from estatebase.models import Region, Locality, EstateType
 
 def load_wp_taxonomy(modeladmin, request, queryset):
     wp_service = WPService()
@@ -50,7 +49,27 @@ class TaxonomyAdminForm(forms.ModelForm):
         widgets = {            
             'localities': AutoCompleteSelectMultipleWidget(lookup_class=LocalityLookup),
         }
-        #fields = ['localities', 'wp_id']
+        fields = ['localities', 'wp_meta_locality']
+
+class MetaAdminForm(forms.ModelForm):    
+    class Meta(object):        
+        model = WordpressMeta
+        fields = ['name']
+
+class WordpressMetaEstateTypeAdminForm(forms.ModelForm):
+    class Meta(object):        
+        model = WordpressMetaEstateType        
+        widgets = {            
+            'estate_types': AutoCompleteSelectMultipleWidget(lookup_class=EstateTypeLookup),
+        }
+        fields = ['name','estate_types']
+
+class WordpressMetaEstateTypeAdmin(admin.ModelAdmin):
+    form = WordpressMetaEstateTypeAdminForm
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['unlinked_objects'] = ', '.join(EstateType.objects.filter(wp_taxons=None).values_list('name',flat=True))
+        return super(WordpressMetaEstateTypeAdmin, self).changelist_view(request, extra_context=extra_context)
 
 def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():
@@ -72,7 +91,7 @@ set_localities.short_description = u'Найти соответствия руб�
 def set_meta_localities(modeladmin, request, queryset):
     wp_service = WPService()
     q = WordpressTaxonomyTree.objects.filter(level__lte=2)
-    for locality in WordpressMeta.objects.filter(wordpress_meta_type=WordpressMeta.LOCALITY):            
+    for locality in WordpressMeta.objects.all():            
         taxonomy_item = wp_service.find_term(locality.name, q)
         if taxonomy_item:
             taxonomy_item.wp_meta_locality = locality
@@ -103,22 +122,14 @@ class CustomMPTTModelAdmin(MPTTModelAdmin):
         extra_context = extra_context or {}
         extra_context['unlinked_localities'] = ', '.join(Locality.objects.filter(wp_taxons=None).values_list('name',flat=True)) 
         extra_context['unlinked_regions'] = ', '.join(Region.objects.filter(wp_taxons=None).values_list('name',flat=True))
-        extra_context['unlinked_meta'] = ', '.join(WordpressMeta.objects.filter(wp_taxon=None, wordpress_meta_type=WordpressMeta.LOCALITY).values_list('name',flat=True))
+        extra_context['unlinked_meta'] = ', '.join(WordpressMeta.objects.filter(wp_taxon=None).values_list('name',flat=True))
         return super(CustomMPTTModelAdmin, self).changelist_view(request, extra_context=extra_context)
-
-class MetaAdminForm(forms.ModelForm):    
-    class Meta(object):        
-        model = WordpressMeta
-    def clean_wp_id(self):        
-        result = WordpressMeta.objects.filter(wordpress_meta_type=WordpressMeta.LOCALITY).exclude(wp_id='').values_list('wp_id', flat=True)
-        result = [int(x.strip()) for x in result]
-        return max(result) + 1        
 
 class WordpressMetaAdmin(admin.ModelAdmin): 
     list_display = ('name', 'wp_id')
-    form = MetaAdminForm    
-    list_filter = ['wordpress_meta_type']
+    form = MetaAdminForm   
     search_fields = ['name']
     
 admin.site.register(WordpressTaxonomyTree, CustomMPTTModelAdmin)
 admin.site.register(WordpressMeta, WordpressMetaAdmin)
+admin.site.register(WordpressMetaEstateType, WordpressMetaEstateTypeAdmin)

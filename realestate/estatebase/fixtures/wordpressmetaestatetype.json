@@ -1,0 +1,131 @@
+[
+	{
+		"pk": 1,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "2",
+			"name": "Ветхий дом",
+			"estate_types": []
+		}
+	}, {
+		"pk": 2,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "13",
+			"name": "Гараж",
+			"estate_types": []
+		}
+	}, {
+		"pk": 3,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "9",
+			"name": "Дача",
+			"estate_types": []
+		}
+	}, {
+		"pk": 4,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "10",
+			"name": "Дачный участок",
+			"estate_types": []
+		}
+	}, {
+		"pk": 6,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "6",
+			"name": "Квартира",
+			"estate_types": []
+		}
+	}, {
+		"pk": 7,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "12",
+			"name": "Коммерческое",
+			"estate_types": []
+		}
+	}, {
+		"pk": 8,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "16",
+			"name": "Комната",
+			"estate_types": []
+		}
+	}, {
+		"pk": 9,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "3",
+			"name": "Коттедж",
+			"estate_types": []
+		}
+	}, {
+		"pk": 10,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "15",
+			"name": "Малосемейка",
+			"estate_types": []
+		}
+	}, {
+		"pk": 11,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "14",
+			"name": "Новостройки",
+			"estate_types": []
+		}
+	}, {
+		"pk": 12,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "4",
+			"name": "Полдома",
+			"estate_types": []
+		}
+	}, {
+		"pk": 13,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "7",
+			"name": "Таунхаус",
+			"estate_types": []
+		}
+	}, {
+		"pk": 14,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "8",
+			"name": "Участок",
+			"estate_types": []
+		}
+	}, {
+		"pk": 15,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "11",
+			"name": "Участок сельхозназначения",
+			"estate_types": []
+		}
+	}, {
+		"pk": 16,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "5",
+			"name": "Часть дома",
+			"estate_types": []
+		}
+	}, {
+		"pk": 5,
+		"model": "wp_helper.wordpressmetaestatetype",
+		"fields": {
+			"wp_id": "17",
+			"name": "Дом",
+			"estate_types": [16]
+		}
+	}
+]
