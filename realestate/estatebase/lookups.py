@@ -42,7 +42,7 @@ class EstateLookup(ModelLookup):
     
 class EstateStatusLookup(ModelLookup):
     model = EstateStatus
-    search_fields = ('id__icontains',)    
+    search_fields = ('name__icontains',)    
     
 class RegionLookup(ModelLookup):
     model = Region

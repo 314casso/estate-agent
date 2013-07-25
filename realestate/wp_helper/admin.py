@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from wp_helper.models import WordpressTaxonomyTree, WordpressMeta,\
-    WordpressMetaEstateType
+    WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus
 from mptt.admin import MPTTModelAdmin
 from wp_helper.service import WPService
 from django import forms
 from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
-from estatebase.lookups import LocalityLookup, EstateTypeLookup
+from estatebase.lookups import LocalityLookup, EstateTypeLookup, RegionLookup,\
+    EstateStatusLookup
 from estatebase.models import Region, Locality, EstateType
 
 def load_wp_taxonomy(modeladmin, request, queryset):
@@ -71,6 +72,28 @@ class WordpressMetaEstateTypeAdmin(admin.ModelAdmin):
         extra_context['unlinked_objects'] = ', '.join(EstateType.objects.filter(wp_taxons=None).values_list('name',flat=True))
         return super(WordpressMetaEstateTypeAdmin, self).changelist_view(request, extra_context=extra_context)
 
+class WordpressMetaRegionAdminForm(forms.ModelForm):
+    class Meta(object):        
+        model = WordpressMetaRegion        
+        widgets = {            
+            'regions': AutoCompleteSelectMultipleWidget(lookup_class=RegionLookup),
+        }
+        fields = ['name','regions']
+
+class WordpressMetaStatusAdminForm(forms.ModelForm):
+    class Meta(object):        
+        model = WordpressMetaStatus        
+        widgets = {            
+            'estate_statuses': AutoCompleteSelectMultipleWidget(lookup_class=EstateStatusLookup),
+        }
+        fields = ['name','estate_statuses', 'wp_id']
+
+class WordpressMetaRegionAdmin(admin.ModelAdmin):
+    form = WordpressMetaRegionAdminForm
+
+class WordpressMetaStatusAdmin(admin.ModelAdmin):
+    form = WordpressMetaStatusAdminForm
+
 def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():
         t.localities.clear()
@@ -133,3 +156,5 @@ class WordpressMetaAdmin(admin.ModelAdmin):
 admin.site.register(WordpressTaxonomyTree, CustomMPTTModelAdmin)
 admin.site.register(WordpressMeta, WordpressMetaAdmin)
 admin.site.register(WordpressMetaEstateType, WordpressMetaEstateTypeAdmin)
+admin.site.register(WordpressMetaRegion, WordpressMetaRegionAdmin)
+admin.site.register(WordpressMetaStatus, WordpressMetaStatusAdmin)

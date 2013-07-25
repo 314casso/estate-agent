@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-from estatebase.models import Locality, Region, EstateType
+from estatebase.models import Locality, Region, EstateType, EstateStatus
 from django.db.models.signals import m2m_changed
 from django.dispatch.dispatcher import receiver
 from django.db.utils import IntegrityError
@@ -21,7 +21,8 @@ class WordpressMetaAbstract(models.Model):
         abstract = True
         ordering = ['name']
     def save(self, *args, **kwargs):
-        self.wp_id = self.get_next_wp_id()
+        if not self.wp_id:
+            self.wp_id = self.get_next_wp_id()
         super(WordpressMetaAbstract, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class WordpressMeta(WordpressMetaAbstract):    
@@ -34,6 +35,18 @@ class WordpressMetaEstateType(WordpressMetaAbstract):
     class Meta:
         verbose_name = u'Вид недвижимости'
         verbose_name_plural = u'Виды недвижимости'        
+
+class WordpressMetaRegion(WordpressMetaAbstract): 
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_region_taxons')   
+    class Meta:
+        verbose_name = u'Район'
+        verbose_name_plural = u'Районы'   
+    
+class WordpressMetaStatus(WordpressMetaAbstract): 
+    estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, null=True, related_name='wp_region_taxons')   
+    class Meta:
+        verbose_name = u'Статус'
+        verbose_name_plural = u'Статусы'    
     
 class WordpressTaxonomyTree(MPTTModel):
     name = models.CharField('Name', max_length=150)
@@ -89,5 +102,5 @@ def unique_locality(sender, instance, **kwargs):
          
 #check_localities()
 
-#reg = u"2:Ветхий дом, 13:Гараж, 9:Дача, 10:Дачный участок, 1:Дом, 6:Квартира, 12:Коммерческое, 16:Комната, 3:Коттедж, 15:Малосемейка, 14:Новостройки, 4:Полдома, 7:Таунхаус, 8:Участок, 11:Участок сельхозназначения, 5:Часть дома"
-#load_data(reg, WordpressMetaEstateType)
+#reg = u"1:Анапский, 3:Новороссийский, 4:Геленджикский, 2:Темрюкский"
+#load_data(reg, WordpressMetaRegion)

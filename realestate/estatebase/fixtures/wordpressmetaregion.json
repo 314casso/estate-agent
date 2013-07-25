@@ -1,0 +1,51 @@
+[
+	{
+		"pk": 4,
+		"model": "wp_helper.wordpressmetaregion",
+		"fields": {
+			"regions": [4],
+			"wp_id": "2",
+			"name": "Темрюкский"
+		}
+	}, {
+		"pk": 3,
+		"model": "wp_helper.wordpressmetaregion",
+		"fields": {
+			"regions": [2],
+			"wp_id": "4",
+			"name": "Геленджикский"
+		}
+	}, {
+		"pk": 2,
+		"model": "wp_helper.wordpressmetaregion",
+		"fields": {
+			"regions": [3],
+			"wp_id": "3",
+			"name": "Новороссийский"
+		}
+	}, {
+		"pk": 1,
+		"model": "wp_helper.wordpressmetaregion",
+		"fields": {
+			"regions": [1],
+			"wp_id": "1",
+			"name": "Анапский"
+		}
+	}, {
+		"pk": 1,
+		"model": "wp_helper.wordpressmetastatus",
+		"fields": {
+			"wp_id": "vacant",
+			"estate_statuses": [1],
+			"name": "Вакантно"
+		}
+	}, {
+		"pk": 2,
+		"model": "wp_helper.wordpressmetastatus",
+		"fields": {
+			"wp_id": "sold",
+			"estate_statuses": [3, 4],
+			"name": "Продано"
+		}
+	}
+]
