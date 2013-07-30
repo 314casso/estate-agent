@@ -10,7 +10,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
+CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=90)
 
 MAX_CREDIT_MONTHS = 360
 INTEREST_RATE = 9.5/100 
