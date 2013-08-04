@@ -9,27 +9,60 @@ Replace this with more appropriate tests for your application.
 from wp_helper.service import WPService
 from wp_helper.models import WordpressMeta, WordpressTaxonomyTree
 from unittest.case import TestCase
-from estatebase.models import Locality
+from estatebase.models import Locality, Estate
+from settings import WP_PARAMS
+from django.template.base import Template
+from django.template.context import Context
 
 class SimpleTest(TestCase):
     def test_meta(self):
         """
         Tests that 1 + 1 always equals 2.
         """
-        #q = WordpressMeta.objects.filter(wordpress_meta_type=WordpressMeta.LOCALITY)
-        #return qs.filter(level__lte=2, parent__regions__id=2)
-        #q = WordpressTaxonomyTree.objects.all()        
-        s = WPService()
-#         try:               
-        s.delete_taxonomy(1066)
-#         except:
-#             print 'ERROR'
+#         wp_service = WPService(WP_PARAMS['site'])
+#         estate = Estate.objects.get(pk=86498) #86606
+#      
+#         print wp_service.render_post_title(estate)
+#         print wp_service.render_seo_post_title(estate)
+#         for item in  wp_service.render_post_tags(estate):
+#             print item
+             
+#                    
+        import pymorphy2
+        morph = pymorphy2.MorphAnalyzer()
+            
+            
+        for item in morph.parse(u'белый'):
+            print item.inflect({'sing', 'accs'}).tag
+            if item.normal_form == item.word:    
+                print item.inflect({'sing', 'accs'}).word 
+           
+          
+#         print morph.parse(u'Ханчакрак')[0].inflect({'sing', 'loct'}).word
 #         
-#         print 'OK!!!!'
-        #s = u'\u042d\u043b\u0435\u043c\u0435\u043d\u0442 \u0441 \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u044b\u043c \u0438\u043c\u0435\u043d\u0435\u043c \u0443\u0436\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442 \u0443 \u0440\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u0441\u043a\u043e\u0433\u043e \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430.'                
-        #print s.decode('utf8')
-        #self.assertIsNotNone(t, u'Не найден %s' % term)
-        #k = 5
-        #key = s.get_post_id_by_meta_key(k)     
-        #self.assertTrue(key > 0, u'Ключ %s не найден' % k)
-        #print key
+#         print morph.parse(u'квартира')[0].inflect({'sing', 'accs'}).word
+             
+        #print s.inflect('Голубицкая',6)
+        #print s.get_post_id_by_meta_key(69225)
+        #category =  s.get_or_create_category(3, u'дача')
+        #if category is not None:
+        #    print category.wp_id
+ 
+#   def inflect(self, name, case):
+#         from hashlib import sha1
+#         from django.core.cache import cache
+#         cache_key = sha1('inflect_cache_%s_%s' % (name, case)).hexdigest()
+#         result = cache.get(cache_key)        
+#         if result:                         
+#             return result 
+#         import urllib
+#         from xml.etree import ElementTree
+#         url = 'http://export.yandex.ru/inflect.xml?'
+#         url += urllib.urlencode([('name', name.encode('utf-8'))])
+#         response = urllib.urlopen(url)
+#         tree = ElementTree.parse(response)
+#         elem = tree.find( './/inflection[@case="%s"]' % case)                
+#         if elem is not None:
+#             cache.set(cache_key, elem.text)            
+#             return elem.text
+            

@@ -55,6 +55,8 @@ class Region(SimpleDict):
     '''
     Район
     '''
+    regular_name = models.CharField(_('Region'), max_length=100, blank=True, null=True)
+    regular_name_gent = models.CharField(_('Gent'), max_length=100, blank=True, null=True)
     geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
@@ -77,6 +79,8 @@ class Locality(models.Model):
     '''
     CITY = 1
     name = models.CharField(_('Name'), db_index=True, max_length=255)
+    name_gent = models.CharField(_('Gent'), max_length=255, blank=True, null=True)
+    name_loct = models.CharField(_('Loct'), max_length=255, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
     locality_type = models.ForeignKey('LocalityType', blank=True, null=True, verbose_name=_('LocalityType'), on_delete=models.PROTECT)
     def __unicode__(self):
@@ -261,6 +265,7 @@ class EstateType(OrderedModel):
         (LANDSCAPING, u'Благоустройство'),
         )    
     name = models.CharField(_('Name'), max_length=100)
+    name_accs = models.CharField(_('Accs'), max_length=100, blank=True, null=True)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
@@ -485,14 +490,30 @@ class Estate(ProcessDeletedModel):
         if contacts:
             return contacts[0]
     @property
-    def estate_type(self):        
+    def estate_type(self):
+        return self.estate_type_base()
+    @property
+    def estate_type_total_area(self):
+        complex_name_format = u'%s %g %s'
+        attr = {
+                'stead' : {'name':'total_area_sotka', 'mesure': u'сот.', 'format' : complex_name_format},
+                'bidg' : {'name':'total_area', 'mesure': u'м.кв.', 'format' : complex_name_format},
+                }
+        return self.estate_type_base(attr)
+    def apply_attr(self, obj, attr):
+        complex_name = obj.estate_type.name                
+        if attr:
+            attr_value = getattr(obj, attr['name']) or None
+            if attr_value: 
+                complex_name = attr['format'] % (complex_name, attr_value, attr['mesure'])                
+        return complex_name
+    def estate_type_base(self, attr=None):        
         if self.estate_category.is_stead:
-            return self.stead.estate_type.name
+            return self.apply_attr(self.stead, attr['stead'] if attr else None) 
         else:
             result = []
-            for bidg in self.bidgs.all():
-                if bidg.estate_type.estate_type_category.independent:
-                    result.append(bidg.estate_type.name)
+            for bidg in self.bidg_objects:                                 
+                result.append(self.apply_attr(bidg, attr['bidg'] if attr else None))
             if len(result):          
                 return ', '.join(result)
             else:
@@ -776,7 +797,8 @@ class Stead(models.Model):
         return wrapper.field_list()
     @property
     def total_area_sotka(self):
-        return float(self.total_area / 100)       
+        if self.total_area:
+            return float(self.total_area / 100)
 
 class ClientType(SimpleDict):    
     class Meta(SimpleDict.Meta):

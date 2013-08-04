@@ -9,9 +9,11 @@ from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
 from estatebase.lookups import LocalityLookup, EstateTypeLookup, RegionLookup,\
     EstateStatusLookup
 from estatebase.models import Region, Locality, EstateType
+from settings import WP_PARAMS
 
-def load_wp_taxonomy(modeladmin, request, queryset):
-    wp_service = WPService()
+wp_service = WPService(WP_PARAMS['site'])
+
+def load_wp_taxonomy(modeladmin, request, queryset):    
     queryset.update(up_to_date=False)    
     for taxonomy in wp_service.get_taxonomies():
         t = None
@@ -98,8 +100,7 @@ def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():
         t.localities.clear()
         
-def set_localities(modeladmin, request, queryset):
-    wp_service = WPService()
+def set_localities(modeladmin, request, queryset):    
     for region in Region.objects.all():
         q = WordpressTaxonomyTree.objects.filter(level__lte=2, parent__regions__id=region.id)
         for locality in Locality.objects.filter(region=region, wp_taxons=None):            
@@ -111,8 +112,7 @@ def set_localities(modeladmin, request, queryset):
 
 set_localities.short_description = u'Найти соответствия рубрик и населенных пунктов'
 
-def set_meta_localities(modeladmin, request, queryset):
-    wp_service = WPService()
+def set_meta_localities(modeladmin, request, queryset):    
     q = WordpressTaxonomyTree.objects.filter(level__lte=2)
     for locality in WordpressMeta.objects.all():            
         taxonomy_item = wp_service.find_term(locality.name, q)
