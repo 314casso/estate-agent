@@ -9,6 +9,7 @@
             <th>{% anchor id 'Код' %}</th>
             <th>{% anchor history__modificated 'Обновлено' %}</th>
             <th>{% anchor estate_type__name 'Вид' %}</th>
+            {% block custom_cols_title %}{% endblock custom_cols_title %}            
             <th>Адрес</th>
             <th>{% anchor agency_price 'Цена' %}</th>
             <th>Контакт</th>
@@ -22,6 +23,7 @@
             <td><a title="Редактирование лота" href="{% url estate_update estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a></td>
             <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
             <td><a title="Просмотр лота" href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}"> {{ estate_item.estate_type }} </a></td>
+            {% block custom_cols_data %}{% endblock custom_cols_data %}
             <td><span class="inline-span"> <small> {% with estate_item=estate_item %}
                     {% address estate_item %}
                     {% endwith %} </small> </span></td>

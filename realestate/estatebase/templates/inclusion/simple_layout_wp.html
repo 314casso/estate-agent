@@ -1,0 +1,10 @@
+{% for key, val in layouts.items %}
+<ul class="layout-details">
+	<li class="strong">{{ key.layout_type|lower }} 
+	{% for key, val in val.items %}
+	{{ val|lower }}{% if not forloop.last %}; {% else %}. {% endif %}
+	{% endfor %}
+	</li>
+</ul>
+{% endfor %}
+

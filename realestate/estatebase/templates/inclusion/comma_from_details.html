@@ -1,4 +1,4 @@
 {% for key, value in details.items %}
-    {% if not forloop.first %} <label>{{ key|lower }}:</label> {% else %} <label>{{ key }}:</label> {% endif %}
+    {% if not forloop.first %} <label>{{ key|lower }}: </label> {% else %} <label>{{ key }}: </label> {% endif %}
     <strong>{{ value|lower }}</strong>{% if not forloop.last %}, {% else %}. {% endif %}
 {% endfor %}

@@ -10,7 +10,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=90)
+CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
 
 WP_PARAMS = {
         'site' : {
@@ -197,7 +197,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
-THUMBNAIL_DEBUG = False
+THUMBNAIL_DEBUG = True
 
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')

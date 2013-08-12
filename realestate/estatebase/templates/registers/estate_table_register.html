@@ -1,2 +1,8 @@
 {% extends "estate_table.html" %}
 {% block lastcol %}<a class="btn-unbind-inline" href="{% url register_remove_estate estateregister.pk estate_item.pk %}?{{ next_url }}">Отвязать</a>{% endblock lastcol %}
+{% block custom_cols_title %}
+<th>Состояние</th>
+{% endblock custom_cols_title %}
+{% block custom_cols_data %}
+<td>{{ estate_item.basic_bidg.interior }}</td>
+{% endblock custom_cols_data %}

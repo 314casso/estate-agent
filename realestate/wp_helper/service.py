@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from wordpress_xmlrpc import Client
-from wordpress_xmlrpc.methods import taxonomies
+from wordpress_xmlrpc.methods import taxonomies, media
 from wordpress_xmlrpc.wordpress import WordPressTerm
 import difflib
 from wordpress_xmlrpc import AnonymousMethod
@@ -10,6 +10,12 @@ from django.template.base import Template
 from django.template.context import Context
 from estatebase.models import Locality
 import pymorphy2
+from django.template import loader
+import re
+import os
+from wordpress_xmlrpc.compat import xmlrpc_client
+from wordpress_xmlrpc.methods.media import GetMediaItem
+from urlparse import urljoin
         
 class GetPostID(AnonymousMethod):
         method_name = 'picassometa.getPostID'
@@ -24,13 +30,17 @@ class WPService(object):
         self.client = Client(**self.params)
         self.morph = pymorphy2.MorphAnalyzer()
     
-    def get_normal_form(self, parses):        
-        for item in parses:            
-            if item.normal_form == item.word:    
-                return item
-        return parses[0]
-    
-    def inflect(self, name, case, number='sing'):
+    def get_normal_form_parser(self, parses):
+        none_animacy = None        
+        for item in parses:                      
+            if item.tag.POS not in 'PREP':                
+                if (item.normal_form == item.word and item.tag.animacy == 'inan') or item.tag.number == 'plur':                         
+                    return item
+                if item.tag.animacy is None:
+                    none_animacy = item
+        return none_animacy
+            
+    def inflect(self, name, case):
         cases = {
             1 : 'nomn', #    именительный    Кто? Что?    хомяк ест
             2 : 'gent', #    родительный    Кого? Чего?    у нас нет хомяка
@@ -40,10 +50,17 @@ class WPService(object):
             6 : 'loct', #    предложный    О ком? О чём? и т.п.    хомяка несут в корзинке
         }
         parts = name.split()
-        if len(parts) == 1:               
-            p = self.get_normal_form(self.morph.parse(parts[0]))
-            word = p.inflect({number, cases[case]}).word
-            return pymorphy2.shapes.restore_word_case(word, parts[0])
+        result = []
+        for part in parts:                
+            p = self.get_normal_form_parser(self.morph.parse(part))
+            if p:
+                item = p.inflect({cases[case]})
+                word = item.word if item else part                     
+                result.append(pymorphy2.shapes.restore_word_case(word, part))
+            else:
+                result.append(part)
+        if result:
+            return ' '.join(result)
         
     def get_taxonomies(self, name='category'):
         if not name in self._taxonomies:            
@@ -140,14 +157,52 @@ class WPService(object):
         result.append(u'недвижимость %s' % self.inflect(region,2))
         result.append(u'Краснодарский край')
         return result
-        
+    def render_post_body(self, estate):        
+        t = loader.get_template('reports/wp_post.html')
+        c = Context({'estate_item':estate})
+        rendered = t.render(c)
+        return re.sub(r"\s+"," ", rendered)
     
+    def get_media_items(self, estate):
+        from sorl.thumbnail import get_thumbnail
+        data = {'type':'image/jpg'}
+        images = estate.images.all()[:4]
+        if images:
+            result = []
+            for img in images:               
+                im = get_thumbnail(img.image.file, '800x600')
+                data['name'] = im.name
+                result.append(self.upload_image(os.path.join(im.storage.location,im.name), data))                
+            return result
         
-            
+    def render_post_images(self, estate):        
+        context = {'class' : 'face-post-image'}
+        template = '<a class="%(class)s" href="%(link)s"><img src="%(src)s"></a>'
+        media_items = self.get_media_items(estate)
+        post_images = []
+        for item in media_items:
+            context['link'] = item.link
+            context['src'] = urljoin(item.link, item.metadata['sizes']['thumbnail']['file'])
+            post_images.append(template % context)
+        return post_images
         
-        
+    def upload_image(self, filename, data):               
+        """
+        Upload a file to the blog.
 
-
-        
+        Note: the file is not attached to or inserted into any blog posts.
     
+        Parameters:
+            `filename`: `string` full file name
+            `data`: `dict` with three items:
+                * `name`: filename
+                * `type`: MIME-type of the file               
+        Returns: `MediaItem`       
+        """
+        # read the binary file and let the XMLRPC library encode it into base64
+        with open(filename, 'rb') as img:
+            data['bits'] = xmlrpc_client.Binary(img.read())
 
+        response = self.client.call(media.UploadFile(data))
+        return self.client.call(GetMediaItem(response['id']))
+        

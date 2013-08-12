@@ -13,29 +13,34 @@ from estatebase.models import Locality, Estate
 from settings import WP_PARAMS
 from django.template.base import Template
 from django.template.context import Context
+import re
 
 class SimpleTest(TestCase):
     def test_meta(self):
         """
         Tests that 1 + 1 always equals 2.
         """
-#         wp_service = WPService(WP_PARAMS['site'])
-#         estate = Estate.objects.get(pk=86498) #86606
-#      
-#         print wp_service.render_post_title(estate)
-#         print wp_service.render_seo_post_title(estate)
-#         for item in  wp_service.render_post_tags(estate):
-#             print item
-             
-#                    
-        import pymorphy2
-        morph = pymorphy2.MorphAnalyzer()
-            
-            
-        for item in morph.parse(u'белый'):
-            print item.inflect({'sing', 'accs'}).tag
-            if item.normal_form == item.word:    
-                print item.inflect({'sing', 'accs'}).word 
+        
+        wp_service = WPService(WP_PARAMS['local'])
+        estate = Estate.objects.get(pk=86606) #86606
+         
+        print wp_service.render_post_title(estate)
+        print wp_service.render_seo_post_title(estate)
+        for item in  wp_service.render_post_tags(estate):
+            print item
+
+        print '='*20
+        #print wp_service.render_post_body(estate)
+        wp_service.render_post_images(estate)        
+              
+#         import pymorphy2
+#         morph = pymorphy2.MorphAnalyzer()
+#                
+#                
+#         for item in morph.parse(u'Кучугуры'):
+#             print item.normal_form
+#             #if item.normal_form == item.word and item.tag.animacy == 'inan' or item.tag.animacy is None:    
+#             print item.inflect({'loct'}).word 
            
           
 #         print morph.parse(u'Ханчакрак')[0].inflect({'sing', 'loct'}).word

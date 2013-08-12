@@ -5,12 +5,13 @@
 {% wrapper_fieldset_comma bidg 'exterior_report_set' %}
 {% wrapper_fieldset_comma bidg 'interior_set' %}
 {% if bidg.levels.count > 0 %}
-<div class="wrapper-1">
+<ul>
     {% for level in bidg.levels.all %}
-    <span class="strong marked-header">Планировка уровня/этажа "{{ level }}":</span>
-    {% bidg_layout level %}
+    <li>Планировка уровня/этажа "{{ level }}":
+    {% bidg_layout_wp level %}
+    </li>
     {% endfor %}
-</div>
+</ul>
 {% endif %}
 {% if bidg.is_independent %}
 <div>

@@ -80,6 +80,10 @@ def bidg_layout(level):
                 layout_row[field] = label % value
         layout_dict[layout] = deepcopy(layout_row)         
     return {'layouts': layout_dict}            
+
+@register.inclusion_tag('inclusion/simple_layout_wp.html')
+def bidg_layout_wp(level):
+    return bidg_layout(level)
             
 @register.simple_tag            
 def estate_details(estate_item):
