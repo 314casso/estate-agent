@@ -3,8 +3,9 @@ import datetime
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+THUMBNAIL_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -196,8 +197,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
-
-THUMBNAIL_DEBUG = True
 
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')

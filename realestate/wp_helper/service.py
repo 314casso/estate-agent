@@ -205,4 +205,6 @@ class WPService(object):
 
         response = self.client.call(media.UploadFile(data))
         return self.client.call(GetMediaItem(response['id']))
+    def post_estate(self):
+        pass
         
