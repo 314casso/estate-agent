@@ -52,7 +52,7 @@ class TaxonomyAdminForm(forms.ModelForm):
         widgets = {            
             'localities': AutoCompleteSelectMultipleWidget(lookup_class=LocalityLookup),
         }
-        fields = ['localities', 'wp_meta_locality']
+        fields = ['localities', 'wp_meta_locality', 'regions']
 
 class MetaAdminForm(forms.ModelForm):    
     class Meta(object):        
@@ -65,9 +65,10 @@ class WordpressMetaEstateTypeAdminForm(forms.ModelForm):
         widgets = {            
             'estate_types': AutoCompleteSelectMultipleWidget(lookup_class=EstateTypeLookup),
         }
-        fields = ['name','estate_types']
+        fields = ['name','estate_types','wp_id']
 
 class WordpressMetaEstateTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'wp_id')
     form = WordpressMetaEstateTypeAdminForm
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
