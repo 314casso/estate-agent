@@ -94,9 +94,11 @@ class WordpressMetaStatusAdminForm(forms.ModelForm):
 
 class WordpressMetaRegionAdmin(admin.ModelAdmin):
     form = WordpressMetaRegionAdminForm
+    list_display = ('name', 'wp_id')
 
 class WordpressMetaStatusAdmin(admin.ModelAdmin):
     form = WordpressMetaStatusAdminForm
+    list_display = ('name', 'wp_id')
 
 def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():
