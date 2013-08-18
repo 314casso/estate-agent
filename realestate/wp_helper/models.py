@@ -37,7 +37,7 @@ class WordpressMetaEstateType(WordpressMetaAbstract):
         verbose_name_plural = u'Виды недвижимости'        
 
 class WordpressMetaRegion(WordpressMetaAbstract): 
-    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_region_taxons')   
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_taxons')   
     class Meta:
         verbose_name = u'Район'
         verbose_name_plural = u'Районы'   
@@ -54,7 +54,7 @@ class WordpressTaxonomyTree(MPTTModel):
     wp_parent_id = models.CharField('WP parent Id', max_length=10, null=True, blank=True,) 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     up_to_date = models.BooleanField()
-    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_taxons')    
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True,)    
     localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True, related_name='wp_taxons')    
     wp_meta_locality = models.ForeignKey('WordpressMeta', verbose_name = u'Жесткое поле', blank=True, null=True, related_name='wp_taxon')       
     def __unicode__(self):
