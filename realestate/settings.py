@@ -1,9 +1,12 @@
 import os
 import datetime
+import socket
+
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
-DEBUG = False
+
+DEBUG = socket.gethostname() == 'picasso-kubuntu'
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 

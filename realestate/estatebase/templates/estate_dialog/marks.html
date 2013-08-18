@@ -14,6 +14,20 @@
     {% endfor %}
 </fieldset>
 
+{% if estate.wp_meta %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Сводка по сайту:
+    </legend>
+    	<ul>
+    		<li><strong>Статус:</strong> {{ estate.wp_meta.get_status_display }}</li>
+    		<li><strong>Обновлено:</strong> {{ estate.wp_meta.updated }}</li>
+    		<li><strong>Код wordpress:</strong> <a href="http://www.domnatamani.ru/?p={{ estate.wp_meta.post_id }}">{{ estate.wp_meta.post_id }}</a></li>
+    		
+    	</ul>
+</fieldset>
+{% endif %}
+
 {% if estate.description %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>

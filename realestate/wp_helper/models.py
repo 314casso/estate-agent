@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-from estatebase.models import Locality, Region, EstateType, EstateStatus
+from estatebase.models import Locality, Region, EstateType, EstateStatus, Estate
 from django.db.models.signals import m2m_changed
 from django.dispatch.dispatcher import receiver
 from django.db.utils import IntegrityError
@@ -43,7 +43,7 @@ class WordpressMetaRegion(WordpressMetaAbstract):
         verbose_name_plural = u'Районы'   
     
 class WordpressMetaStatus(WordpressMetaAbstract): 
-    estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, null=True, related_name='wp_region_taxons')   
+    estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, null=True, related_name='wp_taxons')   
     class Meta:
         verbose_name = u'Статус'
         verbose_name_plural = u'Статусы'    
@@ -64,6 +64,24 @@ class WordpressTaxonomyTree(MPTTModel):
     class Meta:        
         verbose_name = u'Рубрика'
         verbose_name_plural = u'Рубрики'    
+
+class EstateWordpressMeta(models.Model):
+    UPTODATE = 5
+    MULTIKEYS = 1
+    ERROR = 2
+    XMLRPC = 3
+    UNKNOWN = 4
+    STATE_CHOICES = (
+        (UPTODATE, u'Успешно обновлено'),
+        (MULTIKEYS, u'Более одного ключа'),
+        (ERROR, u'Ошибка обновления'),
+        (XMLRPC, u'В очереди на загрузку'),
+        (UNKNOWN, u'Не определено'),
+    )
+    estate = models.OneToOneField(Estate, related_name='wp_meta')
+    post_id = models.CharField('WP Id', max_length=10, unique=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(choices=STATE_CHOICES, default=UNKNOWN)
 
 def load_data(data, model):       
     list_r = data.split(',')

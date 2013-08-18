@@ -6,8 +6,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from wp_helper.service import WPService
-from wp_helper.models import WordpressMeta, WordpressTaxonomyTree
+from wp_helper.service import WPService, GetPostID
 from unittest.case import TestCase
 from estatebase.models import Locality, Estate
 from settings import WP_PARAMS
@@ -15,23 +14,40 @@ from django.template.base import Template
 from django.template.context import Context
 import re
 
+
 class SimpleTest(TestCase):
     def test_meta(self):
         """
         Tests that 1 + 1 always equals 2.
         """
-        
-        wp_service = WPService(WP_PARAMS['local'])
-        estate = Estate.objects.get(pk=86606) #86606
-         
-        print wp_service.render_post_title(estate)
-        print wp_service.render_seo_post_title(estate)
-        for item in  wp_service.render_post_tags(estate):
-            print item
+        wp_service = WPService(WP_PARAMS['local'])       
 
-        print '='*20
+        #estate = Estate.objects.get(pk=86606)
+        
+        
+        #print(wp_service.get_post_by_estate(estate))
+        
+#         estate = Estate.objects.get(pk=86606) #86606
+#          
+#         print wp_service.render_post_title(estate)
+#         print wp_service.render_seo_post_title(estate)
+#         for item in  wp_service.render_post_tags(estate):
+#             print item
+# 
+#         print '='*20
         #print wp_service.render_post_body(estate)
-        wp_service.render_post_images(estate)        
+        #print(wp_service.render_post_images(estate))
+        #print wp_service.assemble_post(estate, True)
+        #print wp_service.filtered_post_images(185, estate)
+        #print(wp_service.render_custom_fields(estate))        
+              
+        estates = Estate.objects.filter(wp_meta__status=3)
+        for estate in estates:            
+            wp_service.sync_post(estate)                                 
+                
+                 
+                
+            
               
 #         import pymorphy2
 #         morph = pymorphy2.MorphAnalyzer()
@@ -48,7 +64,7 @@ class SimpleTest(TestCase):
 #         print morph.parse(u'квартира')[0].inflect({'sing', 'accs'}).word
              
         #print s.inflect('Голубицкая',6)
-        #print s.get_post_id_by_meta_key(69225)
+        #print s.get_post_by_estate(69225)
         #category =  s.get_or_create_category(3, u'дача')
         #if category is not None:
         #    print category.wp_id

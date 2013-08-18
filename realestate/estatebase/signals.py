@@ -1,7 +1,9 @@
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_save, pre_save, post_delete,\
+    m2m_changed
 from django.db import transaction
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
-    prepare_history, Bid, Contact, EstateClient, Client, BidEvent
+    prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam
+
 
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
@@ -80,6 +82,23 @@ def update_from_pickle(sender, instance, **kwargs):
             instance.agency_price_min = cleaned_data['agency_price'][0]                        
             instance.agency_price_max = cleaned_data['agency_price'][1]
 
+def estate_wp_meta_base(estate):
+    from wp_helper.models import EstateWordpressMeta
+    if estate.correct and len(estate.estate_params.filter(pk=EstateParam.POSTONSITE)):   
+        wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
+        wp_meta.status = EstateWordpressMeta.XMLRPC
+        wp_meta.save()
+    else:
+        if hasattr(estate, 'wp_meta'):
+            estate.wp_meta.status = EstateWordpressMeta.UNKNOWN
+            estate.wp_meta.save()
+
+def estate_wp_meta(sender, instance, **kwargs):
+    estate_wp_meta_base(instance)
+
+def estate_param_wp_meta(sender, instance, **kwargs):
+    estate_wp_meta_base(instance)
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
@@ -93,4 +112,7 @@ def connect_signals():
     #pre_save.connect(update_localities, sender=Bid)
     pre_save.connect(update_from_pickle, sender=Bid)
     post_save.connect(bid_event_history, sender=BidEvent)
+    post_save.connect(estate_wp_meta, sender=Estate)
+    m2m_changed.connect(estate_param_wp_meta, sender=Estate.estate_params.through)  # @UndefinedVariable
+    
     

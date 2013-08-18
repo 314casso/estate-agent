@@ -196,6 +196,7 @@ class EstateParam(OrderedModel):
     '''
     Дополнительные параметры
     '''
+    POSTONSITE = 1
     name = models.CharField(_('Name'), max_length=100)    
     def __unicode__(self):
         return u'%s' % self.name
@@ -379,7 +380,7 @@ class Estate(ProcessDeletedModel):
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.PROTECT)
     driveway_distance = models.PositiveIntegerField(_('Driveway distance'), blank=True, null=True)
     #Дополнительно    
-    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True)    
+    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True, related_name='estates')    
     description = models.TextField(_('Description'), blank=True, null=True)
     client_description = models.TextField(_('Client description'), blank=True, null=True)
     comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)  
@@ -477,6 +478,7 @@ class Estate(ProcessDeletedModel):
     @property
     def basic_contact(self):
         return self.contact 
+    
     @property
     def state_css(self):
         css = {self.FREE:'free-state', self.NEW:'new-state', self.SOLD:'sold-state', self.EXCLUDE:'exclude-state'}                             
@@ -485,9 +487,15 @@ class Estate(ProcessDeletedModel):
         contacts = Contact.objects.filter(client__estates__id__exact=self.pk, client__deleted=False).select_related().order_by('contact_state__id', 'contact_type__id', '-updated')[:1]        
         if contacts:
             return contacts[0]
+    
     @property
     def estate_type(self):
         return self.estate_type_base()
+
+    @property
+    def basic_estate_type(self):
+        return self.basic_bidg.estate_type if self.basic_bidg else self.basic_stead.estate_type
+    
     @property
     def estate_type_total_area(self):
         complex_name_format = u'%s %g %s'

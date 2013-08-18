@@ -6,6 +6,7 @@ from collections import OrderedDict
 from copy import deepcopy
 from estatebase.models import MAYBE
 from decimal import Decimal
+import pprint
 
 register = template.Library()
 
@@ -59,6 +60,7 @@ def wrapper_fieldset(obj, fieldset_name):
         if obj_field.get_internal_type() == 'BooleanField' and value:
             value = u'Есть'             
         if value:
+            #pprint.pprint(vars(obj_field))
             details[wrapper.get_label(field) or obj_field.verbose_name] = value            
     return {'details': details}
 

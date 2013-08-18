@@ -2,12 +2,13 @@
 {% load link_helper %}
 {% load report %}
 {% spaceless %}
-<div>Продается <strong>{{ estate_item.estate_type|lower }}</strong> в населенном пункте {{ estate_item.locality }}.
-{% estate_details estate_item %}</div>
+{{ images|safe }}
+<div>{{ description }}, {% estate_details estate_item %}</div>
+<!--more-->
 <div class="wrapper">{% include 'reports/bidg_include_wp.html' with bidg=estate_item.basic_bidg %}</div>
 {% with stead=estate_item.stead %}
 {% if stead %}
-<div class="wrapper"><span class="strong marked-header">Участок. </span>{% wrapper_fieldset_comma stead 'field_report_set' %}<span class="marked-header">Документы:</span><strong>{{ stead.documents.all|to_comma_sep }}</strong>.</div>
+<div class="wrapper"><span class="strong marked-header">Участок. </span>{% wrapper_fieldset_comma stead 'field_report_set' %}<span class="marked-header">Документы: </span><strong>{{ stead.documents.all|to_comma_sep }}</strong>.</div>
 {% endif %}
 {% endwith %}
 {% if estate_item.get_not_basic_bidgs %}
