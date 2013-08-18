@@ -237,7 +237,7 @@ class WPService(object):
             post_images.append(template % context)
         return post_images
     
-    def render_custom_fields(self, estate):
+    def render_custom_fields(self, estate):        
         fields = {}
         taxonomy_tree_item = estate.locality.wp_taxons.all()[:1].get()        
         fields['locality'] = taxonomy_tree_item.wp_meta_locality.wp_id

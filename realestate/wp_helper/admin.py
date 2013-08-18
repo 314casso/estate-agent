@@ -76,12 +76,13 @@ class WordpressMetaEstateTypeAdmin(admin.ModelAdmin):
         return super(WordpressMetaEstateTypeAdmin, self).changelist_view(request, extra_context=extra_context)
 
 class WordpressMetaRegionAdminForm(forms.ModelForm):
+    list_display = ('name', 'wp_id')
     class Meta(object):        
         model = WordpressMetaRegion        
         widgets = {            
             'regions': AutoCompleteSelectMultipleWidget(lookup_class=RegionLookup),
         }
-        fields = ['name','regions']
+        fields = ['name','regions','wp_id']
 
 class WordpressMetaStatusAdminForm(forms.ModelForm):
     class Meta(object):        
