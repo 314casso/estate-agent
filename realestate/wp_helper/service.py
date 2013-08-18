@@ -103,6 +103,15 @@ class WPService(object):
         child_cat.name = name
         child_cat.id = self.client.call(taxonomies.NewTerm(child_cat))
         return child_cat
+    
+    def render_post_category(self, estate):
+        result = []        
+        taxonomy_tree = self.get_or_create_category(estate)
+        category = self.client.call(taxonomies.GetTerm('category', taxonomy_tree.wp_id))
+        if category:
+            result.append(category)
+        return result
+    
     def delete_taxonomy(self, term_id):
         self.client.call(taxonomies.DeleteTerm('category', term_id))
             
@@ -296,10 +305,7 @@ class WPService(object):
         images = u''.join(post_images)
         post.content = self.render_post_body(estate, description, images)
         post.terms_names = {'post_tag': self.render_post_tags(estate)}
-        try:
-            post.terms = (self.get_or_create_category(estate),)
-        except:
-            pass
+        post.terms = self.render_post_category(estate)
         if published:
             post.post_status = 'publish'
         return post
