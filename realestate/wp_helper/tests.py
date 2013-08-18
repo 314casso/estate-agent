@@ -20,8 +20,9 @@ class SimpleTest(TestCase):
         """
         Tests that 1 + 1 always equals 2.
         """
-        wp_service = WPService(WP_PARAMS['local'])       
-
+        estate = Estate.objects.get(pk=86606) #86606
+        wp_service = WPService(WP_PARAMS['site'])       
+        wp_service.get_or_create_category(estate)
         #estate = Estate.objects.get(pk=86606)
         
         
@@ -41,10 +42,10 @@ class SimpleTest(TestCase):
         #print wp_service.filtered_post_images(185, estate)
         #print(wp_service.render_custom_fields(estate))        
               
-        estates = Estate.objects.filter(wp_meta__status=3)
-        for estate in estates:            
-            wp_service.sync_post(estate)                                 
-                
+#         estates = Estate.objects.filter(wp_meta__status=3)
+#         for estate in estates:            
+#             wp_service.sync_post(estate)                                 
+#                 
                  
                 
             

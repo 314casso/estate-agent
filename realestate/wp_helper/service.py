@@ -71,9 +71,9 @@ class WPService(object):
     def get_or_create_category(self, estate):
         locality_id = estate.locality_id
         estate_type_name = estate.basic_estate_type.name 
-        wp_cats = WordpressTaxonomyTree.objects.filter(parent__localities__id=locality_id, name__iexact=estate_type_name)    
-        if len(wp_cats):
-            return wp_cats[0]
+        wp_cat = WordpressTaxonomyTree.objects.filter(parent__localities__id=locality_id, name__iexact=estate_type_name)[:1]    
+        if wp_cat:
+            return wp_cat.get()
         else:
             wp_cats = WordpressTaxonomyTree.objects.filter(localities__id=locality_id)
             len_cats = len(wp_cats)
