@@ -72,7 +72,7 @@ class WordpressMetaEstateTypeAdmin(admin.ModelAdmin):
     form = WordpressMetaEstateTypeAdminForm
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['unlinked_objects'] = ', '.join(EstateType.objects.filter(wp_taxons=None).values_list('name',flat=True))
+        extra_context['unlinked_objects'] = ', '.join(EstateType.objects.filter(wp_taxons=None, estate_type_category__independent=True).values_list('name',flat=True))
         return super(WordpressMetaEstateTypeAdmin, self).changelist_view(request, extra_context=extra_context)
 
 class WordpressMetaRegionAdminForm(forms.ModelForm):
