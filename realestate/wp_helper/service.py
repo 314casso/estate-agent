@@ -104,12 +104,19 @@ class WPService(object):
         child_cat.id = self.client.call(taxonomies.NewTerm(child_cat))
         return child_cat
     
+    def wrap_to_wp_category(self, taxonomy_tree):        
+        cat = WordPressTerm()
+        cat.taxonomy = 'category'
+        cat.parent = taxonomy_tree.parent.wp_id if taxonomy_tree.parent else None
+        cat.id = taxonomy_tree.wp_id
+        return cat
+    
     def render_post_category(self, estate):
         result = []        
         taxonomy_tree = self.get_or_create_category(estate)
-        category = self.client.call(taxonomies.GetTerm('category', taxonomy_tree.wp_id))
-        if category:
-            result.append(category)
+        ancestors = taxonomy_tree.get_ancestors(ascending=True, include_self=True)
+        for ancestor in ancestors:
+            result.append(self.wrap_to_wp_category(ancestor))
         return result
     
     def delete_taxonomy(self, term_id):
@@ -156,7 +163,7 @@ class WPService(object):
         locality = estate.locality.name
         place = estate.beside.name if estate.beside else None  
         region = estate.locality.region.regular_name
-        result = []
+        result = set()
         result.append(u'купить %s в %s' % (self.inflect(estate_type ,4), self.inflect(locality,6)))
         result.append(u'%s в %s' % (estate_type, self.inflect(locality,6)))
         if place:
@@ -286,6 +293,7 @@ class WPService(object):
     def assemble_post(self, estate, old_post, published=True):
         post = WordPressPost()
         post_id = None
+        post.comment_status = 'open'
         description = self.render_post_description(estate)
         if old_post:
             post_id = old_post.id

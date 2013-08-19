@@ -143,7 +143,7 @@ class CustomMPTTModelAdmin(MPTTModelAdmin):
     def wp_meta_locality_blank(self, obj):
         return obj.wp_meta_locality or ''
     wp_meta_locality_blank.short_description = u'Жесткое поле'
-    list_display = ('name', 'locality', 'wp_meta_locality_blank')    
+    list_display = ('name', 'locality', 'wp_meta_locality_blank', 'wp_id')    
     search_fields = ['name']
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
