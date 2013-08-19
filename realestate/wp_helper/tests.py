@@ -24,6 +24,9 @@ class SimpleTest(TestCase):
         wp_service = WPService(WP_PARAMS['local'])       
         for c in wp_service.render_post_category(estate):
             print(c.id)
+            
+        for c in wp_service.render_post_tags(estate):
+            print(c)
         #estate = Estate.objects.get(pk=86606)
         
         

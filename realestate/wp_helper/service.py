@@ -181,7 +181,7 @@ class WPService(object):
         result.add(region)
         result.add(u'недвижимость %s' % self.inflect(region,2))
         result.add(u'Краснодарский край')
-        return result
+        return list(result)
     
     def render_post_body(self, estate, description, images):        
         t = loader.get_template('reports/wp_post.html')
