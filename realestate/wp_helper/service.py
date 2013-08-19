@@ -35,7 +35,7 @@ class WPService(object):
     def get_normal_form_parser(self, parses):
         none_animacy = None        
         for item in parses:                      
-            if item.tag.POS not in 'PREP':                
+            if item.tag.POS and item.tag.POS not in 'PREP':                
                 if (item.normal_form == item.word and item.tag.animacy == 'inan') or item.tag.number == 'plur':                         
                     return item
                 if item.tag.animacy is None:
