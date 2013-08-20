@@ -312,7 +312,7 @@ class WPService(object):
         images = u''.join(post_images)
         post.content = self.render_post_body(estate, description, images)
         post.terms_names = {'post_tag': self.render_post_tags(estate)}
-        #post.terms = self.render_post_category(estate)
+        post.terms = self.render_post_category(estate)
         if published:
             post.post_status = 'publish'
         return post
