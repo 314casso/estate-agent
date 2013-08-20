@@ -497,6 +497,10 @@ class Estate(ProcessDeletedModel):
     @property
     def estate_type(self):
         return self.estate_type_base()
+    
+    @property
+    def estate_type_accs(self):
+        return self.estate_type_base(field='name_accs')
 
     @property
     def basic_estate_type(self):
@@ -510,20 +514,20 @@ class Estate(ProcessDeletedModel):
                 'bidg' : {'name':'total_area', 'mesure': u'м.кв.', 'format' : complex_name_format},
                 }
         return self.estate_type_base(attr)
-    def apply_attr(self, obj, attr):
-        complex_name = obj.estate_type.name                
+    def apply_attr(self, obj, attr, field):
+        complex_name = getattr(obj.estate_type, field)                
         if attr:
             attr_value = getattr(obj, attr['name']) or None
             if attr_value: 
                 complex_name = attr['format'] % (complex_name, attr_value, attr['mesure'])                
         return complex_name
-    def estate_type_base(self, attr=None):        
+    def estate_type_base(self, attr=None, field='name'):        
         if self.estate_category.is_stead:
-            return self.apply_attr(self.stead, attr['stead'] if attr else None) 
+            return self.apply_attr(self.stead, attr['stead'] if attr else None, field) 
         else:
             result = []
             for bidg in self.bidg_objects:                                 
-                result.append(self.apply_attr(bidg, attr['bidg'] if attr else None))
+                result.append(self.apply_attr(bidg, attr['bidg'] if attr else None, field))
             if len(result):          
                 return ', '.join(result)
             else:

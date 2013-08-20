@@ -9,7 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template.base import Template
 from django.template.context import Context
 from estatebase.models import Locality
-import pymorphy2
 from django.template import loader
 import re
 import os
@@ -30,7 +29,7 @@ class WPService(object):
     def __init__(self, params):
         self.params = params        
         self.client = Client(**self.params)
-        self.morph = pymorphy2.MorphAnalyzer()
+        #self.morph = pymorphy2.MorphAnalyzer()
     
     def get_normal_form_parser(self, parses):
         none_animacy = None        
@@ -42,7 +41,8 @@ class WPService(object):
                     none_animacy = item
         return none_animacy
             
-    def inflect(self, name, case):
+    def inflect_depricated(self, name, case):
+        import pymorphy2
         cases = {
             1 : 'nomn', #    именительный    Кто? Что?    хомяк ест
             2 : 'gent', #    родительный    Кого? Чего?    у нас нет хомяка
@@ -139,9 +139,9 @@ class WPService(object):
         context = {}
         template = Template(u'{{ estate_type }}{{ stead }} {{ locality }} {{ region }}{{ microdistrict }}')              
         context['estate_type'] = estate.estate_type_total_area
-        context['locality'] = u'в %s' % self.inflect(estate.locality.name,6)
+        context['locality'] = u'в %s' % estate.locality.name_loct
         if estate.locality.locality_type_id != Locality.CITY:
-            context['region'] = self.inflect(estate.locality.region.regular_name,2)
+            context['region'] = estate.locality.region.regular_name_gent
         basic_stead = estate.basic_stead
         if not estate.estate_category.is_stead and basic_stead and basic_stead.total_area_sotka:
             context['stead'] = u' на участке %g сот.' % basic_stead.total_area_sotka
@@ -152,34 +152,33 @@ class WPService(object):
     def render_seo_post_title(self, estate):
         result = u'Недвижимость %s'
         if estate.locality.locality_type_id == Locality.CITY:            
-            result = result % self.inflect(estate.locality.name,2)            
+            result = result % estate.locality.name_gent            
         else:
             result = result % u'Краснодарского края'
-        result = u'%s | %s в %s' % (result, estate.estate_type, self.inflect(estate.locality.name,6))
+        result = u'%s | %s в %s' % (result, estate.estate_type, estate.locality.name_loct)
         return result
     
     def render_post_tags(self, estate):
-        estate_type = estate.estate_type.lower()
-        locality = estate.locality.name
-        place = estate.beside.name if estate.beside else None  
-        region = estate.locality.region.regular_name
+        locality = estate.locality
+        beside = estate.beside  
+        region = estate.locality.region
         result = set()
-        result.add(u'купить %s в %s' % (self.inflect(estate_type ,4), self.inflect(locality,6)))
-        result.add(u'%s в %s' % (estate_type, self.inflect(locality,6)))
-        if place:
-            result.add(u'%s у %s' % (estate_type, self.inflect(place,2)))
-            result.add(u'недвижимость на %s' % self.inflect(place,6))
-            result.add(place)
-        result.add(u'%s в Краснодарском крае' % estate_type)
-        result.add(u'%s %s' % (estate_type, self.inflect(locality,2)))
-        result.add(u'недвижимость %s' % self.inflect(locality,2))
-        result.add(u'купить недвижимость в %s' % self.inflect(locality,6))
+        result.add(u'купить %s в %s' % (estate.estate_type_accs, locality.name_loct))
+        result.add(u'%s в %s' % (estate.estate_type, locality.name_loct))
+        if beside:
+            result.add(u'%s у %s' % (estate.estate_type, beside.name_gent))
+            result.add(u'недвижимость на %s' % beside.name_loct)
+            result.add(beside.name)
+        result.add(u'%s в Краснодарском крае' % estate.estate_type)
+        #result.add(u'%s %s' % (estate.estate_type, locality.name_gent))
+        result.add(u'недвижимость %s' % locality.name_gent)
+        result.add(u'купить недвижимость в %s' % locality.name_loct)
         result.add(u'недвижимость Краснодарского края')
         result.add(u'купить недвижимость в Краснодарском крае')
-        result.add(u'купить %s в Краснодарском крае' % self.inflect(estate_type,4))
-        result.add(locality)
-        result.add(region)
-        result.add(u'недвижимость %s' % self.inflect(region,2))
+        result.add(u'купить %s в Краснодарском крае' % estate.estate_type_accs)
+        result.add(locality.name)
+        result.add(region.regular_name)
+        result.add(u'недвижимость %s' % region.regular_name_gent)
         result.add(u'Краснодарский край')
         return list(result)
     
@@ -280,8 +279,8 @@ class WPService(object):
         response = self.client.call(media.UploadFile(data))
         return self.client.call(GetMediaItem(response['id']))
     def render_post_description(self, estate):
-        region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else self.inflect(estate.locality.region.regular_name,2)
-        location = u'%s %s' % (self.inflect(estate.locality.name,6), region)
+        region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
+        location = u'%s %s' % (estate.locality.name_loct, region)
         result = u'Продается %s в %s' % (estate.estate_type.lower(), location)             
         return result
     
@@ -313,7 +312,7 @@ class WPService(object):
         images = u''.join(post_images)
         post.content = self.render_post_body(estate, description, images)
         post.terms_names = {'post_tag': self.render_post_tags(estate)}
-        post.terms = self.render_post_category(estate)
+        #post.terms = self.render_post_category(estate)
         if published:
             post.post_status = 'publish'
         return post
