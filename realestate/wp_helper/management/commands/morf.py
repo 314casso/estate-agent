@@ -8,12 +8,12 @@ from estatebase.models import Region, Locality, Beside, EstateType
 class Command(BaseCommand):
     def handle(self, *args, **options):
         translation.activate('ru')
-        self.morf(2, Region.objects.all(), 'regular_name')        
-        self.morf(2, Locality.objects.all())
-        self.morf(6, Locality.objects.all())        
-        self.morf(2, Beside.objects.all())
-        self.morf(6, Beside.objects.all())
-        self.morf(4, EstateType.objects.all())
+#         self.morf(2, Region.objects.all(), 'regular_name')        
+#         self.morf(2, Locality.objects.all())
+#         self.morf(6, Locality.objects.all())        
+#         self.morf(2, Beside.objects.all())
+#         self.morf(6, Beside.objects.all())
+#         self.morf(4, EstateType.objects.all())
     
     def morf(self, case, qset, fld='name'):   
         wp_service = WPService(WP_PARAMS['site'])     
