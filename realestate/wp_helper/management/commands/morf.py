@@ -16,7 +16,7 @@ class Command(BaseCommand):
         self.morf(4, EstateType.objects.all())
     
     def morf(self, case, qset, fld='name'):   
-        wp_service = WPService(WP_PARAMS['local'])     
+        wp_service = WPService(WP_PARAMS['site'])     
         cases = {
             1 : 'nomn', #    именительный    Кто? Что?    хомяк ест
             2 : 'gent', #    родительный    Кого? Чего?    у нас нет хомяка
