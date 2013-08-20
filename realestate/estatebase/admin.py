@@ -23,7 +23,7 @@ class EstateTypeline(admin.TabularInline):
     model = EstateType
 
 class EstateTypeAdmin(OrderedModelAdmin):
-    list_display = ['name', 'reorder']
+    list_display = ['name', 'name_accs',  'reorder']
     list_filter = ('estate_type_category',)
     raw_id_admin = ('estate_type_category',)
 
@@ -74,10 +74,17 @@ class UserProfileInline(admin.StackedInline):
 class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline,]
 
+
+class LocalityAdmin(admin.ModelAdmin):
+    list_display = ['name', 'name_gent', 'name_loct']
+    
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ['regular_name', 'regular_name_gent']    
+    
 admin.site.register(User, UserProfileAdmin)
 
-admin.site.register(Region)
-admin.site.register(Locality)
+admin.site.register(Region, RegionAdmin)
+admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Microdistrict)
 admin.site.register(Street, StreetAdmin)
 admin.site.register(ContentType)
@@ -95,7 +102,7 @@ admin.site.register(Bidg, BidgAdmin)
 admin.site.register(EstateStatus)
 admin.site.register(Document)
 admin.site.register(EstateParam,EstateParamAdmin)
-admin.site.register(Beside)
+admin.site.register(Beside, LocalityAdmin)
 admin.site.register(Electricity)                    
 admin.site.register(Watersupply)
 admin.site.register(Gassupply)

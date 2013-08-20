@@ -55,7 +55,8 @@ class Region(SimpleDict):
     '''
     Район
     '''
-    regular_name = models.CharField(_('Region'), max_length=100, blank=True, null=True)    
+    regular_name = models.CharField(_('Region'), max_length=100, blank=True, null=True)
+    regular_name_gent = models.CharField(_('Gent'), max_length=100, blank=True, null=True)    
     geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
@@ -78,6 +79,8 @@ class Locality(models.Model):
     '''
     CITY = 1
     name = models.CharField(_('Name'), db_index=True, max_length=255)
+    name_gent = models.CharField(_('Gent'), max_length=255, blank=True, null=True)
+    name_loct = models.CharField(_('Loct'), max_length=255, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
     locality_type = models.ForeignKey('LocalityType', blank=True, null=True, verbose_name=_('LocalityType'), on_delete=models.PROTECT)
     def __unicode__(self):
@@ -123,6 +126,8 @@ class Beside(SimpleDict):
     '''
     Рассояние до (моря, речки и т.п.)
     '''
+    name_gent = models.CharField(_('Gent'), max_length=255, blank=True, null=True)
+    name_loct = models.CharField(_('Loct'), max_length=255, blank=True, null=True)
     class Meta(SimpleDict.Meta):
         verbose_name = _('beside')
         verbose_name_plural = _('besides')
@@ -263,6 +268,7 @@ class EstateType(OrderedModel):
         (LANDSCAPING, u'Благоустройство'),
         )    
     name = models.CharField(_('Name'), max_length=100)
+    name_accs = models.CharField(_('Accs'), max_length=100, blank=True, null=True)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
