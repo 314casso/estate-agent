@@ -16,6 +16,7 @@ from wordpress_xmlrpc.compat import xmlrpc_client
 from wordpress_xmlrpc.methods.media import GetMediaItem, GetMediaLibrary
 from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
+import datetime
 
         
 class GetPostID(AnonymousMethod):
@@ -313,6 +314,7 @@ class WPService(object):
         post.content = self.render_post_body(estate, description, images)
         post.terms_names = {'post_tag': self.render_post_tags(estate)}
         post.terms = self.render_post_category(estate)
+        post.date = estate.history.modificated - datetime.timedelta(hours=4)
         if published:
             post.post_status = 'publish'
         return post

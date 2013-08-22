@@ -4,7 +4,7 @@ import socket
 
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
-
+FILE_UPLOAD_PERMISSIONS = 0777
 
 DEBUG = socket.gethostname() == 'picasso-kubuntu'
 TEMPLATE_DEBUG = DEBUG
