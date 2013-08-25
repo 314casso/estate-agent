@@ -9,7 +9,7 @@ from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
     CheckboxInput
 from django.utils.translation import ugettext_lazy as _
 from estatebase.field_utils import from_to_values, split_string, \
-    complex_field_parser, check_value_list
+    complex_field_parser, check_value_list, history_filter
 from estatebase.fields import ComplexField, LocalIntegerField, DateRangeField, \
     IntegerRangeField, DecimalRangeField, LocalDecimalField
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
@@ -22,7 +22,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
-    OutbuildingLookup, PurposeLookup
+    OutbuildingLookup, PurposeLookup, HeatingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent
@@ -266,8 +266,10 @@ class EstateFilterForm(BetterForm):
     room_count = IntegerRangeField(required=False, label=_('Room count'))
     stead_area = DecimalRangeField(required=False, label=_('Stead area'))
     
-    created = DateRangeField(required=False, label=_('Created'))        
+    created = DateRangeField(required=False, label=_('Created'))
+    created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)        
     updated = DateRangeField(required=False, label=_('Updated'))
+    updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
     origin = AutoComboboxSelectMultipleField(
             lookup_class=OriginLookup,
             label=_('Origin'),
@@ -309,6 +311,7 @@ class EstateFilterForm(BetterForm):
     broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     purposes = AutoComboboxSelectMultipleField(lookup_class=PurposeLookup, label=_('Purpose'), required=False)
     layouts = AutoComboboxSelectMultipleField(lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
+    heating = AutoComboboxSelectMultipleField(lookup_class=HeatingLookup, label=_('Heating'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
@@ -367,7 +370,9 @@ class EstateFilterForm(BetterForm):
                          'bidgs__exterior_finish__in': 'exterior_finish', 'description__icontains': 'description',
                          'comment__icontains': 'comment','bidgs__estate_type_id__in' :'outbuildings',
                          'broker__in' : 'broker', 'stead__purpose__in' : 'purposes', 
-                         'bidgs__levels__layout__layout_type__in' : 'layouts',                            
+                         'bidgs__levels__layout__layout_type__in' : 'layouts', 
+                         'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
+                         'bidgs__heating__in':'heating',                          
                          }
         
         for key, value in simple_filter.iteritems():
@@ -384,15 +389,14 @@ class EstateFilterForm(BetterForm):
                 result = from_to_values(cleaned_data[fld], fld_name)
                 if result: 
                     f.update(result)
-
-        if check_value_list(cleaned_data['created']):            
-            value = from_to_values(cleaned_data['created'], 'history__created')            
-            if value:                 
-                f.update(value)        
-        if check_value_list(cleaned_data['updated']):            
-            value = from_to_values(cleaned_data['updated'], 'history__updated')            
-            if value:                 
-                f.update(value)
+               
+        history_fields = ('created','updated')
+        for fld in history_fields:
+            cleaned_value = cleaned_data[fld]
+            if cleaned_value:
+                value = history_filter(cleaned_value, fld)
+                if value:                 
+                    f.update(value)
         
         if cleaned_data['foto_choice']:
             if int(cleaned_data['foto_choice']) == 1:
@@ -416,9 +420,9 @@ class EstateFilterForm(BetterForm):
                                          'microdistrict', 'beside', 'agency_price',
                                          ]}),
                      ('center', {'fields': [
-                                            'clients', 'contacts', 'created', 'updated', 'year_built', 
+                                            'clients', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 'layouts' ,'outbuildings', 'broker'
+                                            'room_count', 'interior', 'heating', 'layouts' ,'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 

@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from django.utils import translation
 from wp_helper.service import WPService
 from settings import WP_PARAMS
-from estatebase.models import Region, Locality, Beside, EstateType
 
 class Command(BaseCommand):
     def handle(self, *args, **options):

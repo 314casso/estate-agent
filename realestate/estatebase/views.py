@@ -32,6 +32,7 @@ import urlparse
 from django.utils.encoding import smart_str
 from django.db.utils import IntegrityError
 from django.db.models.query_utils import Q
+from wp_helper.models import EstateWordpressMeta
 
 
 class BaseMixin(object):
@@ -1150,3 +1151,23 @@ class MultiBindEstateToRegister(ModelFormMixin, ProcessFormView):
                 if not r.estates.filter(pk=self.kwargs['estate']):                                                
                     r.estates.add(self.kwargs['estate'])            
         return HttpResponseRedirect(self.request.GET.get('next', None))
+    
+class WordpressQueue(TemplateView):
+    template_name = 'wp/wordpress_queue.html'
+    def post(self, request, *args, **kwargs):
+        error_to_queue = self.request.POST.get('error_to_queue', None)
+        if error_to_queue == 'True':
+            error_qs = Estate.objects.filter(wp_meta__status=EstateWordpressMeta.ERROR)
+            for estate in error_qs:
+                estate.wp_meta.status = EstateWordpressMeta.XMLRPC
+                estate.wp_meta.save()
+        return HttpResponseRedirect(reverse('wordpress_queue'))
+    def get_context_data(self, **kwargs):
+        context = super(WordpressQueue, self).get_context_data(**kwargs)
+        context.update({
+            'queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC),
+            'err_queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.ERROR),
+        })
+        return context     
+
+    

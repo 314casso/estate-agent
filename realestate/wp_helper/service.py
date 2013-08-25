@@ -17,6 +17,7 @@ from wordpress_xmlrpc.methods.media import GetMediaItem, GetMediaLibrary
 from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
+import logging
 
         
 class GetPostID(AnonymousMethod):
@@ -319,18 +320,24 @@ class WPService(object):
             post.post_status = 'publish'
         return post
     def sync_post(self, estate):
-        wp_meta = estate.wp_meta
-        old_post = self.get_post_by_estate(estate)
-        wp_meta.post_id = old_post.id if old_post else None 
-        if wp_meta.post_id == -1:
-            wp_meta.status = EstateWordpressMeta.MULTIKEYS
+        try:
+            wp_meta = estate.wp_meta
+            old_post = self.get_post_by_estate(estate)
+            wp_meta.post_id = old_post.id if old_post else None 
+            if wp_meta.post_id == -1:
+                wp_meta.status = EstateWordpressMeta.MULTIKEYS
+                wp_meta.save()
+                return False        
+            post = self.assemble_post(estate, old_post, True)
+            if not wp_meta.post_id:
+                wp_meta.post_id = self.client.call(NewPost(post))        
+            else:
+                self.client.call(EditPost(wp_meta.post_id, post))
+            wp_meta.status = EstateWordpressMeta.UPTODATE
             wp_meta.save()
-            return False        
-        post = self.assemble_post(estate, old_post, True)
-        if not wp_meta.post_id:
-            wp_meta.post_id = self.client.call(NewPost(post))        
-        else:
-            self.client.call(EditPost(wp_meta.post_id, post))
-        wp_meta.status = EstateWordpressMeta.UPTODATE
-        wp_meta.save()
-        return True
+            return True
+        except Exception, e:
+            wp_meta.error_message = e
+            wp_meta.status = EstateWordpressMeta.ERROR
+            wp_meta.save()
+            logging.exception('')

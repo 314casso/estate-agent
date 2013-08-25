@@ -82,6 +82,7 @@ class EstateWordpressMeta(models.Model):
     post_id = models.CharField('WP Id', max_length=10, unique=True, null=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATE_CHOICES, default=UNKNOWN)
+    error_message = models.CharField(u'Ошибка', max_length=255, null=True)
 
 def load_data(data, model):       
     list_r = data.split(',')

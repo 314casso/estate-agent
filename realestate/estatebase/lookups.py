@@ -4,7 +4,7 @@ from estatebase.models import Street, Locality, Microdistrict, EstateType, \
     ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony, \
     LayoutType, LevelName, ComStatus, EstateClientStatus, Shape, EstateParam,\
     Validity, Appliance, BidEventCategory, RegisterCategory, ExteriorFinish,\
-    BidStatus, Purpose
+    BidStatus, Purpose, Heating
 from selectable.base import ModelLookup
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
@@ -132,6 +132,9 @@ class SewerageLookup(SimpleNameLookup):
 class DrivewayLookup(SimpleNameLookup):
     model = Driveway
 
+class HeatingLookup(SimpleNameLookup):
+    model = Heating
+
 class ClientLookup(ModelLookup):
     model = Client
     search_fields = ('name__icontains', 'address__icontains', 'contacts__contact__icontains')
@@ -239,7 +242,8 @@ try:
     registry.register(ExteriorFinishLookup)
     registry.register(BidStatusLookup)
     registry.register(OutbuildingLookup)
-    registry.register(PurposeLookup)    
+    registry.register(PurposeLookup)
+    registry.register(HeatingLookup)    
     
 except LookupAlreadyRegistered:
     pass    

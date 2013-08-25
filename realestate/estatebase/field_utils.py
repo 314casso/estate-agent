@@ -74,3 +74,7 @@ def check_value_list(values):
             return True
     return False    
 
+def history_filter(cleaned_value, history_fld_name):     
+    if check_value_list(cleaned_value):            
+        value = from_to_values(cleaned_value, 'history__%s' % history_fld_name)            
+        return value or None                 

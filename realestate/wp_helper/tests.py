@@ -20,7 +20,7 @@ class SimpleTest(TestCase):
         """
         Tests that 1 + 1 always equals 2.
         """
-        estate = Estate.objects.get(pk=86606) #86606
+       # estate = Estate.objects.get(pk=86606) #86606
         wp_service = WPService(WP_PARAMS['local'])       
 #         for c in wp_service.render_post_category(estate):
 #             print(c.id)
@@ -49,9 +49,6 @@ class SimpleTest(TestCase):
         estates = Estate.objects.filter(wp_meta__status=3)
         for estate in estates:            
             wp_service.sync_post(estate)                                 
-                 
-                 
-                
             
               
 #         import pymorphy2

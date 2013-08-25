@@ -17,7 +17,7 @@ from estatebase.views import ClientListView, \
     EstateCreateClientView, RegisterReportView, SteadAppendView, SteadRemoveView,\
     ClientStatusUpdateView, EstateCreateWizardView, RestoreClientView,\
     BidEventCreateView, BidEventUpdateView, BidEventDeleteView,\
-    EstateRegisterBindView, MultiBindEstateToRegister
+    EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -122,4 +122,8 @@ urlpatterns += patterns('',
     url (r'^privatedetailreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/private_detail.html'), name='private_detail_report'),
     url (r'^publicreport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/public.html'), name='public_report'),
     url (r'^orbitareport/(?P<pk>\d+)$', RegisterReportView.as_view(template_name='reports/newspapers/orbita.html'), name='orbita_report'),
+)
+
+urlpatterns += patterns('',    
+    url (r'^wordpressqueue/$', WordpressQueue.as_view(), name='wordpress_queue'),
 )

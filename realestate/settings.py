@@ -11,7 +11,7 @@ TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Picasso', 'picasso75@yandex.ru'),
 )
 
 CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)

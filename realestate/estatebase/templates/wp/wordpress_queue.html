@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block left %}
+<h3>Очередь на выгрузку</h3>
+{% if queue %}	
+	Количество объектов на выгрузку: <strong>{{ queue.count }}</strong> 
+	<ol>
+	{% for item in queue %}
+	<li><strong>{{ item.pk }}</strong>, {{ item.estate_type }}, {{ item.wp_meta.updated }}</li>
+	{% endfor %}
+	</ol>
+{% else %}
+Очередь пуста...	
+{% endif %}
+
+<h3>Ошибки выгрузки</h3>
+{% if err_queue %}	
+	Количество объектов с ошибками: <strong>{{ err_queue.count }}</strong> 
+	<ol>
+	{% for item in err_queue %}
+	<li><strong>{{ item.pk }}</strong>, {{ item.estate_type }}, {{ item.wp_meta.updated }}, {{ item.wp_meta.get_status_display }},
+		{{ item.wp_meta.error_message }} </li>
+	{% endfor %}
+	</ol>
+<div>
+	<form method="post" action="">
+		{% csrf_token %}
+		<input type="hidden" name="error_to_queue" value="True"/>
+		<input type="submit" value="Перенести в очередь"/>
+	</form>
+</div>
+{% else %}
+Очередь пуста...	
+{% endif %}
+
+{% endblock %}
+
