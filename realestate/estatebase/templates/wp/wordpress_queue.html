@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load wp %}
 
 {% block left %}
+<h2>Информация</h2>
 <h3>Очередь на выгрузку</h3>
 {% if queue %}	
 	Количество объектов на выгрузку: <strong>{{ queue.count }}</strong> 
@@ -32,7 +33,34 @@
 	</form>
 </div>
 {% else %}
-Очередь пуста...	
+Ошибок нет...	
+{% endif %}
+
+{% if request.user.is_superuser %}
+<h2>Настройки</h2>
+<a href="{% url wordpress_queue %}?meta_report=meta_localities">Населённые пункты</a> |
+<a href="{% url wordpress_queue %}?meta_report=meta_estate_types">Виды недвижимости</a> |
+<a href="{% url wordpress_queue %}?meta_report=meta_regions">Районы</a> |
+<a href="{% url wordpress_queue %}?meta_report=meta_statuses">Статусы</a>
+
+{% if meta_queryset %}
+<h3>{{ meta_title }}</h3>
+<h4>Для шаблона жёстких полей</h4>
+<textarea cols="170" rows="5">
+{% separated_list meta_queryset 'wp_id' ' # ' %}
+</textarea>
+<textarea cols="170" rows="5">
+{% separated_list meta_queryset 'name' ' # ' %}
+</textarea>	
+<h4>Для шаблона поиска по жёстким полям</h4>
+<textarea cols="170" rows="5">
+:Все, {% keyval_sep_list meta_queryset 'wp_id' 'name' ', ' %}
+</textarea>
+<h4>Для формирования фида</h4>
+<textarea cols="170" rows="5">
+{% keyval_sep_feed meta_queryset 'wp_id' 'name' ', ' %}
+</textarea>
+{% endif %}
 {% endif %}
 
 {% endblock %}

@@ -6,7 +6,6 @@ from collections import OrderedDict
 from copy import deepcopy
 from estatebase.models import MAYBE
 from decimal import Decimal
-import pprint
 
 register = template.Library()
 

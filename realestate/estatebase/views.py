@@ -32,7 +32,9 @@ import urlparse
 from django.utils.encoding import smart_str
 from django.db.utils import IntegrityError
 from django.db.models.query_utils import Q
-from wp_helper.models import EstateWordpressMeta
+from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
+    WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus,\
+    WordpressTaxonomyTree
 
 
 class BaseMixin(object):
@@ -1164,6 +1166,26 @@ class WordpressQueue(TemplateView):
         return HttpResponseRedirect(reverse('wordpress_queue'))
     def get_context_data(self, **kwargs):
         context = super(WordpressQueue, self).get_context_data(**kwargs)
+        meta_report = self.request.GET.get('meta_report', None)
+        if meta_report:
+            meta_titles = {
+                           'meta_localities': u'Населённые пункты',
+                           'meta_estate_types': u'Виды недвижимости',
+                           'meta_regions': u'Районы',
+                           'meta_statuses': u'Статусы',
+                           }
+            meta_querysets = {}
+            meta_localities = []
+            for tax in WordpressTaxonomyTree.objects.exclude(wp_meta_locality=None):
+                meta_localities.append(tax.wp_meta_locality)
+            meta_querysets['meta_localities'] = meta_localities
+            meta_querysets['meta_estate_types'] = WordpressMetaEstateType.objects.all()                
+            meta_querysets['meta_regions'] = WordpressMetaRegion.objects.all()
+            meta_querysets['meta_statuses'] = WordpressMetaStatus.objects.all()
+            context.update({
+                'meta_queryset' : meta_querysets[meta_report],
+                'meta_title' : meta_titles[meta_report],                       
+            })                        
         context.update({
             'queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC),
             'err_queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.ERROR),

@@ -18,6 +18,7 @@ from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import logging
+import xmlrpclib
 
         
 class GetPostID(AnonymousMethod):
@@ -336,6 +337,9 @@ class WPService(object):
             wp_meta.status = EstateWordpressMeta.UPTODATE
             wp_meta.save()
             return True
+        except xmlrpclib.ProtocolError as err:
+            wp_meta.error_message = err.errmsg
+            wp_meta.save()
         except Exception, e:
             wp_meta.error_message = e
             wp_meta.status = EstateWordpressMeta.ERROR
