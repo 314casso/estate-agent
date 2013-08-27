@@ -26,25 +26,28 @@ class WordpressMetaAbstract(models.Model):
         super(WordpressMetaAbstract, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class WordpressMeta(WordpressMetaAbstract):    
-    class Meta:
+    class Meta:        
         verbose_name = u'Населенный пункт'
         verbose_name_plural = u'Населенные пункты'
         
 class WordpressMetaEstateType(WordpressMetaAbstract): 
     estate_types = models.ManyToManyField(EstateType, verbose_name=_('EstateType'), blank=True, null=True, related_name='wp_taxons')   
     class Meta:
+        ordering = ['name']
         verbose_name = u'Вид недвижимости'
         verbose_name_plural = u'Виды недвижимости'        
 
 class WordpressMetaRegion(WordpressMetaAbstract): 
     regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_taxons')   
     class Meta:
+        ordering = ['name']
         verbose_name = u'Район'
         verbose_name_plural = u'Районы'   
     
 class WordpressMetaStatus(WordpressMetaAbstract): 
     estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, null=True, related_name='wp_taxons')   
     class Meta:
+        ordering = ['name']
         verbose_name = u'Статус'
         verbose_name_plural = u'Статусы'    
     
