@@ -21,7 +21,7 @@ class SimpleTest(TestCase):
         Tests that 1 + 1 always equals 2.
         """
        # estate = Estate.objects.get(pk=86606) #86606
-        wp_service = WPService(WP_PARAMS['local'])       
+        wp_service = WPService(WP_PARAMS['site'])       
 #         for c in wp_service.render_post_category(estate):
 #             print(c.id)
 #             
