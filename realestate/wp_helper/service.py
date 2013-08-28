@@ -214,7 +214,7 @@ class WPService(object):
         same_items = set()
         for key, image in estate_images.items():
             for item in media_items:
-                if item.metadata['file'].find(os.path.splitext(image)[0]) != -1:
+                if item.metadata and item.metadata['file'].find(os.path.splitext(image)[0]) != -1:
                     keys.add(key)
                     same_items.add(item)
         for key in keys:
