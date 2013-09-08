@@ -350,7 +350,9 @@ class WPService(object):
             wp_meta.save()
         
     def sync_status(self, estate):        
-        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
+        print('Processing %s' % estate)
+        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))
+        print('Wordpress id %s' % post_id)        
         if post_id:
             wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable      
             wp_meta.post_id = post_id       
@@ -359,6 +361,7 @@ class WPService(object):
                 self.client.call(SetPostMeta(post_id, meta_struct))
                 wp_meta.status = EstateWordpressMeta.UPTODATE
                 wp_meta.save()
+                print('Done!')
             except xmlrpclib.ProtocolError as err:
                 print(err)
                 wp_meta.error_message = err.errmsg                
