@@ -75,6 +75,7 @@ class EstateWordpressMeta(models.Model):
     XMLRPC = 3
     UNKNOWN = 4
     STATUS_ERROR = 6
+    OUT = 7
     STATE_CHOICES = (
         (UPTODATE, u'Успешно обновлено'),
         (MULTIKEYS, u'Более одного ключа'),
@@ -82,6 +83,7 @@ class EstateWordpressMeta(models.Model):
         (XMLRPC, u'В очереди на загрузку'),
         (UNKNOWN, u'Не определено'),
         (STATUS_ERROR, u'Ошибка обновления статуса'),
+        (OUT, u'Не выгружен на сайт'),
     )
     estate = models.OneToOneField(Estate, related_name='wp_meta')
     post_id = models.CharField('WP Id', max_length=10, unique=True, null=True)

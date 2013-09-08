@@ -351,10 +351,10 @@ class WPService(object):
         
     def sync_status(self, estate):        
         print('Processing %s' % estate)
-        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))
+        wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
+        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
         print('Wordpress id %s' % post_id)        
-        if post_id:
-            wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable      
+        if post_id:                  
             wp_meta.post_id = post_id       
             try:            
                 meta_struct = {'status' : estate.estate_status.wp_taxons.all()[:1].get().wp_id}            
@@ -362,14 +362,16 @@ class WPService(object):
                 wp_meta.status = EstateWordpressMeta.UPTODATE
                 wp_meta.save()
                 print('Done!')
-            except xmlrpclib.ProtocolError as err:
-                print(err)
+            except xmlrpclib.ProtocolError as err:            
                 wp_meta.error_message = err.errmsg                
                 wp_meta.save()                
-            except Exception, e:
-                print(e)
+            except Exception, e:            
                 wp_meta.error_message = e
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
+        else:
+            wp_meta.status = EstateWordpressMeta.OUT
+            wp_meta.save()
+            
         
         
