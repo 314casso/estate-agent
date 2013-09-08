@@ -29,6 +29,7 @@ encoding//realestate/watermarker/sorl_engine.py=utf-8
 encoding//realestate/wp_helper/admin.py=utf-8
 encoding//realestate/wp_helper/management/commands/morf.py=utf-8
 encoding//realestate/wp_helper/management/commands/queue.py=utf-8
+encoding//realestate/wp_helper/management/commands/wp_status.py=utf-8
 encoding//realestate/wp_helper/management/commands/wp_sync.py=utf-8
 encoding//realestate/wp_helper/models.py=utf-8
 encoding//realestate/wp_helper/service.py=utf-8

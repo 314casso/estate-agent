@@ -74,12 +74,14 @@ class EstateWordpressMeta(models.Model):
     ERROR = 2
     XMLRPC = 3
     UNKNOWN = 4
+    STATUS_ERROR = 5
     STATE_CHOICES = (
         (UPTODATE, u'Успешно обновлено'),
         (MULTIKEYS, u'Более одного ключа'),
         (ERROR, u'Ошибка обновления'),
         (XMLRPC, u'В очереди на загрузку'),
         (UNKNOWN, u'Не определено'),
+        (STATUS_ERROR, u'Ошибка обновления статуса'),
     )
     estate = models.OneToOneField(Estate, related_name='wp_meta')
     post_id = models.CharField('WP Id', max_length=10, unique=True, null=True)

@@ -3,7 +3,7 @@ from wordpress_xmlrpc import Client
 from wordpress_xmlrpc.methods import taxonomies, media
 from wordpress_xmlrpc.wordpress import WordPressTerm, WordPressPost
 import difflib
-from wordpress_xmlrpc import AnonymousMethod
+from wordpress_xmlrpc import AnonymousMethod, AuthenticatedMethod
 from wp_helper.models import WordpressTaxonomyTree, EstateWordpressMeta
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.base import Template
@@ -24,6 +24,10 @@ import xmlrpclib
 class GetPostID(AnonymousMethod):
         method_name = 'picassometa.getPostID'
         method_args = ('meta_key','meta_value')
+
+class SetPostMeta(AuthenticatedMethod):
+        method_name = 'picassometa.setPostMeta'
+        method_args = ('post_id', 'meta_struct')
 
 class WPService(object):
     META_KEY = 'Nomer'
@@ -344,4 +348,23 @@ class WPService(object):
             wp_meta.error_message = e
             wp_meta.status = EstateWordpressMeta.ERROR
             wp_meta.save()
-            logging.exception('')
+        
+    def sync_status(self, estate):        
+        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
+        if post_id:
+            wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable      
+            wp_meta.post_id = post_id       
+            try:            
+                meta_struct = {'status' : estate.estate_status.wp_taxons.all()[:1].get().wp_id}            
+                self.client.call(SetPostMeta(post_id, meta_struct))
+                wp_meta.status = EstateWordpressMeta.UPTODATE
+                wp_meta.save()
+            except xmlrpclib.ProtocolError as err:
+                wp_meta.error_message = err.errmsg
+                wp_meta.save()
+            except Exception, e:
+                wp_meta.error_message = e
+                wp_meta.status = EstateWordpressMeta.STATUS_ERROR
+                wp_meta.save()
+        
+        

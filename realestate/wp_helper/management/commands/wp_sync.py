@@ -8,9 +8,12 @@ from django.utils import translation
 class Command(BaseCommand):
     def handle(self, *args, **options):
         translation.activate('ru')        
-        wp_service = WPService(WP_PARAMS['site'])      
+        wp_service = WPService(WP_PARAMS['site'])
+        self.sync_correct(wp_service)      
+
+    def sync_correct(self, wp_service):
         estates = Estate.objects.filter(wp_meta__status=3)
         for estate in estates:            
-            wp_service.sync_post(estate)                                 
-                
+            wp_service.sync_post(estate)
+        
         
