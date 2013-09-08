@@ -74,7 +74,7 @@ class EstateWordpressMeta(models.Model):
     ERROR = 2
     XMLRPC = 3
     UNKNOWN = 4
-    STATUS_ERROR = 5
+    STATUS_ERROR = 6
     STATE_CHOICES = (
         (UPTODATE, u'Успешно обновлено'),
         (MULTIKEYS, u'Более одного ключа'),
