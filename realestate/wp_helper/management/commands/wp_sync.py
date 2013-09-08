@@ -13,7 +13,7 @@ class Command(BaseCommand):
         self.sync_correct(wp_service)      
 
     def sync_correct(self, wp_service):
-        estates = Estate.objects.filter(wp_meta__status=EstateWordpressMeta.UPTODATE)
+        estates = Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC)
         for estate in estates:            
             wp_service.sync_post(estate)
         
