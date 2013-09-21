@@ -6,21 +6,17 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from wp_helper.service import WPService, GetPostID
+from wp_helper.service import WPService
 from unittest.case import TestCase
-from estatebase.models import Locality, Estate
+from estatebase.models import Estate
 from settings import WP_PARAMS
-from django.template.base import Template
-from django.template.context import Context
-import re
-
 
 class SimpleTest(TestCase):
     def test_meta(self):
         """
         Tests that 1 + 1 always equals 2.
         """
-       # estate = Estate.objects.get(pk=86606) #86606
+        # estate = Estate.objects.get(pk=86606) #86606
         wp_service = WPService(WP_PARAMS['site'])       
 #         for c in wp_service.render_post_category(estate):
 #             print(c.id)

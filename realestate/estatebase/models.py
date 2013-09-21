@@ -464,12 +464,18 @@ class Estate(ProcessDeletedModel):
     @property
     def detail_link(self):            
         return reverse('estate_list_details', args=[self.pk]) 
+    
     @property
     def basic_bidg(self):        
-        bidgs = list(self.bidgs.filter(basic__exact=True)[:1])
-        #bidgs = list(self.bidgs.all()[:1])
+        bidgs = list(self.bidgs.filter(basic__exact=True)[:1])        
         if bidgs:
-            return bidgs[0]                                  
+            return bidgs[0]
+        elif not self.estate_category.is_stead: 
+            bidgs = list(self.bidgs.all()[:1])
+            if bidgs:
+                if bidgs[0].is_independent:                    
+                    return bidgs[0]
+                                                  
     @property
     def basic_stead(self):        
         try:

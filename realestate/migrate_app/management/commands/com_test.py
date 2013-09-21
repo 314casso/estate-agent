@@ -1,28 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
-from migrate_app.prop_map import PropMap
-import os
-from settings import MEDIA_ROOT
 from django.db.models.aggregates import Count
-from estatebase.models import Estate, Bid, Region, Contact
+from estatebase.models import Bid, Contact
 from estatebase.forms import BidPicleForm
-from django.http import QueryDict
-import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         self.contact_duplicates()
-#        from django.utils import translation
-#        translation.activate(settings.LANGUAGE_CODE)
-#        
-#        self.new_pickle()
-#        self.test_func()        
-    
-#select id FROM estatebase_contact t1
-#WHERE t1.id not in (select min(t2.id)
-#                     from estatebase_contact t2
-#                     group by lower(t2.contact));    
-    
     
     def contact_duplicates(self):
         contacts = Contact.objects.values('contact').annotate(dup=Count('contact')).filter(dup__gt=1).order_by('dup')

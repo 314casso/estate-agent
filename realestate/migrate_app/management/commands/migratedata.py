@@ -2,7 +2,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import sys
 from maxim_base.models import Source, Users, Customers, Contacts, RealEstate,\
-    Properties, Descriptions, Images, Orders, OrderProperties, Place
+    Properties, Descriptions, Orders, OrderProperties, Place
 from migrate_app.models import SourceOrigin, UserUser, TypesEstateType,\
     BidImport, EstateImport
 from estatebase.models import Origin, Client, HistoryMeta, Contact,\

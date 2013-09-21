@@ -17,7 +17,6 @@ from wordpress_xmlrpc.methods.media import GetMediaItem, GetMediaLibrary
 from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
-import logging
 import xmlrpclib
 
         
