@@ -181,7 +181,7 @@ class Command(BaseCommand):
                 e.save() 
                 print 'save...'          
                 prop_map = PropMap(e)                
-                properties = Properties.objects.filter(real_estate=real_estate)                
+                properties = Properties.objects.using('maxim_db').filter(real_estate=real_estate)                
                 for prop in properties:                     
                     prop_map.set_param(prop)              
                 if real_estate.type_id == 9:
