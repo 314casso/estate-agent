@@ -128,6 +128,7 @@ class Command(BaseCommand):
             except Locality.DoesNotExist:
                 return None
     
+    @transaction.commit_on_success
     def estate(self):        
         real_estates = RealEstate.objects.using('maxim_db').all()        
         max_imported = EstateImport.objects.all().aggregate(Max('external_id'))           
@@ -170,7 +171,7 @@ class Command(BaseCommand):
                 #e.saler_price = real_estate.cost                
                 #e.agency_price = real_estate.cost_markup
                 e.estate_status_id = real_estate.status_id                       
-                descriptions = Descriptions.objects.filter(real_estate=real_estate)
+                descriptions = Descriptions.objects.using('maxim_db').filter(real_estate=real_estate)
                 dlist = []
                 for description in descriptions:
                     d = description.description.strip()
