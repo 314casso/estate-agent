@@ -76,7 +76,7 @@ class UserProfileAdmin(UserAdmin):
 
 class BidAdmin(admin.ModelAdmin):
     search_fields = ['id',]
-    fields = ['id', 'deleted']
+    fields = ['deleted']
     list_display = ('id', '__unicode__')
     list_filter = ('deleted',)
     def queryset(self, request):                
