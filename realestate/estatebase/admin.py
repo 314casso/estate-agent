@@ -74,6 +74,14 @@ class UserProfileInline(admin.StackedInline):
 class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline,]
 
+class BidAdmin(admin.ModelAdmin):
+    search_fields = ['id',]
+    fields = ['id', 'deleted']
+    list_display = ('id', '__unicode__')
+    list_filter = ('deleted',)
+    def queryset(self, request):                
+        return Bid.all_objects
+     
 
 class LocalityAdmin(admin.ModelAdmin):
     list_display = ['name', 'name_gent', 'name_loct']
@@ -115,7 +123,7 @@ admin.site.register(EstatePhoto)
 #admin.site.register(Stead)
 #admin.site.register(UserProfile)
 admin.site.register(GeoGroup)
-#admin.site.register(Bid)
+admin.site.register(Bid, BidAdmin)
 admin.site.register(ComStatus)
 admin.site.register(Office)
 admin.site.register(Appliance)
