@@ -218,9 +218,9 @@ class WPService(object):
         for key, image in estate_images.items():
             for item in media_items:
                 if item.metadata and item.metadata['file']:
-                    wp_image_name_no_ext = os.path.splitext(item.metadata['file'])[0]
-                    estate_image_no_ext = os.path.splitext(image)[0]
-                    if wp_image_name_no_ext.find(estate_image_no_ext) != -1 or estate_image_no_ext.find(wp_image_name_no_ext) != -1:
+                    wp_image_name_no_ext = item.metadata['file']
+                    estate_image_no_ext = os.path.splitext(image)[0][:-1]
+                    if wp_image_name_no_ext.find(estate_image_no_ext) != -1:
                         keys.add(key)
                         same_items.add(item)
         for key in keys:

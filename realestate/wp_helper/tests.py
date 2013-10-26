@@ -23,10 +23,11 @@ class SimpleTest(TestCase):
 #             
 #         for c in wp_service.render_post_tags(estate):
 #             print(c)
-        #estate = Estate.objects.get(pk=86606)
+        estate = Estate.objects.get(pk=90384)
         
         
-        #print(wp_service.get_post_by_estate(estate))
+        post_id = 134158
+        wp_service.get_filtered_post_images(estate, post_id)
         
 #         estate = Estate.objects.get(pk=86606) #86606
 #          
@@ -42,9 +43,9 @@ class SimpleTest(TestCase):
         #print wp_service.filtered_post_images(185, estate)
         #print(wp_service.render_custom_fields(estate))        
               
-        estates = Estate.objects.filter(wp_meta__status=3)
-        for estate in estates:            
-            wp_service.sync_post(estate)                                 
+        #estates = Estate.objects.filter(wp_meta__status=3)
+                    
+        #                                 
             
               
 #         import pymorphy2
