@@ -217,9 +217,12 @@ class WPService(object):
         same_items = set()
         for key, image in estate_images.items():
             for item in media_items:
-                if item.metadata and item.metadata['file'].find(os.path.splitext(image)[0]) != -1:
-                    keys.add(key)
-                    same_items.add(item)
+                if item.metadata and item.metadata['file']:
+                    wp_image_name_no_ext = os.path.splitext(item.metadata['file'])[0]
+                    estate_image_no_ext = os.path.splitext(image)[0]
+                    if wp_image_name_no_ext.find(estate_image_no_ext) != -1 or estate_image_no_ext.find(wp_image_name_no_ext) != -1:
+                        keys.add(key)
+                        same_items.add(item)
         for key in keys:
             del estate_images[key]
         return {'estate_images' : estate_images, 'same_items': same_items}     
