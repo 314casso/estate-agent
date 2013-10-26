@@ -212,13 +212,13 @@ class WPService(object):
         if not post_id:
             return {'estate_images' : estate_images}
         fltr = {'parent_id' : post_id}                
-        media_items = self.client.call(GetMediaLibrary(fltr))
+        media_items = self.client.call(GetMediaLibrary(fltr))        
         keys = set()
         same_items = set()               
         for key, image in estate_images.items():
-            for item in media_items:
-                if item.metadata and item.metadata['file']:
-                    wp_image_name_no_ext = item.metadata['file']
+            for item in media_items:                
+                if type(item.metadata) == 'dict' and item.metadata.get('file'):
+                    wp_image_name_no_ext = item.metadata.get['file']
                     estate_image_no_ext = os.path.splitext(image)[0][:-1]
                     if wp_image_name_no_ext.find(estate_image_no_ext) != -1:
                         keys.add(key)

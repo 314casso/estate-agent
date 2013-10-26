@@ -23,11 +23,13 @@ class SimpleTest(TestCase):
 #             
 #         for c in wp_service.render_post_tags(estate):
 #             print(c)
-        estate = Estate.objects.get(pk=90384)
+        estate = Estate.objects.get(pk=75723)
         
         
-        post_id = 134158
-        wp_service.get_filtered_post_images(estate, post_id)
+        old_post = wp_service.get_post_by_estate(estate)
+        #print(old_post)
+        post = wp_service.assemble_post(estate, old_post)
+        print(post.content)
         
 #         estate = Estate.objects.get(pk=86606) #86606
 #          
