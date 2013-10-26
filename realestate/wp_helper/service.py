@@ -214,7 +214,7 @@ class WPService(object):
         fltr = {'parent_id' : post_id}                
         media_items = self.client.call(GetMediaLibrary(fltr))
         keys = set()
-        same_items = set()
+        same_items = set()               
         for key, image in estate_images.items():
             for item in media_items:
                 if item.metadata and item.metadata['file']:
@@ -225,6 +225,12 @@ class WPService(object):
                         same_items.add(item)
         for key in keys:
             del estate_images[key]
+        
+        ######
+        import logging
+        log = logging.getLogger('estate')
+        log.debug({'estate_images' : estate_images, 'same_items': same_items})
+        ######
         return {'estate_images' : estate_images, 'same_items': same_items}     
 
     def get_media_items(self, estate, post_id):
