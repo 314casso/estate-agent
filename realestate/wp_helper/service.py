@@ -225,11 +225,10 @@ class WPService(object):
                         same_items.add(item)
         for key in keys:
             del estate_images[key]
-        
         ######
-        import logging
-        log = logging.getLogger('estate')
-        log.debug({'estate_images' : estate_images, 'same_items': same_items})
+        #import logging
+        #log = logging.getLogger('estate')
+        #log.debug({'estate_images' : estate_images, 'same_items': same_items})
         ######
         return {'estate_images' : estate_images, 'same_items': same_items}     
 
