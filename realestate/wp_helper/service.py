@@ -223,6 +223,7 @@ class WPService(object):
                     if wp_image_name_no_ext.find(estate_image_no_ext) != -1:
                         keys.add(key)
                         same_items.add(item)
+                        break                        
         for key in keys:
             del estate_images[key]
         ######
