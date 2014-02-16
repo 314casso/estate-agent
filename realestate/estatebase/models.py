@@ -213,6 +213,7 @@ class EstateStatus(SimpleDict):
     '''
     Статус объекта
     '''
+    NEW = 2
     SOLD = 3
     REMOVED = 4    
     class Meta(SimpleDict.Meta):
