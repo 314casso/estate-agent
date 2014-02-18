@@ -16,13 +16,3 @@ NEWSPIDER_MODULE = 'realty.spiders'
 ITEM_PIPELINES = {
     'realty.pipelines.RealtyPipeline': 300,    
 }
-
-from realty.local_settings import DJANGO_PATHES
-def setup_django_env(path):
-    import imp
-    from django.core.management import setup_environ
-    f, filename, desc = imp.find_module('settings', [path])
-    project = imp.load_module('settings', f, filename, desc)     
-    setup_environ(project)
-
-setup_django_env(DJANGO_PATHES[0])

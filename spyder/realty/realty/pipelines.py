@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
+
+from realty.local_settings import DJANGO_PATHES
+import sys
+sys.path.extend(DJANGO_PATHES)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+
+def setup_django_env(path):
+    import imp
+    from django.core.management import setup_environ
+    f, filename, desc = imp.find_module('settings', [path])
+    project = imp.load_module('settings', f, filename, desc)     
+    setup_environ(project)
+setup_django_env(DJANGO_PATHES[0])
+
 import datetime
 from django.db import transaction
 from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient,\
     EstateStatus, EstateType
 
 class RealtyPipeline(object):   
-    USER_ID = 4 #Бузенкова  
+    USER_ID = 4 #Бузенкова 
     def process_item(self, item, spider):
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
@@ -21,12 +37,11 @@ class RealtyPipeline(object):
             result_desc.append(''.join(item['link']))                        
         result_desc.append(' '.join(item['desc']))      
         result_desc_str = '\n'.join(result_desc)
-        transaction.set_dirty()
-        with transaction.commit_on_success():       
-            client = self._create_client(name, spider.origin_id)
+        with transaction.commit_on_success():                        
+            client = self._create_client(name, spider.ORIGIN_ID)
             for phone in item['phone']:
-                self._create_contact(phone, client.id)
-            self._create_estate(spider.origin_id, item['price_digit'][0], result_desc_str, client.id, estate_type)
+                self._create_contact(phone, client.id)        
+            self._create_estate(spider.ORIGIN_ID, item['price_digit'][0], result_desc_str, client.id, estate_type, spider.REGION_ID)
         return item
     
     def is_phone_exist(self, phone):
@@ -60,7 +75,7 @@ class RealtyPipeline(object):
         c.save()
         return c
     
-    def _create_estate(self, origin_id, price_digit, description, client_id, estate_type):                                    
+    def _create_estate(self, origin_id, price_digit, description, client_id, estate_type, region_id):                                    
         history = HistoryMeta()        
         history.created = datetime.datetime.now()                
         history.created_by_id = self.USER_ID           
@@ -72,7 +87,8 @@ class RealtyPipeline(object):
         e.origin_id = origin_id               
         e.agency_price = price_digit
         e.estate_status_id = EstateStatus.NEW                       
-        e.description = description                                              
+        e.description = description
+        e.region_id = region_id                                              
         e.save() 
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,

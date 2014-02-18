@@ -4,7 +4,7 @@ from realty.spiders.slrgel import SlrgelSpider
 from realty.pipelines import RealtyPipeline
 from realty.items import RealtyItem
 
-class RealtyPipelineTest(unittest.TestCase):
+class RealtyPipelineTest():
 
     def setUp(self):
         self.spider = SlrgelSpider()
@@ -20,4 +20,8 @@ class RealtyPipelineTest(unittest.TestCase):
     
     def test_parse(self):
         self.pipe.process_item(self.item, self.spider)
-        #self.assertEqual(1, 0) 
+        #self.assertEqual(1, 0)
+
+t =  RealtyPipelineTest()
+t.setUp()
+t.test_parse()

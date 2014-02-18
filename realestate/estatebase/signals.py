@@ -35,8 +35,7 @@ def update_deleted(sender, instance, created, **kwargs):
             estate.set_contact()
             estate.save()            
             prepare_history(estate.history, instance._user_id)                                
-
-@transaction.commit_on_success        
+       
 def update_estate(sender, instance, created, **kwargs):
     if instance.client.history:
         prepare_history(instance.client.history, instance.user_id)

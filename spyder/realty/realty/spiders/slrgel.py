@@ -7,7 +7,8 @@ import re
 
 class SlrgelSpider(BaseSpider):
     name = "slrgel"
-    origin_id = 13
+    ORIGIN_ID = 13
+    REGION_ID = 2 #Геленджикский
     allowed_domains = ["slrgel"]    
     start_urls = [
         "http://slrgel.ru/category/garazhi/",
@@ -47,15 +48,15 @@ class SlrgelSpider(BaseSpider):
                 price_digit = int(price_digit * mesures[m.group('mesure')])                
                 return price_digit
    
-    def get_estate_type(self, url):
+    def get_estate_type(self, url):        
         m = re.search(r'\/(?P<key>[^\/]+)[\/]{0,1}$', url)
         if m:
-            key = m.group()
+            key = m.group('key')
             estate_types = {
-                         'garazhi' : 7,
+                         'garazhi' : 9,
                          'doma' : 16,
                          'zemelnyie-uchastki' : 15, 
                          '1-komn-kv' : 6,
                          }            
-            if key in estate_types:
+            if key in estate_types:              
                 return estate_types[key]
