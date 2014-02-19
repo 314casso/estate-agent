@@ -6,7 +6,6 @@ sys.path.extend(DJANGO_PATHES)
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-
 def setup_django_env(path):
     import imp
     from django.core.management import setup_environ
@@ -29,21 +28,28 @@ class RealtyPipeline(object):
         estate_type = EstateType.objects.get(pk=item['estate_type'])
         if not estate_type:
             return item
-        name = item['name'] or u'неизвестно'
+        name = u''.join(item['name']) or u'неизвестно'
         result_desc = []
         if item['price']:
-            result_desc.append(''.join(item['price']))
+            result_desc.append(u''.join(item['price']))
         if item['link']:
-            result_desc.append(''.join(item['link']))                        
-        result_desc.append(' '.join(item['desc']))      
-        result_desc_str = '\n'.join(result_desc)
+            result_desc.append(u''.join(item['link']))                        
+        result_desc.append(u' '.join(item['desc']))      
+        result_desc_str = u'\n'.join(result_desc)
+        price_digit = self.clean_price_digit(item['price_digit']) 
         with transaction.commit_on_success():                        
             client = self._create_client(name, spider.ORIGIN_ID)
             for phone in item['phone']:
                 self._create_contact(phone, client.id)        
-            self._create_estate(spider.ORIGIN_ID, item['price_digit'][0], result_desc_str, client.id, estate_type, spider.REGION_ID)
+            self._create_estate(spider.ORIGIN_ID, price_digit, result_desc_str, client.id, estate_type, spider.REGION_ID)
         return item
     
+    def clean_price_digit(self, item_price_digit):
+        result = item_price_digit[0] if item_price_digit else 0        
+        if 10000 <= result <= 100000000:
+            return result
+        return 0
+
     def is_phone_exist(self, phone):
         contacts = Contact.objects.filter(contact=phone, contact_type_id=Contact.PHONE)
         if contacts:

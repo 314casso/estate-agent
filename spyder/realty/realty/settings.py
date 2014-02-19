@@ -16,3 +16,5 @@ NEWSPIDER_MODULE = 'realty.spiders'
 ITEM_PIPELINES = {
     'realty.pipelines.RealtyPipeline': 300,    
 }
+
+DOWNLOAD_DELAY = 1.25

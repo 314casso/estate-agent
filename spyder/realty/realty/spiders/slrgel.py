@@ -12,9 +12,15 @@ class SlrgelSpider(BaseSpider):
     allowed_domains = ["slrgel"]    
     start_urls = [
         "http://slrgel.ru/category/garazhi/",
-        #"http://slrgel.ru/category/doma/",
-        #'http://slrgel.ru/category/zemelnyie-uchastki/',
-        #'http://slrgel.ru/category/kvartiryi/1-komn-kv/'
+        "http://slrgel.ru/category/doma/",
+        'http://slrgel.ru/category/zemelnyie-uchastki/',
+        'http://slrgel.ru/category/kvartiryi/1-komn-kv/',
+        'http://slrgel.ru/category/kvartiryi/2-komn-kv/',
+        'http://slrgel.ru/category/kvartiryi/3-komn-kv/',
+        'http://slrgel.ru/category/kvartiryi/4-komn-kv-i-bolee/',
+        'http://slrgel.ru/category/kvartiryi/komnatyi/',
+        'http://slrgel.ru/category/kvartiryi/novostroyki/',
+        'http://slrgel.ru/category/kommercheskaya-nedvizhimost/',
     ]
 
     def parse(self, response):
@@ -45,8 +51,11 @@ class SlrgelSpider(BaseSpider):
             m = re.search(r'(?P<digit>\d+[\d|\,]*)\s(?P<mesure>[\w|\.]+)', price, re.UNICODE)
             if m:                
                 price_digit = float(m.group('digit').replace(',','.'))
-                price_digit = int(price_digit * mesures[m.group('mesure')])                
-                return price_digit
+                mesure = m.group('mesure')
+                if mesure in mesures:
+                    price_digit = int(price_digit * mesures[m.group('mesure')])                
+                    return price_digit
+        return 0
    
     def get_estate_type(self, url):        
         m = re.search(r'\/(?P<key>[^\/]+)[\/]{0,1}$', url)
@@ -57,6 +66,12 @@ class SlrgelSpider(BaseSpider):
                          'doma' : 16,
                          'zemelnyie-uchastki' : 15, 
                          '1-komn-kv' : 6,
+                         '2-komn-kv' : 6,
+                         '3-komn-kv' : 6,
+                         '4-komn-kv-i-bolee' : 6,
+                         'komnatyi' : 21,
+                         'novostroyki' : 34,
+                         'kommercheskaya-nedvizhimost' : 93,
                          }            
             if key in estate_types:              
                 return estate_types[key]
