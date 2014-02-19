@@ -35,6 +35,7 @@ from django.db.models.query_utils import Q
 from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
     WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus,\
     WordpressTaxonomyTree
+from django.contrib.auth.decorators import user_passes_test
 
 
 class BaseMixin(object):
@@ -1153,6 +1154,9 @@ class MultiBindEstateToRegister(ModelFormMixin, ProcessFormView):
                 if not r.estates.filter(pk=self.kwargs['estate']):                                                
                     r.estates.add(self.kwargs['estate'])            
         return HttpResponseRedirect(self.request.GET.get('next', None))
+    @user_passes_test(lambda u: u.is_superuser)
+    def dispatch(self, *args, **kwargs):
+        return super(MultiBindEstateToRegister, self).dispatch(*args, **kwargs)
     
 class WordpressQueue(TemplateView):
     template_name = 'wp/wordpress_queue.html'
