@@ -22,6 +22,8 @@ from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient
 class RealtyPipeline(object):   
     USER_ID = 4 #Бузенкова 
     def process_item(self, item, spider):
+        if not item['phone']:
+            return item
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
                 return item
