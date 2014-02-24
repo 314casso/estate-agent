@@ -77,11 +77,18 @@ class UserProfileAdmin(UserAdmin):
 class BidAdmin(admin.ModelAdmin):
     search_fields = ['id',]
     fields = ['deleted']
-    list_display = ('id', '__unicode__')
+    list_display = ('id', '__unicode__',)
     list_filter = ('deleted',)
     def queryset(self, request):                
         return Bid.all_objects
-     
+
+class EstateRegisterAdmin(admin.ModelAdmin):
+    search_fields = ['id',]
+    fields = ['deleted']
+    list_display = ('id', '__unicode__',)
+    list_filter = ('deleted',)
+    def queryset(self, request):                
+        return Bid.all_objects     
 
 class LocalityAdmin(admin.ModelAdmin):
     list_display = ['name', 'name_gent', 'name_loct']
@@ -149,7 +156,7 @@ admin.site.register(Shape)
 admin.site.register(Purpose)
 admin.site.register(LocalityType)
 admin.site.register(Validity)
-admin.site.register(EstateRegister)
+admin.site.register(EstateRegister, EstateRegisterAdmin)
 
 
 
