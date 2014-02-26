@@ -1018,6 +1018,7 @@ class BidEvent(models.Model):
     class Meta:
         verbose_name = _('bid event')
         verbose_name_plural = _('bid events')        
+        ordering = ['-date']
 
 class RegisterCategory(SimpleDict):
     '''
@@ -1025,7 +1026,7 @@ class RegisterCategory(SimpleDict):
     '''
     class Meta(SimpleDict.Meta):
         verbose_name = _('Register category')
-        verbose_name_plural = _('Register categorys')
+        verbose_name_plural = _('Register categorys')        
 
 class EstateRegister(ProcessDeletedModel):
     '''
