@@ -14,7 +14,7 @@ class Command(BaseCommand):
         self.sync_sold_status(wp_service)      
                 
     def sync_sold_status(self, wp_service):
-        sold_items = (EstateStatus.SOLD, EstateStatus.REMOVED)
+        sold_items = (EstateStatus.SOLD, EstateStatus.REMOVED, EstateStatus.DEPOSIT)
         exclude_statuses = (EstateWordpressMeta.OUT, EstateWordpressMeta.UPTODATE)
         estates = Estate.objects.exclude(wp_meta__status__in=exclude_statuses)        
         estates = estates.filter(estate_status_id__in=sold_items)

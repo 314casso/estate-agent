@@ -215,7 +215,8 @@ class EstateStatus(SimpleDict):
     '''
     NEW = 2
     SOLD = 3
-    REMOVED = 4    
+    REMOVED = 4
+    DEPOSIT = 5    
     class Meta(SimpleDict.Meta):
         verbose_name = _('estate status')
         verbose_name_plural = _('estate statuses')         
