@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from wp_helper.models import WordpressTaxonomyTree, WordpressMeta,\
-    WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus
+    WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus,\
+    WordpressMetaEstateParam
 from mptt.admin import MPTTModelAdmin
 from wp_helper.service import WPService
 from django import forms
 from selectable.forms.widgets import AutoCompleteSelectMultipleWidget
 from estatebase.lookups import LocalityLookup, EstateTypeLookup, RegionLookup,\
-    EstateStatusLookup
+    EstateStatusLookup, EstateParamLookup
 from estatebase.models import Region, Locality, EstateType
 from settings import WP_PARAMS
 
@@ -90,7 +91,15 @@ class WordpressMetaStatusAdminForm(forms.ModelForm):
         widgets = {            
             'estate_statuses': AutoCompleteSelectMultipleWidget(lookup_class=EstateStatusLookup),
         }
-        fields = ['name','estate_statuses', 'wp_id']
+        fields = ['name','estate_statuses', 'wp_id']\
+
+class WordpressMetaEstateParamsAdminForm(forms.ModelForm):
+    class Meta(object):        
+        model = WordpressMetaEstateParam        
+        widgets = {            
+            'estate_params': AutoCompleteSelectMultipleWidget(lookup_class=EstateParamLookup),            
+        }
+        fields = ['id','estate_params', 'taxonomy_tree',]
 
 class WordpressMetaRegionAdmin(admin.ModelAdmin):
     form = WordpressMetaRegionAdminForm
@@ -99,6 +108,10 @@ class WordpressMetaRegionAdmin(admin.ModelAdmin):
 class WordpressMetaStatusAdmin(admin.ModelAdmin):
     form = WordpressMetaStatusAdminForm
     list_display = ('name', 'wp_id')
+
+class WordpressMetaEstateParamAdmin(admin.ModelAdmin):
+    form = WordpressMetaEstateParamsAdminForm
+    list_display = ('id', 'taxonomy_tree')
 
 def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():
@@ -162,3 +175,4 @@ admin.site.register(WordpressMeta, WordpressMetaAdmin)
 admin.site.register(WordpressMetaEstateType, WordpressMetaEstateTypeAdmin)
 admin.site.register(WordpressMetaRegion, WordpressMetaRegionAdmin)
 admin.site.register(WordpressMetaStatus, WordpressMetaStatusAdmin)
+admin.site.register(WordpressMetaEstateParam, WordpressMetaEstateParamAdmin)

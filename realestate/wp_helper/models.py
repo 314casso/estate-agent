@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-from estatebase.models import Locality, Region, EstateType, EstateStatus, Estate
+from estatebase.models import Locality, Region, EstateType, EstateStatus, Estate,\
+    EstateParam
 from django.db.models.signals import m2m_changed
 from django.dispatch.dispatcher import receiver
 from django.db.utils import IntegrityError
@@ -50,6 +51,14 @@ class WordpressMetaStatus(WordpressMetaAbstract):
         ordering = ['name']
         verbose_name = u'Статус'
         verbose_name_plural = u'Статусы'    
+
+class WordpressMetaEstateParam(models.Model): 
+    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True, related_name='wp_taxons') 
+    taxonomy_tree = models.ForeignKey('WordpressTaxonomyTree', blank=True, null=True,) 
+    class Meta:
+        ordering = ['id']
+        verbose_name = u'Метки'
+        verbose_name_plural = u'Метки'
     
 class WordpressTaxonomyTree(MPTTModel):
     name = models.CharField('Name', max_length=150)

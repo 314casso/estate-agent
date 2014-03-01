@@ -123,6 +123,10 @@ class WPService(object):
         ancestors = taxonomy_tree.get_ancestors(ascending=True, include_self=True)
         for ancestor in ancestors:
             result.append(self.wrap_to_wp_category(ancestor))
+        wp_cats = estate.estate_params.exclude(wp_taxons=None).values_list('wp_taxons__taxonomy_tree', flat=True)
+        for wp_cat_id in wp_cats:
+            params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)
+            result.append(self.wrap_to_wp_category(params_taxonomy_tree))
         return result
     
     def delete_taxonomy(self, term_id):
