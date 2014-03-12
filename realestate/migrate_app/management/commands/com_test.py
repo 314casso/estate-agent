@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
 from django.db.models.aggregates import Count
-from estatebase.models import Bid, Contact
+from estatebase.models import Bid, Contact, Estate
 from estatebase.forms import BidPicleForm
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        self.contact_duplicates()
+        self.clear_estate_params()
     
     def contact_duplicates(self):
         contacts = Contact.objects.values('contact').annotate(dup=Count('contact')).filter(dup__gt=1).order_by('dup')
@@ -41,11 +41,11 @@ class Command(BaseCommand):
                 else:
                     print e.id
                     print estate_filter_form.errors
-
-
-            
         
-        
+    def clear_estate_params(self):
+        estates = Estate.objects.filter(estate_params__id = 7)        
+        for e in estates:            
+            e.estate_params.remove(7)
         
         
         

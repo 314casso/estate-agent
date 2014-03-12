@@ -42,7 +42,10 @@ class SlrgelSpider(BaseSpider):
         return items
       
     def filter_phone(self, phone):
+        GELCODE = '86141'
         phone = phone.replace('-', '')
+        if 5 <= len(phone) < 10:
+            return '8%s%s' % (GELCODE, phone)   
         return '8%s' % phone   
        
     def filter_price(self, price):
