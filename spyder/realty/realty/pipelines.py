@@ -22,28 +22,20 @@ from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient
 class RealtyPipeline(object):   
     USER_ID = 4 #Бузенкова 
     def process_item(self, item, spider):
-        if not item['phone']:
+        if 'phone' not in item or not item['phone']:
             return item
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
                 return item
-        estate_type = EstateType.objects.get(pk=item['estate_type'])
+        estate_type = EstateType.objects.get(pk=item['estate_type_id'])
         if not estate_type:
             return item
-        name = u''.join(item['name']) or u'неизвестно'
-        result_desc = []
-        if item['price']:
-            result_desc.append(u''.join(item['price']))
-        if item['link']:
-            result_desc.append(u''.join(item['link']))                        
-        result_desc.append(u' '.join(item['desc']))      
-        result_desc_str = u'\n'.join(result_desc)
-        price_digit = self.clean_price_digit(item['price_digit']) 
+        name = u''.join(item['name']) or u'неизвестно'        
         with transaction.commit_on_success():                        
             client = self._create_client(name, spider.ORIGIN_ID)
             for phone in item['phone']:
                 self._create_contact(phone, client.id)        
-            self._create_estate(spider.ORIGIN_ID, price_digit, result_desc_str, client.id, estate_type, spider.REGION_ID)
+            self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
         return item
     
     def clean_price_digit(self, item_price_digit):
@@ -59,13 +51,13 @@ class RealtyPipeline(object):
         return False
     
     def _create_client(self, name, origin_id):        
-        LIENT_TYPE_ID = 3 #Частное лицо        
+        CLIENT_TYPE_ID = 3 #Частное лицо        
         history = HistoryMeta()        
         history.created = datetime.datetime.now()                
         history.created_by_id = self.USER_ID                
         history.save()                
         client = Client.objects.create(history=history, name=name, 
-                              client_type_id = LIENT_TYPE_ID, 
+                              client_type_id = CLIENT_TYPE_ID, 
                               origin_id=origin_id)
         return client
         
@@ -83,7 +75,7 @@ class RealtyPipeline(object):
         c.save()
         return c
     
-    def _create_estate(self, origin_id, price_digit, description, client_id, estate_type, region_id):                                    
+    def _create_estate(self, item, origin_id, client_id, estate_type):
         history = HistoryMeta()        
         history.created = datetime.datetime.now()                
         history.created_by_id = self.USER_ID           
@@ -93,12 +85,20 @@ class RealtyPipeline(object):
         e.estate_category_id = estate_type.estate_type_category_id
         e._estate_type_id = estate_type.id
         e.origin_id = origin_id               
-        e.agency_price = price_digit
+        e.agency_price = self.clean_price_digit(item['price_digit'])
         e.estate_status_id = EstateStatus.NEW                       
-        e.description = description
-        e.region_id = region_id                                              
+        e.description = self.get_description(item)
+        e.region_id = item['region_id']                                              
         e.save() 
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
                                 estate=e)
-            
+    
+    def get_description(self, item):
+        result_desc = []
+        if item['price']:
+            result_desc.append(u''.join(item['price']))
+        if item['link']:
+            result_desc.append(u''.join(item['link']))                        
+        result_desc.append(u' '.join(item['desc']))      
+        return u'\n'.join(result_desc)

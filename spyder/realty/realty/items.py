@@ -12,7 +12,13 @@ class RealtyItem(Item):
     price = Field()
     price_digit = Field()
     link = Field()
-    estate_type = Field() 
+    estate_type_id = Field() 
+    region_id = Field()
+    locality = Field()
+    microdistrict = Field()
+    street = Field()
+    estate_number = Field()
+    room_count = Field()
         
 
 

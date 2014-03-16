@@ -37,7 +37,8 @@ class SlrgelSpider(BaseSpider):
             item['price'] = site.xpath("div/div/span[@class='price']/text()").extract()
             item['price_digit'] = proc_price(site.xpath("div/div/span[@class='price']/text()").extract())
             item['link'] = site.xpath("div/h2[@class='entry-title']/a/@href").extract()
-            item['estate_type'] = self.get_estate_type(response.url)                         
+            item['estate_type_id'] = self.get_estate_type(response.url)                         
+            item['region_id'] = self.REGION_ID
             items.append(item)
         return items
       
