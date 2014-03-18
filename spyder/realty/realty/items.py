@@ -14,7 +14,7 @@ class RealtyItem(Item):
     link = Field()
     estate_type_id = Field() 
     region_id = Field()
-    locality = Field()
+    locality_id = Field()
     microdistrict = Field()
     street = Field()
     estate_number = Field()

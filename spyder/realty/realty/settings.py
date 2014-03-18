@@ -19,3 +19,17 @@ ITEM_PIPELINES = {
 
 DOWNLOAD_DELAY = 1.25
 LOG_LEVEL = 'INFO'
+
+from realty.local_settings import DJANGO_PATHES
+import sys
+sys.path.extend(DJANGO_PATHES)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+def setup_django_env(path):
+    import imp
+    from django.core.management import setup_environ
+    f, filename, desc = imp.find_module('settings', [path])
+    project = imp.load_module('settings', f, filename, desc)     
+    setup_environ(project)
+setup_django_env(DJANGO_PATHES[0])

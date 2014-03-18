@@ -1,19 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from realty.local_settings import DJANGO_PATHES
-import sys
-sys.path.extend(DJANGO_PATHES)
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-
-def setup_django_env(path):
-    import imp
-    from django.core.management import setup_environ
-    f, filename, desc = imp.find_module('settings', [path])
-    project = imp.load_module('settings', f, filename, desc)     
-    setup_environ(project)
-setup_django_env(DJANGO_PATHES[0])
-
 import datetime
 from django.db import transaction
 from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient,\
@@ -88,7 +73,8 @@ class RealtyPipeline(object):
         e.agency_price = self.clean_price_digit(item['price_digit'])
         e.estate_status_id = EstateStatus.NEW                       
         e.description = self.get_description(item)
-        e.region_id = item['region_id']                                              
+        e.region_id = item['region_id']
+        e.locality_id = item['locality_id']                                              
         e.save() 
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
