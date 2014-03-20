@@ -15,7 +15,10 @@ class LiferealtySpider(BaseSpider):
     start_urls = [
                   'http://krasnodar.life-realty.ru/sale/?view=simple&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1579&c%5B%5D=1229&c%5B%5D=1028&c%5B%5D=1369&c%5B%5D=1237&c%5B%5D=1627&c%5B%5D=930&c%5B%5D=1424&c%5B%5D=1023&c%5B%5D=1976&c%5B%5D=1528&c%5B%5D=693&c%5B%5D=1052&c%5B%5D=959&c%5B%5D=1027&c%5B%5D=1226&c%5B%5D=994&r%5B%5D=46&c%5B%5D=187&c%5B%5D=1585&c%5B%5D=4&c%5B%5D=690&c%5B%5D=691&c%5B%5D=1225&r%5B%5D=43&c%5B%5D=1067&c%5B%5D=1127&c%5B%5D=1098&c%5B%5D=7&c%5B%5D=1511&r%5B%5D=31&c%5B%5D=114&c%5B%5D=361&c%5B%5D=594&c%5B%5D=115&c%5B%5D=414&c%5B%5D=243&c%5B%5D=358&c%5B%5D=119&c%5B%5D=195&c%5B%5D=120&c%5B%5D=1022&c%5B%5D=1795&c%5B%5D=121&c%5B%5D=122&c%5B%5D=1244&c%5B%5D=425&c%5B%5D=354&c%5B%5D=279&c%5B%5D=124&c%5B%5D=193&c%5B%5D=275&c%5B%5D=923&c%5B%5D=125&c%5B%5D=126&c%5B%5D=924&c%5B%5D=1209&priceFrom=&priceTo=&areaTotalFrom=&areaTotalTo=&areaLivingFrom=&areaLivingTo=&areaRoomFrom=&areaRoomTo=&floorTotalFrom=&floorTotalTo=&floorFrom=&floorTo=&page=1',
                   'http://krasnodar.life-realty.ru/country/?view=simple&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1341&c%5B%5D=1579&c%5B%5D=1229&c%5B%5D=1028&c%5B%5D=1237&c%5B%5D=1627&c%5B%5D=930&c%5B%5D=1424&c%5B%5D=1023&c%5B%5D=2919&c%5B%5D=919&c%5B%5D=1976&c%5B%5D=693&c%5B%5D=1052&c%5B%5D=1953&c%5B%5D=959&c%5B%5D=1027&c%5B%5D=1226&c%5B%5D=994&r%5B%5D=46&c%5B%5D=2099&c%5B%5D=187&c%5B%5D=1585&c%5B%5D=2355&c%5B%5D=4&c%5B%5D=1159&c%5B%5D=690&c%5B%5D=691&c%5B%5D=1138&c%5B%5D=981&c%5B%5D=1225&r%5B%5D=43&c%5B%5D=3341&c%5B%5D=593&c%5B%5D=3134&c%5B%5D=1067&c%5B%5D=3400&c%5B%5D=1127&c%5B%5D=3378&c%5B%5D=3315&c%5B%5D=1098&c%5B%5D=360&c%5B%5D=7&c%5B%5D=986&c%5B%5D=1956&c%5B%5D=3253&c%5B%5D=1994&c%5B%5D=3312&c%5B%5D=1511&c%5B%5D=1615&c%5B%5D=1397&r%5B%5D=31&c%5B%5D=114&c%5B%5D=361&c%5B%5D=594&c%5B%5D=286&c%5B%5D=115&c%5B%5D=414&c%5B%5D=117&c%5B%5D=644&c%5B%5D=243&c%5B%5D=358&c%5B%5D=119&c%5B%5D=195&c%5B%5D=962&c%5B%5D=120&c%5B%5D=1022&c%5B%5D=1795&c%5B%5D=121&c%5B%5D=122&c%5B%5D=123&c%5B%5D=425&c%5B%5D=354&c%5B%5D=279&c%5B%5D=124&c%5B%5D=554&c%5B%5D=193&c%5B%5D=275&c%5B%5D=923&c%5B%5D=125&c%5B%5D=126&c%5B%5D=924&c%5B%5D=1209&priceFrom=&priceTo=&areaTotalFrom=&areaTotalTo=&areaLivingFrom=&areaLivingTo=&areaPlotFrom=&areaPlotTo=&page=1',
-                  #'http://krasnodar.life-realty.ru/uchastki/?view=advanced&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1579&c%5B%5D=1229&c%5B%5D=1028&c%5B%5D=1237&c%5B%5D=1627&c%5B%5D=930&c%5B%5D=1424&c%5B%5D=1023&c%5B%5D=2919&c%5B%5D=919&c%5B%5D=2826&c%5B%5D=1976&c%5B%5D=693&c%5B%5D=1052&c%5B%5D=1953&c%5B%5D=959&c%5B%5D=1027&c%5B%5D=1226&c%5B%5D=994&r%5B%5D=46&c%5B%5D=2099&c%5B%5D=187&c%5B%5D=1585&c%5B%5D=3477&c%5B%5D=2355&c%5B%5D=4&c%5B%5D=1159&c%5B%5D=690&c%5B%5D=691&c%5B%5D=1138&c%5B%5D=1430&c%5B%5D=981&c%5B%5D=1225&c%5B%5D=3495&c%5B%5D=1222&c%5B%5D=3092&r%5B%5D=43&c%5B%5D=3341&c%5B%5D=593&c%5B%5D=1146&c%5B%5D=3134&c%5B%5D=3474&c%5B%5D=1067&c%5B%5D=3400&c%5B%5D=925&c%5B%5D=3378&c%5B%5D=3315&c%5B%5D=1666&c%5B%5D=1205&c%5B%5D=1098&c%5B%5D=360&c%5B%5D=7&c%5B%5D=986&c%5B%5D=1956&c%5B%5D=3253&c%5B%5D=1994&c%5B%5D=3312&c%5B%5D=1511&c%5B%5D=1397&r%5B%5D=31&c%5B%5D=345&c%5B%5D=114&c%5B%5D=594&c%5B%5D=286&c%5B%5D=115&c%5B%5D=117&c%5B%5D=644&c%5B%5D=243&c%5B%5D=358&c%5B%5D=119&c%5B%5D=195&c%5B%5D=962&c%5B%5D=120&c%5B%5D=1022&c%5B%5D=1795&c%5B%5D=121&c%5B%5D=122&c%5B%5D=123&c%5B%5D=1244&c%5B%5D=3243&c%5B%5D=425&c%5B%5D=279&c%5B%5D=124&c%5B%5D=554&c%5B%5D=193&c%5B%5D=275&c%5B%5D=923&c%5B%5D=125&c%5B%5D=126&c%5B%5D=924&c%5B%5D=1209&priceFrom=&priceTo=&areaFrom=&areaTo=',
+                  'http://krasnodar.life-realty.ru/uchastki/?view=advanced&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1579&c%5B%5D=1229&c%5B%5D=1028&c%5B%5D=1237&c%5B%5D=1627&c%5B%5D=930&c%5B%5D=1424&c%5B%5D=1023&c%5B%5D=2919&c%5B%5D=919&c%5B%5D=2826&c%5B%5D=1976&c%5B%5D=693&c%5B%5D=1052&c%5B%5D=1953&c%5B%5D=959&c%5B%5D=1027&c%5B%5D=1226&c%5B%5D=994&r%5B%5D=46&c%5B%5D=2099&c%5B%5D=187&c%5B%5D=1585&c%5B%5D=3477&c%5B%5D=2355&c%5B%5D=4&c%5B%5D=1159&c%5B%5D=690&c%5B%5D=691&c%5B%5D=1138&c%5B%5D=1430&c%5B%5D=981&c%5B%5D=1225&c%5B%5D=3495&c%5B%5D=1222&c%5B%5D=3092&r%5B%5D=43&c%5B%5D=3341&c%5B%5D=593&c%5B%5D=1146&c%5B%5D=3134&c%5B%5D=3474&c%5B%5D=1067&c%5B%5D=3400&c%5B%5D=925&c%5B%5D=3378&c%5B%5D=3315&c%5B%5D=1666&c%5B%5D=1205&c%5B%5D=1098&c%5B%5D=360&c%5B%5D=7&c%5B%5D=986&c%5B%5D=1956&c%5B%5D=3253&c%5B%5D=1994&c%5B%5D=3312&c%5B%5D=1511&c%5B%5D=1397&r%5B%5D=31&c%5B%5D=345&c%5B%5D=114&c%5B%5D=594&c%5B%5D=286&c%5B%5D=115&c%5B%5D=117&c%5B%5D=644&c%5B%5D=243&c%5B%5D=358&c%5B%5D=119&c%5B%5D=195&c%5B%5D=962&c%5B%5D=120&c%5B%5D=1022&c%5B%5D=1795&c%5B%5D=121&c%5B%5D=122&c%5B%5D=123&c%5B%5D=1244&c%5B%5D=3243&c%5B%5D=425&c%5B%5D=279&c%5B%5D=124&c%5B%5D=554&c%5B%5D=193&c%5B%5D=275&c%5B%5D=923&c%5B%5D=125&c%5B%5D=126&c%5B%5D=924&c%5B%5D=1209&priceFrom=&priceTo=&areaFrom=&areaTo=',
+                  'http://krasnodar.life-realty.ru/commerce/oficy/?view=simple&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1028&c%5B%5D=2802&c%5B%5D=1976&c%5B%5D=693&r%5B%5D=46&c%5B%5D=187&c%5B%5D=4&c%5B%5D=690&c%5B%5D=691&r%5B%5D=43&c%5B%5D=593&c%5B%5D=7&c%5B%5D=986&r%5B%5D=31&c%5B%5D=414&c%5B%5D=117&c%5B%5D=119&c%5B%5D=122&c%5B%5D=125&c%5B%5D=126&priceFrom=&priceTo=&areaFrom=&areaTo=&areaPlotFrom=&areaPlotTo=',
+                  'http://krasnodar.life-realty.ru/commerce/skladskie/?view=simple&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1028&c%5B%5D=2802&c%5B%5D=1976&c%5B%5D=693&r%5B%5D=46&c%5B%5D=187&c%5B%5D=4&c%5B%5D=690&c%5B%5D=691&r%5B%5D=43&c%5B%5D=593&c%5B%5D=7&c%5B%5D=986&r%5B%5D=31&c%5B%5D=414&c%5B%5D=117&c%5B%5D=119&c%5B%5D=122&c%5B%5D=125&c%5B%5D=126&priceFrom=&priceTo=&areaFrom=&areaTo=&areaPlotFrom=&areaPlotTo=',
+                  'http://krasnodar.life-realty.ru/commerce/torgovye/?view=simple&offerId=&agencyOfferId=&searchPhone=&searchFio=&searchStreet=0&streetText=&inputStreet=&c%5B%5D=1&c%5B%5D=4&c%5B%5D=7&r%5B%5D=47&c%5B%5D=1&c%5B%5D=1219&c%5B%5D=624&c%5B%5D=1028&c%5B%5D=2802&c%5B%5D=1976&c%5B%5D=693&r%5B%5D=46&c%5B%5D=187&c%5B%5D=4&c%5B%5D=690&c%5B%5D=691&r%5B%5D=43&c%5B%5D=593&c%5B%5D=7&c%5B%5D=986&r%5B%5D=31&c%5B%5D=414&c%5B%5D=117&c%5B%5D=119&c%5B%5D=122&c%5B%5D=125&c%5B%5D=126&priceFrom=&priceTo=&areaFrom=&areaTo=&areaPlotFrom=&areaPlotTo=',
                   ] 
     def parse(self, response): 
         print "%s" % response.url      
@@ -43,8 +46,7 @@ class LiferealtySpider(BaseSpider):
         if self.check_saler_type(saler_type):                           
             address = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"][1]/text()').extract(), ', ')            
             name = join_strings(sel.xpath('//div[@class="c_face"]/text()').extract())              
-            phone_str = join_strings(join_strings(sel.xpath('//div[@class="c_phone"]/text()').extract()))
-            page_title = join_strings(sel.xpath('//*[@id="list_sale"]/h1/text()').extract())
+            phone_str = join_strings(join_strings(sel.xpath('//div[@class="c_phone"]/text()').extract()))            
             description = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"]/text()').extract(), '\n')
             print(description)
             price = join_strings(sel.xpath('//div[@class="card_price"]/text()').extract())
@@ -56,14 +58,17 @@ class LiferealtySpider(BaseSpider):
             item['price'] = ['%s %s' % (price, mesure)]
             item['price_digit'] = [self.get_digit_price(price, mesure)]
             item['link'] = [response.url]
-            item['estate_type_id'] = self.estate_type_parser(page_title)                         
+            item['estate_type_id'] = self.estate_type_parser(sel)                         
             item['region_id'] = self.region_parser(address)   
             item['locality_id'] = self.locality_parser(item['region_id'], address)
             #item['microdistrict'] = ''
             #item['street'] = ''
             #item['estate_number'] = ''
-            item['room_count'] = self.room_count_parser(page_title)
+            item['room_count'] = self.room_count_parser(self.page_title(sel))
             return item
+    
+    def page_title(self, sel):
+        return join_strings(sel.xpath('//*[@id="list_sale"]/h1/text()').extract())
     
     def check_saler_type(self, txt):
         mapper = {
@@ -102,21 +107,33 @@ class LiferealtySpider(BaseSpider):
             cache.set(key, mapper, 3600)  
         return self.re_mapper(mapper, txt)
 
-    def estate_type_parser(self, txt):
+    def estate_type_parser(self, sel):
+        ZDANIE = 93
+        page_title = self.page_title(sel)
         mapper = {
 #                          'garazhi' : 9,
-#                          'doma' : 16,
-#                          'zemelnyie-uchastki' : 15, 
-#                          '1-komn-kv' : 6,
-#                          '2-komn-kv' : 6,
-#                          '3-komn-kv' : 6,
                          ur'квартира' : 6,
                          ur'комната' : 21,
                          ur'дом' : 16,
                          ur'дача' : 13,
                          ur'коттедж' : 16,
+                         ur'участок': self.stead_parser,
+                         ur'офис': 35,
+                         ur'склад': 53,
 #                         'kommercheskaya-nedvizhimost' : 93,
                          }  
+        result = self.re_mapper(mapper, page_title)
+        if callable(result):
+            return result(sel)
+        return result or ZDANIE 
+    
+    def stead_parser(self, sel):
+        mapper = {
+                    ur'индивидуальное жилищное строительство' : 15, 
+                    ur'сельскохозяйственного назначения': 42,
+                    ur'коммерческое строительство': 20,
+                   }  
+        txt = join_strings(sel.xpath('//*[@id="list_sale"]/div[5]').extract())
         return self.re_mapper(mapper, txt)
     
     def re_mapper(self, mapper, txt):
