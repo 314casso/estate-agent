@@ -904,7 +904,7 @@ class Contact(models.Model):
     def clean(self):   
         q = Contact.objects.filter(contact__iexact=self.contact)
         if self.id:
-            q = q.exclude(pk=self.id, client=self.client)
+            q = q.exclude(pk=self.id)
         if q.count() > 0:
             client = list(q.all()[:1])[0].client
             extra = ''
