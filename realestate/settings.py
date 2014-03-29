@@ -16,19 +16,6 @@ ADMINS = (
 
 CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
 
-WP_PARAMS = {
-        'site' : {
-                  'url':'http://www.domnatamani.ru/xmlrpc.php',
-                  'username':'xmlrpc_user',
-                  'password': '}^wA%d;py,)7{-K'
-              },
-        'local' : {
-                   'url':'http://localhost/wordpress/xmlrpc.php',
-                   'username':'admin',
-                   'password': '123'
-                   }
-             }
-
 MAX_CREDIT_MONTHS = 360
 INTEREST_RATE = 9.5/100 
 MAX_CREDIT_SUM = 0.1
