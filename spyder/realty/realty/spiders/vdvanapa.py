@@ -81,11 +81,11 @@ class VdvAnapaFleldsParser(BaseFieldsParser):
             self._locality_id = self.get_locality(field_name='name_loct') 
         return self._locality_id
     
-#     def phone(self):
-#         PHONECODE = '86133'
-#         phones = self.filter_phone()
-#         if phones:
-#             return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
+    def phone(self):
+        PHONECODE = '86133'
+        phones = self.filter_phone()
+        if phones:
+            return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
 
 class LiferealtySpider(CrawlSpider):   
     ORIGIN_ID = 8 
