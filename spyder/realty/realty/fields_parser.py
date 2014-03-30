@@ -19,7 +19,7 @@ class BaseFieldsParser(object):
     ANAPA = 1
     GELEN = 2
     NOVOROSS = 3
-    TEMRUK = 4      
+    TEMRUK = 4   
     def __init__(self, response):                      
         self.response = response
         self.sel = Selector(response)  
@@ -54,79 +54,72 @@ class BaseFieldsParser(object):
     @abstractmethod
     def mesure_parser(self): pass
     
-    @property
     def phone(self):
         return self.filter_phone()
     
-    @property
     def name(self):
         return self.name_parser()
     
-    @property
     def description(self):
         return self.desc_parser()
     
-    @property
     def prices(self):
         if not self._prices:            
             price = join_strings(self.price_parser())
-            mesure = join_strings(self.mesure_parser())
-            price_str = ['%s %s' % (price, mesure)]
+            mesure = join_strings(self.mesure_parser())             
+            price_str = ['%s %s' % (price, mesure) if price else '']
             price_digit = [self.digit_price(price, mesure)]
             self._prices = {'price' : price_str, 'price_digit' : price_digit}
         return self._prices
     
-    @property
     def link(self):
         return [self.response.url]
     
-    @property
     def estate_type_id(self):
         return self.estate_type_parser()  
     
-    @property
     def region_id(self):
         if not self._region_id:
             self._region_id = self.region_parser() 
         return self._region_id  
     
-    @property
     def locality_id(self):
         if not self._locality_id:
             self._locality_id = self.get_locality() 
         return self._locality_id
     
-    @property
     def room_count(self):
-        result = join_strings(self.room_count_parser())
-        return re.sub('\D','', result)
+        room_parser_result = self.room_count_parser()
+        if room_parser_result:
+            result = join_strings(room_parser_result)
+            return re.sub('\D','', result)
     
     def populate_item(self, item):        
-        item['phone'] = self.phone         
-        item['name'] = self.name
-        item['desc'] = self.description                    
-        item['price'] = self.prices['price']
-        item['price_digit'] = self.prices['price_digit']
-        item['link'] = self.link
-        item['estate_type_id'] = self.estate_type_id                         
-        item['region_id'] = self.region_id   
-        item['locality_id'] = self.locality_id        
-        item['room_count'] = self.room_count    
+        item['phone'] = self.phone()         
+        item['name'] = self.name()
+        item['desc'] = self.description()                    
+        item['price'] = self.prices()['price']
+        item['price_digit'] = self.prices()['price_digit']
+        item['link'] = self.link()
+        item['estate_type_id'] = self.estate_type_id()                         
+        item['region_id'] = self.region_id()   
+        item['locality_id'] = self.locality_id()        
+        item['room_count'] = self.room_count()    
     
-    @property        
     def title(self):
         if not self._title:
             self._title = join_strings(self.title_parser())
         return self._title
     
     def re_mapper(self, mapper, txt):
-        for key, value in mapper.iteritems():
-            matches = re.search(key, txt, re.I | re.U)            
-            if matches:
-                return value 
+        if txt:
+            for key, value in mapper.iteritems():
+                matches = re.search(key, txt, re.I | re.U)            
+                if matches:
+                    return value 
     
     def price_mesures(self):
-        return {u'т.р.':1000, u'млн.р.':1000000, u'тыс. руб.':1000}
+        return {u'т.р.':1000, u'млн.р.':1000000, u'тыс. руб.':1000, u'руб.': 1}
             
     def digit_price(self, price, mesure):
         mesures = self.price_mesures()
@@ -138,8 +131,11 @@ class BaseFieldsParser(object):
         return 0
     
     def filter_phone(self):
-        phone_str = self.phone_parser()
-        phones = phone_str.split(',')
+        phone = self.phone_parser()
+        if not phone:
+            return            
+        phone_str = join_strings(phone,',')
+        phones = re.split(r'[\,|\n]', phone_str)
         result = []
         for phone in phones:         
             phone = phone.strip().replace('+7', '8')
@@ -148,7 +144,7 @@ class BaseFieldsParser(object):
             
     def get_locality(self, field_name='name'):
         txt = self.locality_parser()         
-        key = 'localities_mapper_%s_%s' % (self.region_id, field_name) 
+        key = 'localities_mapper_%s_%s' % (self.region_id(), field_name) 
         from django.core.cache import cache
         mapper = cache.get(key)
         if not mapper:                                

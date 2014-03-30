@@ -76,6 +76,11 @@ class RealtyPipeline(object):
         e.region_id = item['region_id']
         e.locality_id = item['locality_id']                                              
         e.save() 
+        if item.has_extra_bidg():
+            bidg = e.basic_bidg
+            for field in item.BIDG_FIELDS:                
+                setattr(bidg, field, item[field]) 
+            bidg.save() 
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
                                 estate=e)
