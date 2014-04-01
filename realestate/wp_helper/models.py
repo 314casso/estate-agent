@@ -54,7 +54,9 @@ class WordpressMetaStatus(WordpressMetaAbstract):
 
 class WordpressMetaEstateParam(models.Model): 
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True, related_name='wp_taxons') 
-    taxonomy_tree = models.ForeignKey('WordpressTaxonomyTree', blank=True, null=True,) 
+    taxonomy_tree = models.ForeignKey('WordpressTaxonomyTree', blank=True, null=True,)
+    wp_postmeta_key = models.CharField('Postmeta key', max_length=150, blank=True, null=True,)
+    wp_postmeta_value = models.CharField('Postmeta value', max_length=150, blank=True, null=True,)
     class Meta:
         ordering = ['id']
         verbose_name = u'Метки'

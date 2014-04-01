@@ -99,7 +99,7 @@ class WordpressMetaEstateParamsAdminForm(forms.ModelForm):
         widgets = {            
             'estate_params': AutoCompleteSelectMultipleWidget(lookup_class=EstateParamLookup),            
         }
-        fields = ['id','estate_params', 'taxonomy_tree',]
+        fields = ['id','estate_params', 'taxonomy_tree', 'wp_postmeta_key', 'wp_postmeta_value']
 
 class WordpressMetaRegionAdmin(admin.ModelAdmin):
     form = WordpressMetaRegionAdminForm
@@ -111,7 +111,7 @@ class WordpressMetaStatusAdmin(admin.ModelAdmin):
 
 class WordpressMetaEstateParamAdmin(admin.ModelAdmin):
     form = WordpressMetaEstateParamsAdminForm
-    list_display = ('id', 'taxonomy_tree')
+    list_display = ('id', 'taxonomy_tree', 'wp_postmeta_key', 'wp_postmeta_value')
 
 def clear_localities(modeladmin, request, queryset):
     for t in WordpressTaxonomyTree.objects.all():

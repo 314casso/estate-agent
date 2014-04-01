@@ -264,7 +264,7 @@ class WPService(object):
         return post_images
     
     def render_custom_fields(self, estate):        
-        fields = {}
+        fields = {}       
         taxonomy_tree_item = estate.locality.wp_taxons.all()[:1].get()        
         fields['locality'] = taxonomy_tree_item.wp_meta_locality.wp_id
         fields['Nomer'] = estate.pk
@@ -273,7 +273,11 @@ class WPService(object):
         fields['price'] = estate.agency_price
         fields['region'] = estate.locality.region.wp_taxons.all()[:1].get().wp_id
         fields['rooms'] = estate.basic_bidg.room_count if estate.basic_bidg else None
-        fields['status'] = estate.estate_status.wp_taxons.all()[:1].get().wp_id  
+        fields['status'] = estate.estate_status.wp_taxons.all()[:1].get().wp_id
+        wp_taxons = estate.estate_params.exclude(wp_taxons=None).values_list('wp_taxons', flat=True)
+        for taxon in wp_taxons:
+            if taxon.wp_postmeta_key:
+                fields[taxon.wp_postmeta_key] = taxon.wp_postmeta_value  
         result = []
         for key, value in fields.items():        
             result.append({'key': key, 'value': value})
