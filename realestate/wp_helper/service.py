@@ -360,7 +360,7 @@ class WPService(object):
             wp_meta.error_message = err.errmsg
             wp_meta.save()
         except Exception, err:
-            wp_meta.error_message = err.errmsg
+            wp_meta.error_message = err
             wp_meta.status = EstateWordpressMeta.ERROR
             wp_meta.save()
         
@@ -378,7 +378,7 @@ class WPService(object):
                 wp_meta.save()
                 print('Done!')
             except xmlrpclib.ProtocolError as err:            
-                wp_meta.error_message = err.errmsg                
+                wp_meta.error_message = err                
                 wp_meta.save()                
             except Exception, err:            
                 wp_meta.error_message = err.errmsg
