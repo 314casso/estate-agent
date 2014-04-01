@@ -18,6 +18,7 @@ from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import xmlrpclib
+import traceback
 
         
 class GetPostID(AnonymousMethod):
@@ -356,8 +357,8 @@ class WPService(object):
         except xmlrpclib.ProtocolError as err:
             wp_meta.error_message = err.errmsg
             wp_meta.save()
-        except Exception, e:
-            wp_meta.error_message = e
+        except Exception, err:
+            wp_meta.error_message = traceback.format_exc()
             wp_meta.status = EstateWordpressMeta.ERROR
             wp_meta.save()
         
@@ -377,8 +378,8 @@ class WPService(object):
             except xmlrpclib.ProtocolError as err:            
                 wp_meta.error_message = err.errmsg                
                 wp_meta.save()                
-            except Exception, e:            
-                wp_meta.error_message = e
+            except Exception, err:            
+                wp_meta.error_message = traceback.format_exc()
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
         else:
