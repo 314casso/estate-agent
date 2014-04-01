@@ -87,10 +87,6 @@ def estate_wp_meta_base(estate):
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
         wp_meta.status = EstateWordpressMeta.XMLRPC
         wp_meta.save()
-    else:
-        if hasattr(estate, 'wp_meta'):
-            estate.wp_meta.status = EstateWordpressMeta.UNKNOWN
-            estate.wp_meta.save()
 
 def estate_wp_meta(sender, instance, **kwargs):
     estate_wp_meta_base(instance)
