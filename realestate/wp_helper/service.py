@@ -375,7 +375,7 @@ class WPService(object):
             wp_meta.post_id = post_id       
             try:            
                 meta_struct = {'status' : estate.estate_status.wp_taxons.all()[:1].get().wp_id}            
-                self.client.call(SetPostMeta(post_id, meta_struct))
+                wp_meta.error_message = traceback.format_exc()[:250]
                 wp_meta.status = EstateWordpressMeta.UPTODATE
                 wp_meta.save()
                 print('Done!')
@@ -383,7 +383,7 @@ class WPService(object):
                 wp_meta.error_message = err.errmsg                
                 wp_meta.save()                
             except Exception, err:            
-                wp_meta.error_message = traceback.format_exc()
+                wp_meta.error_message = traceback.format_exc()[:250]
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
         else:
