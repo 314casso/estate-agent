@@ -87,6 +87,9 @@ class VdvAnapaFleldsParser(BaseFieldsParser):
         if phones:
             return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
 
+def process_value(value):
+    return None
+
 class LiferealtySpider(CrawlSpider):   
     ORIGIN_ID = 8 
     name = 'vdvanapa'
@@ -102,8 +105,8 @@ class LiferealtySpider(CrawlSpider):
 
     rules = (
         Rule(SgmlLinkExtractor(restrict_xpaths=('//li[@class="next_page"]/a',)), follow=True),
-        Rule (SgmlLinkExtractor(restrict_xpaths=('//a[@class="more_link"]',)), callback='parse_item')
-    )
+        Rule (SgmlLinkExtractor(restrict_xpaths=('//a[@class="more_link"]',), process_value=process_value), callback='parse_item')
+    )   
 
     def parse_item(self, response):
         self.log('Hi, this is an item page! %s' % response.url, level=log.INFO)       
