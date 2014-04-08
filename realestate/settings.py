@@ -181,6 +181,7 @@ INSTALLED_APPS = (
     'wp_helper',
     'sorl.thumbnail',
     'mptt',
+    'spyder_helper',
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
