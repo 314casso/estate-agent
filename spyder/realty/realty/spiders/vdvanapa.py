@@ -6,6 +6,7 @@ from realty.fields_parser import BaseFieldsParser
 from realty.utils import join_strings
 from realty.items import RealtyItem
 from estatebase.models import EstateType
+from spyder_helper.models import SpiderMeta
 
 class VdvAnapaFleldsParser(BaseFieldsParser):
     def title_parser(self):
@@ -88,7 +89,12 @@ class VdvAnapaFleldsParser(BaseFieldsParser):
             return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
 
 def process_value(value):
-    return None
+    spider = LiferealtySpider.name        
+    q = SpiderMeta.objects.filter(url=value,spider=spider).exclude(status=SpiderMeta.ERROR)
+    if q:
+        print '%s skiping...' % value
+        return None    
+    return value
 
 class LiferealtySpider(CrawlSpider):   
     ORIGIN_ID = 8 
@@ -102,7 +108,7 @@ class LiferealtySpider(CrawlSpider):
                   'http://vdvanapa.ru/rubricdeal/6/1',
                   'http://vdvanapa.ru/rubricdeal/7/1',
                   ]
-
+           
     rules = (
         Rule(SgmlLinkExtractor(restrict_xpaths=('//li[@class="next_page"]/a',)), follow=True),
         Rule (SgmlLinkExtractor(restrict_xpaths=('//a[@class="more_link"]',), process_value=process_value), callback='parse_item')

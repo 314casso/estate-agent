@@ -3,14 +3,18 @@ import datetime
 from django.db import transaction
 from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient,\
     EstateStatus, EstateType
+from spyder_helper.models import SpiderMeta
+from urlparse import urlparse
 
 class RealtyPipeline(object):   
     USER_ID = 4 #Бузенкова 
     def process_item(self, item, spider):
         if 'phone' not in item or not item['phone']:
+            self._create_spyder_meta(spider.name, item['link'], SpiderMeta.NOPHONE)
             return item
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
+                self._create_spyder_meta(spider.name, item['link'], SpiderMeta.EXISTSPHONE)
                 return item
         estate_type = EstateType.objects.get(pk=item['estate_type_id'])
         if not estate_type:
@@ -21,6 +25,7 @@ class RealtyPipeline(object):
             for phone in item['phone']:
                 self._create_contact(phone, client.id)        
             self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
+        self._create_spyder_meta(spider.name, item['link'], SpiderMeta.PROCESSED)
         return item
     
     def clean_price_digit(self, item_price_digit):
@@ -85,6 +90,12 @@ class RealtyPipeline(object):
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
                                 estate=e)
     
+    def get_url_path(self, url):        
+        if url:
+            link = url if isinstance(url, basestring) else url[0]                 
+            o = urlparse(link)
+            return o.path
+    
     def get_description(self, item):
         result_desc = []
         if item['price']:
@@ -93,3 +104,11 @@ class RealtyPipeline(object):
             result_desc.append(u''.join(item['link']))                        
         result_desc.append(u' '.join(item['desc']))      
         return u'\n'.join(result_desc)
+    
+    def _create_spyder_meta(self, spider, url, status):
+        SpiderMeta.objects.create(spider=spider, url=self.get_url_path(url), status=status)
+        
+    
+    
+    
+        
