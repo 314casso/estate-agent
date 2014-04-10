@@ -79,7 +79,8 @@ class RealtyPipeline(object):
         e.estate_status_id = EstateStatus.NEW                       
         e.description = self.get_description(item)
         e.region_id = item['region_id']
-        e.locality_id = item['locality_id']                                              
+        if 'locality_id' in item:
+            e.locality_id = item['locality_id']                                              
         e.save() 
         if item.has_extra_bidg():
             bidg = e.basic_bidg
