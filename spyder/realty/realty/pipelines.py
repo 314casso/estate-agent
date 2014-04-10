@@ -35,9 +35,10 @@ class RealtyPipeline(object):
         return 0
 
     def is_phone_exist(self, phone):
-        contacts = Contact.objects.filter(contact=phone, contact_type_id=Contact.PHONE)
-        if contacts:
-            return True
+        if phone:
+            contacts = Contact.objects.filter(contact=phone, contact_type_id=Contact.PHONE)
+            if contacts:
+                return True
         return False
     
     def _create_client(self, name, origin_id):        
