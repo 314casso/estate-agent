@@ -10,11 +10,11 @@ class RealtyPipeline(object):
     USER_ID = 4 #Бузенкова 
     def process_item(self, item, spider):
         if 'phone' not in item or not item['phone']:
-            self._create_spyder_meta(spider.name, item['link'], SpiderMeta.NOPHONE)
+            #self._create_spyder_meta(spider.name, item['link'], SpiderMeta.NOPHONE)
             return item
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
-                self._create_spyder_meta(spider.name, item['link'], SpiderMeta.EXISTSPHONE)
+                #self._create_spyder_meta(spider.name, item['link'], SpiderMeta.EXISTSPHONE)
                 return item
         estate_type = EstateType.objects.get(pk=item['estate_type_id'])
         if not estate_type:
@@ -25,7 +25,7 @@ class RealtyPipeline(object):
             for phone in item['phone']:
                 self._create_contact(phone, client.id)        
             self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
-        self._create_spyder_meta(spider.name, item['link'], SpiderMeta.PROCESSED)
+        #self._create_spyder_meta(spider.name, item['link'], SpiderMeta.PROCESSED)
         return item
     
     def clean_price_digit(self, item_price_digit):
