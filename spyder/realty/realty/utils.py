@@ -2,7 +2,7 @@
 from spyder_helper.models import SpiderMeta
 from urlparse import urlparse
 
-def join_strings(strings, delim=''):
+def join_strings(strings, delim=u''):
     if not strings:
         return None
     result = [x.strip() for x in strings if x.strip()]

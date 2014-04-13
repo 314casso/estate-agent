@@ -6,6 +6,7 @@
 from scrapy.item import Item, Field
 
 class RealtyItem(Item):
+    do_not_process = Field()
     BIDG_FIELDS = ('room_count', )
     phone = Field()    
     desc = Field()

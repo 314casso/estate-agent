@@ -44,30 +44,29 @@ class LiferealtySpider(BaseSpider):
                     yield Request(url[0], callback=self.parse, meta={'current_page':next_page})
     
     def process_detail_page(self, sel, response):
-        saler_type = join_strings(sel.xpath('//div[@class="c_face"]/span[@class="lgrey"]/text()').extract())
-        if self.check_saler_type(saler_type):                           
-            address = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"][1]/text()').extract(), ', ')            
-            name = join_strings(sel.xpath('//div[@class="c_face"]/text()').extract())              
-            phone_str = join_strings(join_strings(sel.xpath('//div[@class="c_phone"]/text()').extract()))            
-            description = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"]/text()').extract(), '\n')
-            print(description)
-            price = join_strings(sel.xpath('//div[@class="card_price"]/text()').extract())
-            mesure = join_strings(sel.xpath('//div[@class="card_price"]/span/text()').extract())                
-            item = RealtyItem()
-            item['phone'] = self.filter_phone(phone_str)         
-            item['name'] = [name]
-            item['desc'] = [description]            
-            item['price'] = ['%s %s' % (price, mesure)]
-            item['price_digit'] = [self.get_digit_price(price, mesure)]
-            item['link'] = [response.url]
-            item['estate_type_id'] = self.estate_type_parser(sel)                         
-            item['region_id'] = self.region_parser(address)   
-            item['locality_id'] = self.locality_parser(item['region_id'], address)
-            #item['microdistrict'] = ''
-            #item['street'] = ''
-            #item['estate_number'] = ''
-            item['room_count'] = self.room_count_parser(self.page_title(sel))
-            return item
+        saler_type = join_strings(sel.xpath('//div[@class="c_face"]/span[@class="lgrey"]/text()').extract())                                   
+        address = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"][1]/text()').extract(), ', ')            
+        name = join_strings(sel.xpath('//div[@class="c_face"]/text()').extract())              
+        phone_str = join_strings(join_strings(sel.xpath('//div[@class="c_phone"]/text()').extract()))            
+        description = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"]/text()').extract(), '\n')        
+        price = join_strings(sel.xpath('//div[@class="card_price"]/text()').extract())
+        mesure = join_strings(sel.xpath('//div[@class="card_price"]/span/text()').extract())                
+        item = RealtyItem()
+        item['do_not_process'] = not self.check_saler_type(saler_type)
+        item['phone'] = self.filter_phone(phone_str)         
+        item['name'] = [name]
+        item['desc'] = [description]            
+        item['price'] = ['%s %s' % (price, mesure)]
+        item['price_digit'] = [self.get_digit_price(price, mesure)]
+        item['link'] = [response.url]
+        item['estate_type_id'] = self.estate_type_parser(sel)                         
+        item['region_id'] = self.region_parser(address)   
+        item['locality_id'] = self.locality_parser(item['region_id'], address)
+        #item['microdistrict'] = ''
+        #item['street'] = ''
+        #item['estate_number'] = ''
+        item['room_count'] = self.room_count_parser(self.page_title(sel))
+        return item
     
     def process_url_value(self, value):            
         return process_value_base(value, self.name)
@@ -138,7 +137,8 @@ class LiferealtySpider(BaseSpider):
                     ur'сельскохозяйственного назначения': 42,
                     ur'коммерческое строительство': 20,
                    }  
-        txt = join_strings(sel.xpath('//*[@id="list_sale"]/div[5]').extract())
+        txt = join_strings(sel.xpath('//*[@id="list_sale"]/div[@class="card_block"]').extract())
+        print "stead parser %s" % txt 
         return self.re_mapper(mapper, txt)
     
     def re_mapper(self, mapper, txt):

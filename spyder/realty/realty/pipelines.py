@@ -7,8 +7,13 @@ from spyder_helper.models import SpiderMeta
 from realty.utils import get_url_path
 
 class RealtyPipeline(object):   
-    USER_ID = 4 #Бузенкова 
+    USER_ID = 4 #Бузенкова
+    @transaction.commit_on_success 
     def process_item(self, item, spider):
+        if 'do_not_process' in item and item['do_not_process']:
+            print 'Do not process...' 
+            self._create_spyder_meta(spider.name, item['link'], SpiderMeta.DO_NOT_PROCESS)
+            return item            
         if 'phone' not in item or not item['phone']:
             self._create_spyder_meta(spider.name, item['link'], SpiderMeta.NOPHONE)
             return item
@@ -19,12 +24,11 @@ class RealtyPipeline(object):
         estate_type = EstateType.objects.get(pk=item['estate_type_id'])
         if not estate_type:
             return item
-        name = u''.join(item['name']) or u'неизвестно'        
-        with transaction.commit_on_success():                        
-            client = self._create_client(name, spider.ORIGIN_ID)
-            for phone in item['phone']:
-                self._create_contact(phone, client.id)        
-            self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
+        name = u''.join(item['name']) or u'неизвестно'       
+        client = self._create_client(name, spider.ORIGIN_ID)
+        for phone in item['phone']:
+            self._create_contact(phone, client.id)        
+        self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
         self._create_spyder_meta(spider.name, item['link'], SpiderMeta.PROCESSED)
         return item
     

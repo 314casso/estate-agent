@@ -7,12 +7,14 @@ class SpiderMeta(models.Model):
     ERROR = 2
     NOPHONE = 3
     EXISTSPHONE = 4
+    DO_NOT_PROCESS = 5
     STATUS_CHOICES = (
         (NEW, u'Новый'),
         (PROCESSED, u'Обработанный'),
         (ERROR, u'Ошибка'),
         (NOPHONE, u'Нет телефона'),
         (EXISTSPHONE, u'Телефон в базе'),
+        (DO_NOT_PROCESS, u'Не обрабатывать'),
     )
     created = models.DateTimeField(db_index=True, auto_now_add=True)
     spider = models.CharField(db_index=True, max_length=100)
