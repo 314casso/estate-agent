@@ -21,6 +21,7 @@ encoding//realestate/migrate_app/management/commands/migratedata.py=utf-8
 encoding//realestate/migrate_app/order_prop_map.py=utf-8
 encoding//realestate/migrate_app/prop_map.py=utf-8
 encoding//realestate/orderedmodel/admin.py=utf-8
+encoding//realestate/spyder_helper/management/commands/clear_url_cache.py=utf-8
 encoding//realestate/spyder_helper/models.py=utf-8
 encoding//realestate/utils/lib.py=utf-8
 encoding//realestate/utils/model_template.py=utf-8
