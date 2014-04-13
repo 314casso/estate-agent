@@ -90,6 +90,7 @@ class RealtyPipeline(object):
         if item.has_extra_bidg():
             bidg = e.basic_bidg
             for field in item.BIDG_FIELDS:  
+                print item
                 if field in item and item[item]:                                    
                     setattr(bidg, field, item[field]) 
             bidg.save() 
