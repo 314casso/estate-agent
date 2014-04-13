@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from scrapy.selector import Selector
-from scrapy import log
 from scrapy.http import Request
 import re
-from realty.utils import join_strings
+from realty.utils import join_strings, process_value_base, get_url_path
 from realty.items import RealtyItem
 from scrapy.spider import BaseSpider
 from estatebase.models import Locality
@@ -31,8 +30,11 @@ class LiferealtySpider(BaseSpider):
                 vip_an = tr.xpath('td/div/div[@class="vip_an"]')          
                 if not vip_an:
                     links = tr.xpath('td[@class="txt"]/a[@offerid]/@href').extract()
-                    for url in links:                    
-                        yield Request(url, callback=self.parse, meta={'detail_page':True})
+                    for url in links:
+                        url_path = get_url_path(url)
+                        if self.process_url_value(url_path):                              
+                        #TODO: Вот тут проверка нужна                    
+                            yield Request(url, callback=self.parse, meta={'detail_page':True})
             pager = sel.xpath('//div[@class="pager"]')             
             if pager:
                 next_page = int(response.meta['current_page']) + 1 if 'current_page' in response.meta else 2
@@ -66,6 +68,9 @@ class LiferealtySpider(BaseSpider):
             #item['estate_number'] = ''
             item['room_count'] = self.room_count_parser(self.page_title(sel))
             return item
+    
+    def process_url_value(self, value):            
+        return process_value_base(value, self.name)
     
     def page_title(self, sel):
         return join_strings(sel.xpath('//*[@id="list_sale"]/h1/text()').extract())

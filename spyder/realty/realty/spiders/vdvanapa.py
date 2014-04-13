@@ -3,10 +3,9 @@ from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy import log
 from realty.fields_parser import BaseFieldsParser
-from realty.utils import join_strings
+from realty.utils import join_strings, process_value_base
 from realty.items import RealtyItem
 from estatebase.models import EstateType
-from spyder_helper.models import SpiderMeta
 
 class VdvAnapaFleldsParser(BaseFieldsParser):
     def title_parser(self):
@@ -88,15 +87,10 @@ class VdvAnapaFleldsParser(BaseFieldsParser):
         if phones:
             return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
 
-def process_value(value):
-    spider = LiferealtySpider.name        
-    q = SpiderMeta.objects.filter(url=value,spider=spider).exclude(status=SpiderMeta.ERROR)
-    if q:
-        print '%s skiping...' % value
-        return None    
-    return value
+def process_value(value):            
+    return process_value_base(value, VdvApanaSpider.name)
 
-class LiferealtySpider(CrawlSpider):   
+class VdvApanaSpider(CrawlSpider):   
     ORIGIN_ID = 8 
     name = 'vdvanapa'
     allowed_domains = ['vdvanapa.ru']

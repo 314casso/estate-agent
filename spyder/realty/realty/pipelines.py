@@ -4,7 +4,7 @@ from django.db import transaction
 from estatebase.models import Estate, Contact, HistoryMeta, Client, EstateClient,\
     EstateStatus, EstateType
 from spyder_helper.models import SpiderMeta
-from urlparse import urlparse
+from realty.utils import get_url_path
 
 class RealtyPipeline(object):   
     USER_ID = 4 #Бузенкова 
@@ -86,18 +86,12 @@ class RealtyPipeline(object):
         if item.has_extra_bidg():
             bidg = e.basic_bidg
             for field in item.BIDG_FIELDS:  
-                if field in item:                
+                if field in item:                                    
                     setattr(bidg, field, item[field]) 
             bidg.save() 
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
                                 estate=e)
-    
-    def get_url_path(self, url):        
-        if url:
-            link = url if isinstance(url, basestring) else url[0]                 
-            o = urlparse(link)
-            return o.path
     
     def get_description(self, item):
         result_desc = []
@@ -108,8 +102,11 @@ class RealtyPipeline(object):
         result_desc.append(u' '.join(item['desc']))      
         return u'\n'.join(result_desc)
     
-    def _create_spyder_meta(self, spider, url, status):
-        SpiderMeta.objects.create(spider=spider, url=self.get_url_path(url), status=status)
+    def _create_spyder_meta(self, spider, url, status):        
+        spider_meta, created = SpiderMeta.objects.get_or_create(spider=spider, url=get_url_path(url))  # @UnusedVariable
+        spider_meta.status = status
+        spider_meta.save()
+        
         
     
     
