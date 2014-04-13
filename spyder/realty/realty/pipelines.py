@@ -89,10 +89,8 @@ class RealtyPipeline(object):
         e.save() 
         if item.has_extra_bidg():
             bidg = e.basic_bidg
-            for field in item.BIDG_FIELDS:
-                print "*"*10  
-                print item
-                if field in item and item[item]:                                    
+            for field in item.BIDG_FIELDS:                 
+                if field in item:                                    
                     setattr(bidg, field, item[field]) 
             bidg.save() 
         EstateClient.objects.create(client_id=client_id,

@@ -39,6 +39,7 @@ class SlrgelSpider(BaseSpider):
             item['link'] = site.xpath("div/h2[@class='entry-title']/a/@href").extract()
             item['estate_type_id'] = self.get_estate_type(response.url)                         
             item['region_id'] = self.REGION_ID
+            item['room_count'] = None
             items.append(item)
         return items
       
