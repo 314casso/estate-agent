@@ -6,6 +6,7 @@ from realty.fields_parser import BaseFieldsParser
 from realty.utils import join_strings, process_value_base
 from realty.items import RealtyItem
 from estatebase.models import EstateType
+from scrapy.selector import Selector
 
 class VdvAnapaFleldsParser(BaseFieldsParser):
     def title_parser(self):
@@ -109,8 +110,8 @@ class VdvApanaSpider(CrawlSpider):
     )   
 
     def parse_item(self, response):
-        self.log('Hi, this is an item page! %s' % response.url, level=log.INFO)       
-        fields_parser = VdvAnapaFleldsParser(response)
+        self.log('Hi, this is an item page! %s' % response.url, level=log.INFO)               
+        fields_parser = VdvAnapaFleldsParser(Selector(response), response.url)
         item = RealtyItem()
         fields_parser.populate_item(item)
         return item

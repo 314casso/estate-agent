@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 from estatebase.models import Locality
-from scrapy.selector import Selector
 from realty.utils import join_strings
 
 def abstractmethod(method):
@@ -20,9 +19,9 @@ class BaseFieldsParser(object):
     GELEN = 2
     NOVOROSS = 3
     TEMRUK = 4   
-    def __init__(self, response):                      
-        self.response = response
-        self.sel = Selector(response)  
+    def __init__(self, sel, url):                     
+        self.sel = sel  
+        self.url = url 
     
     @abstractmethod
     def title_parser(self): pass     
@@ -73,7 +72,7 @@ class BaseFieldsParser(object):
         return self._prices
     
     def link(self):
-        return [self.response.url]
+        return [self.url]
     
     def estate_type_id(self):
         return self.estate_type_parser()  
@@ -125,7 +124,7 @@ class BaseFieldsParser(object):
         mesures = self.price_mesures()
         if price:
             if mesure in mesures:
-                price_digit = float(price)
+                price_digit = float(re.sub('\D','', price))
                 price_digit = int(price_digit * mesures[mesure])                
                 return price_digit
         return 0
@@ -143,7 +142,9 @@ class BaseFieldsParser(object):
         return result
             
     def get_locality(self, field_name='name'):
-        txt = self.locality_parser()         
+        txt = self.locality_parser() 
+        if not txt:
+            return None        
         key = 'localities_mapper_%s_%s' % (self.region_id(), field_name) 
         from django.core.cache import cache
         mapper = cache.get(key)

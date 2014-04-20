@@ -17,7 +17,7 @@ def process_value_base(value, spider_name):
     return value
 
 def get_url_path(url):        
-        if url:
-            link = url if isinstance(url, basestring) else url[0]                 
-            o = urlparse(link)
-            return o.path
+    if url:
+        link = url if isinstance(url, basestring) else url[0]                 
+        o = urlparse(link)
+        return o.path
