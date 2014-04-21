@@ -3,9 +3,9 @@ from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy import log
 from realty.fields_parser import BaseFieldsParser
-from realty.utils import join_strings, process_value_base
+from realty.utils import join_strings
 from realty.items import RealtyItem
-from estatebase.models import EstateType
+from estatebase.models import EstateType, Locality
 from scrapy.selector import Selector
 import re
 
@@ -25,24 +25,29 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
                 return self._razdel
         return None
                          
-    def estate_type_parser(self):
+    def estate_type_parser(self):        
         razdel_map = {
                       '08117': u'коммерческая',
                       }
         mapper = {
                          ur'гараж' : 9,
-                         ur'комн.' : 6,
-                         ur'квартиру' : 6,
+                         ur'комн\.' : 6,
+                         ur'квартир' : 6,
                          ur'комнат' : 21,
-                         ur'дом' : 16,
-                         ur'дача' : 13,
-                         ur'коттедж' : 16,
-                         ur'участок': 15,
-                         ur'коммерческая': self.commerce_parser,
-                         ur'гостиница': 12,
+                         ur'дома|коттеджа' : 39,
+                         ur'дом\b|домо|хату' : 16,                         
+                         ur'часть' : 18,
+                         ur'дачу' : 13,
+                         ur'домик' : 13,
+                         ur'коттедж\b' : 22,
+                         ur'участ': 15,
+                         ur'пай': 15,
+                         ur'коммерческая': self.commerce_parser,                        
                          }
-        txt = razdel_map[self.razdel_from_url()] if self.razdel_from_url() in razdel_map else self.title() 
-        parts = txt.split()
+        txt = razdel_map[self.razdel_from_url()] if self.razdel_from_url() in razdel_map else self.title()
+        txt = re.sub('\d|\s|\/','', txt)        
+        result = None                
+        parts = txt.split()        
         if parts:           
             result = self.re_mapper(mapper, parts[0])
             if callable(result):
@@ -51,8 +56,7 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
     
     def commerce_parser(self):
         COMMERCE_CAT_ID = 6       
-        txt = u'%s ' % self.title()  
-        print txt
+        txt = self.title()        
         key = 'commerce_mapper_smart'  
         from django.core.cache import cache
         mapper = cache.get(key)
@@ -60,8 +64,8 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
             types = EstateType.objects.filter(estate_type_category_id=COMMERCE_CAT_ID) 
             mapper = {}
             for t in types:
-                mapper[ur'%s\s' % t.name] = t.id
-                mapper[ur'%s\s' % t.name_accs] = t.id
+                mapper[ur'%s' % t.name] = t.id
+                mapper[ur'%s' % t.name_accs] = t.id
             cache.set(key, mapper, 3600)         
         return self.re_mapper(mapper, txt) or self.ZDANIE 
     
@@ -79,6 +83,8 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
         return [id_instead_link]
         
     def region_parser(self):
+        if self.locality_id:
+            return Locality.objects.get(pk=self.locality_id).region_id
         return self.TEMRUK
     
     def locality_parser(self):         
@@ -100,58 +106,65 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
         return u'руб.'
     
     def locality_id(self):
+        TEMRUK_ID = 110 
         if not self._locality_id:
             self._locality_id = self.get_locality() 
-        return self._locality_id
+            if not self._locality_id:
+                self._locality_id = self.get_locality(field_name='name_loct')                
+        return self._locality_id or TEMRUK_ID
     
     def phone(self):
         PHONECODE = '86148'
         phones = self.filter_phone()
         if phones:
             return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
-
-def process_value(value):            
-    return process_value_base(value, OrbitaTamanSpider.name)
+        
+    def get_locality(self, field_name='name'):
+        txt = self.locality_parser() 
+        if not txt:
+            return None        
+        key = 'localities_mapper_%s' % field_name        
+        from django.core.cache import cache
+        mapper = cache.get(key)        
+        if not mapper:                                
+            localities = Locality.objects.all()
+            mapper = {}            
+            for locality in localities:
+                mapper[ur'%s' % getattr(locality, field_name)] = locality.id
+            cache.set(key, mapper, 3600)  
+        return self.re_mapper(mapper, txt)
 
 class OrbitaTamanSpider(CrawlSpider):   
-    ORIGIN_ID = 8 
+    ORIGIN_ID = 11 
     name = 'orbitataman'
     allowed_domains = ['orbitataman.ru']
-    start_urls = [                       
-#                   'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08111&maxi=100',
-#                   'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08112&maxi=100',
-#                   'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08116&maxi=100', 
-                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08117&maxi=100',   
+    start_urls = [     
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08110&maxi=100',                  
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08111&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08112&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08113&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08114&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08115&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08116&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=08117&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=09110&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=09111&maxi=100',
+                  'http://orbitataman.ru/modules.php?name=Obyavlen&op=viewob&razdel=14110&maxi=100',
                   ]
          
     rules = (
-        #Rule(SgmlLinkExtractor(restrict_xpaths=('//td[@width="52%" and @height="14" and @valign="middle"]/a[@class="niz"]',)), follow=True),
         Rule(SgmlLinkExtractor(restrict_xpaths=('//a[@class="niz"]',)), callback='parse_item'),
-        #Rule (SgmlLinkExtractor(restrict_xpaths=('//a[@class="more_link"]',), process_value=process_value), callback='parse_item')
     )  
     
     def parse_start_url(self, response):
-        yield self.parse_item(response)
+        return self.parse_item(response)
 
     def parse_item(self, response):
         self.log('Hi, this is an item page! %s' % response.url, level=log.INFO)
         sel = Selector(response)
         entries = sel.xpath("//td[@width='88%']/div[@class='text12']")
-        for entry in entries:
-#             print '*'*50
-#             print join_strings(entry.xpath("b/text()").extract())
-#             print join_strings(entry.xpath("text()").extract())
-#             print '*'*50        
-         
+        for entry in entries:       
             fields_parser = OrbitaTamanFleldsParser(entry, response.url)
-#             print fields_parser.title()
-            print join_strings(fields_parser.description())
-#             print fields_parser.room_count()
-#             print fields_parser.phone()
-#             print fields_parser.prices()['price']
-#             print fields_parser.locality_id()
-#             print fields_parser.link()
-#             print fields_parser.razdel_from_url()
-#         item = RealtyItem()
-#         fields_parser.populate_item(item)
-#         return item        
+            item = RealtyItem()
+            fields_parser.populate_item(item)                        
+            yield item     

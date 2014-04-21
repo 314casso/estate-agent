@@ -10,6 +10,7 @@ class RealtyPipeline(object):
     USER_ID = 4 #Бузенкова
     @transaction.commit_on_success 
     def process_item(self, item, spider):
+        print 'processing... %s' % item['link'] 
         if 'do_not_process' in item and item['do_not_process']:
             print 'Do not process...' 
             self._create_spyder_meta(spider.name, item['link'], SpiderMeta.DO_NOT_PROCESS)
