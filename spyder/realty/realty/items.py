@@ -4,6 +4,7 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 from scrapy.item import Item, Field
+from realty.utils import join_strings
 
 class RealtyItem(Item):
     do_not_process = Field()
@@ -27,5 +28,18 @@ class RealtyItem(Item):
             if self[field]:
                 return True  
         
-
+    def print_item(self):        
+        print '********* ITEM *********'
+        for key, value in self._values.iteritems():
+            txt = ''
+            if type(value) is list:
+                for v in value:
+                    txt += u'%s ' % v                                     
+            else:
+                txt = '%s' % value            
+            print "%s: %s" % (key, txt)
+        print '********* END *********'
+            
+    
+        
 

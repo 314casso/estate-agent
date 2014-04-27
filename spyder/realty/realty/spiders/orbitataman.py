@@ -70,7 +70,7 @@ class OrbitaTamanFleldsParser(BaseFieldsParser):
         return self.re_mapper(mapper, txt) or self.ZDANIE 
     
     def phone_parser(self):    
-        return self.sel.re(ur'\d[\d|\-]+\.')
+        return self.sel.re(ur'\d\-\d[\d|\-]+')
     
     def room_count_parser(self):
         matches = re.search(ur'(\d)\-КОМН', self.title(), re.U | re.I)
@@ -166,5 +166,6 @@ class OrbitaTamanSpider(CrawlSpider):
         for entry in entries:       
             fields_parser = OrbitaTamanFleldsParser(entry, response.url)
             item = RealtyItem()
+            print fields_parser.phone()
             fields_parser.populate_item(item)                        
             yield item     

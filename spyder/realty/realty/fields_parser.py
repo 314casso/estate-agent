@@ -19,9 +19,10 @@ class BaseFieldsParser(object):
     GELEN = 2
     NOVOROSS = 3
     TEMRUK = 4   
-    def __init__(self, sel, url):                     
+    def __init__(self, sel, url, meta=None):                     
         self.sel = sel  
-        self.url = url 
+        self.url = url
+        self.meta = meta 
     
     @abstractmethod
     def title_parser(self): pass     
