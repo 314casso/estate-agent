@@ -960,6 +960,7 @@ class Bid(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='broker_list', blank=True, null=True, on_delete=models.PROTECT)
     brokers = models.ManyToManyField (ExUser, verbose_name=_('User'), blank=True, null=True)
+    origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
     #Для поиска из пикле
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
     estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), blank=True, null=True)

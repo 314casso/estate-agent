@@ -306,6 +306,8 @@ class EstateFilterForm(BetterForm):
     
     FOTO_CHOICES = ((3, u'Все',), (0, u'Нет фото',), (1, u'Есть фото',))
     foto_choice = forms.ChoiceField(label=_('EstatePhoto'), widget=forms.RadioSelect, choices=FOTO_CHOICES, initial=3, required=False,)
+    WP_CHOICES = ((3, u'Все',), (0, u'Не размещено',), (1, u'Размещено',))
+    wp_choice = forms.ChoiceField(label=u'Сайт', widget=forms.RadioSelect, choices=WP_CHOICES, initial=3, required=False,)
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
     broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
@@ -398,11 +400,10 @@ class EstateFilterForm(BetterForm):
                 if value:                 
                     f.update(value)
         
-        if cleaned_data['foto_choice']:
-            if int(cleaned_data['foto_choice']) == 1:
-                f['images__isnull'] = False
-            elif int(cleaned_data['foto_choice']) == 0:
-                f['images__isnull'] = True            
+        choice_fields = {'foto_choice':'images__isnull', 'wp_choice':'wp_meta__post_id__isnull'}
+        for key, value in choice_fields.iteritems():
+            if cleaned_data[key] and int(cleaned_data[key]) < 3:                
+                f[value] = int(cleaned_data[key]) == 0
             
         complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
@@ -427,7 +428,7 @@ class EstateFilterForm(BetterForm):
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 
                                            'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
-                                           'description', 'comment', 'next', 'foto_choice' 
+                                           'description', 'comment', 'next', 'foto_choice', 'wp_choice'
                                           ]})
                      ]
 
@@ -554,12 +555,17 @@ class BidForm(ModelForm):
             label=_('BidStatus'),
             required=True,
         )
+    origin = AutoComboboxSelectField(
+            lookup_class=OriginLookup,
+            label=_('Origin'),
+            required=False,
+        )       
     def __init__(self, *args, **kwargs):
         super(BidForm, self).__init__(*args, **kwargs)
         self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
-        fields = ('client', 'brokers', 'bid_status' , 'note') 
+        fields = ('client', 'brokers', 'origin', 'bid_status' , 'note') 
         widgets = {
             'note': Textarea() 
         }                         
@@ -604,6 +610,11 @@ class BidFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
+    origin = AutoComboboxSelectField(
+            lookup_class=OriginLookup,
+            label=_('Origin'),
+            required=False,
+        )  
     agency_price = IntegerRangeField(label=_('Price'), required=False)
     bid_event_category = AutoComboboxSelectMultipleField(lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
     date_event = DateRangeField(required=False, label=_('Event date'))
@@ -630,6 +641,8 @@ class BidFilterForm(BetterForm):
             f['history__created_by_id'] = self['created_by'].value()
         if self['broker'].value():
             f['brokers__id'] = self['broker'].value()
+        if self['origin'].value():
+            f['origin__id'] = self['origin'].value()    
         if self['clients'].value():
             f['client__id__in'] = self['clients'].value()    
         if self['contacts'].value():
@@ -653,7 +666,7 @@ class BidFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [
-                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'estate_type', 'estates', 
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'origin', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
                                           'bid_event_category', 'date_event',
                                           'next' ], 'legend': ''}),                    
