@@ -36,6 +36,7 @@ from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
     WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus,\
     WordpressTaxonomyTree
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models.aggregates import Count
 
 
 class BaseMixin(object):
@@ -826,15 +827,16 @@ class BidListView(ListView):
     filtered = False    
     template_name = 'bid_list.html'
     paginate_by = 7   
-    def get_queryset(self):        
-        #'localities__region__geo_group',  'localities', 'estate_categories__types'
-        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')        
+    def get_queryset(self):       
+        #q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')
+        q = Bid.objects.all()    
+        q = q.defer('estate_filter', 'cleaned_filter', 'note')
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
         geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)                    
-        rq = Q(regions__geo_group__id__in=geo_list) | Q(localities__region__geo_group__id__in=geo_list)
+        rq = Q(regions__geo_group__id__in=geo_list) | Q(localities__region__geo_group__id__in=geo_list) 
         q = q.filter(rq)                                         
         if len(filter_dict):
             if 'Q' in filter_dict:
@@ -842,8 +844,9 @@ class BidListView(ListView):
             q = q.filter(**filter_dict)            
         order_by = self.request.fields 
         if order_by:      
-            q = q.order_by(','.join(order_by))    
-        return q.distinct('id','history__created','history__modificated')
+            q = q.order_by(','.join(order_by))            
+        q = q.distinct('id','history__created','history__modificated')                
+        return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
         bid_filter_form = BidFilterForm(self.request.GET)                                                                    
@@ -851,7 +854,8 @@ class BidListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),
             'bid_filter_form': bid_filter_form,
-            'filtered': self.filtered,
+            'filtered': self.filtered,            
+            'filter_count' : self.get_queryset().count(),
         })        
         return context    
 

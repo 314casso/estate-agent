@@ -39,7 +39,12 @@
     {% endif %}
     {% include 'prev_view.html' %}
 </div>
-
+<div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin: 3px 0">
+    Всего лотов: {{ bid_count }},
+    отобрано: {{ filter_count }},
+    на странице: {{ bid_list.count }}
+</div>
+<br style="clear: both"  />
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>
         <tr>
