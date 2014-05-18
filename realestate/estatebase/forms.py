@@ -554,18 +554,13 @@ class BidForm(ModelForm):
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
             required=True,
-        )
-    origin = AutoComboboxSelectField(
-            lookup_class=OriginLookup,
-            label=_('Origin'),
-            required=False,
-        )       
+        )           
     def __init__(self, *args, **kwargs):
         super(BidForm, self).__init__(*args, **kwargs)
         self.fields['client'].widget.attrs = {'class':'long-input'}    
     class Meta:
         model = Bid    
-        fields = ('client', 'brokers', 'origin', 'bid_status' , 'note') 
+        fields = ('client', 'brokers', 'bid_status' , 'note') 
         widgets = {
             'note': Textarea() 
         }                         
@@ -642,7 +637,7 @@ class BidFilterForm(BetterForm):
         if self['broker'].value():
             f['brokers__id'] = self['broker'].value()
         if self['origin'].value():
-            f['origin__id'] = self['origin'].value()    
+            f['client__origin__id'] = self['origin'].value()    
         if self['clients'].value():
             f['client__id__in'] = self['clients'].value()    
         if self['contacts'].value():
