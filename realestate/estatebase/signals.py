@@ -1,9 +1,7 @@
 from django.db.models.signals import post_save, pre_save, post_delete,\
     m2m_changed
-from django.db import transaction
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam
-
 
 def prepare_estate_childs(sender, instance, created, **kwargs):
     if created:
@@ -45,15 +43,6 @@ def update_estate(sender, instance, created, **kwargs):
             estate.save()            
             prepare_history(estate.history, instance.user_id)                                
 
-#Depricated
-def update_localities(sender, instance, **kwargs):   
-    if instance.pk:
-        if instance.regions.all().count() > 0 and not instance.localities.all().count() > 0:
-            for region in instance.regions.all():
-                localities = list(region.locality_set.values_list('id',flat=True))
-                instance.localities = localities                 
-                instance.cleaned_filter.update({'locality' : localities}) #FIXME: cleaned_filter                     
-
 def bid_event_history(sender, instance, created, **kwargs):
     if created:
         post_save.disconnect(bid_event_history, sender=BidEvent)
@@ -94,6 +83,14 @@ def estate_wp_meta(sender, instance, **kwargs):
 def estate_param_wp_meta(sender, instance, **kwargs):
     estate_wp_meta_base(instance)
 
+def update_geo(sender, instance, **kwargs):
+    geo_groups = set()    
+    for r in instance.regions.all():        
+        geo_groups.add(r.geo_group_id)    
+    for l in instance.localities.all():        
+        geo_groups.add(l.region.geo_group_id)            
+    instance.geo_groups = geo_groups
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
@@ -103,11 +100,11 @@ def connect_signals():
     post_save.connect(update_estate, sender=Contact)
     post_save.connect(estate_client_handler, sender=EstateClient)
     post_delete.connect(estate_client_handler, sender=EstateClient)
-    #Depricated
-    #pre_save.connect(update_localities, sender=Bid)
+    post_save.connect(update_geo, sender=Bid) # @UndefinedVariable
     pre_save.connect(update_from_pickle, sender=Bid)
     post_save.connect(bid_event_history, sender=BidEvent)
     post_save.connect(estate_wp_meta, sender=Estate)
     m2m_changed.connect(estate_param_wp_meta, sender=Estate.estate_params.through)  # @UndefinedVariable
     
+
     
