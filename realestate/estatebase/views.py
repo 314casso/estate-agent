@@ -828,8 +828,7 @@ class BidListView(ListView):
     template_name = 'bid_list.html'
     paginate_by = 7   
     def get_queryset(self):       
-        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')            
-        q = q.defer('estate_filter', 'cleaned_filter', 'note')
+        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')          
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
@@ -843,7 +842,8 @@ class BidListView(ListView):
         order_by = self.request.fields 
         if order_by:      
             q = q.order_by(','.join(order_by))            
-        q = q.distinct('id','history__created','history__modificated')                
+        q = q.distinct('id','history__created','history__modificated')
+        q = q.defer('estate_filter', 'cleaned_filter', 'note')                
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
