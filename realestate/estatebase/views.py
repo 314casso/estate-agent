@@ -828,7 +828,7 @@ class BidListView(ListView):
     template_name = 'bid_list.html'
     paginate_by = 7   
     def get_queryset(self):       
-        q = Bid.objects.all()    
+        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')            
         q = q.defer('estate_filter', 'cleaned_filter', 'note')
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
