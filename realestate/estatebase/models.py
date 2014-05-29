@@ -514,8 +514,12 @@ class Estate(ProcessDeletedModel):
         return self.estate_type_base(field='name_accs')
 
     @property
-    def basic_estate_type(self):       
-        return self.basic_stead.estate_type if self.estate_category.is_stead else self.basic_bidg.estate_type 
+    def basic_estate_type(self):
+        if self.estate_category.is_stead and self.basic_stead:
+            return self.basic_stead.estate_type
+        else:
+            if self.basic_bidg:
+                return self.basic_bidg.estate_type
     
     @property
     def estate_type_total_area(self):

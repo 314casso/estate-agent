@@ -820,7 +820,6 @@ class BidDetailView(BidMixin, DetailView):
         context.update({
                 'register_list' : q             
                 })
-
         return context 
 
 class BidListView(ListView):
@@ -843,7 +842,7 @@ class BidListView(ListView):
         if order_by:      
             q = q.order_by(','.join(order_by))            
         q = q.distinct('id','history__created','history__modificated')
-        q = q.defer('estate_filter', 'cleaned_filter', 'note')                
+        q = q.defer('estate_filter', 'cleaned_filter', 'note') 
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
