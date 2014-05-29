@@ -267,7 +267,8 @@ class WPService(object):
         taxonomy_tree_item = estate.locality.wp_taxons.all()[:1].get()        
         fields['locality'] = taxonomy_tree_item.wp_meta_locality.wp_id
         fields['Nomer'] = estate.pk
-        estate_type = estate.basic_estate_type  
+        estate_type = estate.basic_estate_type 
+        print estate_type 
         fields['object_type'] = estate_type.wp_taxons.all()[:1].get().wp_id
         fields['price'] = estate.agency_price
         fields['region'] = estate.locality.region.wp_taxons.all()[:1].get().wp_id
