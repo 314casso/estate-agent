@@ -472,8 +472,8 @@ class Estate(ProcessDeletedModel):
         bidgs = list(self.bidgs.filter(basic__exact=True)[:1])        
         if bidgs:
             return bidgs[0]
-        elif not self.estate_category.is_stead: 
-            bidgs = list(self.bidgs.all()[:1])
+        elif not self.estate_category.is_stead:
+            bidgs = list(self.bidgs.filter(estate_type__estate_type_category__independent=True)[:1])
             if bidgs:
                 if bidgs[0].is_independent:                    
                     return bidgs[0]
@@ -515,7 +515,7 @@ class Estate(ProcessDeletedModel):
 
     @property
     def basic_estate_type(self):        
-        if self.estate_category.is_stead and self.basic_stead and self.basic_stead.estate_type:
+        if self.estate_category.is_stead and self.basic_stead:
             return self.basic_stead.estate_type
         else:
             if self.basic_bidg:
