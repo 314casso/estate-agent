@@ -78,6 +78,7 @@ def estate_wp_meta_base(estate):
         wp_meta.status = EstateWordpressMeta.XMLRPC
         wp_meta.save()
     elif post_on_site and estate.wp_meta and estate.wp_meta.post_id:
+        wp_meta = EstateWordpressMeta.objects.get(estate=estate)
         wp_meta.status = EstateWordpressMeta.UNKNOWN
         wp_meta.save()
 
