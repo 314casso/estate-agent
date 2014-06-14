@@ -72,9 +72,13 @@ def update_from_pickle(sender, instance, **kwargs):
 
 def estate_wp_meta_base(estate):
     from wp_helper.models import EstateWordpressMeta
-    if estate.correct and len(estate.estate_params.filter(pk=EstateParam.POSTONSITE)):   
+    post_on_site = len(estate.estate_params.filter(pk=EstateParam.POSTONSITE)) > 0
+    if estate.correct and post_on_site:   
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
         wp_meta.status = EstateWordpressMeta.XMLRPC
+        wp_meta.save()
+    elif post_on_site and estate.wp_meta and estate.wp_meta.post_id:
+        wp_meta.status = EstateWordpressMeta.UNKNOWN
         wp_meta.save()
 
 def estate_wp_meta(sender, instance, **kwargs):
