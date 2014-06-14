@@ -36,7 +36,7 @@ class EstateLookup(ModelLookup):
     model = Estate
     search_fields = ('id__exact',)
     def get_query(self, request, term):
-        term = re.sub(r'\s', '', term)
+        term = re.sub(r'\D', '', term)
         results = super(EstateLookup, self).get_query(request, term)        
         if request.user:
             results = results.filter(region__geo_group__userprofile__user__exact=request.user)
