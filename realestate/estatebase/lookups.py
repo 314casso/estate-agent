@@ -8,6 +8,7 @@ from estatebase.models import Street, Locality, Microdistrict, EstateType, \
 from selectable.base import ModelLookup
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
+import re
 
 class SimpleIdLookup(ModelLookup):
     search_fields = ('id__exact',)
@@ -35,6 +36,7 @@ class EstateLookup(ModelLookup):
     model = Estate
     search_fields = ('id__exact',)
     def get_query(self, request, term):
+        term = re.sub(r'\s', '', term)
         results = super(EstateLookup, self).get_query(request, term)        
         if request.user:
             results = results.filter(region__geo_group__userprofile__user__exact=request.user)
