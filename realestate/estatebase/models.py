@@ -20,6 +20,7 @@ from django.template.base import Template
 from django.utils.safestring import mark_safe
 from django.template.context import Context
 from django.utils.encoding import force_unicode
+import re
 
 class ExUser(User):
     def __unicode__(self):
@@ -905,7 +906,11 @@ class Contact(models.Model):
     def state_css(self):
         css = {self.AVAILABLE:'available-state', self.NONAVAILABLE:'non-available-state', self.BAN:'ban-state', self.NOTRESPONDED:'not-responded-state', self.NOTCHECKED:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
-    def clean(self):   
+    def clean(self):
+        self.contact = self.contact.strip()   
+        if self.contact_type.id == self.PHONE:
+            self.contact = re.sub(r'\D', '', self.contact)            
+            
         q = Contact.objects.filter(contact__iexact=self.contact)
         if self.id:
             q = q.exclude(pk=self.id)
@@ -926,7 +931,7 @@ class Contact(models.Model):
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator(verify_exists=False)
-        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$')        
+        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,9}\d{1}$')        
         if self.contact_type.id == self.PHONE:
             validate_phone(self.contact)
         elif self.contact_type.id == self.EMAIL:
