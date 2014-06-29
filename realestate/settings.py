@@ -175,13 +175,12 @@ INSTALLED_APPS = (
     'selectable',    
     'django_sorting',
     'django.contrib.humanize',      
-    'form_utils',
-    'maxim_base',
-    'migrate_app',
+    'form_utils',  
     'wp_helper',
     'sorl.thumbnail',
     'mptt',
     'spyder_helper',
+    'exportdata',
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
