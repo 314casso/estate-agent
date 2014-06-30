@@ -15,9 +15,9 @@ class Command(BaseCommand):
             if len(sq) > 0:
                 cnt+=1
                 print "*"*100
-                print '|%s|%s|' % (contact.id, contact.contact)
+                print '|%s|%s|deleted: %s' % (contact.client_id, contact.contact, contact.client.deleted)
                 for dup_contact in sq:
-                    print '|%s|%s|' % (dup_contact.id, dup_contact.contact)
+                    print '|%s|%s|deleted: %s' % (dup_contact.client_id, dup_contact.contact, dup_contact.client.deleted)
                 print "*"*100                
             else:
                 contact.contact = clean_contact

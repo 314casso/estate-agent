@@ -4,7 +4,7 @@ import pytz
 from datetime import datetime
 import sys
 import re
-import inspect
+from estatebase.models import Estate
 
 def memoize(function):
     memo = {}
@@ -33,17 +33,14 @@ class EstateBaseWrapper(object):
         return u'квартира'
     
     def url(self):        
-        return u'http://...'
-    
-    def generation_date(self):
-        return datetime.now()        
+        return 'http://www.domnatamani.ru/?p=%s' % self._estate.wp_meta.post_id              
     
     def creation_date(self):
-        return datetime.now()
+        return self._estate.history.created
     
     @memoize
     def last_update_date(self):        
-        return datetime.now()
+        return self._estate.history.updated
 
     def country(self):
         return u'Россия'
@@ -224,14 +221,13 @@ class YandexXML(object):
             etree.SubElement(parent, name).text = self.bool_to_value(value)
         
     
-    def add_offer(self, xhtml, offer_id):
-        estate = None
+    def add_offer(self, xhtml, estate):        
         is_stead = True #False #estate.estate_category.is_stead
         has_stead = True
         estate_wrapper = EstateBaseWrapper(estate)
         sa = SalesAgent(estate)
         #offer
-        offer = etree.SubElement(xhtml, "offer", {'internal-id':offer_id})     
+        offer = etree.SubElement(xhtml, "offer", {'internal-id':str(estate.id)})     
         etree.SubElement(offer, "type").text = estate_wrapper.offer_type()         
         etree.SubElement(offer, "property-type").text = estate_wrapper.estate_type()
         etree.SubElement(offer, "category").text = estate_wrapper.estate_category()
@@ -314,8 +310,9 @@ class YandexXML(object):
     
     def gen_XML(self):        
         xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
-        etree.SubElement(xhtml, "generation-date").text = self.generation_date()                
-        self.add_offer(xhtml, str(1))    
+        etree.SubElement(xhtml, "generation-date").text = self.generation_date()
+        estate = Estate.objects.get(pk=103600)                
+        self.add_offer(xhtml, estate)    
         etree.ElementTree(xhtml).write(self.file_name, pretty_print=True, xml_declaration=True, encoding="UTF-8") 
 
 
