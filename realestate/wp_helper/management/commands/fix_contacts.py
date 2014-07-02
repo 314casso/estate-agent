@@ -6,10 +6,11 @@ import re
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        q = Contact.objects.filter(contact__iregex=r'\D', contact_type_id=1)
+        q = Contact.objects.filter(contact__iregex=r'^7\d{10,}', contact_type_id=1)
         cnt = 0        
-        for contact in q:
-            clean_contact = re.sub(r'\D', '', contact.contact)
+        for contact in q:            
+            #clean_contact = re.sub(r'^7(\d{10,})', r'8\1', contact.contact)
+            clean_contact ='8%s' % contact.contact[1:]            
             sq = Contact.objects.filter(contact=clean_contact)
             sq.exclude(id=contact.id)            
             if len(sq) > 0:
@@ -19,7 +20,7 @@ class Command(BaseCommand):
                 for dup_contact in sq:
                     print '|%s|%s|deleted: %s' % (dup_contact.client_id, dup_contact.contact, dup_contact.client.deleted)
                 print "*"*100                
-            else:
+            else:                
                 contact.contact = clean_contact
                 contact.save()
                 
