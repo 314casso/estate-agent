@@ -5,6 +5,8 @@ from datetime import datetime
 import sys
 import re
 from estatebase.models import Estate
+import os
+from django.contrib.sites.models import Site
 
 def memoize(function):
     memo = {}
@@ -19,7 +21,9 @@ def memoize(function):
 class EstateBaseWrapper(object):
     def __init__(self, estate):
         self._estate = estate
-        self._price = self.Price()
+        self._price = self.Price(estate)
+        self._domain = 'http://%s' % Site.objects.get_current().domain
+                
         
     def offer_type(self):
         return u'продажа'
@@ -49,25 +53,27 @@ class EstateBaseWrapper(object):
         return u'Краснодарский край'
     
     def district(self):
-        return u'Район'
+        return self._estate.region.regular_name
     
     def locality(self):
-        return u'Город'
+        return self._estate.locality.name
     
     def sub_locality(self):
-        return u'Район города'
-        
+        #Район города
+        return self._estate.microdistrict.name
+                
     def address(self):
-        return u'Адрес'
+        return self._estate.street.name
     
     @property
     def price(self):
         return self._price
     
-    class Price(object):    
+    class Price(object):
+        def __init__(self, estate):
+            self._estate = estate     
         def value(self):
-            v = '1000 0000'
-            return re.sub(r'\s', '', v) 
+            return re.sub(r'\s', '', str(self._estate.agency_price)) 
         
         def currency(self):
             return "RUB"
@@ -82,8 +88,20 @@ class EstateBaseWrapper(object):
         def unit(self):
             return None
     
-    def images(self):
-        return ['image1','image2',]
+    def images(self): 
+        from urlparse import urljoin       
+        from sorl.thumbnail import get_thumbnail        
+        images = self._estate.images.all()[:4]
+        if images:
+            result = []
+            for img in images:
+                try:               
+                    im = get_thumbnail(img.image.file, '800x600')
+                    head, tail = os.path.split(im.name)  # @UnusedVariable                                
+                    result.append(urljoin(self._domain, im.url))                  
+                except IOError:
+                    pass                    
+            return result
     
     def description(self):
         return "client_description" 
