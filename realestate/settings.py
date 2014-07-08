@@ -180,7 +180,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'mptt',
     'spyder_helper',
-    'exportdata',
+    'exportdata',        
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
