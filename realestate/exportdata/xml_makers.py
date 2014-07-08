@@ -4,9 +4,11 @@ import pytz
 from datetime import datetime
 import sys
 import re
-from estatebase.models import Estate
+from estatebase.models import Estate, Locality
 import os
 from django.contrib.sites.models import Site
+from django.template import loader
+from django.template.context import Context
 
 def memoize(function):
     memo = {}
@@ -103,8 +105,21 @@ class EstateBaseWrapper(object):
                     pass                    
             return result
     
+    def render_content(self, estate, description):        
+        t = loader.get_template('reports/feed/text_content.html')
+        c = Context({'estate_item':estate, 'description': description})
+        rendered = t.render(c)
+        return re.sub(r"\s+"," ", rendered).strip()
+    
+    def render_post_description(self, estate):
+        region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
+        location = u'%s %s' % (estate.locality.name_loct, region)
+        result = u'Продается %s в %s' % (estate.estate_type.lower(), location)             
+        return result
+    
     def description(self):
-        return "client_description" 
+        description = self.render_post_description(self._estate)
+        return self.render_content(self._estate, description)  
     
     def area(self):
         # общая площадь
