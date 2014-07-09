@@ -361,6 +361,7 @@ class WPService(object):
             wp_meta.error_message = err.errmsg
             wp_meta.save()
         except Exception, err:
+            print err
             wp_meta.error_message = err
             wp_meta.status = EstateWordpressMeta.ERROR
             wp_meta.save()
