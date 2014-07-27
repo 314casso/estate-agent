@@ -1041,7 +1041,7 @@ class RegisterCategory(SimpleDict):
 class EstateRegister(ProcessDeletedModel):
     '''
     Подборка
-    '''
+    '''    
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True, related_name='estate_registers')    
@@ -1051,6 +1051,10 @@ class EstateRegister(ProcessDeletedModel):
         return u'%s' % self.pk                          
     class Meta:      
         ordering = ['-id']
+    @property
+    def correct_estates(self):
+        return self.estates.filter(validity_id=Estate.VALID, history__modificated__gt = CORRECT_DELTA)
+         
 
 class LocalityType(SimpleDict):
     '''
