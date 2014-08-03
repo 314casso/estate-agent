@@ -25,7 +25,8 @@ class EstateBaseWrapper(object):
         self._estate = estate
         self._price = self.Price(estate)
         self._domain = 'http://%s' % Site.objects.get_current().domain
-                
+        self._basic_bidg = self._estate.basic_bidg 
+        self._basic_stead = self._estate.basic_stead
         
     def offer_type(self):
         return u'продажа'
@@ -90,9 +91,9 @@ class EstateBaseWrapper(object):
         def unit(self):
             return None
     
-    def images(self): 
+    def images(self):        
         from urlparse import urljoin       
-        from sorl.thumbnail import get_thumbnail        
+        from sorl.thumbnail import get_thumbnail              
         images = self._estate.images.all()[:4]
         if images:
             result = []
@@ -123,22 +124,27 @@ class EstateBaseWrapper(object):
     
     def area(self):
         # общая площадь
-        return "1000"
+        if self._basic_bidg:
+            return str(self._basic_bidg.total_area or '')
     
+    @memoize
     def living_space(self):
         # жилая площадь (при продаже комнаты — площадь комнаты)
-        return "1000"
+        if self._basic_bidg:
+            return str(self._basic_bidg.used_area or '')
     
-    def lot_area(self):
-        # жилая площадь (при продаже комнаты — площадь комнаты)
-        return "1000"
+    def lot_area(self):        
+        if self._basic_stead:
+            return str(self._basic_stead.total_area_sotka or '')
     
     def lot_type(self):
-        return u"ИЖС"
+        return self._estate.estate_type
     
     @memoize
     def new_flat(self):
-        return True
+        NEW_FLAT = 34
+        if self._basic_bidg:
+            return self._basic_bidg.estate_type_id == NEW_FLAT
     
     @memoize    
     def rooms(self):
@@ -205,24 +211,31 @@ class EstateBaseWrapper(object):
 class SalesAgent(object):
     def __init__(self, estate):
         self._estate = estate
-    def phones(self):
-        return ['+7 918...', '8 862...']
+    def phones(self):      
+        return ['8-800-250-7075', '8-918-049-9494']
     
     def category(self):
         return u'агентство'    
     
     def organization(self):
-        return u'Название организации'
+        return u'Дома на юге'
     
     @memoize
     def agency_id(self):        
         return None
     
     def url(self):        
-        return 'http://domna...'
+        return 'http://www.domnatamani.ru/'
     
     def email(self):        
-        return 'mail@...'
+        return 'pochta@domanayuge.ru'
+
+class YandexWrapper(EstateBaseWrapper):  
+    def lot_type(self):
+#         mapper = {u'Участок для строительства дома':u'ИЖЗ'}
+#         if self._estate.estate_type in mapper:             
+#             return mapper[self._estate.estate_type]
+        return self._estate.estate_type    
 
 class YandexXML(object):    
     def __init__(self):                
@@ -252,12 +265,13 @@ class YandexXML(object):
     def add_bool_element(self, etree, parent, name, value):
         if not value is None:             
             etree.SubElement(parent, name).text = self.bool_to_value(value)
-        
     
-    def add_offer(self, xhtml, estate):        
-        is_stead = True #False #estate.estate_category.is_stead
-        has_stead = True
-        estate_wrapper = EstateBaseWrapper(estate)
+    def add_offer(self, xhtml, estate):         
+        if not estate.is_web_published:
+            return       
+        is_stead = estate.estate_category.is_stead
+        has_stead = estate.estate_category.can_has_stead and estate.basic_stead
+        estate_wrapper = YandexWrapper(estate)
         sa = SalesAgent(estate)
         #offer
         offer = etree.SubElement(xhtml, "offer", {'internal-id':str(estate.id)})     
@@ -295,17 +309,19 @@ class YandexXML(object):
             etree.SubElement(price, "period").text = estate_wrapper.price.period()
         if estate_wrapper.price.unit():
             etree.SubElement(price, "unit").text = estate_wrapper.price.unit()
-        for image in estate_wrapper.images():
-            etree.SubElement(offer, "image").text = image            
+        images = estate_wrapper.images()
+        if images:
+            for image in images:
+                etree.SubElement(offer, "image").text = image            
         etree.SubElement(offer, "description").text = estate_wrapper.description()
         if not is_stead:
             self.unit_wrapper(etree, etree.SubElement(offer, "area"), estate_wrapper.area())
-            self.unit_wrapper(etree, etree.SubElement(offer, "living-space"), estate_wrapper.living_space())
+            if estate_wrapper.living_space():
+                self.unit_wrapper(etree, etree.SubElement(offer, "living-space"), estate_wrapper.living_space())
         else:
             etree.SubElement(offer, "lot-type").text = estate_wrapper.lot_type()            
         if has_stead: 
-            self.unit_wrapper(etree, etree.SubElement(offer, "lot-area"), estate_wrapper.lot_area())
-       
+            self.unit_wrapper(etree, etree.SubElement(offer, "lot-area"), estate_wrapper.lot_area(), u'сот')
        
         self.add_bool_element(etree, offer, 'new-flat', estate_wrapper.new_flat())        
         
@@ -344,7 +360,10 @@ class YandexXML(object):
     def gen_XML(self):        
         xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
         etree.SubElement(xhtml, "generation-date").text = self.generation_date()
-        estate = Estate.objects.get(pk=103600)                
+        nums = {0:103299,1:103600,2:103597}
+        estate = Estate.objects.get(pk=nums[0])               
+        
+        
         self.add_offer(xhtml, estate)    
         etree.ElementTree(xhtml).write(self.file_name, pretty_print=True, xml_declaration=True, encoding="UTF-8") 
 

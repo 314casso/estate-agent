@@ -570,8 +570,15 @@ class Estate(ProcessDeletedModel):
         self.set_validity(self.check_validity())
     @property
     def get_not_basic_bidgs(self):
-        return self.bidgs.exclude(basic__exact=True)
-            
+        return self.bidgs.exclude(basic__exact=True)   
+    @property
+    def is_web_published(self):
+        try:
+            wp_meta = self.wp_meta             
+            return len(wp_meta.post_id) > 0
+        except:
+            return False
+                        
     class Meta:
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
