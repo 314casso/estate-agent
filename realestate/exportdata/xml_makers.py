@@ -9,6 +9,7 @@ import os
 from django.contrib.sites.models import Site
 from django.template import loader
 from django.template.context import Context
+from decimal import Decimal
 
 def memoize(function):
     memo = {}
@@ -19,6 +20,9 @@ def memoize(function):
             memo[args] = function(*args)
             return memo[args]
     return wrapper
+
+def number2xml(num):
+    return str(Decimal(num).normalize() if num else '')
 
 class EstateBaseWrapper(object):
     def __init__(self, estate):
@@ -125,17 +129,17 @@ class EstateBaseWrapper(object):
     def area(self):
         # общая площадь
         if self._basic_bidg:
-            return str(self._basic_bidg.total_area or '')
+            return number2xml(self._basic_bidg.total_area)
     
     @memoize
     def living_space(self):
         # жилая площадь (при продаже комнаты — площадь комнаты)
         if self._basic_bidg:
-            return str(self._basic_bidg.used_area or '')
+            return number2xml(self._basic_bidg.used_area)
     
     def lot_area(self):        
         if self._basic_stead:
-            return str(self._basic_stead.total_area_sotka or '')
+            return number2xml(self._basic_stead.total_area_sotka or '')
     
     def lot_type(self):
         return self._estate.estate_type
@@ -148,65 +152,116 @@ class EstateBaseWrapper(object):
     
     @memoize    
     def rooms(self):
-        return str(5)
+        if self._basic_bidg:
+            return number2xml(self._basic_bidg.room_count)
 
     @memoize
     def rooms_offered(self):
-        return str(2)
+        return
     
     @memoize
     def phone(self):
-        return True
-            
+        CONNECTED = 3        
+        if self._estate.telephony_id == CONNECTED:
+            return True 
+                    
     @memoize
     def internet(self):
-        return True
+        CONNECTED = 3        
+        if self._estate.internet_id == CONNECTED:
+            return True
    
     @memoize
     def floor(self):
-        return str(5)
+        if self._basic_bidg:
+            return number2xml(self._basic_bidg.floor)
     
     @memoize
     def floors_total(self):
-        return str(5)
+        if self._basic_bidg:
+            return number2xml(self._basic_bidg.floor_count)
    
     @memoize
     def building_type(self):
         # матириал стен
-        return u'бетон'
+        if self._basic_bidg:
+            return self._basic_bidg.wall_construcion.name
     
     @memoize
-    def built_year(self):
-        # матириал стен
-        return str(2014)
+    def built_year(self):        
+        if self._basic_bidg:
+            return number2xml(self._basic_bidg.year_built)
    
     @memoize
     def lift(self):
-        return True
+        if self._basic_bidg and self._basic_bidg.elevator:
+            return True
 
     @memoize
-    def ceiling_height(self):
-        return str(2.95)        
+    def ceiling_height(self):        
+        if self._basic_bidg:
+            return self._basic_bidg.ceiling_height
     
     @memoize
     def heating_supply(self):
-        return True
+        PERSONAL_GAS = 1
+        PERSONAL_TD = 2
+        PERSONAL_ELECTRIC = 3
+        CENTRAL = 4
+        NO = 8
+        true_ids = (PERSONAL_GAS,PERSONAL_TD,PERSONAL_ELECTRIC,CENTRAL)        
+        if self._basic_bidg:
+            fk = self._basic_bidg.heating_id
+            if fk in true_ids:
+                return True
+            if fk == NO:
+                return False 
    
     @memoize
     def water_supply(self):
-        return True
+        VODOPROVOD = 1
+        PODKLUCHENO = 7  
+        NO = 10      
+        true_ids = (VODOPROVOD,PODKLUCHENO)
+        fk = self._estate.watersupply_id        
+        if fk in true_ids:
+            return True
+        if fk == NO:
+            return False
     
     @memoize
     def sewerage_supply(self):
-        return True
+        PODKLUCHENO = 5
+        CENTRAL = 8
+        NO = 9
+        true_ids = (CENTRAL,PODKLUCHENO)
+        fk = self._estate.sewerage_id
+        if fk in true_ids:
+            return True
+        if fk == NO:
+            return False
     
     @memoize
     def electricity_supply(self):
-        return True
+        PODKLUCHENO = 5
+        NO = 7
+        true_ids = (PODKLUCHENO,)
+        fk = self._estate.electricity_id
+        if fk in true_ids:
+            return True
+        if fk == NO:
+            return False
     
     @memoize
     def gas_supply(self):
-        return True
+        PODKLUCHENO = 5
+        NO = 7
+        true_ids = (PODKLUCHENO,)
+        fk = self._estate.gassupply_id
+        if fk in true_ids:
+            return True
+        if fk == NO:
+            return False
         
 class SalesAgent(object):
     def __init__(self, estate):

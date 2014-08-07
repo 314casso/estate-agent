@@ -2,5 +2,5 @@
 {% load link_helper %}
 {% load report %}
 {% spaceless %}
-{{ description }}, {% estate_details estate_item %}
+{{ description }}, {% estate_details estate_item %} {{ estate_item.client_description }}
 {% endspaceless %}
