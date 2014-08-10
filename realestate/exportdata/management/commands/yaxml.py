@@ -4,6 +4,7 @@ from exportdata.xml_makers import YandexXML
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        feed = YandexXML()
+        use_cache = not 'nocache' in args
+        feed = YandexXML(use_cache)
         feed.gen_XML()
         

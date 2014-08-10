@@ -326,14 +326,14 @@ class BaseXML(object):
 class YandexXML(BaseXML):
     name = 'yaxml'    
     VALID_DAYS = 45
-    def __init__(self):                
+    def __init__(self, use_cache=True):                
         self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
         self.NSMAP = {None : self.XHTML_NAMESPACE}
         self.tz = pytz.timezone('Europe/Moscow')
         #self.file_name = sys.stdout
         self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)
-
+        self._use_cache = use_cache
         
     def feed_date(self, date):        
         return self.tz.localize(date).replace(microsecond=0).isoformat()
@@ -437,10 +437,11 @@ class YandexXML(BaseXML):
     
     def get_offer(self, estate):
         if not estate.is_web_published:
-            return  
-        offer = self.get_cache(estate)
-        if offer is not None:
-            return offer            
+            return 
+        if self._use_cache: 
+            offer = self.get_cache(estate)
+            if offer is not None:
+                return offer            
         offer = self.create_offer(estate)        
         self.set_cache(estate, offer)   
         return offer    
