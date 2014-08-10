@@ -240,6 +240,10 @@ AVAILABILITY_CHOICES = (
 )
 
 class EstateTypeCategory(OrderedModel):
+    DOM = 2
+    KVARTIRA = 4 
+    U4ASTOK = 8
+    KVARTIRAU4ASTOK = 5
     name = models.CharField(_('Name'), max_length=100)
     independent = models.BooleanField(_('Independent'), default=True)
     has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)

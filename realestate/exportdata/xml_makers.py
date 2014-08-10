@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from lxml import etree
 import pytz
-from datetime import datetime
+import datetime
 import sys
 import re
-from estatebase.models import Estate, Locality
+from estatebase.models import Estate, Locality, EstateTypeCategory
 import os
 from django.contrib.sites.models import Site
 from django.template import loader
 from django.template.context import Context
-from decimal import Decimal
+from django.template.defaultfilters import striptags
+from django.core.cache import cache
+import cPickle as pickle
+from settings import MEDIA_ROOT
 
 def memoize(function):
     memo = {}
@@ -21,8 +24,8 @@ def memoize(function):
             return memo[args]
     return wrapper
 
-def number2xml(num):
-    return str(Decimal(num).normalize() if num else '')
+def number2xml(d):
+    return '%.12g' % d if d else ''
 
 class EstateBaseWrapper(object):
     def __init__(self, estate):
@@ -41,7 +44,8 @@ class EstateBaseWrapper(object):
     def estate_category(self):
         #«комната», «квартира», «дом», «участок», «таунхаус», «часть дома», «дом с участком», «дача», «земельный участок»
         #квартир, комнат, домов и участков
-        return u'квартира'
+        result = u'%s' % self._estate.estate_category
+        return result.lower()
     
     def url(self):        
         return 'http://www.domnatamani.ru/?p=%s' % self._estate.wp_meta.post_id              
@@ -66,11 +70,11 @@ class EstateBaseWrapper(object):
         return self._estate.locality.name
     
     def sub_locality(self):
-        #Район города
-        return self._estate.microdistrict.name
+        #Район города        
+        return u'%s' % self._estate.microdistrict
                 
     def address(self):
-        return self._estate.street.name
+        return u'%s' % self._estate.street
     
     @property
     def price(self):
@@ -124,7 +128,7 @@ class EstateBaseWrapper(object):
     
     def description(self):
         description = self.render_post_description(self._estate)
-        return self.render_content(self._estate, description)  
+        return striptags(self.render_content(self._estate, description))  
     
     def area(self):
         # общая площадь
@@ -200,7 +204,7 @@ class EstateBaseWrapper(object):
     @memoize
     def ceiling_height(self):        
         if self._basic_bidg:
-            return self._basic_bidg.ceiling_height
+            return number2xml(self._basic_bidg.ceiling_height)
     
     @memoize
     def heating_supply(self):
@@ -291,14 +295,45 @@ class YandexWrapper(EstateBaseWrapper):
 #         if self._estate.estate_type in mapper:             
 #             return mapper[self._estate.estate_type]
         return self._estate.estate_type    
+    
+    @memoize
+    def address(self):
+        if self._estate.locality.locality_type_id == Locality.CITY: 
+            return super(YandexWrapper, self).address()
 
-class YandexXML(object):    
+class BaseXML(object):
+    CACHE_TIME = 3600 * 24  
+    VALID_DAYS = 60
+    def get_delta(self):    
+        return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
+    def get_cache_key(self, estate):
+        return '%s%s' % (self.name, estate.id) 
+        
+    def get_cache(self, estate):        
+        pickled_cache = cache.get(self.get_cache_key(estate))
+        if pickled_cache:
+            cached_dict = pickle.loads(pickled_cache)
+            if cached_dict['modificated'] == estate.history.modificated:
+                offer = etree.XML(cached_dict['str_xml'])
+                return offer
+    
+    def set_cache(self, estate, offer):
+        str_xml = etree.tostring(offer)
+        pickled_dict = {'str_xml':str_xml, 'modificated':estate.history.modificated}
+        pickle_xml = pickle.dumps(pickled_dict)
+        cache.set(self.get_cache_key(estate), pickle_xml, self.CACHE_TIME)
+
+class YandexXML(BaseXML):
+    name = 'yaxml'    
+    VALID_DAYS = 45
     def __init__(self):                
         self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
         self.NSMAP = {None : self.XHTML_NAMESPACE}
         self.tz = pytz.timezone('Europe/Moscow')
-        self.file_name = sys.stdout
+        #self.file_name = sys.stdout
+        self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)
+
         
     def feed_date(self, date):        
         return self.tz.localize(date).replace(microsecond=0).isoformat()
@@ -307,7 +342,7 @@ class YandexXML(object):
         return "realty-feed"    
     
     def generation_date(self):        
-        return self.feed_date(datetime.now())
+        return self.feed_date(datetime.datetime.now())
     
     def unit_wrapper(self, etree, parent, value, unit=u'кв.м', value_elem='value', unit_elem='unit'):
         if value:
@@ -321,15 +356,13 @@ class YandexXML(object):
         if not value is None:             
             etree.SubElement(parent, name).text = self.bool_to_value(value)
     
-    def add_offer(self, xhtml, estate):         
-        if not estate.is_web_published:
-            return       
+    def create_offer(self, estate):
         is_stead = estate.estate_category.is_stead
         has_stead = estate.estate_category.can_has_stead and estate.basic_stead
         estate_wrapper = YandexWrapper(estate)
         sa = SalesAgent(estate)
         #offer
-        offer = etree.SubElement(xhtml, "offer", {'internal-id':str(estate.id)})     
+        offer = etree.Element("offer", {'internal-id':str(estate.id)})     
         etree.SubElement(offer, "type").text = estate_wrapper.offer_type()         
         etree.SubElement(offer, "property-type").text = estate_wrapper.estate_type()
         etree.SubElement(offer, "category").text = estate_wrapper.estate_category()
@@ -344,7 +377,7 @@ class YandexXML(object):
         etree.SubElement(location, "district").text = estate_wrapper.district()
         etree.SubElement(location, "locality-name").text = estate_wrapper.locality()
         etree.SubElement(location, "sub-locality-name").text = estate_wrapper.sub_locality()
-        if True:
+        if estate_wrapper.address():
             etree.SubElement(location, "address").text = estate_wrapper.address()
         #sales-agent
         sales_agent = etree.SubElement(offer, "sales-agent")
@@ -377,49 +410,63 @@ class YandexXML(object):
             etree.SubElement(offer, "lot-type").text = estate_wrapper.lot_type()            
         if has_stead: 
             self.unit_wrapper(etree, etree.SubElement(offer, "lot-area"), estate_wrapper.lot_area(), u'сот')
-       
-        self.add_bool_element(etree, offer, 'new-flat', estate_wrapper.new_flat())        
-        
+        self.add_bool_element(etree, offer, 'new-flat', estate_wrapper.new_flat())     
         if estate_wrapper.rooms():
-            etree.SubElement(offer, "rooms").text = estate_wrapper.rooms()
-        
+            etree.SubElement(offer, "rooms").text = estate_wrapper.rooms()        
         if estate_wrapper.rooms_offered():
-            etree.SubElement(offer, "rooms-offered").text = estate_wrapper.rooms_offered()
-        
-        self.add_bool_element(etree, offer, 'phone', estate_wrapper.phone())
-        
+            etree.SubElement(offer, "rooms-offered").text = estate_wrapper.rooms_offered()        
+        self.add_bool_element(etree, offer, 'phone', estate_wrapper.phone())        
         self.add_bool_element(etree, offer, 'internet', estate_wrapper.internet())
         if estate_wrapper.floor():
-            etree.SubElement(offer, "floor").text = estate_wrapper.floor()
-        
+            etree.SubElement(offer, "floor").text = estate_wrapper.floor()        
         if estate_wrapper.floors_total():
-            etree.SubElement(offer, "floors-total").text = estate_wrapper.floors_total()
-        
+            etree.SubElement(offer, "floors-total").text = estate_wrapper.floors_total()        
         if estate_wrapper.building_type():
-            etree.SubElement(offer, "building-type").text = estate_wrapper.building_type()
-        
+            etree.SubElement(offer, "building-type").text = estate_wrapper.building_type()        
         if estate_wrapper.built_year():
-            etree.SubElement(offer, "built-year").text = estate_wrapper.built_year()
-        
-        self.add_bool_element(etree, offer, 'lift', estate_wrapper.lift())
-                
+            etree.SubElement(offer, "built-year").text = estate_wrapper.built_year()        
+        self.add_bool_element(etree, offer, 'lift', estate_wrapper.lift())                
         if estate_wrapper.ceiling_height():
-            etree.SubElement(offer, "ceiling-height").text = estate_wrapper.ceiling_height()
-        
+            etree.SubElement(offer, "ceiling-height").text = estate_wrapper.ceiling_height()        
         self.add_bool_element(etree, offer, 'heating-supply', estate_wrapper.heating_supply())
         self.add_bool_element(etree, offer, 'water-supply', estate_wrapper.water_supply())
         self.add_bool_element(etree, offer, 'sewerage-supply', estate_wrapper.sewerage_supply())
         self.add_bool_element(etree, offer, 'electricity-supply', estate_wrapper.electricity_supply())
-        self.add_bool_element(etree, offer, 'gas-supply', estate_wrapper.gas_supply())
+        self.add_bool_element(etree, offer, 'gas-supply', estate_wrapper.gas_supply())        
+        return offer
+    
+    def get_offer(self, estate):
+        if not estate.is_web_published:
+            return  
+        offer = self.get_cache(estate)
+        if offer is not None:
+            return offer            
+        offer = self.create_offer(estate)        
+        self.set_cache(estate, offer)   
+        return offer    
+    
+    def get_filter(self):            
+        allowed_category = (EstateTypeCategory.DOM,EstateTypeCategory.U4ASTOK,EstateTypeCategory.KVARTIRA,EstateTypeCategory.KVARTIRAU4ASTOK)
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),
+             'estate_category__in': allowed_category,
+             }
+        return f
     
     def gen_XML(self):        
         xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
-        etree.SubElement(xhtml, "generation-date").text = self.generation_date()
-        nums = {0:103299,1:103600,2:103597}
-        estate = Estate.objects.get(pk=nums[0])               
-        
-        
-        self.add_offer(xhtml, estate)    
-        etree.ElementTree(xhtml).write(self.file_name, pretty_print=True, xml_declaration=True, encoding="UTF-8") 
+        etree.SubElement(xhtml, "generation-date").text = self.generation_date()                   
+        print datetime.datetime.now()
+        c = 0    
+        for estate in Estate.objects.filter(**self.get_filter()):
+            offer = self.get_offer(estate)
+            if offer is not None:                                  
+                xhtml.append(self.get_offer(estate))
+                c+=1    
+        etree.ElementTree(xhtml).write(self.file_name, pretty_print=True, xml_declaration=True, encoding="UTF-8")
+        print datetime.datetime.now()
+        print c
+         
 
 
