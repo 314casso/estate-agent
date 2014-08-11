@@ -276,7 +276,8 @@ class EstateType(OrderedModel):
         (FACILITIES, u'Сооружение'),
         (LANDSCAPING, u'Благоустройство'),
         (GARAGE, u'Гараж')
-        )    
+        )   
+    KOMNATA = 21 
     name = models.CharField(_('Name'), max_length=100)
     name_accs = models.CharField(_('Accs'), max_length=100, blank=True, null=True)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
@@ -751,7 +752,7 @@ class Appliance(SimpleDict):
         verbose_name_plural = _('Appliances')
     
 
-class Bidg(models.Model):
+class Bidg(models.Model):    
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)

@@ -4,7 +4,7 @@ import pytz
 import datetime
 import sys
 import re
-from estatebase.models import Estate, Locality, EstateTypeCategory
+from estatebase.models import Estate, Locality, EstateTypeCategory, EstateType
 import os
 from django.contrib.sites.models import Site
 from django.template import loader
@@ -69,9 +69,12 @@ class EstateBaseWrapper(object):
     def locality(self):
         return self._estate.locality.name
     
+    @memoize
     def sub_locality(self):
-        #Район города        
-        return u'%s' % self._estate.microdistrict
+        #Район города
+        microdistrict = self._estate.microdistrict
+        if microdistrict is not None:          
+            return u'%s' % self._estate.microdistrict
                 
     def address(self):
         return u'%s' % self._estate.street
@@ -183,7 +186,7 @@ class EstateBaseWrapper(object):
     @memoize
     def floors_total(self):
         if self._basic_bidg:
-            return number2xml(self._basic_bidg.floor_count)
+            return number2xml(int(self._basic_bidg.floor_count))
    
     @memoize
     def building_type(self):
@@ -290,6 +293,8 @@ class SalesAgent(object):
         return 'pochta@domanayuge.ru'
 
 class YandexWrapper(EstateBaseWrapper):  
+    category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'коттедж',}
+    type_mapper = {EstateType.KOMNATA:u'комната'}
     def lot_type(self):
 #         mapper = {u'Участок для строительства дома':u'ИЖЗ'}
 #         if self._estate.estate_type in mapper:             
@@ -297,9 +302,23 @@ class YandexWrapper(EstateBaseWrapper):
         return self._estate.estate_type    
     
     @memoize
-    def address(self):
-        if self._estate.locality.locality_type_id == Locality.CITY: 
-            return super(YandexWrapper, self).address()
+    def estate_category(self):       
+        cat_id = self._estate.estate_category_id
+        if cat_id == EstateTypeCategory.KVARTIRA and self._basic_bidg is not None:
+            type_id = self._basic_bidg.estate_type_id
+            if type_id in self.type_mapper:
+                return self.type_mapper[type_id]            
+        if cat_id in self.category_mapper:
+            return self.category_mapper[cat_id]
+        result = u'%s' % self._estate.estate_category
+        return result.lower()
+    
+    @memoize
+    def address(self):        
+        if self._estate.locality.locality_type_id == Locality.CITY:
+            if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+                return u'%s, %s' % (super(YandexWrapper, self).address(), self._estate.estate_number) 
+            return super(YandexWrapper, self).address()        
 
 class BaseXML(object):
     CACHE_TIME = 3600 * 24  
@@ -325,7 +344,7 @@ class BaseXML(object):
 
 class YandexXML(BaseXML):
     name = 'yaxml'    
-    VALID_DAYS = 45
+    VALID_DAYS = 50
     def __init__(self, use_cache=True):                
         self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
@@ -376,7 +395,8 @@ class YandexXML(BaseXML):
         etree.SubElement(location, "region").text = estate_wrapper.region()
         etree.SubElement(location, "district").text = estate_wrapper.district()
         etree.SubElement(location, "locality-name").text = estate_wrapper.locality()
-        etree.SubElement(location, "sub-locality-name").text = estate_wrapper.sub_locality()
+        if estate_wrapper.sub_locality():
+            etree.SubElement(location, "sub-locality-name").text = estate_wrapper.sub_locality()
         if estate_wrapper.address():
             etree.SubElement(location, "address").text = estate_wrapper.address()
         #sales-agent
@@ -446,21 +466,32 @@ class YandexXML(BaseXML):
         self.set_cache(estate, offer)   
         return offer    
     
-    def get_filter(self):            
-        allowed_category = (EstateTypeCategory.DOM,EstateTypeCategory.U4ASTOK,EstateTypeCategory.KVARTIRA,EstateTypeCategory.KVARTIRAU4ASTOK)
+    def get_filter(self):         
+        MIN_PRICE_LIMIT = 100000   
+        allowed_categories = (EstateTypeCategory.DOM,EstateTypeCategory.U4ASTOK,EstateTypeCategory.KVARTIRA,EstateTypeCategory.KVARTIRAU4ASTOK)        
         f = {
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),
-             'estate_category__in': allowed_category,
+             'estate_category__in': allowed_categories,
+             'agency_price__gte': MIN_PRICE_LIMIT
              }
         return f
+    
+    def get_exclude(self):
+        disallowed_steads = (20,42,51)
+        e = {
+             'stead__estate_type_id__in' : disallowed_steads              
+            }
+        return e
     
     def gen_XML(self):        
         xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
         etree.SubElement(xhtml, "generation-date").text = self.generation_date()                   
         print datetime.datetime.now()
         c = 0    
-        for estate in Estate.objects.filter(**self.get_filter()):
+        q = Estate.objects.filter(**self.get_filter())
+        q.exclude(**self.get_exclude())
+        for estate in q:
             offer = self.get_offer(estate)
             if offer is not None:                                  
                 xhtml.append(self.get_offer(estate))
