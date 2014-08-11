@@ -324,7 +324,7 @@ class YandexWrapper(EstateBaseWrapper):
 
 class BaseXML(object):
     CACHE_TIME = 3600 * 24  
-    VALID_DAYS = 60
+    VALID_DAYS = 45
     def get_delta(self):    
         return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
     def get_cache_key(self, estate):
