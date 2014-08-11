@@ -186,7 +186,9 @@ class EstateBaseWrapper(object):
     @memoize
     def floors_total(self):
         if self._basic_bidg:
-            return number2xml(int(self._basic_bidg.floor_count))
+            floor_count = self._basic_bidg.floor_count
+            if floor_count is not None:
+                return number2xml(int(floor_count))
    
     @memoize
     def building_type(self):
