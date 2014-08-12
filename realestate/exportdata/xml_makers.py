@@ -482,7 +482,8 @@ class YandexXML(BaseXML):
     def get_exclude(self):
         disallowed_steads = (20,42,51)
         e = {
-             'stead__estate_type_id__in' : disallowed_steads              
+             'stead__estate_type_id__in': disallowed_steads,
+             'street__name': u'без улицы',               
             }
         return e
     
