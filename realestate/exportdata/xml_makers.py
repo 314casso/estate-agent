@@ -345,8 +345,7 @@ class BaseXML(object):
         cache.set(self.get_cache_key(estate), pickle_xml, self.CACHE_TIME)
 
 class YandexXML(BaseXML):
-    name = 'yaxml'    
-    VALID_DAYS = 50
+    name = 'yaxml'   
     def __init__(self, use_cache=True):                
         self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
@@ -475,17 +474,15 @@ class YandexXML(BaseXML):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),
              'estate_category__in': allowed_categories,
-             'agency_price__gte': MIN_PRICE_LIMIT
+             'agency_price__gte': MIN_PRICE_LIMIT,             
              }
         return f
     
-    def get_exclude(self):
+    def exclude(self, q):
         disallowed_steads = (20,42,51)
-        e = {
-             'stead__estate_type_id__in': disallowed_steads,
-             'street__name': u'без улицы',               
-            }
-        return e
+        q = q.exclude(street__name__exact = u'без улицы')
+        q = q.exclude(stead__estate_type_id__in = disallowed_steads)
+        return q
     
     def gen_XML(self):        
         xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
@@ -493,7 +490,8 @@ class YandexXML(BaseXML):
         print datetime.datetime.now()
         c = 0    
         q = Estate.objects.filter(**self.get_filter())
-        q.exclude(**self.get_exclude())
+        q = self.exclude(q)        
+        print  u"%s" % q.query
         for estate in q:
             offer = self.get_offer(estate)
             if offer is not None:                                  
