@@ -490,8 +490,7 @@ class YandexXML(BaseXML):
         print datetime.datetime.now()
         c = 0    
         q = Estate.objects.filter(**self.get_filter())
-        q = self.exclude(q)        
-        print  u"%s" % q.query
+        q = self.exclude(q)      
         for estate in q:
             offer = self.get_offer(estate)
             if offer is not None:                                  
