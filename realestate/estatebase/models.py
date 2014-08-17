@@ -116,7 +116,7 @@ class Street(models.Model):
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
-    street_type = models.ForeignKey('StreetType', blank=True, null=True, verbose_name=_('StreetType'), on_delete=models.PROTECT)
+    street_type = models.ForeignKey('StreetType', verbose_name=_('StreetType'), on_delete=models.PROTECT)
     def __unicode__(self):
         return u'%s %s' % (self.name, self.street_type or '')
     def natural_key(self):
