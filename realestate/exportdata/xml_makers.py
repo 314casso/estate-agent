@@ -295,7 +295,7 @@ class SalesAgent(object):
         return 'pochta@domanayuge.ru'
 
 class YandexWrapper(EstateBaseWrapper):  
-    category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'коттедж',}
+    category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома',}
     type_mapper = {EstateType.KOMNATA:u'комната'}
     def lot_type(self):
 #         mapper = {u'Участок для строительства дома':u'ИЖЗ'}
