@@ -65,7 +65,7 @@ class StreetLookup(ModelLookup):
             results = results.filter(locality=locality)
         return results
     def get_item_label(self, item):
-        return u"%s, %s" % (item.name, item.locality)
+        return u"%s, %s" % (item, item.locality)
 
 class MicrodistrictLookup(StreetLookup):
     model = Microdistrict

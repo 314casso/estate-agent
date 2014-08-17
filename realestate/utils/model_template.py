@@ -126,7 +126,7 @@ options = \
 '''
 
 
-MODEL = 'LocalityType'
+MODEL = 'StreetType'
 
 import settings
 import os

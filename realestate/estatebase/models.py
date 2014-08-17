@@ -111,17 +111,40 @@ class Microdistrict(models.Model):
         ordering = ['name']
 
 class Street(models.Model):
+    '''
+    Street
+    '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
+    street_type = models.ForeignKey('StreetType', blank=True, null=True, verbose_name=_('StreetType'), on_delete=models.PROTECT)
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s %s' % (self.name, self.street_type or '')
     def natural_key(self):
         return self.__unicode__()
     class Meta:
         verbose_name = _('street')
         verbose_name_plural = _('streets')
-        unique_together = ('name', 'locality')
+        unique_together = ('name', 'locality', 'street_type')
         ordering = ['name']
+
+class StreetType(SimpleDict):
+    '''
+    StreetType
+    '''
+    ULITSA = 1
+    PEREULOK = 2
+    PROSPEKT = 3
+    PROEZD = 4
+    SHOSSE = 5
+    ALLEYA = 6
+    TUPIK = 7
+    BULVAR = 8
+    sort_name = models.CharField(_('Short name'), db_index=True, max_length=50)
+    def __unicode__(self):
+        return u'%s' % self.sort_name
+    class Meta(SimpleDict.Meta):        
+        verbose_name = _('StreetType')
+        verbose_name_plural = _('StreetTypes')
 
 class Beside(SimpleDict):    
     '''
@@ -1006,7 +1029,9 @@ class Bid(ProcessDeletedModel):
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      
-        ordering = ['-history__created']    
+        ordering = ['-history__created']
+        verbose_name = _('Bid')
+        verbose_name_plural = _('Bids')    
 
 class BidStatus(SimpleDict):
     '''

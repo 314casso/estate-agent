@@ -10,7 +10,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     WallConstrucion, ExteriorFinish, Interior, WallFinish, EstateClientStatus,\
     BidEvent, BidStatus, LayoutFeature, Furniture, LayoutType,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
-    Validity, EstateRegister
+    Validity, EstateRegister, StreetType
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -82,14 +82,6 @@ class BidAdmin(admin.ModelAdmin):
     def queryset(self, request):                
         return Bid.all_objects
 
-class EstateRegisterAdmin(admin.ModelAdmin):
-    search_fields = ['id',]
-    fields = ['deleted']
-    list_display = ('id', '__unicode__',)
-    list_filter = ('deleted',)
-    def queryset(self, request):                
-        return Bid.all_objects     
-
 class LocalityAdmin(admin.ModelAdmin):
     list_display = ['name', 'name_gent', 'name_loct']
     
@@ -155,8 +147,8 @@ admin.site.register(Client, ClientAdmin)
 admin.site.register(Shape)
 admin.site.register(Purpose)
 admin.site.register(LocalityType)
+admin.site.register(StreetType)
 admin.site.register(Validity)
-admin.site.register(EstateRegister, EstateRegisterAdmin)
 
 
 
