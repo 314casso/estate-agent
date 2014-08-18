@@ -302,6 +302,7 @@ class EstateType(OrderedModel):
         (GARAGE, u'Гараж')
         )   
     KOMNATA = 21 
+    DACHA = 13
     name = models.CharField(_('Name'), max_length=100)
     name_accs = models.CharField(_('Accs'), max_length=100, blank=True, null=True)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
@@ -437,8 +438,10 @@ class Estate(ProcessDeletedModel):
         report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
-        if not self.street and not (self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL):
-            report[self.DRAFT].append(unicode(_('Street')))
+        if not self.street:
+            if not (self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL): 
+                if not (self.basic_bidg and self.basic_bidg.estate_type_id == EstateType.DACHA):
+                    report[self.DRAFT].append(unicode(_('Street')))
         if not self.watersupply:
             report[self.DRAFT].append(unicode(_('Watersupply')))
         if not self.gassupply:
