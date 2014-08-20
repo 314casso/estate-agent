@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from estatebase.models import Estate, EstateTypeCategory
-from exportdata.custom_makers.yaxml import YandexWrapper, YandexXML
+from exportdata.custom_makers.yaxml import YandexWrapper, YandexXML,\
+    COMMERCE_STEADS
 
 class YandexPlusWrapper(YandexWrapper):
     def estate_type(self):        
         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
+            return u'коммерческая'
+        if self._basic_stead and self._basic_stead.estate_type_id in COMMERCE_STEADS:
             return u'коммерческая'
         return u'жилая'
     

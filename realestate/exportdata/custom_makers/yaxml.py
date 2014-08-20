@@ -7,6 +7,8 @@ from settings import MEDIA_ROOT
 import os
 from lxml import etree
 
+COMMERCE_STEADS = (20,42,51)
+
 class YandexWrapper(EstateBaseWrapper):  
     category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома',}
     type_mapper = {EstateType.KOMNATA:u'комната'}
@@ -35,7 +37,7 @@ class YandexWrapper(EstateBaseWrapper):
             return super(YandexWrapper, self).address() 
         
 class YandexXML(BaseXML):
-    name = 'yaxml'   
+    name = 'yaxml'
     def __init__(self, yandex_wrapper):                
         self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
@@ -167,10 +169,9 @@ class YandexXML(BaseXML):
              'agency_price__gte': MIN_PRICE_LIMIT,             
              }
         q = Estate.objects.all()
-        q = q.filter(**f)
-        disallowed_steads = (20,42,51)
+        q = q.filter(**f)        
         q = q.exclude(street__name__exact = u'без улицы')
-        q = q.exclude(stead__estate_type_id__in = disallowed_steads)
+        q = q.exclude(stead__estate_type_id__in = COMMERCE_STEADS)
         return q
     
     def set_use_cache(self, value):
