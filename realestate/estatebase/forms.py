@@ -514,14 +514,39 @@ class BidgForm(ObjectForm):
     class Meta(ObjectForm.Meta):
         pass        
         
-class SteadForm(ObjectForm):
+class SteadForm(ObjectForm):    
     total_area = LocalDecimalField(label=_('Total area'))
-    face_area = LocalDecimalField(label=_('Face area'))        
+    face_area = LocalDecimalField(label=_('Face area'))
+    def clean_total_area__(self):
+        if self.user is None:
+            raise forms.ValidationError(u'Текущий пользователь не определен!')
+            
+        data = self.cleaned_data['total_area']
+        
+#         Дом от 101 кв/м
+#         Дача от 15 кв/м
+#         Дачный участок 60 кв/м
+#         Таунхаус от 30 кв/м
+#         Участок коммерческого назначения от 101 кв/м
+#         Участок для строительства дома от 101 кв/м
+#         Участок сельхозназначения от 5000 кв/м
+#         Квартира с участком 50 кв/м
+#         Гараж, жилой гараж, лодочный гараж, все гаражи от 15 кв/м
+#         Коммерческая недвижимость от 15 кв/м
+        
+        estate = self.instance.estate
+        print estate.estate_category 
+        
+        if data < 10000000:
+            raise forms.ValidationError(u'Ошибка! %s' % self.user)
+
+        return data
+                
     class Meta:
         model = Stead  
         widgets = {
            'documents' : forms.CheckboxSelectMultiple()        
-        }
+        }        
                
 class LayoutForm(ModelForm):
     area = LocalDecimalField(label=_('Area'))

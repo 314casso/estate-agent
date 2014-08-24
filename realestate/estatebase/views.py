@@ -690,11 +690,15 @@ class LevelDeleteView(LevelMixin, DeleteView):
         })
         return context    
 
-class SteadUpdateView(ObjectMixin, UpdateView):
+class SteadUpdateView(ObjectMixin, UpdateView):    
     model = Stead
     template_name = 'stead_form.html'        
     form_class = SteadForm   
     continue_url = 'stead_update'
+    def get_form(self, form_class):
+        form = super(SteadUpdateView, self).get_form(form_class)
+        form.user = self.request.user
+        return form
 
 class BidgAppendView(TemplateView):    
     template_name = 'confirm.html'
