@@ -25,7 +25,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     OutbuildingLookup, PurposeLookup, HeatingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateType, EstateClient, BidEvent
+    EstateType, EstateClient, BidEvent, EstateTypeCategory
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -38,6 +38,7 @@ from settings import CORRECT_DELTA
 from django.utils.safestring import mark_safe
 from django.template.base import Template
 from django.core.exceptions import ValidationError
+from exportdata.utils import EstateTypeMapper
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -517,29 +518,31 @@ class BidgForm(ObjectForm):
 class SteadForm(ObjectForm):    
     total_area = LocalDecimalField(label=_('Total area'))
     face_area = LocalDecimalField(label=_('Face area'))
-    def clean_total_area__(self):
+    def clean_total_area(self):        
+        data = self.cleaned_data['total_area']
         if self.user is None:
             raise forms.ValidationError(u'Текущий пользователь не определен!')
-            
-        data = self.cleaned_data['total_area']
-        
-#         Дом от 101 кв/м
-#         Дача от 15 кв/м
-#         Дачный участок 60 кв/м
-#         Таунхаус от 30 кв/м
-#         Участок коммерческого назначения от 101 кв/м
-#         Участок для строительства дома от 101 кв/м
-#         Участок сельхозназначения от 5000 кв/м
-#         Квартира с участком 50 кв/м
-#         Гараж, жилой гараж, лодочный гараж, все гаражи от 15 кв/м
-#         Коммерческая недвижимость от 15 кв/м
-        
-        estate = self.instance.estate
-        print estate.estate_category 
-        
-        if data < 10000000:
-            raise forms.ValidationError(u'Ошибка! %s' % self.user)
-
+        if self.user.is_superuser:
+            return data            
+        if not data:
+            raise forms.ValidationError(u'Значение не оставаться пустым!')
+        validate_map = {
+                            EstateTypeMapper.DOM: 101,
+                            EstateTypeMapper.DACHA: 15,
+                            EstateTypeMapper.DACHNYYUCHASTOK: 60,
+                            EstateTypeMapper.TAUNHAUS:30,
+                            EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA: 101,
+                            EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA: 101,
+                            EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA: 5000,
+                            EstateTypeMapper.KVARTIRASUCHASTKOM: 50,
+                            EstateTypeMapper.GARAZH: 15,
+                            EstateTypeMapper.ZHILOYGARAZH:15,
+                            EstateTypeMapper.LODOCHNYYGARAZH:15,
+                            EstateTypeMapper.BATALERKA:15,
+                        }
+        min_value = validate_map.get(self.instance.estate_type_id)
+        if data < min_value:
+            raise forms.ValidationError(u'Указанное значение %s кв.м меньше минимально возможного %s кв.м' % (data, min_value))
         return data
                 
     class Meta:

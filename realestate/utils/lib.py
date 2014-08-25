@@ -198,7 +198,7 @@ def transliterate(string):
     return translit_string
 
 
-for st in EstateType.objects.filter(estate_type_category_id = EstateTypeCategory.COMMERCE).order_by('name'):
+for st in EstateType.objects.filter(estate_type_category__independent=True).order_by('estate_type_category', 'name'):
     result = '%s = %s' % (transliterate(st.name), st.pk)
     print result.upper()     
 
