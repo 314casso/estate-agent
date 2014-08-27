@@ -133,8 +133,12 @@ MIDDLEWARE_CLASSES = (
     'django_sorting.middleware.SortingMiddleware',
 #    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
+    'session_security.middleware.SessionSecurityMiddleware',
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+#SESSION_SECURITY_WARN_AFTER = 10
+#SESSION_SECURITY_EXPIRE_AFTER = 15
 
 #INTERNAL_IPS = ('127.0.0.1',)
 
@@ -180,7 +184,8 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'mptt',
     'spyder_helper',
-    'exportdata',        
+    'exportdata',    
+    'session_security',    
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

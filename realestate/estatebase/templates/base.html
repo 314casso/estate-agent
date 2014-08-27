@@ -10,11 +10,12 @@
         <script type="text/javascript" src="{{ STATIC_URL }}js/autoNumeric-1.7.5.js"> </script>                
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-timepicker-addon.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/common_ui.js?v=0.1"></script>      
-        <script type="text/javascript" src="{{ STATIC_URL }}js/ui.datepicker-ru.js"></script>        
+        <script type="text/javascript" src="{{ STATIC_URL }}js/ui.datepicker-ru.js"></script>   
         {% block js %}{% endblock js %}
         {% load sitetree %}
     </head>
     <body>
+        {% include 'session_security/all.html' %}
     	<div id="loadingMask" style="z-index:10000; background: #666; width: 100%; height: 100%; position: fixed; text-align: center;">
     		<img style="margin-top: 200px" width="64" height="64" src="{{ STATIC_URL }}images/preload.gif">
     	</div>
