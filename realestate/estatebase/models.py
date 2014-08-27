@@ -21,6 +21,7 @@ from django.utils.safestring import mark_safe
 from django.template.context import Context
 from django.utils.encoding import force_unicode
 import re
+from exportdata.utils import EstateTypeMapper
 
 class ExUser(User):
     def __unicode__(self):
@@ -439,7 +440,7 @@ class Estate(ProcessDeletedModel):
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
         if not self.street:
-            if not (self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL): 
+            if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
                 if not (self.basic_bidg and self.basic_bidg.estate_type_id == EstateType.DACHA):
                     report[self.DRAFT].append(unicode(_('Street')))
         if not self.watersupply:
