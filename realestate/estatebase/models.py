@@ -441,7 +441,7 @@ class Estate(ProcessDeletedModel):
             report[self.NOTFREE] = True    
         if not self.street:
             if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
-                if not (self.basic_bidg and self.basic_bidg.estate_type_id == EstateType.DACHA):
+                if not (self.basic_bidg and self.basic_bidg.estate_type_id in (EstateTypeMapper.DACHA, EstateTypeMapper.GARAZH, EstateTypeMapper.LODOCHNYYGARAZH)):
                     report[self.DRAFT].append(unicode(_('Street')))
         if not self.watersupply:
             report[self.DRAFT].append(unicode(_('Watersupply')))
