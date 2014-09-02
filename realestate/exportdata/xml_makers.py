@@ -10,11 +10,14 @@ from django.template.defaultfilters import striptags
 from django.core.cache import cache
 import cPickle as pickle
 from estatebase.models import Locality
+import pytz
+from settings import MEDIA_ROOT
 
 def number2xml(d):
     return '%.12g' % d if d else ''
 
 class EstateBaseWrapper(object):
+    _layout = None
     def __init__(self):        
         self._domain = 'http://%s' % Site.objects.get_current().domain
     
@@ -23,6 +26,7 @@ class EstateBaseWrapper(object):
         self._price = self.Price(estate)        
         self._basic_bidg = self._estate.basic_bidg 
         self._basic_stead = self._estate.basic_stead
+        self._layout = None
         
     def offer_type(self):
         return u'продажа'
@@ -267,6 +271,13 @@ class SalesAgent(object):
 class BaseXML(object):
     CACHE_TIME = 3600 * 24  
     VALID_DAYS = 45
+    XHTML_NAMESPACE = None
+    def __init__(self):               
+        self.XHTML = "{%s}" % self.XHTML_NAMESPACE
+        self.NSMAP = {None : self.XHTML_NAMESPACE}
+        self.tz = pytz.timezone('Europe/Moscow')        
+        self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)        
+        self._use_cache = True
     def get_delta(self):    
         return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
     def get_cache_key(self, estate):

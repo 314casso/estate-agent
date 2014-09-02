@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 from estatebase.models import Estate, Locality, EstateTypeCategory, EstateType
-import pytz
 import datetime
 from exportdata.xml_makers import EstateBaseWrapper, BaseXML, SalesAgent
-from settings import MEDIA_ROOT
-import os
 from lxml import etree
+from shutil import copyfile
+from exportdata.utils import EstateTypeMapper
 
-COMMERCE_STEADS = (20,42,51)
+COMMERCE_STEADS = (EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA,EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA,EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA)
 
 class YandexWrapper(EstateBaseWrapper):  
     category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома',}
     type_mapper = {EstateType.KOMNATA:u'комната'}
     def lot_type(self):
-#         mapper = {u'Участок для строительства дома':u'ИЖЗ'}
-#         if self._estate.estate_type in mapper:             
-#             return mapper[self._estate.estate_type]
         return self._estate.estate_type    
     
     def estate_category(self):       
@@ -38,14 +34,11 @@ class YandexWrapper(EstateBaseWrapper):
         
 class YandexXML(BaseXML):
     name = 'yaxml'
-    def __init__(self, yandex_wrapper):                
-        self.XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
-        self.XHTML = "{%s}" % self.XHTML_NAMESPACE
-        self.NSMAP = {None : self.XHTML_NAMESPACE}
-        self.tz = pytz.timezone('Europe/Moscow')        
-        self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)        
-        self._wrapper = yandex_wrapper
-        self._use_cache = True
+    encoding="UTF-8"
+    XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
+    def __init__(self, yandex_wrapper):
+        super(YandexXML, self).__init__()   
+        self._wrapper = yandex_wrapper           
         
     def feed_date(self, date):        
         return self.tz.localize(date).replace(microsecond=0).isoformat()
@@ -177,18 +170,26 @@ class YandexXML(BaseXML):
     def set_use_cache(self, value):
         self._use_cache = value
     
-    def gen_XML(self, use_cache=True):   
-        self.set_use_cache(use_cache)     
-        xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
-        etree.SubElement(xhtml, "generation-date").text = self.generation_date()                   
-        print datetime.datetime.now()
-        c = 0            
+    def add_header(self, xhtml):
+        etree.SubElement(xhtml, "generation-date").text = self.generation_date()
+    
+    def add_offers(self, xhtml):
         q = self.get_queryset()              
         for estate in q:
             offer = self.get_offer(estate)
             if offer is not None:                                  
                 xhtml.append(offer)
-                c+=1    
-        etree.ElementTree(xhtml).write(self.file_name, pretty_print=True, xml_declaration=True, encoding="UTF-8")
-        print datetime.datetime.now()
-        print c
+    
+    def get_XHTML(self, use_cache):
+        self.set_use_cache(use_cache)     
+        xhtml = etree.Element(self.XHTML + self.get_root_name(), nsmap=self.NSMAP) 
+        self.add_header(xhtml)        
+        self.add_offers(xhtml)
+        return xhtml
+    
+    def gen_XML(self, use_cache=True):   
+        xhtml = self.get_XHTML(use_cache)    
+        temp_file_name = u'%s~' % self.file_name
+        etree.ElementTree(xhtml).write(temp_file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
+        copyfile(temp_file_name, self.file_name)        
+        

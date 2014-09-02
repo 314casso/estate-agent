@@ -14,6 +14,7 @@ encoding//realestate/estatebase/templatetags/report.py=utf-8
 encoding//realestate/estatebase/templatetags/wp.py=utf-8
 encoding//realestate/estatebase/views.py=utf-8
 encoding//realestate/estatebase/wrapper.py=utf-8
+encoding//realestate/exportdata/custom_makers/cianxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/domexxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/yaxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/yaxmlplus.py=utf-8

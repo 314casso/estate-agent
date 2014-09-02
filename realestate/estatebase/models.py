@@ -21,7 +21,7 @@ from django.utils.safestring import mark_safe
 from django.template.context import Context
 from django.utils.encoding import force_unicode
 import re
-from exportdata.utils import EstateTypeMapper
+from exportdata.utils import EstateTypeMapper, LayoutTypeMapper
 
 class ExUser(User):
     def __unicode__(self):
@@ -268,7 +268,7 @@ class EstateTypeCategory(OrderedModel):
     KVARTIRA = 4 
     U4ASTOK = 8
     KVARTIRAU4ASTOK = 5
-    COMMERCE = 6
+    COMMERCE = 6    
     name = models.CharField(_('Name'), max_length=100)
     independent = models.BooleanField(_('Independent'), default=True)
     has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)
@@ -466,6 +466,14 @@ class Estate(ProcessDeletedModel):
                 report[self.DRAFT].append(unicode(_('Total area')))
             if not self.basic_bidg.interior:
                 report[self.DRAFT].append(unicode(_('Interior')))
+            
+            if self.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRA, EstateTypeCategory.KVARTIRAU4ASTOK):
+                if self.basic_bidg.estate_type_id not in (EstateTypeMapper.DACHA,):                 
+                    if not self.basic_bidg.used_area:
+                        report[self.DRAFT].append(unicode(_('Used area')))
+                    if not self.basic_bidg.get_kuhnya_area():
+                        report[self.DRAFT].append(u'Площадь кухни в планировке')
+                    
         if self.basic_stead:
             if not self.basic_stead.total_area:
                 report[self.DRAFT].append(u'Площадь участка')        
@@ -780,7 +788,8 @@ class Appliance(SimpleDict):
         verbose_name_plural = _('Appliances')
     
 
-class Bidg(models.Model):    
+class Bidg(models.Model):
+    _layout = None     
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
@@ -822,6 +831,24 @@ class Bidg(models.Model):
         return self.estate_type.estate_type_category.independent
     def __unicode__(self):
         return u'%s' % self.pk
+    
+    def get_layout(self):
+        if self._layout is None:           
+            layouts = list(Layout.objects.filter(level__bidg=self))            
+            result = {}
+            kuhnya_area = 0
+            for l in layouts:                 
+                if l.layout_type_id in (LayoutTypeMapper.KUHNYA, LayoutTypeMapper.KUHNYAGOSTINAYA, LayoutTypeMapper.KUHNYASTOLOVAYA):
+                    if l.area:
+                        kuhnya_area += l.area
+            result['kuhnya_area'] = kuhnya_area
+            self._layout = result
+        return self._layout
+    
+    def get_kuhnya_area(self):
+        layout = self.get_layout()
+        if layout:
+            return layout['kuhnya_area']
            
     
 class Shape(SimpleDict):
