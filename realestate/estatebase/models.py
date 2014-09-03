@@ -443,6 +443,9 @@ class Estate(ProcessDeletedModel):
             if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
                 if not (self.basic_bidg and self.basic_bidg.estate_type_id in (EstateTypeMapper.DACHA, EstateTypeMapper.GARAZH, EstateTypeMapper.LODOCHNYYGARAZH)):
                     report[self.DRAFT].append(unicode(_('Street')))
+        
+        if not self.microdistrict:
+            report[self.DRAFT].append(unicode(_('Microdistrict')))            
         if not self.watersupply:
             report[self.DRAFT].append(unicode(_('Watersupply')))
         if not self.gassupply:
@@ -467,12 +470,13 @@ class Estate(ProcessDeletedModel):
             if not self.basic_bidg.interior:
                 report[self.DRAFT].append(unicode(_('Interior')))
             
+            if self.estate_category_id == EstateTypeCategory.KVARTIRA and not self.basic_bidg.get_kuhnya_area():
+                report[self.DRAFT].append(u'Площадь кухни в планировке')
+            
             if self.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRA, EstateTypeCategory.KVARTIRAU4ASTOK):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.DACHA,):                 
                     if not self.basic_bidg.used_area:
                         report[self.DRAFT].append(unicode(_('Used area')))
-                    if not self.basic_bidg.get_kuhnya_area():
-                        report[self.DRAFT].append(u'Площадь кухни в планировке')
                     
         if self.basic_stead:
             if not self.basic_stead.total_area:
