@@ -470,8 +470,10 @@ class Estate(ProcessDeletedModel):
             if not self.basic_bidg.interior:
                 report[self.DRAFT].append(unicode(_('Interior')))
             
-            if self.estate_category_id == EstateTypeCategory.KVARTIRA and not self.basic_bidg.get_kuhnya_area():
-                report[self.DRAFT].append(u'Площадь кухни в планировке')
+            if self.estate_category_id == EstateTypeCategory.KVARTIRA: 
+                if self.basic_bidg.estate_type_id not in (EstateTypeMapper.KOMNATA,): 
+                    if not self.basic_bidg.get_kuhnya_area():
+                        report[self.DRAFT].append(u'Площадь кухни в планировке')
             
             if self.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRA, EstateTypeCategory.KVARTIRAU4ASTOK):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.DACHA,):                 
