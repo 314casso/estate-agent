@@ -134,6 +134,7 @@ MIDDLEWARE_CLASSES = (
 #    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
+    'request.middleware.RequestMiddleware',
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
@@ -185,7 +186,8 @@ INSTALLED_APPS = (
     'mptt',
     'spyder_helper',
     'exportdata',    
-    'session_security',    
+    'session_security',  
+    'request',  
 #    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
