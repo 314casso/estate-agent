@@ -439,11 +439,10 @@ class Estate(ProcessDeletedModel):
         report[self.NOCONACT] = not self.check_contact() 
         if not self.estate_status_id == self.FREE:
             report[self.NOTFREE] = True    
-        if not self.street:
-            if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
-                if not (self.basic_bidg and self.basic_bidg.estate_type_id in (EstateTypeMapper.DACHA, EstateTypeMapper.GARAZH, EstateTypeMapper.LODOCHNYYGARAZH)):
-                    report[self.DRAFT].append(unicode(_('Street')))
-        
+#         if not self.street:
+#             if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
+#                 if not (self.basic_bidg and self.basic_bidg.estate_type_id in (EstateTypeMapper.DACHA, EstateTypeMapper.GARAZH, EstateTypeMapper.LODOCHNYYGARAZH)):
+#                     report[self.DRAFT].append(unicode(_('Street')))
         if not self.microdistrict:
             report[self.DRAFT].append(unicode(_('Microdistrict')))            
         if not self.watersupply:
