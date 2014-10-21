@@ -87,6 +87,11 @@
         <a class="btn-filter-remove" href="{{ filter_action }}">Сбросить фильтр</a>
         {% endif %}
         {% include 'prev_view.html' %}
+        {% if request.user.is_superuser %}
+            <span style="padding: 5px; color: #ccc"> </span>
+            <a class="btn-phone" href="{% url estate_list_contacts 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
+            <a class="btn-email" href="{% url estate_list_contacts 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
+        {% endif %}
         <div style="float: right">
         {% block extra_button %}{% endblock %}        
         {% if estate %}       

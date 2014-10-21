@@ -32,6 +32,11 @@ $(document).ready(function() {
 	$('.btn-bind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-plus');
 	});
+	
+	$('.btn-phone').button("option", "icons", {
+		primary : "ui-icon-minusthick"
+	});
+	
 	$('.btn-unbind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-minus');
 	});

@@ -23,7 +23,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent
+    ExUser, Bidg, BidEvent, ContactType
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -37,7 +37,7 @@ from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
     WordpressTaxonomyTree
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models.aggregates import Count
-
+import unicodecsv
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -325,7 +325,11 @@ class EstateListView(ListView):
         return q
     def get_context_data(self, **kwargs):
         context = super(EstateListView, self).get_context_data(**kwargs)
-        filter_form = self.filter_form(self.request.GET)           
+        filter_form = self.filter_form(self.request.GET)
+        
+        params = self.request.GET.copy()      
+        get_params = params.urlencode()
+                   
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
@@ -333,6 +337,7 @@ class EstateListView(ListView):
             'filter_form': filter_form,
             'filter_action': '%s?next=%s' % (reverse('estate-list'), self.request.GET.get('next','')),
             'filtered' :self.filtered,
+            'get_params': get_params,
         })        
         return context
        
@@ -1201,4 +1206,22 @@ class WordpressQueue(TemplateView):
         })
         return context     
 
-    
+@user_passes_test(lambda u: u.is_staff)
+def estate_list_contacts(request, contact_type_pk):
+    contact_types = {Contact.EMAIL : 'emails', Contact.PHONE: 'phones'}        
+    q = Estate.objects.all()        
+    filter_form = EstateFilterForm(request.GET)
+    filter_dict = filter_form.get_filter()       
+                        
+    q = set_estate_filter(q, filter_dict, user=request.user)
+    estate_ids = q.values_list('id',flat=True) 
+    contacts = Contact.objects.filter(client__estates__id__in=estate_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)
+        
+    # Create the HttpResponse object with the appropriate CSV header.    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % contact_types[int(contact_type_pk)]
+    writer = unicodecsv.writer(response)
+    unique_contacts = set(contacts)
+    for contact in unique_contacts:
+        writer.writerow([contact.contact])
+    return response    

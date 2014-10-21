@@ -32,13 +32,19 @@ $(document).ready(function() {
 	$('.btn-bind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-plus');
 	});
+	$('.btn-phone').button("option", "icons", {
+		primary : "ui-icon-person"
+	});
+	$('.btn-email').button("option", "icons", {
+		primary : "ui-icon-mail-closed"
+	});
 	$('.btn-unbind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-minus');
 	});
 	$('.btn-delete-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-trash');
 	});
-	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all,.btn-unbind-all').button("option", "text", false);
+	$('.btn-add,.btn-filter-add,.btn-filter-remove,.btn-back,.btn-bind,.btn-unbind,.btn-delete,.btn-bind-all,.btn-unbind-all,.btn-phone,.btn-email').button("option", "text", false);
 	// $( ".date-time-input" ).datepicker();
 	$('input:text, textarea, input:password, .topbar').addClass('ui-widget ui-widget-content ui-corner-all');
 	$('select').addClass('ui-corner-left')
