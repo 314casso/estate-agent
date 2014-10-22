@@ -855,13 +855,16 @@ class BidListView(ListView):
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
-        bid_filter_form = BidFilterForm(self.request.GET)                                                                    
+        bid_filter_form = BidFilterForm(self.request.GET)
+        params = self.request.GET.copy()      
+        get_params = params.urlencode()                                                                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),
             'bid_filter_form': bid_filter_form,
             'filtered': self.filtered,            
             'filter_count' : self.get_queryset().count(),
+            'get_params' : get_params,
         })        
         return context    
 
@@ -1207,16 +1210,32 @@ class WordpressQueue(TemplateView):
         return context     
 
 @user_passes_test(lambda u: u.is_staff)
-def estate_list_contacts(request, contact_type_pk):
-    contact_types = {Contact.EMAIL : 'emails', Contact.PHONE: 'phones'}        
+def estate_list_contacts(request, contact_type_pk):            
     q = Estate.objects.all()        
     filter_form = EstateFilterForm(request.GET)
-    filter_dict = filter_form.get_filter()       
-                        
+    filter_dict = filter_form.get_filter()                               
     q = set_estate_filter(q, filter_dict, user=request.user)
     estate_ids = q.values_list('id',flat=True) 
     contacts = Contact.objects.filter(client__estates__id__in=estate_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)
-        
+    return contacts_csv_response(contacts, contact_type_pk)
+
+@user_passes_test(lambda u: u.is_staff)
+def bid_list_contacts(request, contact_type_pk):            
+    q = Bid.objects.all()          
+    search_form = BidFilterForm(request.GET)
+    filter_dict = search_form.get_filter()    
+    geo_list = request.user.userprofile.geo_groups.values_list('id', flat=True)                            
+    q = q.filter(geo_groups__id__in=geo_list)
+    if len(filter_dict):
+        if 'Q' in filter_dict:
+            q = q.filter(filter_dict.pop('Q'))                
+        q = q.filter(**filter_dict)    
+    bid_ids = set(q.values_list('id',flat=True))    
+    contacts = Contact.objects.filter(client__bids__id__in=bid_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)    
+    return contacts_csv_response(contacts, contact_type_pk)
+
+def contacts_csv_response(contacts, contact_type_pk):
+    contact_types = {Contact.EMAIL : 'emails', Contact.PHONE: 'phones'}
     # Create the HttpResponse object with the appropriate CSV header.    
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s.csv"' % contact_types[int(contact_type_pk)]
@@ -1224,4 +1243,4 @@ def estate_list_contacts(request, contact_type_pk):
     unique_contacts = set(contacts)
     for contact in unique_contacts:
         writer.writerow([contact.contact])
-    return response    
+    return response

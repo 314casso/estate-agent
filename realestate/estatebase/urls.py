@@ -18,7 +18,7 @@ from estatebase.views import ClientListView, \
     ClientStatusUpdateView, EstateCreateWizardView, RestoreClientView,\
     BidEventCreateView, BidEventUpdateView, BidEventDeleteView,\
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
-    estate_list_contacts
+    estate_list_contacts, bid_list_contacts
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -131,4 +131,5 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',    
     url (r'^estatelistcontacts/(?P<contact_type_pk>\d+)$', view=estate_list_contacts, name='estate_list_contacts'),
+    url (r'^bidlistcontacts/(?P<contact_type_pk>\d+)$', view=bid_list_contacts, name='bid_list_contacts'),
 )
