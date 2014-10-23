@@ -503,6 +503,8 @@ class ClientListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'client_filter_form' : ClientFilterForm(self.request.GET),
             'filtered': self.filtered,
+            'get_params' : self.request.GET.copy().urlencode(),
+            
         })        
         return context
 
@@ -1217,6 +1219,17 @@ def estate_list_contacts(request, contact_type_pk):
     q = set_estate_filter(q, filter_dict, user=request.user)
     estate_ids = q.values_list('id',flat=True) 
     contacts = Contact.objects.filter(client__estates__id__in=estate_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)
+    return contacts_csv_response(contacts, contact_type_pk)
+
+@user_passes_test(lambda u: u.is_staff)
+def client_list_contacts(request, contact_type_pk):
+    q = Client.objects.all()
+    search_form = ClientFilterForm(request.GET)
+    filter_dict = search_form.get_filter()    
+    if len(filter_dict):
+        q = q.filter(**filter_dict)       
+    client_ids = q.values_list('id',flat=True) 
+    contacts = Contact.objects.filter(client_id__in=client_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)
     return contacts_csv_response(contacts, contact_type_pk)
 
 @user_passes_test(lambda u: u.is_staff)
