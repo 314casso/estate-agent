@@ -38,6 +38,7 @@ from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models.aggregates import Count
 import unicodecsv
+from estatebase.lib import format_phone
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -1248,12 +1249,15 @@ def bid_list_contacts(request, contact_type_pk):
     return contacts_csv_response(contacts, contact_type_pk)
 
 def contacts_csv_response(contacts, contact_type_pk):
-    contact_types = {Contact.EMAIL : 'emails', Contact.PHONE: 'phones'}
-    # Create the HttpResponse object with the appropriate CSV header.    
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % contact_types[int(contact_type_pk)]
+    contact_type_id = int(contact_type_pk)
+    contact_types = {Contact.EMAIL : 'emails', Contact.PHONE: 'phones'}        
+    response = HttpResponse(content_type='text/csv')    
+    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % contact_types[contact_type_id]
     writer = unicodecsv.writer(response)
     unique_contacts = set(contacts)
     for contact in unique_contacts:
-        writer.writerow([contact.contact])
+        contact_str = contact.contact 
+        if contact_type_id == Contact.PHONE:
+            contact_str = format_phone(contact_str)           
+        writer.writerow([contact_str,])
     return response

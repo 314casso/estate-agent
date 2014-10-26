@@ -18,7 +18,7 @@
 	{% address estate %}
 	{% if estate.beside %}
 	<div>
-		Рассояние до <strong>{{ estate.beside }} {{ estate.beside_distance|default:'' }}</strong> м
+		Расстояние до <strong>{{ estate.beside }} {{ estate.beside_distance|default:'' }}</strong> м
 	</div>
 	{% endif %}	
 </div>
@@ -42,7 +42,7 @@
 		</tr>
 		<tr>
 			<th>Продавца</th>
-			<th>Агенства</th>
+			<th>Агентства</th>
 		</tr>
 		<tr>			
 			<td>{{ estate.saler_price|default:'--------'|intcomma }}</td>
