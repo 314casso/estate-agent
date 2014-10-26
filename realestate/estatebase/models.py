@@ -967,7 +967,7 @@ class Contact(models.Model):
     SITE = 3
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'), on_delete=models.PROTECT)
-    contact = models.CharField(_('Contact'), max_length=255, db_index=True)
+    contact = models.CharField(_('Contact'), max_length=255, db_index=True, unique=True)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=NOTCHECKED, on_delete=models.PROTECT)
     user_id = None
