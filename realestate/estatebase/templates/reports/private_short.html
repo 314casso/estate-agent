@@ -4,7 +4,7 @@
 {% load link_helper %}
 
 {% block content %}
-<h1>{% block title %}Краткий реестр № {{ estateregister.pk }} для своих: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}{% endblock title %}</h1>
+<h1>{% block title %}Краткий реестр № {{ estateregister.pk }} для своих: "{{ estateregister.name }}" от {{ estateregister.history.modificated|date:"d M Y" }}, коммерческая тайна, {{request.user}} {% endblock title %}</h1>
 {% endblock content %}
 
 {% block tbody %}
