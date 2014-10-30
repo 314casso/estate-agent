@@ -1234,6 +1234,18 @@ def client_list_contacts(request, contact_type_pk):
     return contacts_csv_response(contacts, contact_type_pk)
 
 @user_passes_test(lambda u: u.is_staff)
+def incorrect_contacts(request):     
+    contacts = Contact.objects.filter(contact_type_id=Contact.PHONE)
+    response = HttpResponse(content_type='text/csv')    
+    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % 'incorrect_contacts'
+    writer = unicodecsv.writer(response)
+    writer.writerow(['contact','contact_id','client_id'])
+    for contact in contacts:
+        if contact.contact[0] != '8' or len(contact.contact) < 9:
+            writer.writerow([contact.contact,contact.id,contact.client_id])
+    return response
+
+@user_passes_test(lambda u: u.is_staff)
 def bid_list_contacts(request, contact_type_pk):            
     q = Bid.objects.all()          
     search_form = BidFilterForm(request.GET)

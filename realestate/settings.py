@@ -2,7 +2,6 @@ import os
 import datetime
 import socket
 
-
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FILE_UPLOAD_PERMISSIONS = 0777
 
