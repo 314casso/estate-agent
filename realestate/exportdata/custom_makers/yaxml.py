@@ -61,7 +61,7 @@ class YandexXML(BaseXML):
         if not value is None:             
             etree.SubElement(parent, name).text = self.bool_to_value(value)
     
-    def create_offer(self, estate):
+    def create_offer(self, estate):        
         self._wrapper.set_estate(estate)
         is_stead = estate.estate_category.is_stead
         has_stead = estate.estate_category.can_has_stead and estate.basic_stead        

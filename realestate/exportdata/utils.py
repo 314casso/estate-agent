@@ -142,3 +142,25 @@ class LayoutTypeMapper(object):
     HOLL = 27
     HOLODILNAYAKAMERA = 76
     TSEH = 64
+    
+class WallConstrucionMapper(object):
+    BETON = 15
+    BLOK = 1
+    BRUS = 19
+    GAZOBLOK = 2
+    DEREVO = 3
+    KAMEN = 4
+    KARKAS = 5
+    KERAMZITOBETONNYEBLOKI = 17
+    KERCHENSKIYKAMEN = 12
+    KIRPICH = 6
+    LITOY = 14
+    METALL = 18
+    MONOLIT = 7
+    OTSILINDROVANNOEBREVNO = 20
+    PANEL = 8
+    PENOBETON = 13
+    PENOBLOK = 16
+    SAMAN = 9
+    SHLAKOBLOK = 10
+    SCHITOVOY = 11    

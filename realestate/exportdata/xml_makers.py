@@ -12,6 +12,7 @@ import cPickle as pickle
 from estatebase.models import Locality
 import pytz
 from settings import MEDIA_ROOT
+from exportdata.utils import EstateTypeMapper
 
 def number2xml(d):
     return '%.12g' % d if d else ''
@@ -140,10 +141,9 @@ class EstateBaseWrapper(object):
         return self._estate.estate_type
     
     
-    def new_flat(self):
-        NEW_FLAT = 34
+    def new_flat(self):        
         if self._basic_bidg:
-            return self._basic_bidg.estate_type_id == NEW_FLAT
+            return self._basic_bidg.estate_type_id == EstateTypeMapper.NOVOSTROYKA 
         
     def rooms(self):
         if self._basic_bidg:
