@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import EstateTypeCategory, Layout, Estate, EstateType
+from estatebase.models import EstateTypeCategory, Layout, Estate, EstateType,\
+    EstateParam
 from exportdata.custom_makers.yaxml import COMMERCE_STEADS, YandexWrapper
 from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
@@ -63,36 +64,40 @@ class CianWrapper(YandexWrapper):
         return 'yes' if phone else 'no'
     
     def lift_p(self):
+        if super(CianWrapper,self).new_flat():
+            return '1'
         lift = super(CianWrapper,self).lift()        
         return '1' if lift else '0'
         
     def lift_g(self):
         if super(CianWrapper,self).new_flat():
-            return self.lift_p()
+            return '1'
         return '0'
+    
+    def format_int_result(self, value, if_none='0'):
+        return number2xml(value) if value else if_none
     
     def balcon(self):
-#         TODO:
-        return '0'
+        return self.format_int_result(self._basic_bidg.get_balcons_count())
     
     def lodgia(self):
-        #         TODO:
-        return '0'
+        return self.format_int_result(self._basic_bidg.get_loggias_count())
     
     def su_s(self):
         '''
         количество совмещенных санузлов
         '''
-        #         TODO:
-        return '0'
+        return self.format_int_result(self._basic_bidg.get_sanuzel_sovmest_count())
     
     def su_r(self):
         '''
         количество раздельных санузлов
-        '''
-        #         TODO:
-        return '0'
-        
+        '''       
+        sanuzel_razdel_count = self._basic_bidg.get_sanuzel_razdel_count()
+        if not sanuzel_razdel_count and not self._basic_bidg.get_sanuzel_sovmest_count():
+            return '1'             
+        return self.format_int_result(sanuzel_razdel_count)
+    
     def windows(self):
         '''
         куда выходят окна
@@ -100,17 +105,18 @@ class CianWrapper(YandexWrapper):
         #         TODO:
         DVOR = '1'
         ULITSTA = '2'
-        DVOR_ULITSTA = '3'        
-        return DVOR_ULITSTA
+        DVOR_ULITSTA = '3'
+        windows_list = (DVOR, ULITSTA, DVOR_ULITSTA)  
+        return random.choice(windows_list)
     
     def ipoteka(self):
         '''
         возможность ипотеки
         '''
+        ipoteka = len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0
         YES = '1'
         NO = '0'
-        #         TODO:
-        return YES
+        return YES if ipoteka else NO
     
     def floor_type(self):
         '''

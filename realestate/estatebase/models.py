@@ -21,7 +21,8 @@ from django.utils.safestring import mark_safe
 from django.template.context import Context
 from django.utils.encoding import force_unicode
 import re
-from exportdata.utils import EstateTypeMapper, LayoutTypeMapper
+from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
+    LayoutFeatureMapper
 
 class ExUser(User):
     def __unicode__(self):
@@ -227,6 +228,7 @@ class EstateParam(OrderedModel):
     Дополнительные параметры
     '''
     POSTONSITE = 1
+    IPOTEKA = 2
     name = models.CharField(_('Name'), max_length=100)    
     def __unicode__(self):
         return u'%s' % self.name
@@ -842,19 +844,50 @@ class Bidg(models.Model):
             layouts = list(Layout.objects.filter(level__bidg=self))            
             result = {}
             kuhnya_area = 0
+            sanuzel_sovmest = 0
+            sanuzel_razdel = 0
+            balcons = 0
+            loggias = 0
             for l in layouts:                 
                 if l.layout_type_id in (LayoutTypeMapper.KUHNYA, LayoutTypeMapper.KUHNYAGOSTINAYA, LayoutTypeMapper.KUHNYASTOLOVAYA):
                     if l.area:
                         kuhnya_area += l.area
+                if l.layout_type_id in (LayoutTypeMapper.SANUZEL,):
+                    if l.layout_feature_id == LayoutFeatureMapper.SOVMESCHENNYY:
+                        sanuzel_sovmest += 1
+                    else:
+                        sanuzel_razdel += 1           
+                if l.layout_type_id in (LayoutTypeMapper.BALKON,):
+                    balcons += 1
+                if l.layout_type_id in (LayoutTypeMapper.LODZHIYA,):
+                    loggias += 1                                        
             result['kuhnya_area'] = kuhnya_area
+            result['sanuzel_sovmest'] = sanuzel_sovmest
+            result['sanuzel_razdel'] = sanuzel_razdel
+            result['balcons'] = balcons
+            result['loggias'] = loggias            
             self._layout = result
         return self._layout
-    
-    def get_kuhnya_area(self):
+        
+    def get_layout_key(self, key):
         layout = self.get_layout()
         if layout:
-            return layout['kuhnya_area']
-           
+            return layout[key]
+    
+    def get_kuhnya_area(self):
+        return self.get_layout_key('kuhnya_area')
+        
+    def get_sanuzel_sovmest_count(self):
+        return self.get_layout_key('sanuzel_sovmest')
+    
+    def get_sanuzel_razdel_count(self):
+        return self.get_layout_key('sanuzel_razdel')
+    
+    def get_balcons_count(self):
+        return self.get_layout_key('balcons')
+    
+    def get_loggias_count(self):
+        return self.get_layout_key('loggias')
     
 class Shape(SimpleDict):
     '''

@@ -5,7 +5,7 @@ Created on 21.04.2012
 @author: picasso
 '''
 from estatebase.models import StreetType, EstateType, EstateTypeCategory,\
-    LayoutType, WallConstrucion
+    LayoutType, WallConstrucion, LayoutFeature
 streets = """
 Ленина проспект
 Мороза
@@ -198,7 +198,7 @@ def transliterate(string):
         translit_string += repl
     return translit_string
 
-for st in WallConstrucion.objects.all().order_by('name'):
+for st in LayoutFeature.objects.all().order_by('name'):
     result = '%s = %s' % (transliterate(st.name), st.pk)
     print result.upper()     
 

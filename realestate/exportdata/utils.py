@@ -164,3 +164,12 @@ class WallConstrucionMapper(object):
     SAMAN = 9
     SHLAKOBLOK = 10
     SCHITOVOY = 11    
+
+class LayoutFeatureMapper(object):    
+    IZOLIROVANNAYA = 1
+    NEOSTEKLENO = 6
+    OBSCHAYA = 7
+    OSTEKLENO = 2
+    RAZDELNYY = 3
+    SMEZHNAYA = 4
+    SOVMESCHENNYY = 5
