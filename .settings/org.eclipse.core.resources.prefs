@@ -18,6 +18,7 @@ encoding//realestate/exportdata/custom_makers/cianxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/domexxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/yaxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/yaxmlplus.py=utf-8
+encoding//realestate/exportdata/management/commands/avito_xml.py=utf-8
 encoding//realestate/exportdata/management/commands/dataconv.py=utf-8
 encoding//realestate/exportdata/management/commands/feed.py=utf-8
 encoding//realestate/exportdata/management/commands/yaxml.py=utf-8

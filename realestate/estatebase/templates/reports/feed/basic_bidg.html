@@ -1,0 +1,16 @@
+{% if bidg %}
+{% load report %}
+{% spaceless %}
+{% wrapper_fieldset_comma bidg 'exterior_report_set' %}
+{% wrapper_fieldset_comma bidg 'interior_set' %}
+{% if bidg.levels.count > 0 %}
+    {% for level in bidg.levels.all %}
+    Планировка уровня/этажа "{{ level }}":
+    {% bidg_layout_wp level %}
+    {% endfor %}
+{% endif %}
+{% if bidg.is_independent %}
+Документы {{ bidg.documents.all|to_comma_sep }}
+{% endif %}
+{% endspaceless %}
+{% endif %}

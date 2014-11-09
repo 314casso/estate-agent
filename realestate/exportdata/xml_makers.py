@@ -13,6 +13,7 @@ from estatebase.models import Locality
 import pytz
 from settings import MEDIA_ROOT
 from exportdata.utils import EstateTypeMapper
+from django.utils import translation
 
 def number2xml(d):
     return '%.12g' % d if d else ''
@@ -278,6 +279,7 @@ class BaseXML(object):
         self.tz = pytz.timezone('Europe/Moscow')        
         self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)        
         self._use_cache = True
+        translation.activate('ru')
     def get_delta(self):    
         return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
     def get_cache_key(self, estate):
