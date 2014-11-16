@@ -1,0 +1,235 @@
+[
+	{
+		"pk": 30,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632680",
+			"locality": 1,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 31,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632720",
+			"locality": 3,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 32,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632730",
+			"locality": 4,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 33,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632780",
+			"locality": 6,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 34,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632810",
+			"locality": 8,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 35,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632970",
+			"locality": 20,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 36,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632990",
+			"locality": 29,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 37,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "632990",
+			"locality": 28,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 38,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633000",
+			"locality": 30,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 39,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633060",
+			"locality": 36,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 40,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633070",
+			"locality": 37,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 41,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633080",
+			"locality": 40,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 42,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633110",
+			"locality": 42,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 43,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633140",
+			"locality": 44,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 44,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633190",
+			"locality": 47,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 45,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633210",
+			"locality": 48,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 46,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633340",
+			"locality": 55,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 47,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633630",
+			"locality": 68,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 48,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633770",
+			"locality": 77,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 49,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "633780",
+			"locality": 78,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 50,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634030",
+			"locality": 80,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 51,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634320",
+			"locality": 92,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 52,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634390",
+			"locality": 99,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 53,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634560",
+			"locality": 101,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 54,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634580",
+			"locality": 102,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 55,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634590",
+			"locality": 105,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 56,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634600",
+			"locality": 107,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 57,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634640",
+			"locality": 110,
+			"feed_name": "avito"
+		}
+	}, {
+		"pk": 58,
+		"model": "exportdata.feedlocality",
+		"fields": {
+			"feed_code": "634900",
+			"locality": 129,
+			"feed_name": "avito"
+		}
+	}
+]

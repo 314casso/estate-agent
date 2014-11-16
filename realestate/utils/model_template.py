@@ -126,7 +126,7 @@ options = \
 '''
 
 
-MODEL = 'StreetType'
+MODEL = 'FeedLocality'
 
 import settings
 import os
