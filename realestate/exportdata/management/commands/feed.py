@@ -5,6 +5,7 @@ from optparse import make_option
 import pinject
 from exportdata.custom_makers.domexxml import DomexXML
 from exportdata.custom_makers.cianxml import CianFlatsXML
+from exportdata.custom_makers.avitoxml import AvitoXML
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -20,6 +21,7 @@ class Command(BaseCommand):
                    YandexXML.name : YandexXML,
                    DomexXML.name : DomexXML,
                    CianFlatsXML.name : CianFlatsXML,
+                   AvitoXML.name : AvitoXML,
                  }
         if arg in mapper:
             return mapper[arg]

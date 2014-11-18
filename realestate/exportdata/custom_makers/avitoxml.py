@@ -11,6 +11,8 @@ import random
 import re
 
 class AvitoWrapper(YandexWrapper):
+    category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома', EstateTypeCategory.KVARTIRA:u'Квартиры'}
+    type_mapper = {EstateTypeMapper.KOMNATA:u'Комнаты'}
     def estate_type(self):        
         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
             return u'коммерческая'
@@ -155,17 +157,22 @@ class AvitoWrapper(YandexWrapper):
         return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)
              
     
-class AvitoBaseXML(YandexPlusXML):
-    encoding="windows-1251"
+class AvitoXML(YandexPlusXML):    
     name = 'avito'    
-    root_name = 'flats_for_sale'        
-    def __init__(self, cian_wrapper):
-        super(AvitoBaseXML,self).__init__(cian_wrapper)
+    root_name = 'Ads'        
+    def __init__(self, avito_wrapper):
+        super(AvitoXML,self).__init__(avito_wrapper)
         self.NSMAP = None
         self.XHTML = ''
             
     def get_root_name(self):
         return self.root_name
+    
+    def get_XHTML(self, use_cache):
+        xhtml = super(AvitoXML,self).get_XHTML(use_cache)        
+        xhtml.set("target", "Avito.ru")
+        xhtml.set("formatVersion", "2")                
+        return xhtml
     
     def get_queryset(self):        
         MIN_PRICE_LIMIT = 100000  
@@ -178,12 +185,14 @@ class AvitoBaseXML(YandexPlusXML):
              }
         q = Estate.objects.all()
         q = q.filter(**f)
-        return q    
+        return q[:1]    
             
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
         sa = SalesAgent(estate)
-        offer = etree.Element("offer")        
+        offer = etree.Element("Ad") 
+        etree.SubElement(offer, "Category").text = self._wrapper.estate_category()
+        ############################       
         etree.SubElement(offer, "id").text = str(estate.id)        
         etree.SubElement(offer, "rooms_num").text = self._wrapper.rooms()         
         area = {'total': self._wrapper.area(), 'kitchen': self._wrapper.kuhnya_area(), 'living': self._wrapper.living_space()}

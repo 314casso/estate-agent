@@ -956,7 +956,7 @@ class Client(ProcessDeletedModel):
     client_type = models.ForeignKey(ClientType, verbose_name=_('ClientType'), on_delete=models.PROTECT)
     origin = models.ForeignKey(Origin, verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT) 
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255) 
+    note = models.TextField(_('Note'), blank=True, null=True) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     def __unicode__(self):
         return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
