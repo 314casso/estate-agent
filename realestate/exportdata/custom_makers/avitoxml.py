@@ -9,6 +9,7 @@ from exportdata.xml_makers import SalesAgent, number2xml
 from lxml import etree
 import random
 import re
+from exportdata.models import FeedLocality
 
 class AvitoWrapper(YandexWrapper):
     category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома', EstateTypeCategory.KVARTIRA:u'Квартиры'}
@@ -24,6 +25,18 @@ class AvitoWrapper(YandexWrapper):
         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE and self._basic_bidg:             
             return self.estate_type_com_mapper(self._basic_bidg.estate_type_id) 
         return super(AvitoWrapper, self).estate_category()
+    
+    def feed_locality(self, feed_name):
+        result = {}
+        try:
+            feed_locality = FeedLocality.objects.get(feed_name=feed_name, locality=self._estate.locality)
+            result['city'] = feed_locality.locality.name
+            return result            
+        except FeedLocality.DoesNotExist:
+            result['city'] = self._estate.locality.region.metropolis.name
+            result['locality'] = self._estate.locality.name
+            return result
+                
     
     def living_space(self):
         used_area = self._basic_bidg.used_area
@@ -159,7 +172,8 @@ class AvitoWrapper(YandexWrapper):
     
 class AvitoXML(YandexPlusXML):    
     name = 'avito'    
-    root_name = 'Ads'        
+    root_name = 'Ads'
+    encoding="windows-1251"       
     def __init__(self, avito_wrapper):
         super(AvitoXML,self).__init__(avito_wrapper)
         self.NSMAP = None
@@ -190,10 +204,23 @@ class AvitoXML(YandexPlusXML):
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
         sa = SalesAgent(estate)
-        offer = etree.Element("Ad") 
+        offer = etree.Element("Ad")
+        etree.SubElement(offer, "Id").text = str(estate.id) 
         etree.SubElement(offer, "Category").text = self._wrapper.estate_category()
+        etree.SubElement(offer, "Region").text = self._wrapper.region()
+        feed_locality = self._wrapper.feed_locality(self.name)
+        #if feed_locality is not None:
+        print "++++++++++++++++++"
+        print feed_locality
+        etree.SubElement(offer, "City").text = feed_locality['city']
+        if 'locality' in feed_locality:
+            etree.SubElement(offer, "Locality").text = feed_locality['locality']
+            
+            
+            
+            
         ############################       
-        etree.SubElement(offer, "id").text = str(estate.id)        
+                
         etree.SubElement(offer, "rooms_num").text = self._wrapper.rooms()         
         area = {'total': self._wrapper.area(), 'kitchen': self._wrapper.kuhnya_area(), 'living': self._wrapper.living_space()}
         etree.SubElement(offer, "area", area)

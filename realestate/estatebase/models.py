@@ -61,6 +61,7 @@ class Region(SimpleDict):
     regular_name = models.CharField(_('Region'), max_length=100, blank=True, null=True)
     regular_name_gent = models.CharField(_('Gent'), max_length=100, blank=True, null=True)    
     geo_group = models.ForeignKey(GeoGroup, verbose_name=_('GeoGroup'), on_delete=models.PROTECT)
+    metropolis = models.ForeignKey('Locality', verbose_name=_(u'Райцентр'), on_delete=models.PROTECT, related_name='metropolis_region', blank=True, null=True) 
     class Meta(SimpleDict.Meta):
         verbose_name = _('region')
         verbose_name_plural = _('regions')

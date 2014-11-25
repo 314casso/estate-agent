@@ -290,11 +290,12 @@ class BaseXML(object):
         if pickled_cache:
             cached_dict = pickle.loads(pickled_cache)
             if cached_dict['modificated'] == estate.history.modificated:
-                offer = etree.XML(cached_dict['str_xml'])
+                parser = etree.XMLParser(strip_cdata=False)
+                offer = etree.XML(cached_dict['str_xml'], parser)                
                 return offer
     
     def set_cache(self, estate, offer):
-        str_xml = etree.tostring(offer)
+        str_xml = etree.tostring(offer, encoding='unicode')         
         pickled_dict = {'str_xml':str_xml, 'modificated':estate.history.modificated}
         pickle_xml = pickle.dumps(pickled_dict)
         cache.set(self.get_cache_key(estate), pickle_xml, self.CACHE_TIME)
