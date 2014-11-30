@@ -36,7 +36,12 @@ class AvitoWrapper(YandexWrapper):
             result['city'] = self._estate.locality.region.metropolis.name
             result['locality'] = self._estate.locality.name
             return result
-                
+    
+    def ad_status(self):
+        return u'Free'             
+     
+    def offer_type(self):
+        return u'Продам'
     
     def living_space(self):
         used_area = self._basic_bidg.used_area
@@ -69,7 +74,7 @@ class AvitoWrapper(YandexWrapper):
         
     def new_flat(self):
         new_flat = super(AvitoWrapper,self).new_flat()        
-        return '2' if new_flat else '1'
+        return u'Новостройка' if new_flat else u'Вторичка'
     
     def sale_type(self):
         return 'F'
@@ -133,7 +138,7 @@ class AvitoWrapper(YandexWrapper):
         NO = '0'
         return YES if ipoteka else NO
     
-    def floor_type(self):
+    def house_type(self):
         '''
         1 – панельный
         2 – кирпичный
@@ -144,15 +149,13 @@ class AvitoWrapper(YandexWrapper):
         7 – сталинский
         '''
         mapper = { 
-                  WallConstrucionMapper.PANEL: '1', WallConstrucionMapper.KIRPICH: '2', WallConstrucionMapper.MONOLIT: '3', WallConstrucionMapper.BLOK: '5',
-                  WallConstrucionMapper.DEREVO: '6'
+                  WallConstrucionMapper.PANEL: u'Панельный', WallConstrucionMapper.KIRPICH: u'Кирпичный', 
+                  WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.BLOK: u'Блочный',
+                  WallConstrucionMapper.DEREVO: u'Деревянный'
                  }        
         wall_construcion_id = self._basic_bidg.wall_construcion_id
         if wall_construcion_id in mapper:
-            return mapper.get(wall_construcion_id)
-        if super(AvitoWrapper,self).new_flat():
-            return '3'
-        return '1'
+            return mapper.get(wall_construcion_id)        
     
     def locality(self):
         GOROD = 1
@@ -172,10 +175,9 @@ class AvitoWrapper(YandexWrapper):
     
 class AvitoXML(YandexPlusXML):    
     name = 'avito'    
-    root_name = 'Ads'
-    encoding="windows-1251"       
+    root_name = 'Ads'           
     def __init__(self, avito_wrapper):
-        super(AvitoXML,self).__init__(avito_wrapper)
+        super(AvitoXML,self).__init__(avito_wrapper)        
         self.NSMAP = None
         self.XHTML = ''
             
@@ -199,49 +201,52 @@ class AvitoXML(YandexPlusXML):
              }
         q = Estate.objects.all()
         q = q.filter(**f)
-        return q[:1]    
+        return q    
             
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
         sa = SalesAgent(estate)
         offer = etree.Element("Ad")
-        etree.SubElement(offer, "Id").text = str(estate.id) 
-        etree.SubElement(offer, "Category").text = self._wrapper.estate_category()
+        etree.SubElement(offer, "Id").text = str(estate.id)
+        category = self._wrapper.estate_category() 
+        etree.SubElement(offer, "Category").text = category
+        etree.SubElement(offer, "OperationType").text = self._wrapper.offer_type()
+        etree.SubElement(offer, "SaleRooms").text = self._wrapper.rooms()
+        etree.SubElement(offer, "Rooms").text = self._wrapper.rooms()
+        if category == u'Комнаты':             
+            etree.SubElement(offer, "Square").text = self._wrapper.area()
+        else:
+            etree.SubElement(offer, "Square").text = self._wrapper.living_space()
+        
+        if self._wrapper.floor():            
+            etree.SubElement(offer, "Floor").text = self._wrapper.floor()        
+        if self._wrapper.floors_total():
+            etree.SubElement(offer, "Floors").text = self._wrapper.floors_total()
+        
+        if self._wrapper.house_type():
+            etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()        
+
+        if estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+            etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
+                
         etree.SubElement(offer, "Region").text = self._wrapper.region()
         feed_locality = self._wrapper.feed_locality(self.name)
-        #if feed_locality is not None:
-        print "++++++++++++++++++"
-        print feed_locality
         etree.SubElement(offer, "City").text = feed_locality['city']
         if 'locality' in feed_locality:
             etree.SubElement(offer, "Locality").text = feed_locality['locality']
-            
-            
-            
-            
-        ############################       
-                
-        etree.SubElement(offer, "rooms_num").text = self._wrapper.rooms()         
-        area = {'total': self._wrapper.area(), 'kitchen': self._wrapper.kuhnya_area(), 'living': self._wrapper.living_space()}
-        etree.SubElement(offer, "area", area)
-        etree.SubElement(offer, "price", currency=self._wrapper.price.currency()).text = self._wrapper.price.value()        
-        options = {
-                   'object_type':  self._wrapper.new_flat(), 'sale_type':  self._wrapper.sale_type(),
-                   'phone':  self._wrapper.phone(), 'lift_p':  self._wrapper.lift_p(), 'lift_g':  self._wrapper.lift_g(),
-                   'balcon':  self._wrapper.balcon(), 'lodgia':  self._wrapper.lodgia(), 'su_s':  self._wrapper.su_s(), 
-                   'su_r':  self._wrapper.su_r(), 'windows':  self._wrapper.windows(), 'ipoteka':  self._wrapper.ipoteka(),
-                   }
-        etree.SubElement(offer, "options", options)
-        floor = {'total': self._wrapper.floors_total(), 'type': self._wrapper.floor_type()}      
-        etree.SubElement(offer, "floor", floor).text = self._wrapper.floors_total()
-        etree.SubElement(offer, "note").text = etree.CDATA(self._wrapper.description())
-        etree.SubElement(offer, "phone").text = ';'.join([re.sub(r'\D','',phone) for phone in sa.phones()])
-        address = {'admin_area': '72', 'locality': self._wrapper.locality(), 'street': self._wrapper.street()}
-        etree.SubElement(offer, "address", address)
+        
+        etree.SubElement(offer, "District").text = self._wrapper.district()                            
+        etree.SubElement(offer, "Description").text = self._wrapper.description()
+        etree.SubElement(offer, "Price").text = self._wrapper.price.value()
         images = self._wrapper.images()
         if images:
-            for image in images:
-                etree.SubElement(offer, "photo").text = image
-        return offer
-
-    
+            images_root = etree.SubElement(offer, "Images")        
+            if images:
+                for image in images:
+                    image_node = etree.SubElement(images_root, "Image")
+                    image_node.set("name", image)
+        etree.SubElement(offer, "CompanyName").text = sa.organization()
+        etree.SubElement(offer, "EMail").text = sa.email()
+        etree.SubElement(offer, "ContactPhone").text = sa.phones()[0]
+        etree.SubElement(offer, "AdStatus").text = self._wrapper.ad_status()
+        return offer   
