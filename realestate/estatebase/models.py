@@ -230,6 +230,7 @@ class EstateParam(OrderedModel):
     '''
     POSTONSITE = 1
     IPOTEKA = 2
+    PAYEXPORT = 16
     name = models.CharField(_('Name'), max_length=100)    
     def __unicode__(self):
         return u'%s' % self.name
