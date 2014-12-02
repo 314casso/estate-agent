@@ -198,7 +198,7 @@ class AvitoXML(YandexPlusXML):
              'agency_price__gte': MIN_PRICE_LIMIT,
              'estate_category_id': EstateTypeCategory.KVARTIRA,
              'street__isnull': False,
-             'estate_params__exact': EstateParam.PAYEXPORT             
+             'estate_params__exact': EstateParam.PAYEXPORT,             
              }
         q = Estate.objects.all()
         q = q.filter(**f)
@@ -237,6 +237,7 @@ class AvitoXML(YandexPlusXML):
             etree.SubElement(offer, "Locality").text = feed_locality['locality']
         
         etree.SubElement(offer, "District").text = self._wrapper.district()                            
+        etree.SubElement(offer, "Street").text = self._wrapper.address()
         etree.SubElement(offer, "Description").text = self._wrapper.description()
         etree.SubElement(offer, "Price").text = self._wrapper.price.value()
         images = self._wrapper.images()
