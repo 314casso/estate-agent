@@ -12,7 +12,10 @@ import re
 from exportdata.models import FeedLocality
 
 class AvitoWrapper(YandexWrapper):
-    category_mapper =  {EstateTypeCategory.KVARTIRAU4ASTOK:u'часть дома', EstateTypeCategory.KVARTIRA:u'Квартиры'}
+    category_mapper =  {
+                        EstateTypeCategory.KVARTIRAU4ASTOK:u'Дома, дачи, коттеджи', EstateTypeCategory.KVARTIRA:u'Квартиры',
+                        EstateTypeCategory.DOM:u'Дома, дачи, коттеджи'
+                        }
     type_mapper = {EstateTypeMapper.KOMNATA:u'Комнаты'}
     def estate_type(self):        
         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
@@ -21,11 +24,32 @@ class AvitoWrapper(YandexWrapper):
             return u'коммерческая'
         return u'жилая'
     
-    def estate_category(self):
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE and self._basic_bidg:             
-            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id) 
-        return super(AvitoWrapper, self).estate_category()
+    def distance_to_city(self):
+        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+            return
+        return u'0'
+        
+    def sale_rooms(self):
+        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+            self.rooms()
+        
     
+    def object_type(self):
+        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+            return
+        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
+            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id)             
+        type_mapper = {
+                       EstateTypeMapper.DACHA:u'Дача',
+                       EstateTypeMapper.DOM:u'Дом',
+                       EstateTypeMapper.POLDOMA:u'Таунхаус',
+                       EstateTypeMapper.KVARTIRASUCHASTKOM:u'Таунхаус',
+                       EstateTypeMapper.KOTTEDZH:u'Коттедж',
+                       EstateTypeMapper.TAUNHAUS:u'Таунхаус',
+                       EstateTypeMapper.DUPLEKS:u'Таунхаус',                       
+                       }
+        return type_mapper.get(self._basic_bidg.estate_type_id) 
+            
     def feed_locality(self, feed_name):
         result = {}
         try:
@@ -196,7 +220,7 @@ class AvitoXML(YandexPlusXML):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,
-             'estate_category_id': EstateTypeCategory.KVARTIRA,
+             'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM),
              'street__isnull': False,
              'estate_params__exact': EstateParam.PAYEXPORT,             
              }
@@ -212,13 +236,20 @@ class AvitoXML(YandexPlusXML):
         category = self._wrapper.estate_category() 
         etree.SubElement(offer, "Category").text = category
         etree.SubElement(offer, "OperationType").text = self._wrapper.offer_type()
-        etree.SubElement(offer, "SaleRooms").text = self._wrapper.rooms()
+        if self._wrapper.sale_rooms():
+            etree.SubElement(offer, "SaleRooms").text = self._wrapper.sale_rooms()
         etree.SubElement(offer, "Rooms").text = self._wrapper.rooms()
         if category == u'Комнаты':             
-            etree.SubElement(offer, "Square").text = self._wrapper.area()
-        else:
             etree.SubElement(offer, "Square").text = self._wrapper.living_space()
+        else:
+            etree.SubElement(offer, "Square").text = self._wrapper.area()
         
+        if self._wrapper.lot_area():
+            etree.SubElement(offer, "LandArea").text = self._wrapper.lot_area()
+            
+        if self._wrapper.distance_to_city() is not None:
+            etree.SubElement(offer, "DistanceToCity").text = self._wrapper.distance_to_city()
+                
         if self._wrapper.floor():            
             etree.SubElement(offer, "Floor").text = self._wrapper.floor()        
         if self._wrapper.floors_total():
@@ -237,7 +268,11 @@ class AvitoXML(YandexPlusXML):
             etree.SubElement(offer, "Locality").text = feed_locality['locality']
         
         etree.SubElement(offer, "District").text = self._wrapper.district()                            
-        etree.SubElement(offer, "Street").text = self._wrapper.address()
+        etree.SubElement(offer, "Street").text = self._wrapper.street()
+        
+        etree.SubElement(offer, "ObjectType").text = self._wrapper.object_type()
+        
+        
         etree.SubElement(offer, "Description").text = self._wrapper.description()
         etree.SubElement(offer, "Price").text = self._wrapper.price.value()
         images = self._wrapper.images()
@@ -246,7 +281,7 @@ class AvitoXML(YandexPlusXML):
             if images:
                 for image in images:
                     image_node = etree.SubElement(images_root, "Image")
-                    image_node.set("name", image)
+                    image_node.set("url", image)
         etree.SubElement(offer, "CompanyName").text = sa.organization()
         etree.SubElement(offer, "EMail").text = sa.email()
         etree.SubElement(offer, "ContactPhone").text = sa.phones()[0]
