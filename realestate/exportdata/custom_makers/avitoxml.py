@@ -183,7 +183,6 @@ class AvitoWrapper(YandexWrapper):
                       WallConstrucionMapper.BLOK:u'Пеноблоки', WallConstrucionMapper.SHLAKOBLOK:u'Пеноблоки'
                      }        
             wall_construcion_id = self._basic_bidg.wall_construcion_id
-            print wall_construcion_id
             if wall_construcion_id in mapper:
                 return mapper.get(wall_construcion_id)
     
