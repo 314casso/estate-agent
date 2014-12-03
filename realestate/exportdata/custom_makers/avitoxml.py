@@ -163,23 +163,29 @@ class AvitoWrapper(YandexWrapper):
         return YES if ipoteka else NO
     
     def house_type(self):
-        '''
-        1 – панельный
-        2 – кирпичный
-        3 – монолитный
-        4 – кирпично-монолитный
-        5 – блочный
-        6 – деревянный
-        7 – сталинский
-        '''
-        mapper = { 
-                  WallConstrucionMapper.PANEL: u'Панельный', WallConstrucionMapper.KIRPICH: u'Кирпичный', 
-                  WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.BLOK: u'Блочный',
-                  WallConstrucionMapper.DEREVO: u'Деревянный'
-                 }        
-        wall_construcion_id = self._basic_bidg.wall_construcion_id
-        if wall_construcion_id in mapper:
-            return mapper.get(wall_construcion_id)        
+        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
+            mapper = { 
+                      WallConstrucionMapper.PANEL: u'Панельный', WallConstrucionMapper.KIRPICH: u'Кирпичный', 
+                      WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.BLOK: u'Блочный',
+                      WallConstrucionMapper.DEREVO: u'Деревянный'
+                     }        
+            wall_construcion_id = self._basic_bidg.wall_construcion_id
+            if wall_construcion_id in mapper:
+                return mapper.get(wall_construcion_id)        
+            
+    def walls_type(self):
+        if not self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
+            mapper = { 
+                      WallConstrucionMapper.PANEL: u'Ж/б панели', WallConstrucionMapper.KIRPICH: u'Кирпич', 
+                      WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.PENOBLOK: u'Пеноблоки', 
+                      WallConstrucionMapper.PENOBETON:u'Пеноблоки', WallConstrucionMapper.DEREVO: u'Бревно', 
+                      WallConstrucionMapper.BRUS:u'Брус', WallConstrucionMapper.METALL:u'Металл',
+                      WallConstrucionMapper.BLOK:u'Пеноблоки', WallConstrucionMapper.SHLAKOBLOK:u'Пеноблоки'
+                     }        
+            wall_construcion_id = self._basic_bidg.wall_construcion_id
+            print wall_construcion_id
+            if wall_construcion_id in mapper:
+                return mapper.get(wall_construcion_id)
     
     def locality(self):
         GOROD = 1
@@ -256,7 +262,10 @@ class AvitoXML(YandexPlusXML):
             etree.SubElement(offer, "Floors").text = self._wrapper.floors_total()
         
         if self._wrapper.house_type():
-            etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()        
+            etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()
+        
+        if self._wrapper.walls_type():
+            etree.SubElement(offer, "WallsType").text = self._wrapper.walls_type()
 
         if estate.estate_category_id == EstateTypeCategory.KVARTIRA:
             etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
