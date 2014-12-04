@@ -93,7 +93,7 @@ class EstateBaseWrapper(object):
         def unit(self):
             return None
     
-    def images(self):        
+    def images(self, clear_watermark=False):        
         from urlparse import urljoin       
         from sorl.thumbnail import get_thumbnail              
         images = self._estate.images.all()[:4]
@@ -101,7 +101,7 @@ class EstateBaseWrapper(object):
             result = []
             for img in images:
                 try:               
-                    im = get_thumbnail(img.image.file, '800x600')
+                    im = get_thumbnail(img.image.file, '800x600', clear_watermark=clear_watermark)
                     head, tail = os.path.split(im.name)  # @UnusedVariable                                
                     result.append(urljoin(self._domain, im.url))                  
                 except IOError:

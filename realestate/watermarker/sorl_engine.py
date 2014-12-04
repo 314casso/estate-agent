@@ -20,9 +20,11 @@ class WatermarkEngine(Engine):
     Add watermark to sorl.thumbnail pil engine
     '''
     def create(self, image, geometry, options):
-        image = super(WatermarkEngine, self).create(image, geometry, options)
-        if 'watermark' in options or WATERMARK_FORCE:
-            text = options.get('watermark', WATERMARK_FORCE)
-            if max(geometry)>WATERMARK_MIN_SIZE:
-                image = watermark(image, text ,**WATERMARK_OPTIONS)
+        image = super(WatermarkEngine, self).create(image, geometry, options)        
+        clear_watermark = options.get('clear_watermark', False)
+        if not clear_watermark:
+            if 'watermark' in options or WATERMARK_FORCE:
+                text = options.get('watermark', WATERMARK_FORCE)
+                if max(geometry)>WATERMARK_MIN_SIZE:
+                    image = watermark(image, text ,**WATERMARK_OPTIONS)
         return image

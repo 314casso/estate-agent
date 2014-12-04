@@ -14,7 +14,7 @@ from exportdata.models import FeedLocality
 class AvitoWrapper(YandexWrapper):
     category_mapper =  {
                         EstateTypeCategory.KVARTIRAU4ASTOK:u'Дома, дачи, коттеджи', EstateTypeCategory.KVARTIRA:u'Квартиры',
-                        EstateTypeCategory.DOM:u'Дома, дачи, коттеджи'
+                        EstateTypeCategory.DOM:u'Дома, дачи, коттеджи', EstateTypeCategory.U4ASTOK: u'Земельные участки',
                         }
     type_mapper = {EstateTypeMapper.KOMNATA:u'Комнаты'}
     def estate_type(self):        
@@ -38,17 +38,27 @@ class AvitoWrapper(YandexWrapper):
         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
             return
         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id)             
-        type_mapper = {
-                       EstateTypeMapper.DACHA:u'Дача',
-                       EstateTypeMapper.DOM:u'Дом',
-                       EstateTypeMapper.POLDOMA:u'Таунхаус',
-                       EstateTypeMapper.KVARTIRASUCHASTKOM:u'Таунхаус',
-                       EstateTypeMapper.KOTTEDZH:u'Коттедж',
-                       EstateTypeMapper.TAUNHAUS:u'Таунхаус',
-                       EstateTypeMapper.DUPLEKS:u'Таунхаус',                       
-                       }
-        return type_mapper.get(self._basic_bidg.estate_type_id) 
+            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id)
+        if self._estate.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK):             
+            type_mapper = {
+                           EstateTypeMapper.DACHA:u'Дача',
+                           EstateTypeMapper.DOM:u'Дом',
+                           EstateTypeMapper.POLDOMA:u'Таунхаус',
+                           EstateTypeMapper.KVARTIRASUCHASTKOM:u'Таунхаус',
+                           EstateTypeMapper.KOTTEDZH:u'Коттедж',
+                           EstateTypeMapper.TAUNHAUS:u'Таунхаус',
+                           EstateTypeMapper.DUPLEKS:u'Таунхаус',                       
+                           }
+            return type_mapper.get(self._basic_bidg.estate_type_id) 
+        if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK:
+            type_mapper = {
+                           EstateTypeMapper.DACHNYYUCHASTOK :u'Сельхозназначения (СНТ, ДНП)',
+                           EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA:u'Поселений (ИЖС)',
+                           EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA:u'Сельхозназначения (СНТ, ДНП)',
+                           EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA:u'Промназначения',
+                           EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA:u'Промназначения',                                                  
+                           }
+            return type_mapper.get(self._basic_stead.estate_type_id)
             
     def feed_locality(self, feed_name):
         result = {}
@@ -174,13 +184,12 @@ class AvitoWrapper(YandexWrapper):
                 return mapper.get(wall_construcion_id)        
             
     def walls_type(self):
-        if not self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
+        if not self._estate.estate_category_id == EstateTypeCategory.KVARTIRA and self._basic_bidg:    
             mapper = { 
                       WallConstrucionMapper.PANEL: u'Ж/б панели', WallConstrucionMapper.KIRPICH: u'Кирпич', 
-                      WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.PENOBLOK: u'Пеноблоки', 
-                      WallConstrucionMapper.PENOBETON:u'Пеноблоки', WallConstrucionMapper.DEREVO: u'Бревно', 
-                      WallConstrucionMapper.BRUS:u'Брус', WallConstrucionMapper.METALL:u'Металл',
-                      WallConstrucionMapper.BLOK:u'Пеноблоки', WallConstrucionMapper.SHLAKOBLOK:u'Пеноблоки'
+                      WallConstrucionMapper.PENOBLOK: u'Пеноблоки', WallConstrucionMapper.PENOBETON:u'Пеноблоки', 
+                      WallConstrucionMapper.DEREVO: u'Бревно', WallConstrucionMapper.BRUS:u'Брус', 
+                      WallConstrucionMapper.METALL:u'Металл', WallConstrucionMapper.BLOK:u'Пеноблоки', 
                      }        
             wall_construcion_id = self._basic_bidg.wall_construcion_id
             if wall_construcion_id in mapper:
@@ -225,7 +234,7 @@ class AvitoXML(YandexPlusXML):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,
-             'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM),
+             'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK, EstateTypeCategory.U4ASTOK),
              'street__isnull': False,
              'estate_params__exact': EstateParam.PAYEXPORT,             
              }
@@ -243,11 +252,14 @@ class AvitoXML(YandexPlusXML):
         etree.SubElement(offer, "OperationType").text = self._wrapper.offer_type()
         if self._wrapper.sale_rooms():
             etree.SubElement(offer, "SaleRooms").text = self._wrapper.sale_rooms()
-        etree.SubElement(offer, "Rooms").text = self._wrapper.rooms()
+        if self._wrapper.rooms():
+            etree.SubElement(offer, "Rooms").text = self._wrapper.rooms()
         if category == u'Комнаты':             
-            etree.SubElement(offer, "Square").text = self._wrapper.living_space()
+            if self._wrapper.living_space():
+                etree.SubElement(offer, "Square").text = self._wrapper.living_space()
         else:
-            etree.SubElement(offer, "Square").text = self._wrapper.area()
+            if self._wrapper.area():
+                etree.SubElement(offer, "Square").text = self._wrapper.area()
         
         if self._wrapper.lot_area():
             etree.SubElement(offer, "LandArea").text = self._wrapper.lot_area()
@@ -268,6 +280,8 @@ class AvitoXML(YandexPlusXML):
 
         if estate.estate_category_id == EstateTypeCategory.KVARTIRA:
             etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
+        
+        
                 
         etree.SubElement(offer, "Region").text = self._wrapper.region()
         feed_locality = self._wrapper.feed_locality(self.name)
@@ -283,7 +297,7 @@ class AvitoXML(YandexPlusXML):
         
         etree.SubElement(offer, "Description").text = self._wrapper.description()
         etree.SubElement(offer, "Price").text = self._wrapper.price.value()
-        images = self._wrapper.images()
+        images = self._wrapper.images(True)
         if images:
             images_root = etree.SubElement(offer, "Images")        
             if images:
