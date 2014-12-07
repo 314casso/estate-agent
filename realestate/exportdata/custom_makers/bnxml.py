@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from estatebase.models import EstateTypeCategory
-from exportdata.custom_makers.yaxml import YandexWrapper
-from exportdata.custom_makers.yaxmlplus import YandexPlusXML
+from exportdata.custom_makers.yaxmlplus import YandexPlusXML, YandexPlusWrapper
 from exportdata.utils import EstateTypeMapper
 
-class BnWrapper(YandexWrapper):
+class BnWrapper(YandexPlusWrapper):
     def estate_category(self):
         if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK and self._basic_stead:             
             return self.estate_stead_mapper(self._basic_stead.estate_type_id) 
@@ -28,5 +27,3 @@ class BnXML(YandexPlusXML):
     name = 'bn'
     def __init__(self, bn_wrapper):
         super(BnXML,self).__init__(bn_wrapper)         
-      
-    
