@@ -15,30 +15,22 @@ class AvitoWrapper(YandexWrapper):
     category_mapper =  {
                         EstateTypeCategory.KVARTIRAU4ASTOK:u'Дома, дачи, коттеджи', EstateTypeCategory.KVARTIRA:u'Квартиры',
                         EstateTypeCategory.DOM:u'Дома, дачи, коттеджи', EstateTypeCategory.U4ASTOK: u'Земельные участки',
+                        EstateTypeCategory.COMMERCE: u'Коммерческая недвижимость',
                         }
-    type_mapper = {EstateTypeMapper.KOMNATA:u'Комнаты'}
-    def estate_type(self):        
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            return u'коммерческая'
-        if self._basic_stead and self._basic_stead.estate_type_id in COMMERCE_STEADS:
-            return u'коммерческая'
-        return u'жилая'
+    type_mapper = {EstateTypeMapper.KOMNATA:u'Комнаты'}    
     
     def distance_to_city(self):
-        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+        if self._estate.estate_category_id in (EstateTypeCategory.KVARTIRA, EstateTypeCategory.COMMERCE):
             return
         return u'0'
         
     def sale_rooms(self):
         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
             self.rooms()
-        
     
     def object_type(self):
         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-            return
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id)
+            return        
         if self._estate.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK):             
             type_mapper = {
                            EstateTypeMapper.DACHA:u'Дача',
@@ -59,6 +51,34 @@ class AvitoWrapper(YandexWrapper):
                            EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA:u'Промназначения',                                                  
                            }
             return type_mapper.get(self._basic_stead.estate_type_id)
+        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
+            DEFAULT = u'Помещение свободного назначения';
+            estate_type_id = None
+            if self._basic_bidg:
+                estate_type_id = self._basic_bidg.estate_type_id
+            elif self._basic_stead:
+                estate_type_id = self._basic_stead.estate_type_id
+            type_mapper = {
+                           EstateTypeMapper.ADMINISTRATIVNOTORGOVOEZDANIE :u'Торговое помещение',                                                                            
+                           EstateTypeMapper.TORGOVYYPAVILON :u'Торговое помещение',
+                           EstateTypeMapper.MAGAZIN :u'Торговое помещение',
+                           EstateTypeMapper.GOSTINITSA :u'Гостиница',
+                           EstateTypeMapper.GOSTEVOYDOM :u'Гостиница',
+                           EstateTypeMapper.GOSTEVYEKOMNATY :u'Гостиница',
+                           EstateTypeMapper.GOSTINICHNYYKOMPLEKS :u'Гостиница',
+                           EstateTypeMapper.PANSIONAT :u'Гостиница',
+                           EstateTypeMapper.OTEL :u'Гостиница',
+                           EstateTypeMapper.MINIGOSTINITSA :u'Гостиница',
+                           EstateTypeMapper.SANATORIY :u'Гостиница',
+                           EstateTypeMapper.OFIS :u'Офисное помещение',
+                           EstateTypeMapper.ADMINISTRATIVNOEZDANIE :u'Офисное помещение',
+                           EstateTypeMapper.RESTORAN :u'Ресторан, кафе',
+                           EstateTypeMapper.KAFE :u'Ресторан, кафе',
+                           EstateTypeMapper.SALONKRASOTY :u'Салон красоты',
+                           EstateTypeMapper.SKLAD :u'Складское помещение',
+                           EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'Складское помещение',                           
+                           }
+            return type_mapper.get(estate_type_id, DEFAULT)
             
     def feed_locality(self, feed_name):
         result = {}
@@ -83,94 +103,12 @@ class AvitoWrapper(YandexWrapper):
             return number2xml(used_area)        
         return number2xml(round(random.uniform(0.55, 0.62) * round(self._basic_bidg.total_area), 1))
             
-    def kuhnya_area(self):
-        KUHNYA_AREA_DEFAULT = round(random.uniform(9, 12), 1)        
-        kuhnya_area = self._basic_bidg.get_kuhnya_area()
-        result = kuhnya_area if kuhnya_area else KUHNYA_AREA_DEFAULT
-        return number2xml(result)
-    
-    def estate_type_com_mapper(self, estate_type_id):
-        DEFAULT = u'свободного назначения'
-        mapper = {
-                  EstateTypeMapper.SKLAD : u'склад',
-                  EstateTypeMapper.KAFE : u'общепит',
-                  EstateTypeMapper.RESTORAN : u'общепит',
-                  EstateTypeMapper.TORGOVYYPAVILON : u'торговое помещение',
-                  EstateTypeMapper.MAGAZIN : u'торговое помещение',
-                  EstateTypeMapper.GOSTINICHNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA : u'готовый бизнес',
-                  EstateTypeMapper.KONNOSPORTIVNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROMYSHLENNAYABAZA : u'готовый бизнес',
-                  }    
-        if estate_type_id in mapper:
-            return mapper[estate_type_id]
-        return DEFAULT
-        
     def new_flat(self):
         new_flat = super(AvitoWrapper,self).new_flat()        
         return u'Новостройка' if new_flat else u'Вторичка'
     
-    def sale_type(self):
-        return 'F'
-    
-    def phone(self):
-        phone = super(AvitoWrapper,self).phone()        
-        return 'yes' if phone else 'no'
-    
-    def lift_p(self):
-        if super(AvitoWrapper,self).new_flat():
-            return '1'
-        lift = super(AvitoWrapper,self).lift()        
-        return '1' if lift else '0'
-        
-    def lift_g(self):
-        if super(AvitoWrapper,self).new_flat():
-            return '1'
-        return '0'
-    
     def format_int_result(self, value, if_none='0'):
         return number2xml(value) if value else if_none
-    
-    def balcon(self):
-        return self.format_int_result(self._basic_bidg.get_balcons_count())
-    
-    def lodgia(self):
-        return self.format_int_result(self._basic_bidg.get_loggias_count())
-    
-    def su_s(self):
-        '''
-        количество совмещенных санузлов
-        '''
-        return self.format_int_result(self._basic_bidg.get_sanuzel_sovmest_count())
-    
-    def su_r(self):
-        '''
-        количество раздельных санузлов
-        '''       
-        sanuzel_razdel_count = self._basic_bidg.get_sanuzel_razdel_count()
-        if not sanuzel_razdel_count and not self._basic_bidg.get_sanuzel_sovmest_count():
-            return '1'             
-        return self.format_int_result(sanuzel_razdel_count)
-    
-    def windows(self):
-        '''
-        куда выходят окна
-        '''
-        #         TODO:
-        DVOR = '1'
-        ULITSTA = '2'
-        DVOR_ULITSTA = '3'
-        windows_list = (DVOR, ULITSTA, DVOR_ULITSTA)  
-        return random.choice(windows_list)
-    
-    def ipoteka(self):
-        '''
-        возможность ипотеки
-        '''
-        ipoteka = len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0
-        YES = '1'
-        NO = '0'
-        return YES if ipoteka else NO
     
     def house_type(self):
         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
@@ -209,7 +147,6 @@ class AvitoWrapper(YandexWrapper):
     
     def street(self):
         return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)
-             
     
 class AvitoXML(YandexPlusXML):    
     name = 'avito'    
@@ -234,7 +171,8 @@ class AvitoXML(YandexPlusXML):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,
-             'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK, EstateTypeCategory.U4ASTOK),
+             'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK, 
+                                        EstateTypeCategory.U4ASTOK, EstateTypeCategory.COMMERCE),
              'street__isnull': False,
              'estate_params__exact': EstateParam.PAYEXPORT,             
              }
@@ -266,22 +204,19 @@ class AvitoXML(YandexPlusXML):
             
         if self._wrapper.distance_to_city() is not None:
             etree.SubElement(offer, "DistanceToCity").text = self._wrapper.distance_to_city()
-                
-        if self._wrapper.floor():            
-            etree.SubElement(offer, "Floor").text = self._wrapper.floor()        
-        if self._wrapper.floors_total():
-            etree.SubElement(offer, "Floors").text = self._wrapper.floors_total()
         
-        if self._wrapper.house_type():
-            etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()
-        
-        if self._wrapper.walls_type():
-            etree.SubElement(offer, "WallsType").text = self._wrapper.walls_type()
+        if estate.estate_category_id != EstateTypeCategory.COMMERCE:                
+            if self._wrapper.floor():            
+                etree.SubElement(offer, "Floor").text = self._wrapper.floor()        
+            if self._wrapper.floors_total():
+                etree.SubElement(offer, "Floors").text = self._wrapper.floors_total()            
+            if self._wrapper.house_type():
+                etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()            
+            if self._wrapper.walls_type():
+                etree.SubElement(offer, "WallsType").text = self._wrapper.walls_type()
 
         if estate.estate_category_id == EstateTypeCategory.KVARTIRA:
             etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
-        
-        
                 
         etree.SubElement(offer, "Region").text = self._wrapper.region()
         feed_locality = self._wrapper.feed_locality(self.name)

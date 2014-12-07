@@ -6,6 +6,7 @@ import pinject
 from exportdata.custom_makers.domexxml import DomexXML
 from exportdata.custom_makers.cianxml import CianFlatsXML
 from exportdata.custom_makers.avitoxml import AvitoXML
+from exportdata.custom_makers.bnxml import BnXML
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -22,6 +23,7 @@ class Command(BaseCommand):
                    DomexXML.name : DomexXML,
                    CianFlatsXML.name : CianFlatsXML,
                    AvitoXML.name : AvitoXML,
+                   BnXML.name : BnXML,
                  }
         if arg in mapper:
             return mapper[arg]
