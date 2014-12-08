@@ -4,10 +4,9 @@ from exportdata.custom_makers.yaxmlplus import YandexPlusXML, YandexPlusWrapper
 from exportdata.utils import EstateTypeMapper
 
 class BnWrapper(YandexPlusWrapper):
-    def estate_category(self):
-        if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK and self._basic_stead:             
-            return self.estate_stead_mapper(self._basic_stead.estate_type_id) 
-        return super(BnWrapper, self).estate_category()
+    def lot_type(self):        
+        estate_type_id = self._basic_stead.estate_type_id if self._basic_stead else None 
+        return self.estate_stead_mapper(estate_type_id)
     
     def estate_stead_mapper(self, estate_type_id):
         DEFAULT = u'свободного назначения'
