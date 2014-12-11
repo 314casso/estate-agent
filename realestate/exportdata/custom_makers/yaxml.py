@@ -154,7 +154,7 @@ class YandexXML(BaseXML):
         return offer    
 
     def get_queryset(self):
-        MIN_PRICE_LIMIT = 100000   
+        MIN_PRICE_LIMIT = 100000  
         allowed_categories = (EstateTypeCategory.DOM,EstateTypeCategory.U4ASTOK,EstateTypeCategory.KVARTIRA,EstateTypeCategory.KVARTIRAU4ASTOK)        
         f = {
              'validity':Estate.VALID,
