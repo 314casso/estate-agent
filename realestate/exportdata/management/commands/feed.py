@@ -4,7 +4,7 @@ from exportdata.custom_makers.yaxml import YandexXML
 from optparse import make_option
 import pinject
 from exportdata.custom_makers.domexxml import DomexXML
-from exportdata.custom_makers.cianxml import CianFlatsXML
+from exportdata.custom_makers.cianxml import CianFlatsXML, CianCommerceXML
 from exportdata.custom_makers.avitoxml import AvitoXML
 from exportdata.custom_makers.bnxml import BnXML
 
@@ -22,6 +22,7 @@ class Command(BaseCommand):
                    YandexXML.name : YandexXML,
                    DomexXML.name : DomexXML,
                    CianFlatsXML.name : CianFlatsXML,
+                   CianCommerceXML.name : CianCommerceXML,
                    AvitoXML.name : AvitoXML,
                    BnXML.name : BnXML,
                  }

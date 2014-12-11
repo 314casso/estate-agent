@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import Estate, Locality, EstateTypeCategory, EstateType
+from estatebase.models import Estate, Locality, EstateTypeCategory, EstateType,\
+    EstateParam
 import datetime
 from exportdata.xml_makers import EstateBaseWrapper, BaseXML, SalesAgent
 from lxml import etree
@@ -159,7 +160,9 @@ class YandexXML(BaseXML):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),
              'estate_category__in': allowed_categories,
-             'agency_price__gte': MIN_PRICE_LIMIT,             
+             'agency_price__gte': MIN_PRICE_LIMIT,
+             'estate_params__exact': EstateParam.POSTONSITE,
+             'street__isnull': False,
              }
         q = Estate.objects.all()
         q = q.filter(**f)        

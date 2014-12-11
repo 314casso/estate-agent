@@ -11,18 +11,6 @@ import random
 import re
 
 class CianWrapper(YandexWrapper):
-    def estate_type(self):        
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            return u'коммерческая'
-        if self._basic_stead and self._basic_stead.estate_type_id in COMMERCE_STEADS:
-            return u'коммерческая'
-        return u'жилая'
-    
-    def estate_category(self):
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE and self._basic_bidg:             
-            return self.estate_type_com_mapper(self._basic_bidg.estate_type_id) 
-        return super(CianWrapper, self).estate_category()
-    
     def living_space(self):
         used_area = self._basic_bidg.used_area
         if used_area:
@@ -34,23 +22,6 @@ class CianWrapper(YandexWrapper):
         kuhnya_area = self._basic_bidg.get_kuhnya_area()
         result = kuhnya_area if kuhnya_area else KUHNYA_AREA_DEFAULT
         return number2xml(result)
-    
-    def estate_type_com_mapper(self, estate_type_id):
-        DEFAULT = u'свободного назначения'
-        mapper = {
-                  EstateTypeMapper.SKLAD : u'склад',
-                  EstateTypeMapper.KAFE : u'общепит',
-                  EstateTypeMapper.RESTORAN : u'общепит',
-                  EstateTypeMapper.TORGOVYYPAVILON : u'торговое помещение',
-                  EstateTypeMapper.MAGAZIN : u'торговое помещение',
-                  EstateTypeMapper.GOSTINICHNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA : u'готовый бизнес',
-                  EstateTypeMapper.KONNOSPORTIVNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROMYSHLENNAYABAZA : u'готовый бизнес',
-                  }    
-        if estate_type_id in mapper:
-            return mapper[estate_type_id]
-        return DEFAULT
         
     def new_flat(self):
         new_flat = super(CianWrapper,self).new_flat()        
@@ -209,7 +180,62 @@ class CianFlatsXML(YandexPlusXML):
                 etree.SubElement(offer, "photo").text = image
         return offer
 
+class CianWrapperCom(CianWrapper):
+    def commerce_type(self):        
+        DEFAULT = u'свободного назначения'
+        estate_type_id = self._basic_bidg.estate_type_id if self._basic_bidg else None 
+        mapper = {
+                  EstateTypeMapper.SKLAD : u'склад',
+                  EstateTypeMapper.KAFE : u'общепит',
+                  EstateTypeMapper.RESTORAN : u'общепит',
+                  EstateTypeMapper.TORGOVYYPAVILON : u'торговое помещение',
+                  EstateTypeMapper.MAGAZIN : u'торговое помещение',
+                  EstateTypeMapper.GOSTINICHNYYKOMPLEKS : u'готовый бизнес',
+                  EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA : u'готовый бизнес',
+                  EstateTypeMapper.KONNOSPORTIVNYYKOMPLEKS : u'готовый бизнес',
+                  EstateTypeMapper.PROMYSHLENNAYABAZA : u'готовый бизнес',
+                  }    
+        if estate_type_id in mapper:
+            return mapper[estate_type_id]
+        return DEFAULT
+    
+    def contract_type(self):
+        return '4'
+
 class CianCommerceXML(CianFlatsXML):
     name = 'ciancommerce'    
     root_name = 'commerce'
+    def __init__(self, cian_wrapper_com):
+        super(CianCommerceXML,self).__init__(cian_wrapper_com)
+    def get_queryset(self):        
+        MIN_PRICE_LIMIT = 100000  
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),             
+             'agency_price__gte': MIN_PRICE_LIMIT,
+             'estate_category_id': EstateTypeCategory.COMMERCE,
+             'street__isnull': False, 
+             'estate_params__exact': EstateParam.PAYEXPORT,            
+             }
+        q = Estate.objects.all()
+        q = q.filter(**f)
+        return q[:1] 
     
+    def create_offer(self, estate):                
+        self._wrapper.set_estate(estate)
+        sa = SalesAgent(estate)
+        offer = etree.Element("offer")        
+        etree.SubElement(offer, "id").text = str(estate.id)
+        etree.SubElement(offer, "commerce_type").text = self._wrapper.commerce_type()
+        etree.SubElement(offer, "contract_type").text = self._wrapper.contract_type()
+        
+        
+        etree.SubElement(offer, "note").text = etree.CDATA(self._wrapper.description())
+        etree.SubElement(offer, "phone").text = ';'.join([re.sub(r'\D','',phone) for phone in sa.phones()])
+        address = {'admin_area': '72', 'locality': self._wrapper.locality(), 'street': self._wrapper.street()}
+        etree.SubElement(offer, "address", address)
+        images = self._wrapper.images()
+        if images:
+            for image in images:
+                etree.SubElement(offer, "photo").text = image
+        return offer
