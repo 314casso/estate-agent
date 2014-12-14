@@ -89,6 +89,16 @@ class CianWrapper(YandexWrapper):
         NO = '0'
         return YES if ipoteka else NO
     
+    def split_rooms(self):
+        if self._basic_bidg:
+            room_count = self._basic_bidg.room_count
+            if room_count > 1:
+                rooms = []
+                              
+                
+        return self._basic_bidg.total_area             
+         
+    
     def floor_type(self):
         '''
         1 – панельный
@@ -182,18 +192,39 @@ class CianFlatsXML(YandexPlusXML):
 
 class CianWrapperCom(CianWrapper):
     def commerce_type(self):        
-        DEFAULT = u'свободного назначения'
+        DEFAULT = u'FP'
         estate_type_id = self._basic_bidg.estate_type_id if self._basic_bidg else None 
         mapper = {
-                  EstateTypeMapper.SKLAD : u'склад',
-                  EstateTypeMapper.KAFE : u'общепит',
-                  EstateTypeMapper.RESTORAN : u'общепит',
-                  EstateTypeMapper.TORGOVYYPAVILON : u'торговое помещение',
-                  EstateTypeMapper.MAGAZIN : u'торговое помещение',
-                  EstateTypeMapper.GOSTINICHNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA : u'готовый бизнес',
-                  EstateTypeMapper.KONNOSPORTIVNYYKOMPLEKS : u'готовый бизнес',
-                  EstateTypeMapper.PROMYSHLENNAYABAZA : u'готовый бизнес',
+#                     O – офис
+#                     W – склад
+#                     T – торговая площадь
+#                     F – под общепит
+#                     FP – помещение свободного назначения
+#                     G – гараж
+#                     AU – автосервис
+#                     WP – производственное помещение
+#                     B – отдельно стоящее здание
+#                     UA – юридический адрес
+#                     SB – продажа бизнеса
+#                     BU – под бытовые услуги (салон красоты и т.д.)
+                  EstateTypeMapper.SKLAD : u'W',
+                  EstateTypeMapper.KAFE : u'F',
+                  EstateTypeMapper.RESTORAN : u'F',
+                  EstateTypeMapper.TORGOVYYPAVILON : u'T',
+                  EstateTypeMapper.MAGAZIN : u'T',
+                  EstateTypeMapper.OFIS: u'O',
+                  EstateTypeMapper.GARAZH : u'G',
+                  EstateTypeMapper.STO : u'AU',
+                  EstateTypeMapper.PROIZVODSTVENNAYABAZA : u'WP',
+                  EstateTypeMapper.PROMYSHLENNAYABAZA : u'WP',
+                  EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA : u'WP',
+                  EstateTypeMapper.ZDANIE : u'B',
+                  EstateTypeMapper.SALONKRASOTY : u'BU',
+                  EstateTypeMapper.OTEL : u'SB',
+                  EstateTypeMapper.GOSTINITSA : u'SB',
+                  EstateTypeMapper.GOSTEVOYDOM : u'SB',
+                  EstateTypeMapper.GOSTEVYEKOMNATY : u'SB',
+                  EstateTypeMapper.GOSTINICHNYYKOMPLEKS : u'SB',               
                   }    
         if estate_type_id in mapper:
             return mapper[estate_type_id]
@@ -228,7 +259,8 @@ class CianCommerceXML(CianFlatsXML):
         etree.SubElement(offer, "id").text = str(estate.id)
         etree.SubElement(offer, "commerce_type").text = self._wrapper.commerce_type()
         etree.SubElement(offer, "contract_type").text = self._wrapper.contract_type()
-        
+        area = {'total': self._wrapper.area(), 'rooms_count': self._wrapper.rooms(), 'rooms': self._wrapper.split_rooms()}
+        etree.SubElement(offer, "area", area)
         
         etree.SubElement(offer, "note").text = etree.CDATA(self._wrapper.description())
         etree.SubElement(offer, "phone").text = ';'.join([re.sub(r'\D','',phone) for phone in sa.phones()])

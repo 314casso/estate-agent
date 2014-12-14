@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import EstateTypeCategory
+from estatebase.models import EstateTypeCategory, Estate, EstateParam
 from exportdata.custom_makers.yaxml import COMMERCE_STEADS, YandexWrapper
 from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper
@@ -35,6 +35,19 @@ class DomexWrapper(YandexWrapper):
         return DEFAULT
 
 class DomexXML(YandexPlusXML):
+    def get_queryset(self):
+        MIN_PRICE_LIMIT = 100000  
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),             
+             'agency_price__gte': MIN_PRICE_LIMIT,  
+             'street__isnull': False, 
+             'estate_params__exact': EstateParam.PAYEXPORT,          
+             }
+        q = Estate.objects.all()
+        q = q.filter(**f)     
+        return q
+    
     name = 'domex'
     def __init__(self, domex_wrapper):
         super(DomexXML,self).__init__(domex_wrapper)         
