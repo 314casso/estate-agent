@@ -1169,6 +1169,7 @@ class LocalityType(SimpleDict):
     '''
     LocalityType
     '''
+    sort_name = models.CharField(_('Short name'), db_index=True, max_length=50) 
     prep_name = models.CharField(_('Prepositional Name'), db_index=True, max_length=255)
     class Meta(SimpleDict.Meta):
         verbose_name = _('LocalityType')

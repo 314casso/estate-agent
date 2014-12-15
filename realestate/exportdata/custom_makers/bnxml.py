@@ -8,6 +8,9 @@ class BnWrapper(YandexPlusWrapper):
         estate_type_id = self._basic_stead.estate_type_id if self._basic_stead else None 
         return self.estate_stead_mapper(estate_type_id)
     
+    def locality(self):
+        return "%s %s." % (self._estate.locality.name, self._estate.locality.locality_type.sort_name)
+        
     def estate_stead_mapper(self, estate_type_id):
         DEFAULT = u'свободного назначения'
         mapper = {
