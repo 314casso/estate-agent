@@ -271,7 +271,7 @@ class SalesAgent(object):
 
 class BaseXML(object):
     CACHE_TIME = 3600 * 24  
-    VALID_DAYS = 45
+    VALID_DAYS = 44
     XHTML_NAMESPACE = None
     def __init__(self):               
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE

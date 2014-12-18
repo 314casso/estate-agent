@@ -9,6 +9,7 @@ from exportdata.xml_makers import SalesAgent, number2xml
 from lxml import etree
 import random
 import re
+from random import shuffle, randrange
 
 class CianWrapper(YandexWrapper):
     def living_space(self):
@@ -91,13 +92,19 @@ class CianWrapper(YandexWrapper):
     
     def split_rooms(self):
         if self._basic_bidg:
-            room_count = self._basic_bidg.room_count
-            if room_count > 1:
-                rooms = []
-                              
-                
-        return self._basic_bidg.total_area             
-         
+            rooms = self._basic_bidg.room_count
+            total_area = float(self._basic_bidg.total_area)
+            rooms_areas = []
+            room_area = int(total_area / rooms)
+            remain_area = total_area
+            for room in range(rooms-1):
+                cur_area = room_area + room_area * randrange(25) * 1.0 / 100
+                cur_area = round(cur_area,0) 
+                rooms_areas.append(number2xml(cur_area))
+                remain_area -= cur_area
+            rooms_areas.append(number2xml(remain_area))
+            shuffle(rooms_areas)
+            return '+'.join(rooms_areas)             
     
     def floor_type(self):
         '''
