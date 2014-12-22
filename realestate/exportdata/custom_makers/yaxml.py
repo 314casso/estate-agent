@@ -26,11 +26,10 @@ class YandexWrapper(EstateBaseWrapper):
         result = u'%s' % self._estate.estate_category
         return result.lower()
     
-    
-    def address(self):        
+    def address(self):
         if self._estate.locality.locality_type_id == Locality.CITY:
-            if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA and self._estate.estate_number:
-                return u'%s, %s' % (super(YandexWrapper, self).address(), self._estate.estate_number) 
+#             if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA and self._estate.estate_number:
+#                 return u'%s, %s' % (super(YandexWrapper, self).address(), self._estate.estate_number) 
             return super(YandexWrapper, self).address() 
         
 class YandexXML(BaseXML):
