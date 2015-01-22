@@ -146,7 +146,8 @@ class AvitoWrapper(YandexWrapper):
         return self._estate.locality.name
     
     def street(self):
-        return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)
+        if self._estate.street:
+            return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)
     
 class AvitoXML(YandexPlusXML):    
     name = 'avito'    
