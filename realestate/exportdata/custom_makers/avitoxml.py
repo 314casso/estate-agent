@@ -169,11 +169,11 @@ class AvitoXML(YandexPlusXML):
         MIN_PRICE_LIMIT = 100000  
         f = {
              'validity':Estate.VALID,
-             'history__modificated__gte':self.get_delta(),             
+             #'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,
              'estate_category_id__in': (EstateTypeCategory.KVARTIRA, EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK, 
                                         EstateTypeCategory.U4ASTOK, EstateTypeCategory.COMMERCE),
-             'street__isnull': False,
+             #'street__isnull': False,
              'estate_params__exact': EstateParam.PAYEXPORT,             
              }
         q = Estate.objects.all()
