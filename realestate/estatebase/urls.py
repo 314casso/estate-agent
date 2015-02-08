@@ -18,7 +18,9 @@ from estatebase.views import ClientListView, \
     ClientStatusUpdateView, EstateCreateWizardView, RestoreClientView,\
     BidEventCreateView, BidEventUpdateView, BidEventDeleteView,\
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
-    estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts
+    estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
+    ClientRemoveBidView, ClientUpdateBidView, ClientBidSelectView,\
+    set_bid_basic_client
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -28,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^selectable/', include('selectable.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client-list'),
     url(r'^clients/(?P<estate_pk>\d+)$',ClientSelectView.as_view(), name='client_select'),
+    url(r'^clientsbid/(?P<bid_pk>\d+)$',ClientBidSelectView.as_view(), name='client_bid_select'),
     url (r'^clientcreate/$', view=ClientCreateView.as_view(), name='client_create'),
     url (r'^clientcreatepopup/$', view=ClientCreateView.as_view(template_name='clients/client_popup_form.html'), name='client_create_popup'),
     url (r'^clientupdate/(?P<pk>\d+)$', view=ClientUpdateView.as_view(), name='client_update'),
@@ -116,6 +119,10 @@ urlpatterns += patterns('',
     url (r'^bideventupdate/(?P<pk>\d+)$', BidEventUpdateView.as_view(), name='bid_event_update'),
     url (r'^bideventcreate/(?P<bid>\d+)$', BidEventCreateView.as_view(), name='bid_event_create'),
     url (r'^bideventdelete/(?P<pk>\d+)$', BidEventDeleteView.as_view(), name='bid_event_delete'),
+    url (r'^clientbid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientUpdateBidView.as_view(), name='client_bid_bind'),
+    url (r'^clientbidunbind/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientRemoveBidView.as_view(), name='client_bid_unbind'),
+    url (r'^setbidbasicclient/(?P<client_pk>\d+)/(?P<bid_pk>\d+)$', view=set_bid_basic_client, name='set_bid_basic_client'),
+    
 )
 
 urlpatterns += patterns('',    

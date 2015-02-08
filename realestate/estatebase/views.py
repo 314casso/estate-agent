@@ -19,11 +19,11 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
-    BidEventForm
+    BidEventForm, BidUpdateForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent, ContactType
+    ExUser, Bidg, BidEvent, ContactType, BidClient
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -525,6 +525,23 @@ class ClientSelectView(ClientListView):
         q = super(ClientSelectView, self).get_queryset()
         q = q.exclude(estates__id=self.kwargs['estate_pk'])
         return q   
+    
+class ClientBidSelectView(ClientListView):
+    template_name = 'clients/client_bid_select.html'
+    def get_bid(self):
+        bid = Bid.objects.get(pk=self.kwargs['bid_pk'])
+        return bid            
+    def get_context_data(self, **kwargs):         
+        context = super(ClientBidSelectView, self).get_context_data(**kwargs)                    
+        context.update ({            
+            'bid' : self.get_bid(),
+            'client_filter_form' : ClientFilterForm(self.request.GET),
+        })        
+        return context
+    def get_queryset(self):
+        q = super(ClientBidSelectView, self).get_queryset()
+        q = q.exclude(bids_m2m__id=self.kwargs['bid_pk'])
+        return q
 
 class ClientMixin(ModelFormMixin):
     template_name = 'clients/client_form.html'
@@ -807,9 +824,16 @@ class BidCreateView(BidMixin, CreateView):
             initial['client'] = client_pk
         initial['broker'] = self.request.user.pk
         return initial
+    def form_valid(self, form):
+        result = super(BidCreateView, self).form_valid(form)
+        if self.object:
+            client = form.cleaned_data.get('client') or None        
+            if client:
+                BidClient.objects.create(client=client, bid=self.object)
+        return result
 
 class BidUpdateView(BidMixin, UpdateView):    
-    pass
+    form_class = BidUpdateForm
 
 class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
     template_name = 'confirm.html'
@@ -1212,6 +1236,40 @@ class WordpressQueue(TemplateView):
         })
         return context     
 
+
+class ClientUpdateBidView(DetailView):   
+    model = Client
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(ClientUpdateBidView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Привязка...',
+            'dialig_body'  : u'Привязать заказчика %s к заявке [%s]?' % (self.object, self.kwargs['bid_pk']),
+        })
+        return context
+    def update_object(self, client_pk, bid_pk):
+        '''
+        Вынесена для переопределения в потомках класса
+        '''        
+        BidClient.objects.create(client_id=client_pk, bid_id=bid_pk)                
+    def post(self, request, *args, **kwargs):       
+        self.update_object(self.kwargs['pk'], self.kwargs['bid_pk'])       
+        #Обновление истории и контакта у заявки                            
+        prepare_history(Bid.objects.get(pk=self.kwargs['bid_pk']).history, self.request.user.pk)      
+        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
+
+class ClientRemoveBidView(ClientUpdateBidView):    
+    def get_context_data(self, **kwargs):
+        context = super(ClientRemoveBidView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Отвязка...',
+            'dialig_body'  : u'Отвязать заказчика %s от заявки [%s]?' % (self.object, self.kwargs['bid_pk']),
+        })
+        return context 
+    def update_object(self, client_pk, bid_pk):
+        BidClient.objects.get(bid_id=bid_pk, client_id=client_pk).delete()   
+
+
 @user_passes_test(lambda u: u.is_staff)
 def estate_list_contacts(request, contact_type_pk):            
     q = Estate.objects.all()        
@@ -1273,3 +1331,10 @@ def contacts_csv_response(contacts, contact_type_pk):
             contact_str = format_phone(contact_str)           
         writer.writerow([contact_str,])
     return response
+
+def set_bid_basic_client(request, client_pk, bid_pk):             
+    next_url = request.REQUEST.get('next', '')
+    bid = Bid.objects.get(pk=bid_pk)
+    bid.client_id = client_pk
+    bid.save()            
+    return HttpResponseRedirect(next_url)

@@ -1071,6 +1071,7 @@ class Bid(ProcessDeletedModel):
     Заявка
     '''      
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
+    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, null=True, through='BidClient')
     estate_filter = PickledObjectField(blank=True, null=True)
     cleaned_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -1174,6 +1175,13 @@ class LocalityType(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('LocalityType')
         verbose_name_plural = _('LocalityTypes')
+
+
+class BidClient(models.Model):
+    client = models.ForeignKey('Client')
+    bid = models.ForeignKey('Bid')   
+    class Meta:
+        unique_together = ('client', 'bid')
    
 from estatebase.signals import connect_signals
 connect_signals()

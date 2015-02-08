@@ -593,6 +593,21 @@ class BidForm(ModelForm):
             'note': Textarea() 
         }                         
 
+class BidUpdateForm(ModelForm):
+    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлторы')
+    bid_status = AutoComboboxSelectMultipleField(
+            lookup_class=BidStatusLookup,
+            label=_('BidStatus'),
+            required=True,
+        )    
+    class Meta():            
+        fields = ('brokers', 'bid_status' , 'note')
+        model = Bid    
+        widgets = {
+            'note': Textarea() 
+        }         
+    
+
 class BidFilterForm(BetterForm):
     pk = AutoCompleteSelectMultipleField(
             lookup_class=BidIdLookup,
@@ -667,9 +682,9 @@ class BidFilterForm(BetterForm):
         if self['origin'].value():
             f['client__origin__id'] = self['origin'].value()    
         if self['clients'].value():
-            f['client__id__in'] = self['clients'].value()    
+            f['clients__id__in'] = self['clients'].value()    
         if self['contacts'].value():
-            f['client__contacts__id__in'] = self['contacts'].value()
+            f['clients__contacts__id__in'] = self['contacts'].value()
         if self['estates'].value():
             f['estates__id__in'] = self['estates'].value()            
         if self['estate_type'].value():
