@@ -30,7 +30,7 @@
         
         <td colspan="100%">
             <table class="inline-formset ui-widget ui-widget-content ui-corner-all">
-            <th><a href="{% url client_bid_select bid.pk %}?{{ next_url }}">Заказчики:</a></th>                             
+            <th><a title="Привязать заказчиков к заявке" href="{% url client_bid_select bid.pk %}?{{ next_url }}">Заказчики:</a></th>                             
             {% for client in bid.clients.all %}
             <tr>    
                     <td><a title="Редактирование заказчика" href="{% url client_update client.pk %}?{{ next_url }}">[{{ client.pk }}]</a></td>         
