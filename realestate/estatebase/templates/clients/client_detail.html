@@ -63,7 +63,7 @@
     <a class="btn-add" href="{% url bid_create client.pk %}?{{ next_url }}">Добавить новую заявку</a>          
 </div>
 
-{% with bid_list=client.bids.all  %}
+{% with bid_list=client.bids_m2m.all  %}
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
