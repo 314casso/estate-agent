@@ -167,6 +167,7 @@ class YandexXML(BaseXML):
         q = q.filter(**f)        
         q = q.exclude(street__name__exact = u'без улицы')
         q = q.exclude(stead__estate_type_id__in = COMMERCE_STEADS)
+        q = q.exclude(estate_params__exact = EstateParam.RENT,)        
         return q
     
     def set_use_cache(self, value):

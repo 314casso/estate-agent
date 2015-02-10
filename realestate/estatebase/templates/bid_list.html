@@ -5,6 +5,7 @@
 {% load humanize %}
 {% load sorting_tags %}
 
+
 {% block css %}
 {{ bid_filter_form.media.css }}
 {% endblock css %}
@@ -61,8 +62,7 @@
             <th>Районы</th>
             <th>Населенные пункты</th>
             <th>Цена</th>
-            <th>Заказчик</th>
-            <th>Контакты</th>
+            <th>Заказчики</th>            
             <th>Действие</th>
         </tr>
     </thead>
@@ -84,9 +84,17 @@
             <td> {% comma_list bid_item.regions %} </td>
             <td> {% comma_list bid_item.localities %} </td>
             <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
-            <td><a title="Просмотр карточки заказчика" href="{% url client_detail bid_item.client.pk %}?{{ next_url }}">{{ bid_item.client.name }}</a></td>
-            <td>{% contact_list bid_item.client next_url 2 %}</td>
-            <td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
+            <td>
+                
+                 
+                {% for client in bid_item.clients.all %}
+                    <a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>                           
+                    <small>{% contact_list client next_url 1 %}</small>
+                {% endfor %}
+                
+                                                
+            </td>            
+            <td><a class="btn-delete-inline" href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% endfor %}
     </tbody>

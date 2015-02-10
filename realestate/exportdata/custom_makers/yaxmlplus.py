@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import Estate, EstateTypeCategory
+from estatebase.models import Estate, EstateTypeCategory, EstateParam
 from exportdata.custom_makers.yaxml import YandexWrapper, YandexXML,\
     COMMERCE_STEADS
 
@@ -31,5 +31,6 @@ class YandexPlusXML(YandexXML):
              }
         q = Estate.objects.all()
         q = q.filter(**f)        
-        q = q.exclude(street__name__exact = u'без улицы')        
+        q = q.exclude(street__name__exact = u'без улицы')   
+        q = q.exclude(estate_params__exact = EstateParam.RENT,)     
         return q

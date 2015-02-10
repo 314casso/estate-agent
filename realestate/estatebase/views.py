@@ -862,13 +862,13 @@ class BidListView(ListView):
     filtered = False    
     template_name = 'bid_list.html'
     paginate_by = 7   
-    def get_queryset(self):       
-        q = Bid.objects.prefetch_related('history', 'client__contacts__contact_type', 'client__contacts__contact_state', 'brokers')          
+    def get_queryset(self):
+        q = Bid.objects.prefetch_related('history', 'brokers', 'clients', 'geo_groups')          
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
-        geo_list = self.request.user.userprofile.geo_groups.values_list('id', flat=True)                            
+        geo_list = set(self.request.user.userprofile.geo_groups.values_list('id', flat=True))                            
         q = q.filter(geo_groups__id__in=geo_list)
         if len(filter_dict):
             if 'Q' in filter_dict:
@@ -877,8 +877,8 @@ class BidListView(ListView):
         order_by = self.request.fields 
         if order_by:      
             q = q.order_by(','.join(order_by))            
-        q = q.distinct('id','history__created','history__modificated')
-        q = q.defer('estate_filter', 'cleaned_filter', 'note') 
+        q = q.distinct()
+        q = q.defer('estate_filter', 'cleaned_filter', 'note')
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
@@ -1267,8 +1267,11 @@ class ClientRemoveBidView(ClientUpdateBidView):
         })
         return context 
     def update_object(self, client_pk, bid_pk):
+        bid = Bid.objects.get(pk=bid_pk)
+        if bid.client_id == int(client_pk):
+            bid.client = None
+            bid.save()                 
         BidClient.objects.get(bid_id=bid_pk, client_id=client_pk).delete()   
-
 
 @user_passes_test(lambda u: u.is_staff)
 def estate_list_contacts(request, contact_type_pk):            

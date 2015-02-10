@@ -231,6 +231,7 @@ class EstateParam(OrderedModel):
     POSTONSITE = 1
     IPOTEKA = 2
     PAYEXPORT = 16
+    RENT = 11
     name = models.CharField(_('Name'), max_length=100)    
     def __unicode__(self):
         return u'%s' % self.name
@@ -1070,7 +1071,7 @@ class Bid(ProcessDeletedModel):
     '''
     Заявка
     '''      
-    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids')
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids', blank=True, null=True)
     clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, null=True, through='BidClient')
     estate_filter = PickledObjectField(blank=True, null=True)
     cleaned_filter = PickledObjectField(blank=True, null=True)
