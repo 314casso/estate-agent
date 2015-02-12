@@ -1071,7 +1071,7 @@ class Bid(ProcessDeletedModel):
     '''
     Заявка
     '''      
-    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids', blank=True, null=True)
+    client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids', blank=True, null=True, on_delete=models.SET_NULL)
     clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, null=True, through='BidClient')
     estate_filter = PickledObjectField(blank=True, null=True)
     cleaned_filter = PickledObjectField(blank=True, null=True)
