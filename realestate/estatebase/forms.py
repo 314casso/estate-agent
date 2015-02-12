@@ -637,6 +637,7 @@ class BidFilterForm(BetterForm):
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))    
     created_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)
+    updated_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
     broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)    
     clients = AutoCompleteSelectMultipleField(
             lookup_class=ClientLookup,
@@ -677,6 +678,8 @@ class BidFilterForm(BetterForm):
                 f.update(value)
         if self['created_by'].value():
             f['history__created_by_id'] = self['created_by'].value()
+        if self['updated_by'].value():
+            f['history__updated_by_id'] = self['updated_by'].value()
         if self['broker'].value():
             f['brokers__id'] = self['broker'].value()
         if self['origin'].value():
@@ -704,7 +707,7 @@ class BidFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [
-                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'broker', 'origin', 'estate_type', 'estates', 
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'updated_by', 'broker', 'origin', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
                                           'bid_event_category', 'date_event',
                                           'next' ], 'legend': ''}),                    
