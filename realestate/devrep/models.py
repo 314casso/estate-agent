@@ -94,7 +94,7 @@ class WorkTypePartner(models.Model):
 
 class Gear(SimpleDict):
     '''
-    Gear    
+    Gear   
     '''
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     class Meta(SimpleDict.Meta):
