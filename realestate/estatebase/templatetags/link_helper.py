@@ -89,7 +89,9 @@ def history(history):
         return {'history': history}
 
 @register.simple_tag
-def comma_list(q, limit=None, field = 'name'):    
+def comma_list(q, limit=None, field = 'name'): 
+    if not q:
+        return   
     q = q.values_list(field, flat=True)
     l = [u'%s' % x for x in q]
     if limit:

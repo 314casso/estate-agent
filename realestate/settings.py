@@ -23,6 +23,7 @@ from local_settings import * #@UnusedWildImport
 
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    
+    r'/devrep/(.*)$',
 )
 
 LOGIN_REQUIRED_URLS_EXCEPTIONS = ('logon',)
@@ -181,13 +182,14 @@ INSTALLED_APPS = (
     'django.contrib.humanize',      
     'form_utils',  
     'wp_helper',
+    'devrep',
     'sorl.thumbnail',
     'mptt',
     'spyder_helper',
     'exportdata',    
     'session_security',  
     'request',  
-#      'debug_toolbar'
+      'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% load query_string %}
+{% load paginator %}
+{% load humanize %}
+{% load sorting_tags %}
+
+
+{% block css %}
+{{ bid_filter_form.media.css }}
+{% endblock css %}
+
+{% block js %}
+{{ bid_filter_form.media.js }}
+<script type="text/javascript">
+    $(function() {
+        $("#filter").dialog({
+            modal : true,
+            width : 420,
+            title : 'Фильтр',
+            autoOpen : false
+        });
+    }); 
+</script>
+{% endblock js %}
+
+{% block page_header %}
+Список партнеров
+{% endblock %}
+
+{% block left %}
+
+<div class="topbar button">
+    <a title="Добавление нового партнера..." class="btn-add" href="{% url partner_create %}?{{ next_url }}">Добавить</a>
+    <button class="btn-filter-add" onclick="showFilter('#filter')">
+        Показать фильтр
+    </button>
+    {% if filtered %}
+    <a class="btn-filter-remove" href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить фильтр</a>
+    {% endif %}
+    {% include 'prev_view.html' %}    
+</div>
+<div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin: 3px 0">
+    Всего партнеров: {{ total_count }},
+    отобрано: {{ filter_count }},
+    на странице: {{ object_list.count }}
+</div>
+<br style="clear: both"  />
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>
+        <tr>
+            <th style="white-space: nowrap">{% anchor id 'Код' %}</th>
+            <th style="white-space: nowrap">{% anchor history__modificated 'Обновлено' %}</th>
+            <th>Риэлтор</th>
+            <th>Статус</th>
+            <th>Вид недвижимости</th>            
+            <th>Районы</th>
+            <th>Населенные пункты</th>
+            <th>Цена</th>
+            <th>Заказчики</th>            
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object_item in object_list %}
+        <tr class="ui-widget-content">
+            <td><a title="Редактирование заявки" href="?{{ next_url }}">{{ object_item.pk }}</a></td>
+            <td style="white-space: nowrap">{{ object_item.history.modificated|date:"d M Y" }} </td>
+            <td>{% comma_list object_item.work_types %}</td>
+            <td>{% comma_list object_item.partner_types %}</td>
+            <td>
+                <a title="Просмотр заявки" href="?{{ next_url }}">
+                123
+                </a>
+            </td>            
+            <td> {% comma_list object_item.coverage_regions %} </td>
+            <td> {% comma_list object_item.coverage_localities %} </td>
+            <td>555</td>
+            <td>               
+                 
+                contacts                
+                                                
+            </td>            
+            <td><a class="btn-delete-inline" href="?{{ next_url }}">Удалить</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if is_paginated %}
+<div class="pagination" style="float: left; padding-top:6px">
+    {% digg_paginator %}
+</div>
+{% endif %}
+
+{% endblock left %}

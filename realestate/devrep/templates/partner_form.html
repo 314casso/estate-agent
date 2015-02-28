@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% block css %}
+{{ form.media.css }}
+{% endblock css %}
+
+{% block js %}
+{{ form.media.js }}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
+<script type="text/javascript">
+    $(function() {
+        $('#client-contacts tr').formset({
+            prefix : '{{ contact_formset.prefix }}',
+            addText : 'Добавить контакт',
+            deleteText : 'Удалить'
+        });
+    })
+</script>
+{% endblock js %}
+
+{% block left %}
+<form action="" method="post" class="table-form">
+    <table class="ui-widget ui-widget-content ui-corner-all">
+        <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    {{ dialig_title|truncatechars:80 }}
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+        </thead>
+        {% include 'partner_form_content.html' %}
+        <tfoot class="button">
+            <tr>
+                <td colspan="100%">
+                <input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</form>
+
+{% endblock %}
+

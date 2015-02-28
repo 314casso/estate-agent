@@ -144,5 +144,5 @@ else:
 
 
 
-mm = ModelMaker('SimpleDict', 'bid_status')
+mm = ModelMaker('SimpleDict', 'gear')
 print mm.get_model_code()
