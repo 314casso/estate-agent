@@ -58,7 +58,7 @@
             <th>Населенные пункты</th>
             <th>Цена</th>
             <th>Заказчики</th>            
-            <th>Действие</th>
+			<th>Действие</th>
         </tr>
     </thead>
     <tbody>
@@ -76,10 +76,8 @@
             <td> {% comma_list object_item.coverage_regions %} </td>
             <td> {% comma_list object_item.coverage_localities %} </td>
             <td>555</td>
-            <td>               
-                 
+            <td>             
                 contacts                
-                                                
             </td>            
             <td><a class="btn-delete-inline" href="?{{ next_url }}">Удалить</a></td>
         </tr>

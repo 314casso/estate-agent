@@ -94,7 +94,7 @@ class WorkTypePartner(models.Model):
 
 class Gear(SimpleDict):
     '''
-    Gear   
+    Gear 
     '''
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     class Meta(SimpleDict.Meta):
@@ -113,6 +113,19 @@ class Partner(ProcessDeletedModel):
     experience = models.ForeignKey(Experience,verbose_name=_('Experience'),blank=True,null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     work_types = models.ManyToManyField(WorkType,verbose_name=_('WorkTypes'),blank=True,null=True,through=WorkTypePartner)
-    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners')           
+    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners',blank=True,null=True)           
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self',verbose_name=_('Parent'), null=True, blank=True, related_name='children')
+    def __unicode__(self):
+        return u'%s' % self.name
+    def natural_key(self):
+        return self.__unicode__()
+    class Meta:
+        ordering = ['name']
+    @models.permalink
+    def get_absolute_url(self):
+        return ('partner_detail', [str(self.id)])
+    
+   
+from devrep.signals import connect_signals
+connect_signals()
