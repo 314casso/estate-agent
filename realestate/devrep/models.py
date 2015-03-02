@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from devrep.signals import connect_signals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from estatebase.models import ProcessDeletedModel, Region, Locality, Street,\
-    ContactType, SimpleDict, Microdistrict, HistoryMeta
+from estatebase.models import ProcessDeletedModel, Region, Locality,\
+    Street, SimpleDict, Microdistrict, HistoryMeta, Client
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -21,19 +22,6 @@ class Address(models.Model):
         return u', '.join(address_field)    
     class Meta:
         ordering = ['id']                
-
-class Contact(models.Model):     
-    PHONE = 1
-    EMAIL = 2
-    SITE = 3    
-    title = models.CharField(_('Title'), max_length=255)
-    contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'), on_delete=models.PROTECT, related_name='person_contacts')
-    contact = models.CharField(_('Contact'), max_length=255, db_index=True, unique=True)     
-    def __unicode__(self):
-        return u'%s (%s)' % (self.contact)                  
-    class Meta:
-        verbose_name = _('contact')
-        verbose_name_plural = _('contacts')
 
 class PartnerType(SimpleDict):
     '''
@@ -64,7 +52,7 @@ class WorkType(MPTTModel):
     WorkType    
     '''    
     name = models.CharField(_('Name'), max_length=150, db_index=True, unique=True)
-    parent = TreeForeignKey('self',verbose_name=_('Parent'), null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
     class Meta(SimpleDict.Meta):
         verbose_name = _('Work type')
         verbose_name_plural = _('Work types')
@@ -82,13 +70,13 @@ class Measure(SimpleDict):
         verbose_name_plural = _('Measures')
 
 class WorkTypePartner(models.Model):    
-    work_type = models.ForeignKey(WorkType,verbose_name=_('WorkType'))
-    partner = models.ForeignKey('Partner',verbose_name=_('Partner'))
+    work_type = models.ForeignKey(WorkType, verbose_name=_('WorkType'))
+    partner = models.ForeignKey('Partner', verbose_name=_('Partner'))
     price_min = models.IntegerField(verbose_name=_('Price min'))
     price_max = models.IntegerField(verbose_name=_('Price max'))
-    measure = models.ForeignKey(Measure,verbose_name=_('Measure')) 
-    quality = models.ForeignKey(Quality,verbose_name=_('Quality'),blank=True,null=True)
-    experience = models.ForeignKey(Experience,verbose_name=_('Experience'),blank=True,null=True)
+    measure = models.ForeignKey(Measure, verbose_name=_('Measure')) 
+    quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
+    experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     class Meta:
         unique_together = ('work_type', 'partner')      
 
@@ -101,21 +89,36 @@ class Gear(SimpleDict):
         verbose_name = _('Gear')
         verbose_name_plural = _('Gears')
 
+class PartnerClientStatus(SimpleDict):
+    '''
+    PartnerClientStatus    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('PartnerClientStatus')
+        verbose_name_plural = _('PartnerClientStatuses')
+
+class ClientPartner(models.Model):    
+    client = models.ForeignKey(Client)
+    partner = models.ForeignKey('Partner')    
+    partner_client_status = models.ForeignKey(PartnerClientStatus, verbose_name=_('PartnerClientStatus'))
+    class Meta:
+        unique_together = ('client', 'partner')
+
 class Partner(ProcessDeletedModel): 
-    name = models.CharField(_('Name'), max_length=255)      
+    name = models.CharField(_('Name'), max_length=255)
+    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, null=True, through=ClientPartner)     
     partner_types = models.ManyToManyField(PartnerType, verbose_name=_('Partner types'), related_name='partners')
-    adresses = models.ManyToManyField(Address, verbose_name=_('Address'),blank=True,null=True,related_name='partners')
-    contacts = models.ManyToManyField(Contact, verbose_name=_('Contacts'), related_name='person_contacts')
+    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')    
     coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage')
     coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage')
     person_count = models.IntegerField(_('Persons'), default=0)   
-    quality = models.ForeignKey(Quality,verbose_name=_('Quality'),blank=True,null=True)
-    experience = models.ForeignKey(Experience,verbose_name=_('Experience'),blank=True,null=True)
+    quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
+    experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    work_types = models.ManyToManyField(WorkType,verbose_name=_('WorkTypes'),blank=True,null=True,through=WorkTypePartner)
-    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners',blank=True,null=True)           
+    work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypePartner)
+    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)           
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
-    parent = models.ForeignKey('self',verbose_name=_('Parent'), null=True, blank=True, related_name='children')
+    parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):
@@ -125,7 +128,5 @@ class Partner(ProcessDeletedModel):
     @models.permalink
     def get_absolute_url(self):
         return ('partner_detail', [str(self.id)])
-    
-   
-from devrep.signals import connect_signals
+       
 connect_signals()
