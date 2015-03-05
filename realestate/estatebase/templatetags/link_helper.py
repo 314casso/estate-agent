@@ -4,7 +4,6 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.models import EstateClient
 import base64
 from copy import deepcopy
-from django.utils.http import urlencode
 
 register = template.Library()
 

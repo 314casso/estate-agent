@@ -121,9 +121,7 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 )
 
 MIDDLEWARE_CLASSES = (
-#    http://packages.python.org/johnny-cache/                  
-#    'johnny.middleware.LocalStoreClearMiddleware',
-#    'johnny.middleware.QueryCacheMiddleware',                  
+    'debug_toolbar.middleware.DebugToolbarMiddleware',                  
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,17 +129,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.FilterPersistMiddleware',
     'django_sorting.middleware.SortingMiddleware',
-#    'middleware.SQLLogMiddleware',
     'middleware.RequireLoginMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
-    'request.middleware.RequestMiddleware',
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'request.middleware.RequestMiddleware',    
 )
-
-#SESSION_SECURITY_WARN_AFTER = 10
-#SESSION_SECURITY_EXPIRE_AFTER = 15
-
-#INTERNAL_IPS = ('127.0.0.1',)
 
 PROFILE_LOG_BASE = MEDIA_ROOT
 
@@ -154,16 +145,12 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-#http://jbalogh.me/projects/cache-machine/
 CACHES = {
     'default': dict(
         BACKEND = 'django.core.cache.backends.memcached.MemcachedCache',
         LOCATION = ['127.0.0.1:11211'],
-        #JOHNNY_CACHE = True,
     )
 }
-
-JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_realtydb'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -189,11 +176,8 @@ INSTALLED_APPS = (
     'exportdata',    
     'session_security',  
     'request',  
-      'debug_toolbar'
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'debug_toolbar',
 )
-
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')
 THUMBNAIL_ENGINE = 'watermarker.sorl_engine.WatermarkEngine'

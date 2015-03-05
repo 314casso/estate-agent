@@ -12,7 +12,6 @@ from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import CreateView, ModelFormMixin, UpdateView, \
     DeleteView, BaseUpdateView, ProcessFormView
 from django.views.generic.list import ListView
-from estatebase.field_utils import check_value_list
 from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     ContactHistoryFormSet, ContactForm, EstateCommunicationForm, EstateParamForm, \
     BidgForm, LevelForm, LevelFormSet, ImageUpdateForm, SteadForm, EstateFilterForm, \
@@ -23,20 +22,17 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent, ContactType, BidClient
+    ExUser, Bidg, BidEvent, BidClient
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
 import urlparse
 from django.utils.encoding import smart_str
-from django.db.utils import IntegrityError
-from django.db.models.query_utils import Q
-from wp_helper.models import EstateWordpressMeta, WordpressMeta,\
+from wp_helper.models import EstateWordpressMeta,\
     WordpressMetaEstateType, WordpressMetaRegion, WordpressMetaStatus,\
     WordpressTaxonomyTree
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models.aggregates import Count
 import unicodecsv
 from estatebase.lib import format_phone
 
