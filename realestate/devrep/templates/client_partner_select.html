@@ -1,0 +1,6 @@
+{% extends "clients/client_list.html" %}
+{% load link_helper %}
+{% block linkback %}{% endblock %}
+{% block lastcol %}
+<a href="{% url client_partner_bind client.pk partner.pk %}?next={{ request.GET.next|urlencode }}"> Привязать</a> [{{ partner.pk }}]
+{% endblock %}

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from devrep.signals import connect_signals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from estatebase.models import ProcessDeletedModel, Region, Locality,\
@@ -128,5 +127,3 @@ class Partner(ProcessDeletedModel):
     @models.permalink
     def get_absolute_url(self):
         return ('partner_detail', [str(self.id)])
-       
-connect_signals()

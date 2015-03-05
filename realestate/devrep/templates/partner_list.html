@@ -64,12 +64,12 @@
     <tbody>
         {% for object_item in object_list %}
         <tr class="ui-widget-content">
-            <td><a title="Редактирование заявки" href="?{{ next_url }}">{{ object_item.pk }}</a></td>
+            <td><a title="Редактирование заявки" href="{% url partner_update object_item.pk %}?{{ next_url }}">{{ object_item.pk }}</a></td>
             <td style="white-space: nowrap">{{ object_item.history.modificated|date:"d M Y" }} </td>
             <td>{% comma_list object_item.work_types %}</td>
             <td>{% comma_list object_item.partner_types %}</td>
             <td>
-                <a title="Просмотр заявки" href="?{{ next_url }}">
+                <a title="Просмотр заявки" href="{% url partner_detail object_item.pk %}?{{ next_url }}">
                 123
                 </a>
             </td>            

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 from devrep.models import WorkType, PartnerType, Quality, Experience, Measure,\
-    Gear, Partner
+    Gear, Partner, PartnerClientStatus
 
 class CustomMPTTModelAdmin(MPTTModelAdmin):    
     mptt_level_indent = 20
@@ -21,3 +21,4 @@ admin.site.register(Experience)
 admin.site.register(Measure)
 admin.site.register(Gear)
 admin.site.register(Partner, ParnterAdmin)
+admin.site.register(PartnerClientStatus)

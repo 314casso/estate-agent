@@ -10,7 +10,7 @@
 
 {% block topbar %}
 <div class="topbar button">       
-	<a title="Удалить партнера [{{ partner.id }}] в корзину" class="btn-delete" href="{% url partner_delete partner.pk %}?next={{ request.GET.next }}">Удалить</a> 
+	<a title="Удалить партнера [{{ partner.id }}] в корзину" class="btn-delete" href="{% url partner_delete partner.pk %}?{{ next_url }}">Удалить</a> 
     {% include 'prev_view.html' %}    
 </div>
 {% endblock %}
@@ -24,6 +24,24 @@
         <td title="Редактировать партнера" style="font-weight: bold"><a href="{% url partner_update partner.pk %}?{{ next_url }}">{{ partner.pk }}</a></td>
     </tr>
     {% history partner.history %}
+    
+    <tr>
+        <td colspan="100%">
+            <table class="inline-formset ui-widget ui-widget-content ui-corner-all">
+            <th><a title="Привязать работника к партнеру" href="{% url client_partner_select partner.pk %}?{{ next_url }}&client_type_1=8">Работники:</a></th>
+            {% for clientpartner in partner.clientpartner_set.all %}
+            <tr>    
+                    <td><a title="Редактирование работника" href="{% url client_update clientpartner.client.pk %}?{{ next_url }}">[{{ clientpartner.client.pk }}]</a></td>         
+                    <td><a title="Просмотр карточки работника" href="{% url client_detail clientpartner.client.pk %}?{{ next_url }}">{{ clientpartner.client.name }}</a></td>                           
+                    <td><a title="Отношение работника к партнеру" href="?{{ next_url }}">{{ clientpartner.partner_client_status }}</a></td>
+                    <td>{% contact_list clientpartner.client next_url %}</td>                  
+                    <td><a class="btn-unbind-inline" href="{% url client_partner_unbind clientpartner.client.pk partner.pk %}?{{ next_url }}">Отвязать</a></td>
+            </tr>
+            {% endfor %}
+            </table>            
+        </td>
+    </tr>
+    
     <tr>
         <th>Источник:</th>
         <td>{{ partner.origin }}</td>
@@ -48,7 +66,7 @@
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Контакты</legend>
-{% contact_list partner next_url %}
+
 </fieldset>
 
 </fieldset>

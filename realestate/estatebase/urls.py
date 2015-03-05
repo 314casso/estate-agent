@@ -19,7 +19,7 @@ from estatebase.views import ClientListView, \
     BidEventCreateView, BidEventUpdateView, BidEventDeleteView,\
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
-    ClientRemoveBidView, ClientUpdateBidView, ClientBidSelectView,\
+    ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client
 
 urlpatterns = patterns('',   
@@ -120,7 +120,7 @@ urlpatterns += patterns('',
     url (r'^bideventcreate/(?P<bid>\d+)$', BidEventCreateView.as_view(), name='bid_event_create'),
     url (r'^bideventdelete/(?P<pk>\d+)$', BidEventDeleteView.as_view(), name='bid_event_delete'),
     url (r'^clientbid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientUpdateBidView.as_view(), name='client_bid_bind'),
-    url (r'^clientbidunbind/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientRemoveBidView.as_view(), name='client_bid_unbind'),
+    url (r'^clientbidunbind/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientPartnerRemoveView.as_view(), name='client_bid_unbind'),
     url (r'^setbidbasicclient/(?P<client_pk>\d+)/(?P<bid_pk>\d+)$', view=set_bid_basic_client, name='set_bid_basic_client'),
     
 )

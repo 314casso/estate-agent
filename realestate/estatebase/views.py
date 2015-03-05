@@ -1258,9 +1258,9 @@ class ClientUpdateBidView(DetailView):
         prepare_history(Bid.objects.get(pk=self.kwargs['bid_pk']).history, self.request.user.pk)      
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
-class ClientRemoveBidView(ClientUpdateBidView):    
+class ClientPartnerRemoveView(ClientUpdateBidView):    
     def get_context_data(self, **kwargs):
-        context = super(ClientRemoveBidView, self).get_context_data(**kwargs)
+        context = super(ClientPartnerRemoveView, self).get_context_data(**kwargs)
         context.update({
             'dialig_title' : u'Отвязка...',
             'dialig_body'  : u'Отвязать заказчика %s от заявки [%s]?' % (self.object, self.kwargs['bid_pk']),

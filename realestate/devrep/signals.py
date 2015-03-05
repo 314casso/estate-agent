@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
-from devrep.models import Partner
 from estatebase.models import prepare_history
+from devrep.models import Partner
 
 def partner_history(sender, instance, created, **kwargs):
     if created or not instance.history:
