@@ -925,7 +925,8 @@ class Stead(models.Model):
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True, on_delete=models.PROTECT)
     purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)
-    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)    
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
+    cadastral_number = models.CharField(_('Cadastral number'), max_length=150, blank=True, null=True)    
     class Meta:
         verbose_name = _('stead')
         verbose_name_plural = _('steads')

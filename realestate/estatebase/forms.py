@@ -316,6 +316,8 @@ class EstateFilterForm(BetterForm):
     layouts = AutoComboboxSelectMultipleField(lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
     heating = AutoComboboxSelectMultipleField(lookup_class=HeatingLookup, label=_('Heating'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
+    cadastral_number = forms.CharField(required=False, label=_('Cadastral number'))
+    client_note = forms.CharField(required=False, label=_('Client note'))
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''
@@ -375,7 +377,8 @@ class EstateFilterForm(BetterForm):
                          'broker__in' : 'broker', 'stead__purpose__in' : 'purposes', 
                          'bidgs__levels__layout__layout_type__in' : 'layouts', 
                          'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
-                         'bidgs__heating__in':'heating',                          
+                         'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
+                         'clients__note__icontains': 'client_note'                         
                          }
         
         for key, value in simple_filter.iteritems():
@@ -422,12 +425,12 @@ class EstateFilterForm(BetterForm):
                                          'microdistrict', 'beside', 'agency_price',
                                          ]}),
                      ('center', {'fields': [
-                                            'clients', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
+                                            'clients', 'client_note', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
                                             'room_count', 'interior', 'heating', 'layouts' ,'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
-                                           'stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 
+                                           'stead_area', 'face_area', 'shape', 'cadastral_number', 'purposes', 'electricity', 'watersupply', 
                                            'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
                                            'description', 'comment', 'next', 'foto_choice', 'wp_choice'
                                           ]})
@@ -517,7 +520,7 @@ class BidgForm(ObjectForm):
         
 class SteadForm(ObjectForm):    
     total_area = LocalDecimalField(label=_('Total area'))
-    face_area = LocalDecimalField(label=_('Face area'))
+    face_area = LocalDecimalField(label=_('Face area'))    
     def clean_total_area(self):        
         data = self.cleaned_data['total_area']
         if self.user is None:
@@ -548,7 +551,7 @@ class SteadForm(ObjectForm):
     class Meta:
         model = Stead  
         widgets = {
-           'documents' : forms.CheckboxSelectMultiple()        
+          'documents' : forms.CheckboxSelectMultiple()        
         }        
                
 class LayoutForm(ModelForm):
