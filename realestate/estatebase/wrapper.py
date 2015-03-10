@@ -88,6 +88,7 @@ class NewapartWrapper(ApartmentWrapper):
     year_built = u'Год сдачи'    
 
 class HomeWrapper(BidgWrapper):
+    summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built', 'floor_count', 'interior']    
     @BidgWrapper.exterior_set.getter
     def exterior_set(self):
         result = super(HomeWrapper, self).exterior_set[:]
