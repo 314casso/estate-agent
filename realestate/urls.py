@@ -1,7 +1,9 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 import settings
+import autocomplete_light
 
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 urlpatterns = patterns('',    
@@ -11,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login',name='logout'),
     url(r'session_security/', include('session_security.urls')),
     url(r'^devrep/', include('devrep.urls')),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
 
 if settings.DEBUG:

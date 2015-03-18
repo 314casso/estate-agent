@@ -177,6 +177,7 @@ INSTALLED_APPS = (
     'session_security',  
     'request',  
     'debug_toolbar',
+    'autocomplete_light',
 )
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')

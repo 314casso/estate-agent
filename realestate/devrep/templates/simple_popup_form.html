@@ -1,0 +1,13 @@
+{% extends "base_popup.html" %}
+
+{% block css %}
+{{ form.media.css }}
+{% endblock css %}
+{% block js %}
+{{ form.media.js }}
+{% endblock js %}
+
+{% block content %}
+<input type="hidden" name="_popup" value="1">
+{{ form.as_table }}{% csrf_token %}
+{% endblock content %}

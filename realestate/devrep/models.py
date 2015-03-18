@@ -5,6 +5,8 @@ from estatebase.models import ProcessDeletedModel, Region, Locality,\
     Street, SimpleDict, Microdistrict, HistoryMeta, Client
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+import datetime
+from django.core.validators import RegexValidator
 
 class Address(models.Model):
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
@@ -68,16 +70,16 @@ class Measure(SimpleDict):
         verbose_name = _('Measure')
         verbose_name_plural = _('Measures')
 
-class WorkTypePartner(models.Model):    
+class WorkTypeProfile(models.Model):    
     work_type = models.ForeignKey(WorkType, verbose_name=_('WorkType'))
-    partner = models.ForeignKey('Partner', verbose_name=_('Partner'))
+    dev_profile = models.ForeignKey('DevProfile', verbose_name=_('DevProfile'))
     price_min = models.IntegerField(verbose_name=_('Price min'))
     price_max = models.IntegerField(verbose_name=_('Price max'))
     measure = models.ForeignKey(Measure, verbose_name=_('Measure')) 
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     class Meta:
-        unique_together = ('work_type', 'partner')      
+        unique_together = ('work_type', 'dev_profile')      
 
 class Gear(SimpleDict):
     '''
@@ -103,21 +105,48 @@ class ClientPartner(models.Model):
     class Meta:
         unique_together = ('client', 'partner')
 
-class Partner(ProcessDeletedModel): 
-    name = models.CharField(_('Name'), max_length=255)
-    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, null=True, through=ClientPartner)     
-    partner_types = models.ManyToManyField(PartnerType, verbose_name=_('Partner types'), related_name='partners')
-    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')    
+class DevProfile(models.Model):    
     coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage')
     coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage')
-    person_count = models.IntegerField(_('Persons'), default=0)   
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
-    work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypePartner)
-    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)           
+    work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
+    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)
+    has_transport = models.BooleanField(_('HasTransport'), default=False)    
+
+class ExtraProfile(models.Model):
+    GENDER_CHOICES = (('F', _('Female')), ('M', _('Male')),)
+    last_name = models.CharField(_('LastName'), max_length=100, blank=True)
+    first_name = models.CharField(_('FirstName'), max_length=100, blank=True)
+    patronymic = models.CharField(_('Patronymic'), max_length=100, blank=True)
+    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='extra_profile')
+    gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True, default='M')
+    birthday = models.DateField(_('Birthday'), default=datetime.date.today(), blank=True)
+    birthplace = models.CharField(_('Birthplace'), max_length=250, blank=True)
+    passport_number = models.CharField(_('PassportNumber'), max_length=6, blank=True, 
+    validators=[
+        RegexValidator(regex='^\d{6}$', 
+        message=u'Номер паспорта должен состоять из шести цифр', code='invalid_passport_number')
+        ]
+    )
+    passport_series = models.CharField(_('PassportSeries'), max_length=4, blank=True, 
+    validators=[
+        RegexValidator(regex='^\d{4}$', 
+        message='Серия паспорта должена состоять из четырех цифр', code='invalid_passport_series')
+        ]
+    )
+
+class Partner(ProcessDeletedModel):
+    partner_types = models.ManyToManyField(PartnerType, verbose_name=_('Partner types'), related_name='partners')
+    dev_profile = models.OneToOneField(DevProfile, verbose_name=_('DevProfile'), blank=True, null=True, related_name='partner') 
+    name = models.CharField(_('Name'), max_length=255)
+    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, null=True, through=ClientPartner)     
+    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')  
+    person_count = models.IntegerField(_('Persons'), default=0)                  
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):

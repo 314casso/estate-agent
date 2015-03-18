@@ -137,8 +137,10 @@ class ClientFilterForm(Form):
             label=_('ID'),
             required=False            
         )
-    created = DateRangeField(required=False, label=_('Created'))        
+    created = DateRangeField(required=False, label=_('Created'))
+    created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
     updated = DateRangeField(required=False, label=_('Updated'))
+    updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
     origin = AutoComboboxSelectMultipleField(
             lookup_class=OriginLookup,
             label=_('Origin'),
@@ -170,6 +172,10 @@ class ClientFilterForm(Form):
             value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
             if value:                 
                 f.update(value)
+        if self['created_by'].value():
+            f['history__created_by__id__in'] = self['created_by'].value()           
+        if self['updated_by'].value():            
+            f['history__updated_by__id__in'] = self['updated_by'].value()
         if self['contacts'].value():
             f['contacts__id__in'] = self['contacts'].value()
         if self['name'].value():
@@ -317,7 +323,7 @@ class EstateFilterForm(BetterForm):
     heating = AutoComboboxSelectMultipleField(lookup_class=HeatingLookup, label=_('Heating'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     cadastral_number = forms.CharField(required=False, label=_('Cadastral number'))
-    client_note = forms.CharField(required=False, label=_('Client note'))
+    client_description = forms.CharField(required=False, label=_('Client description'))
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''
@@ -378,7 +384,7 @@ class EstateFilterForm(BetterForm):
                          'bidgs__levels__layout__layout_type__in' : 'layouts', 
                          'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
                          'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
-                         'clients__note__icontains': 'client_note'                         
+                         'client_description__icontains': 'client_description'                         
                          }
         
         for key, value in simple_filter.iteritems():
@@ -425,7 +431,7 @@ class EstateFilterForm(BetterForm):
                                          'microdistrict', 'beside', 'agency_price',
                                          ]}),
                      ('center', {'fields': [
-                                            'clients', 'client_note', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
+                                            'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
                                             'room_count', 'interior', 'heating', 'layouts' ,'outbuildings', 'broker'
                                            ]}),

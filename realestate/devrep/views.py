@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.list import ListView
-from devrep.models import Partner, WorkType, ClientPartner
+from devrep.models import Partner, WorkType, ClientPartner, Gear
 from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView,\
     UpdateView
 from estatebase.helpers.functions import safe_next_link
-from devrep.forms import PartnerForm
+from devrep.forms import PartnerForm, ClientPartnerThroughUpdateForm
 from django.views.generic.detail import DetailView
-from estatebase.views import DeleteMixin, ClientListView
+from estatebase.views import DeleteMixin, ClientListView, BaseMixin
 from estatebase.models import prepare_history, Client
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from estatebase.forms import ClientFilterForm
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.html import escape, escapejs
 
 class PartnerListView(ListView):    
     filtered = False
@@ -43,7 +45,6 @@ class PartnerListView(ListView):
             'get_params': get_params,
         })        
         return context
-    
 
 class PartnerMixin(ModelFormMixin):    
     form_class = PartnerForm
@@ -51,7 +52,7 @@ class PartnerMixin(ModelFormMixin):
     model = Partner 
     def form_valid(self, form):
         self.object = form.save(commit=False)        
-        self.object._user_id = self.request.user.pk        
+        self.object._user_id = self.request.user.pk                
         return super(PartnerMixin, self).form_valid(form)   
         
 class PartnerCreateView(PartnerMixin, CreateView): 
@@ -134,3 +135,42 @@ class ClientPartnerRemoveView(ClientPartnerUpdateView):
         return context 
     def update_object(self, client_pk, partner_pk):                         
         ClientPartner.objects.get(partner_id=partner_pk, client_id=client_pk).delete() 
+
+class ClientPartnerThroughUpdateView(BaseMixin, UpdateView):
+    model = ClientPartner
+    form_class = ClientPartnerThroughUpdateForm
+    template_name = 'client_partner_through_update.html'
+    def get_object(self, queryset=None):        
+        client = self.kwargs.get('client', None)
+        partner = self.kwargs.get('partner', None)
+        if queryset is None:
+            queryset = self.get_queryset()
+        queryset =  queryset.filter(client=client, partner=partner)
+        try:
+            obj = queryset.get()
+        except ObjectDoesNotExist:
+            raise Http404(_(u"No %(verbose_name)s found matching the query") % 
+                          {'verbose_name': queryset.model._meta.verbose_name})
+        return obj
+
+
+class PopupCreateMixin(CreateView):
+    title = None
+    def get_context_data(self, **kwargs):
+        context = super(PopupCreateMixin, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : self.title
+        })        
+        return context    
+    def form_valid(self, form):
+        self.object = form.save(commit=True)
+        if  '_popup' in self.request.POST:            
+            return HttpResponse(
+            '<!DOCTYPE html><html><head><title></title></head><body>'
+            '<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script></body></html>' % \
+            (escape(self.object.pk), escapejs(self.object)))                
+        return super(PopupCreateMixin, self).form_valid(form)   
+
+class GearCreateView(PopupCreateMixin):
+    title = u'Добавление новой техники'
+    model = Gear    

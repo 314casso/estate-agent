@@ -9,7 +9,7 @@
 {{ estate_filter_form.media.js }}
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_client_0').addAnother({url : '{% url client_create_popup %}', width: 650, height: 600, object_id: 'id_client' });
+        $('#id_client_0').addAnother({url : '{% url client_create_popup %}', width: 650, height: 600, object_id: 'id_client', hint:'Добавить нового заказчика' });
     });         
 </script>
 {% endblock js %}

@@ -127,6 +127,10 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
 	var elem_id = $('#' + name + '_1');
 	elem_repr.val(newRepr);
 	elem_id.val(newId);
+	var attr = elem_repr.attr('data-selectable-multiple');
+	if (attr == "true") {
+		elem_repr.autocomplete("search", newRepr);
+	}
 	win.close();
 }
 
@@ -137,13 +141,14 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
 			url : null,
 			width : 500,
 			height : 800,
-			object_id : null
+			object_id : null,
+			hint: null
 		};
 
 		var opts = $.extend(defaults, options);
 
 		var a = document.createElement('a');
-		a.innerHTML = "Добавить нового заказчика";
+		a.innerHTML = opts.hint;
 		a.href = opts.url;
 		$(a).each(function() {
 			setAnchor(this, 'ui-icon ui-icon-plus');

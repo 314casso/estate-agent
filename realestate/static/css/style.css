@@ -597,3 +597,7 @@ input[type=text] {
 .small-button a{
 	font-size: 8px !important;
 }
+
+td ul.selectable-deck li.selectable-deck-item .selectable-deck-remove {
+	float: left;
+}

@@ -33,7 +33,7 @@
             <tr>    
                     <td><a title="Редактирование работника" href="{% url client_update clientpartner.client.pk %}?{{ next_url }}">[{{ clientpartner.client.pk }}]</a></td>         
                     <td><a title="Просмотр карточки работника" href="{% url client_detail clientpartner.client.pk %}?{{ next_url }}">{{ clientpartner.client.name }}</a></td>                           
-                    <td><a title="Отношение работника к партнеру" href="?{{ next_url }}">{{ clientpartner.partner_client_status }}</a></td>
+                    <td><a title="Отношение работника к партнеру" href="{% url client_partner_through_update clientpartner.client.pk partner.pk %}?{{ next_url }}">{{ clientpartner.partner_client_status }}</a></td>
                     <td>{% contact_list clientpartner.client next_url %}</td>                  
                     <td><a class="btn-unbind-inline" href="{% url client_partner_unbind clientpartner.client.pk partner.pk %}?{{ next_url }}">Отвязать</a></td>
             </tr>
