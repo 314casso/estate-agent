@@ -17,10 +17,10 @@ class Address(models.Model):
     def __unicode__(self):
         address_fields = [self.region, self.locality, self.microdistrict, self.street, self.estate_number]
         result = []
-        for address_field in address_fields:
+        for address_field in address_fields:            
             if address_field:          
-                result.append(object)             
-        return u', '.join(address_field)    
+                result.append(u'%s' % address_field)
+        return u', '.join(result)    
     class Meta:
         ordering = ['id']                
 
@@ -138,11 +138,10 @@ class ExtraProfile(models.Model):
     )
 
 class Partner(ProcessDeletedModel):
-    partner_types = models.ManyToManyField(PartnerType, verbose_name=_('Partner types'), related_name='partners')
-    dev_profile = models.OneToOneField(DevProfile, verbose_name=_('DevProfile'), blank=True, null=True, related_name='partner') 
+    partner_type = models.ForeignKey(PartnerType, verbose_name=_('Partner type'), related_name='partner')     
     name = models.CharField(_('Name'), max_length=255)
     clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, null=True, through=ClientPartner)     
-    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')  
+    address = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')  
     person_count = models.IntegerField(_('Persons'), default=0)                  
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')

@@ -4,7 +4,8 @@ from devrep.models import Partner, WorkType, ClientPartner, Gear
 from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView,\
     UpdateView
 from estatebase.helpers.functions import safe_next_link
-from devrep.forms import PartnerForm, ClientPartnerThroughUpdateForm
+from devrep.forms import PartnerForm, ClientPartnerThroughUpdateForm,\
+    AddressForm
 from django.views.generic.detail import DetailView
 from estatebase.views import DeleteMixin, ClientListView, BaseMixin
 from estatebase.models import prepare_history, Client
@@ -12,6 +13,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from estatebase.forms import ClientFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
+from django.core.urlresolvers import reverse
 
 class PartnerListView(ListView):    
     filtered = False
@@ -24,9 +26,9 @@ class PartnerListView(ListView):
         #if filter_dict:
         #    self.filtered = True                    
         #q = set_estate_filter(q, filter_dict, user=self.request.user)
-        #order_by = self.request.fields 
-        #if order_by:      
-        #    return q.order_by(','.join(order_by))
+        order_by = self.request.fields 
+        if order_by:      
+            return q.order_by(','.join(order_by))
         return q
     def get_context_data(self, **kwargs):
         context = super(PartnerListView, self).get_context_data(**kwargs)
@@ -37,7 +39,7 @@ class PartnerListView(ListView):
                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'total_count': WorkType.objects.count(),
+            'total_count': Partner.objects.count(),
             'filter_count' : self.get_queryset().count(),
 #             'filter_form': filter_form,
 #             'filter_action': '%s?next=%s' % (reverse('estate-list'), self.request.GET.get('next','')),
@@ -51,17 +53,39 @@ class PartnerMixin(ModelFormMixin):
     template_name = 'partner_form.html'
     model = Partner 
     def form_valid(self, form):
-        self.object = form.save(commit=False)        
-        self.object._user_id = self.request.user.pk                
-        return super(PartnerMixin, self).form_valid(form)   
+        context = self.get_context_data()
+        address_form = context['address_form']
+        if address_form.is_valid():
+            address = address_form.save()             
+            self.object = form.save(commit=False)        
+            self.object._user_id = self.request.user.pk
+            self.object.address = address                
+            return super(PartnerMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')         
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('partner_update', args=[self.object.id]), safe_next_link(next_url)) 
+        return next_url
+            
+    def get_context_data(self, **kwargs):
+        context = super(PartnerMixin, self).get_context_data(**kwargs)
+        address = self.object.address if self.object else None
+        if self.request.POST:
+            if not 'address_form' in context:                  
+                context['address_form'] = AddressForm(self.request.POST, instance=address)
+        else:
+            context['address_form'] = AddressForm(instance=address)
+        context.update({
+            'dialig_title' : u'Добавление нового партнера',            
+        })    
+        return context
+    
         
 class PartnerCreateView(PartnerMixin, CreateView): 
-    def get_context_data(self, **kwargs):
-        context = super(PartnerCreateView, self).get_context_data(**kwargs)
-        context.update({
-            'dialig_title' : u'Добавление нового партнера'
-        })        
-        return context    
+    pass    
 
 class PartnerUpdateView(PartnerMixin, UpdateView):
     def get_context_data(self, **kwargs):

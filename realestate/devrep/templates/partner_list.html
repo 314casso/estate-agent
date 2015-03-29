@@ -51,13 +51,9 @@
         <tr>
             <th style="white-space: nowrap">{% anchor id 'Код' %}</th>
             <th style="white-space: nowrap">{% anchor history__modificated 'Обновлено' %}</th>
-            <th>Риэлтор</th>
-            <th>Статус</th>
-            <th>Вид недвижимости</th>            
-            <th>Районы</th>
-            <th>Населенные пункты</th>
-            <th>Цена</th>
-            <th>Заказчики</th>            
+            <th>Тип</th>
+            <th>Наименование</th>
+            <th>Адрес</th>           
 			<th>Действие</th>
         </tr>
     </thead>
@@ -66,20 +62,14 @@
         <tr class="ui-widget-content">
             <td><a title="Редактирование заявки" href="{% url partner_update object_item.pk %}?{{ next_url }}">{{ object_item.pk }}</a></td>
             <td style="white-space: nowrap">{{ object_item.history.modificated|date:"d M Y" }} </td>
-            <td>{% comma_list object_item.work_types %}</td>
-            <td>{% comma_list object_item.partner_types %}</td>
+            <td>{{ object_item.partner_type }}</td>            
             <td>
                 <a title="Просмотр заявки" href="{% url partner_detail object_item.pk %}?{{ next_url }}">
-                123
+                {{ object_item.name }}
                 </a>
             </td>            
-            <td> {% comma_list object_item.coverage_regions %} </td>
-            <td> {% comma_list object_item.coverage_localities %} </td>
-            <td>555</td>
-            <td>             
-                contacts                
-            </td>            
-            <td><a class="btn-delete-inline" href="?{{ next_url }}">Удалить</a></td>
+            <td> {{ object_item.address  }} </td>
+            <td><a class="btn-delete-inline" href="{% url partner_delete object_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% endfor %}
     </tbody>

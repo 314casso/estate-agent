@@ -28,13 +28,32 @@
 	</tr>	
 	{% history estateregister.history %}   
 </table>
-<div class="topbar button">
-    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Кратко для своих</a>    	
-    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Для своих без фото</a>
-    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Для своих с фото</a>
-    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Для покупателей без фото</a>
-    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">Для покупателей с фото</a>
-    <a target="_blank" href="{% url orbita_report estateregister.pk %}?{{ next_url }}">Орбита</a>
+<div class="button">
+	<fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
+		<legend style="font-size: 14px;">Кратко для своих</legend>
+	    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Корректные</a>
+	    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
+    </fieldset>
+    
+    <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
+		<legend style="font-size: 14px;">Для своих без фото</legend>
+	    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Корректные</a>    	
+    	<a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
+    </fieldset>
+    
+    <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
+		<legend style="font-size: 14px;">Для своих с фото</legend>
+	    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Корректные</a>
+    	<a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true&outdated=true">Все</a>
+    </fieldset>    
+    <br />
+    <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
+		<legend style="font-size: 14px;">Для покупателей</legend>
+	    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Без фото</a>
+    	<a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">С фото</a>
+    	<a target="_blank" href="{% url orbita_report estateregister.pk %}?{{ next_url }}">Орбита</a>
+    </fieldset>
+    
 </div>  
 </fieldset>
 <!-- -->
