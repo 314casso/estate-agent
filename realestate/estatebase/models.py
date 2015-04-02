@@ -962,6 +962,9 @@ class Client(ProcessDeletedModel):
     address = models.CharField(_('Address'), blank=True, null=True, max_length=255)
     note = models.TextField(_('Note'), blank=True, null=True) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
+    has_dev_profile = models.BooleanField(_('HasDevProfile'), default=False)
+    dev_profile = models.OneToOneField('devrep.DevProfile', verbose_name=_('DevProfile'), blank=True, null=True)
+    extra_profile = models.OneToOneField('devrep.ExtraProfile', verbose_name=_('ExtraProfile'), blank=True, null=True)    
     def __unicode__(self):
         return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
     @property

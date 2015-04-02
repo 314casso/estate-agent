@@ -119,16 +119,17 @@ class ClientForm(ModelForm):
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
-        )               
+        )  
     class Meta:        
 #        exclude = ('created_by', 'updated', 'created', 'updated_by', 'deleted')
-        fields = ['origin','client_type', 'name', 'address', 'note']
+        fields = ['origin','client_type', 'has_dev_profile', 'name', 'address', 'note', ]
+        
         model = Client
         widgets = {
             'note': Textarea(attrs={'rows':'5'}),
             'address' : TextInput(attrs={'class': 'big-text-input'}),
             'created' : DateTimeInput(attrs={'readonly':'True'}, format='%d.%m.%Y %H:%M'),
-            'valid' : CheckboxInput(attrs={'disabled':'disabled'}),
+            'valid' : CheckboxInput(attrs={'disabled':'disabled'}),            
         }
 
 class ClientFilterForm(Form):
@@ -151,6 +152,10 @@ class ClientFilterForm(Form):
             label=_('ClientType'),
             required=False,
         )
+        
+    DEV_PROFILE_CHOICES = ((3, u'Неважно',), (0, u'Нет',), (1, u'Да',))
+    has_dev_profile = forms.ChoiceField(label=_('HasDevProfile'), widget=forms.RadioSelect, choices=DEV_PROFILE_CHOICES, initial=3, required=False,)
+    
     name = forms.CharField(required=False, label=_('Name'))
     address = forms.CharField(required=False, label=_('Address'))
     contacts = AutoCompleteSelectMultipleField(
@@ -159,35 +164,48 @@ class ClientFilterForm(Form):
             required=False,
         )
     note = forms.CharField(required=False, label=_('Note'))
-    next = forms.CharField(required=False, widget=forms.HiddenInput())        
+    next = forms.CharField(required=False, widget=forms.HiddenInput())
+    
     def get_filter(self):
+        if self.is_valid():
+            return self.make_filter(self.cleaned_data)
+        return {}
+            
+    def make_filter(self, cleaned_data):
         f = {}
-        if self['pk'].value():
-            f['id__in'] = self['pk'].value()
-        if self['created'].value():            
-            value = from_to_values(self['created'].field.clean(self['created'].value()), 'history__created')            
-            if value:                 
-                f.update(value)        
-        if self['updated'].value():            
-            value = from_to_values(self['updated'].field.clean(self['updated'].value()), 'history__updated')            
-            if value:                 
-                f.update(value)
-        if self['created_by'].value():
-            f['history__created_by__id__in'] = self['created_by'].value()           
-        if self['updated_by'].value():            
-            f['history__updated_by__id__in'] = self['updated_by'].value()
-        if self['contacts'].value():
-            f['contacts__id__in'] = self['contacts'].value()
-        if self['name'].value():
-            f['name__icontains'] = self['name'].value()
-        if self['client_type'].value():
-            f['client_type_id__in'] = self['client_type'].value()
-        if self['origin'].value():
-            f['origin_id__in'] = self['origin'].value()                                                    
-        if self['address'].value():
-            f['address__icontains'] = self['address'].value()    
-        if self['note'].value():
-            f['note__icontains'] = self['note'].value()    
+        if not cleaned_data:
+            return f        
+                
+        history_fields = ('created','updated')
+        for fld in history_fields:
+            cleaned_value = cleaned_data[fld]
+            if cleaned_value:
+                value = history_filter(cleaned_value, fld)
+                if value:                 
+                    f.update(value)
+        
+        if cleaned_data['pk']:
+            f['id__in'] = [item.pk for item in cleaned_data['pk']]
+        
+        simple_filter = { 
+                          'history__created_by__in': 'created_by',
+                          'history__updated_by__in': 'updated_by',
+                          'contacts__in': 'contacts',
+                          'name__icontains': 'name',
+                          'client_type__in': 'client_type',
+                          'origin__in': 'origin',
+                          'address__icontains': 'address',
+                          'note__icontains': 'note',
+                         }
+        
+        for key, value in simple_filter.iteritems():
+            if value in cleaned_data and cleaned_data[value]:                
+                f[key] = cleaned_data[value]
+        
+        has_dev_profile = cleaned_data['has_dev_profile']
+        has_dev_profile = int(has_dev_profile) if has_dev_profile else 3
+        if has_dev_profile < 3:            
+            f['has_dev_profile__exact'] = has_dev_profile == 1        
         return f   
                
 class EstateFilterForm(BetterForm):

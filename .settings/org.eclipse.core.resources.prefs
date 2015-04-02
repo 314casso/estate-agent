@@ -5,6 +5,7 @@ encoding//realestate/django_sorting/templatetags/sorting_tags.py=utf-8
 encoding//realestate/estatebase/field_utils.py=utf-8
 encoding//realestate/estatebase/fields.py=utf-8
 encoding//realestate/estatebase/forms.py=utf-8
+encoding//realestate/estatebase/management/commands/devmigrate.py=utf-8
 encoding//realestate/estatebase/menus.py=utf-8
 encoding//realestate/estatebase/migrations/0041_auto.py=utf-8
 encoding//realestate/estatebase/migrations/0044_auto__add_localitytype__add_field_locality_locality_type.py=utf-8

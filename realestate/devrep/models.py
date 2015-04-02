@@ -106,8 +106,8 @@ class ClientPartner(models.Model):
         unique_together = ('client', 'partner')
 
 class DevProfile(models.Model):    
-    coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage')
-    coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage')
+    coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage', blank=True, null=True)
+    coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage', blank=True, null=True)
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)

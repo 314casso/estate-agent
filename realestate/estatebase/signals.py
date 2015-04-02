@@ -104,6 +104,7 @@ def update_geo(sender, instance, **kwargs):
         geo_groups.add(l.region.geo_group_id)            
     instance.geo_groups = geo_groups
 
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
