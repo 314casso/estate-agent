@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-31 23:45+0300\n"
+"POT-Creation-Date: 2015-04-14 23:24+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,11 +29,11 @@ msgstr "Цена агенства, руб."
 msgid "Saler price"
 msgstr "Цена продавца, руб."
 
-#: forms.py:66 forms.py:209 models.py:222 models.py:314 models.py:1088
+#: forms.py:66 forms.py:225 models.py:222 models.py:314 models.py:1088
 msgid "EstateTypeCategory"
 msgstr "Категория недвижимости"
 
-#: forms.py:71 forms.py:214 forms.py:630
+#: forms.py:71 forms.py:230 forms.py:646
 msgid "Estate type"
 msgstr "Вид недвижимости"
 
@@ -41,233 +41,237 @@ msgstr "Вид недвижимости"
 msgid "Estate client status"
 msgstr "Статус заказчика к лоту"
 
-#: forms.py:81 forms.py:257 forms.py:655 models.py:1008 models.py:1078
+#: forms.py:81 forms.py:273 forms.py:671 models.py:1008 models.py:1078
 msgid "Client"
 msgstr "Заказчик"
 
-#: forms.py:120 forms.py:148 forms.py:284 forms.py:665 models.py:410
+#: forms.py:120 forms.py:147 forms.py:300 forms.py:681 models.py:410
 #: models.py:961
 msgid "Origin"
 msgstr "Источник"
 
-#: forms.py:139 forms.py:204 forms.py:625 forms.py:738
+#: forms.py:138 forms.py:220 forms.py:641 forms.py:754
 msgid "ID"
 msgstr "Код"
 
-#: forms.py:142 forms.py:278 forms.py:648 models.py:326
+#: forms.py:141 forms.py:294 forms.py:664 models.py:326
 msgid "Created"
 msgstr "Создано"
 
-#: forms.py:144 forms.py:280 forms.py:649 models.py:328 models.py:1011
+#: forms.py:143 forms.py:296 forms.py:665 models.py:328 models.py:1011
 msgid "Updated"
 msgstr "Обновлено"
 
-#: forms.py:153 models.py:960
+#: forms.py:152 models.py:960
 msgid "ClientType"
 msgstr "Вид заказчика"
 
-#: forms.py:156 forms.py:741 models.py:40 models.py:85 models.py:104
+#: forms.py:157 models.py:965
+msgid "HasDevProfile"
+msgstr "Строитель"
+
+#: forms.py:159 forms.py:757 models.py:40 models.py:85 models.py:104
 #: models.py:120 models.py:235 models.py:277 models.py:312 models.py:649
 #: models.py:959 models.py:1160
 msgid "Name"
 msgstr "Название"
 
-#: forms.py:157 models.py:74 models.py:962
+#: forms.py:160 models.py:74 models.py:962
 msgid "Address"
 msgstr "Место жительства"
 
-#: forms.py:160 forms.py:262 forms.py:660 models.py:437 models.py:992
+#: forms.py:163 forms.py:278 forms.py:676 models.py:437 models.py:992
 #: models.py:1010
 msgid "Contact"
 msgstr "Контакт"
 
-#: forms.py:163 forms.py:671 models.py:316 models.py:650 models.py:786
+#: forms.py:166 forms.py:687 models.py:316 models.py:650 models.py:786
 #: models.py:963 models.py:1095 models.py:1140 templates/layout_update.html:69
 msgid "Note"
 msgstr "Примечание"
 
-#: forms.py:199 models.py:384 models.py:438
+#: forms.py:215 models.py:384 models.py:438
 msgid "Validity"
 msgstr "Корректность"
 
-#: forms.py:219
+#: forms.py:235
 msgid "Outbuildings"
 msgstr "Постройки"
 
-#: forms.py:224 models.py:281
+#: forms.py:240 models.py:281
 msgid "Commerce"
 msgstr "Коммерч. статус"
 
-#: forms.py:229 forms.py:635 models.py:61 models.py:73 models.py:88
+#: forms.py:245 forms.py:651 models.py:61 models.py:73 models.py:88
 #: models.py:404
 msgid "Region"
 msgstr "Район"
 
-#: forms.py:234 forms.py:640 models.py:105 models.py:121 models.py:405
+#: forms.py:250 forms.py:656 models.py:105 models.py:121 models.py:405
 #: models.py:1091
 msgid "Locality"
 msgstr "Населенный пункт"
 
-#: forms.py:239 models.py:406 models.py:452
+#: forms.py:255 models.py:406 models.py:452
 msgid "Microdistrict"
 msgstr "Микрорайон"
 
-#: forms.py:244 models.py:407
+#: forms.py:260 models.py:407
 msgid "Street"
 msgstr "Улица"
 
-#: forms.py:247 models.py:408
+#: forms.py:263 models.py:408
 msgid "Estate number"
 msgstr "Номер объекта"
 
-#: forms.py:248 models.py:805
+#: forms.py:264 models.py:805
 msgid "Room number"
 msgstr "Номер квартиры"
 
-#: forms.py:251 models.py:415
+#: forms.py:267 models.py:415
 msgid "Estate status"
 msgstr "Статус объекта"
 
-#: forms.py:254 forms.py:668 templates/estate_dialog/basic.html:40
+#: forms.py:270 forms.py:684 templates/estate_dialog/basic.html:40
 #: templates/estate_dialog/basic.html:55
 msgid "Price"
 msgstr "Цена, руб."
 
-#: forms.py:265 forms.py:490 models.py:463 models.py:806
+#: forms.py:281 forms.py:506 models.py:463 models.py:806
 msgid "Year built"
 msgstr "Год постройки"
 
-#: forms.py:266 forms.py:491 models.py:465 models.py:807
+#: forms.py:282 forms.py:507 models.py:465 models.py:807
 msgid "Floor"
 msgstr "Этаж"
 
-#: forms.py:267 forms.py:492 models.py:467 models.py:808
+#: forms.py:283 forms.py:508 models.py:467 models.py:808
 msgid "Floor count"
 msgstr "Этажность"
 
-#: forms.py:270
+#: forms.py:286
 msgid "Wall Construcion"
 msgstr "Материал стен"
 
-#: forms.py:273 forms.py:487 forms.py:530 models.py:473 models.py:817
+#: forms.py:289 forms.py:503 forms.py:546 models.py:473 models.py:817
 #: models.py:923
 msgid "Total area"
 msgstr "Общая площадь, кв. м"
 
-#: forms.py:274 forms.py:488 models.py:485 models.py:818
+#: forms.py:290 forms.py:504 models.py:485 models.py:818
 msgid "Used area"
 msgstr "Жилая площадь, кв. м"
 
-#: forms.py:275 forms.py:493 models.py:471 models.py:816
+#: forms.py:291 forms.py:509 models.py:471 models.py:816
 msgid "Room count"
 msgstr "Кол-во комнат"
 
-#: forms.py:276
+#: forms.py:292
 msgid "Stead area"
 msgstr "Площадь участка, кв. м"
 
-#: forms.py:287 models.py:411
+#: forms.py:303 models.py:411
 msgid "Beside"
 msgstr "Расстояние до, м"
 
-#: forms.py:290 models.py:475 models.py:727 models.py:785 models.py:824
+#: forms.py:306 models.py:475 models.py:727 models.py:785 models.py:824
 #: templates/layout_update.html:68
 msgid "Interior"
 msgstr "Состояние"
 
-#: forms.py:295 models.py:811
+#: forms.py:311 models.py:811
 msgid "Exterior finish"
 msgstr "Внешняя отделка"
 
-#: forms.py:298 forms.py:531 models.py:924
+#: forms.py:314 forms.py:547 models.py:924
 msgid "Face area"
 msgstr "Фасад, м"
 
-#: forms.py:301 models.py:900 models.py:925
+#: forms.py:317 models.py:900 models.py:925
 msgid "Shape"
 msgstr "Форма"
 
-#: forms.py:304 models.py:418 models.py:458 templates/comm_form.html:5
+#: forms.py:320 models.py:418 models.py:458 templates/comm_form.html:5
 msgid "Electricity"
 msgstr "Электричество"
 
-#: forms.py:305 models.py:420 models.py:454 templates/comm_form.html:17
+#: forms.py:321 models.py:420 models.py:454 templates/comm_form.html:17
 msgid "Watersupply"
 msgstr "Водоснабжение"
 
-#: forms.py:306 models.py:422 models.py:456 templates/comm_form.html:30
+#: forms.py:322 models.py:422 models.py:456 templates/comm_form.html:30
 msgid "Gassupply"
 msgstr "Газоснабжение"
 
-#: forms.py:307 models.py:424 templates/comm_form.html:42
+#: forms.py:323 models.py:424 templates/comm_form.html:42
 msgid "Sewerage"
 msgstr "Канализация"
 
-#: forms.py:308 models.py:428 templates/comm_form.html:72
+#: forms.py:324 models.py:428 templates/comm_form.html:72
 msgid "Driveway"
 msgstr "Подъезд"
 
-#: forms.py:312 models.py:431
+#: forms.py:328 models.py:431
 msgid "Estate params"
 msgstr "Метки"
 
-#: forms.py:317 models.py:655
+#: forms.py:333 models.py:655
 msgid "EstatePhoto"
 msgstr "Фотографии"
 
-#: forms.py:320 models.py:432 models.py:828
+#: forms.py:336 models.py:432 models.py:828
 msgid "Description"
 msgstr "Описание"
 
-#: forms.py:321 models.py:434
+#: forms.py:337 models.py:434
 msgid "Comment"
 msgstr "Комментарий"
 
-#: forms.py:323 models.py:916 models.py:927
+#: forms.py:339 models.py:916 models.py:927
 msgid "Purpose"
 msgstr "Назначение"
 
-#: forms.py:324 models.py:760
+#: forms.py:340 models.py:760
 msgid "Layout type"
 msgstr "Объект планировки"
 
-#: forms.py:325 models.py:814
+#: forms.py:341 models.py:814
 msgid "Heating"
 msgstr "Отопление"
 
-#: forms.py:327 models.py:929
+#: forms.py:343 models.py:929
 msgid "Cadastral number"
 msgstr "Кадастровый номер"
 
-#: forms.py:328 models.py:433
+#: forms.py:344 models.py:433
 msgid "Client description"
 msgstr "Описание заказчику"
 
-#: forms.py:489 models.py:815
+#: forms.py:505 models.py:815
 msgid "Ceiling height"
 msgstr "Высота потолков, м"
 
-#: forms.py:566 models.py:782 templates/layout_update.html:65
+#: forms.py:582 models.py:782 templates/layout_update.html:65
 msgid "Area"
 msgstr "Площадь, кв. м"
 
-#: forms.py:594 forms.py:611 models.py:1096
+#: forms.py:610 forms.py:627 models.py:1096
 msgid "BidStatus"
 msgstr "Статус"
 
-#: forms.py:669 models.py:1128 models.py:1136
+#: forms.py:685 models.py:1128 models.py:1136
 msgid "BidEventCategory"
 msgstr "Категория события"
 
-#: forms.py:670 models.py:1137
+#: forms.py:686 models.py:1137
 msgid "Event date"
 msgstr "Запланировано"
 
-#: forms.py:744 forms.py:814 models.py:1153
+#: forms.py:760 forms.py:830 models.py:1153
 msgid "Register category"
 msgstr "Тип подборки"
 
-#: forms.py:833
+#: forms.py:849
 msgid "Event"
 msgstr "Событие"
 
@@ -785,10 +789,6 @@ msgstr "источник"
 msgid "origins"
 msgstr "источники"
 
-#: models.py:965
-msgid "HasDevProfile"
-msgstr "Строитель"
-
 #: models.py:966
 msgid "DevProfile"
 msgstr "Строительный профиль"
@@ -923,13 +923,13 @@ msgstr ""
 #: templates/contact_update.html:62 templates/estate_create.html:57
 #: templates/estate_dialog.html:39 templates/layout_update.html:100
 #: templates/bid/bid_event_update.html:51
-#: templates/clients/client_form.html:40
+#: templates/clients/client_form.html:39
 #: templates/clients/client_status_update.html:35
 #: templates/registers/register_update.html:40
 msgid "Save"
 msgstr "Сохранить"
 
-#: templates/layout_update.html:99 templates/clients/client_form.html:39
+#: templates/layout_update.html:99 templates/clients/client_form.html:38
 msgid "Save and continue editing"
 msgstr "Сохранить и продолжить"
 

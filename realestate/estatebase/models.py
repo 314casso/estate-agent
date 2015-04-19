@@ -963,8 +963,8 @@ class Client(ProcessDeletedModel):
     note = models.TextField(_('Note'), blank=True, null=True) 
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     has_dev_profile = models.BooleanField(_('HasDevProfile'), default=False)
-    dev_profile = models.OneToOneField('devrep.DevProfile', verbose_name=_('DevProfile'), blank=True, null=True)
-    extra_profile = models.OneToOneField('devrep.ExtraProfile', verbose_name=_('ExtraProfile'), blank=True, null=True)    
+    dev_profile = models.OneToOneField('devrep.DevProfile', verbose_name=_('DevProfile'), blank=True, null=True, related_name='client', on_delete=models.SET_NULL)
+    extra_profile = models.OneToOneField('devrep.ExtraProfile', verbose_name=_('ExtraProfile'), blank=True, null=True, related_name='client', on_delete=models.SET_NULL)    
     def __unicode__(self):
         return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
     @property
@@ -973,7 +973,7 @@ class Client(ProcessDeletedModel):
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
-        ordering = ['-id']       
+        ordering = ['-id']
 
 class ContactType(SimpleDict):
     class Meta(SimpleDict.Meta):

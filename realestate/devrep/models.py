@@ -5,7 +5,6 @@ from estatebase.models import ProcessDeletedModel, Region, Locality,\
     Street, SimpleDict, Microdistrict, HistoryMeta, Client
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-import datetime
 from django.core.validators import RegexValidator
 
 class Address(models.Model):
@@ -13,9 +12,9 @@ class Address(models.Model):
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)
     microdistrict = models.ForeignKey(Microdistrict, verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.PROTECT)
     street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)    
-    estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)    
+    address = models.CharField(_('ExtraAddress'), max_length=50, blank=True, null=True)    
     def __unicode__(self):
-        address_fields = [self.region, self.locality, self.microdistrict, self.street, self.estate_number]
+        address_fields = [self.region, self.locality, self.microdistrict, self.street, self.address]
         result = []
         for address_field in address_fields:            
             if address_field:          
@@ -31,6 +30,14 @@ class PartnerType(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('Partner type')
         verbose_name_plural = _('Partner types')
+
+class Citizenship(SimpleDict):
+    '''
+    Citizenship    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Citizenship')
+        verbose_name_plural = _('Citizenships')
 
 class Quality(SimpleDict):
     '''
@@ -113,29 +120,55 @@ class DevProfile(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
     gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)
-    has_transport = models.BooleanField(_('HasTransport'), default=False)    
+    has_transport = models.BooleanField(_('HasTransport'), default=False)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    class Meta:
+        permissions = (
+                ("developer", u'Просмотр информации по строительству'),
+            )
+    
+    
+    def __unicode__(self):
+        return u'%s - %s' % (self.id, self.client)
+    
+    def natural_key(self):
+        return self.__unicode__()
+    
+    def get_coverage_regions(self):
+        return ', '.join([str(item) for item in self.coverage_regions.all()])          
+    
+    def get_coverage_localities(self):
+        return ', '.join([str(item) for item in self.coverage_localities.all()])
+                
 
 class ExtraProfile(models.Model):
     GENDER_CHOICES = (('F', _('Female')), ('M', _('Male')),)
-    last_name = models.CharField(_('LastName'), max_length=100, blank=True)
-    first_name = models.CharField(_('FirstName'), max_length=100, blank=True)
-    patronymic = models.CharField(_('Patronymic'), max_length=100, blank=True)
-    adress = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='extra_profile')
+    last_name = models.CharField(_('LastName'), max_length=100,) # Фамилия
+    first_name = models.CharField(_('FirstName'), max_length=100,) # Имя
+    patronymic = models.CharField(_('Patronymic'), max_length=100, blank=True) # Отчество
+    address = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='extra_profile')
     gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True, default='M')
-    birthday = models.DateField(_('Birthday'), default=datetime.date.today(), blank=True)
-    birthplace = models.CharField(_('Birthplace'), max_length=250, blank=True)
-    passport_number = models.CharField(_('PassportNumber'), max_length=6, blank=True, 
+    birthday = models.DateField(_('Birthday'), blank=True, null=True)
+    birthplace = models.CharField(_('Birthplace'), max_length=250, blank=True, null=True)
+    passport_number = models.CharField(_('PassportNumber'), max_length=6, blank=True, null=True,
     validators=[
         RegexValidator(regex='^\d{6}$', 
         message=u'Номер паспорта должен состоять из шести цифр', code='invalid_passport_number')
         ]
     )
-    passport_series = models.CharField(_('PassportSeries'), max_length=4, blank=True, 
+    passport_series = models.CharField(_('PassportSeries'), max_length=4, blank=True, null=True,
     validators=[
         RegexValidator(regex='^\d{4}$', 
         message='Серия паспорта должена состоять из четырех цифр', code='invalid_passport_series')
         ]
     )
+    citizenship = models.ForeignKey(Citizenship, verbose_name=_('Citizenship'), null=True, blank=True) # Гражданство
+    bad_habits = models.CharField(_('BadHabits'), max_length=100, blank=True, null=True) # Вредные привычки 
+    progress = models.CharField(_('Progress'), max_length=200, blank=True, null=True) # Достижения
+    pc_skills = models.CharField(_('PCSkills'), max_length=100, blank=True, null=True) # Уровень пользователя ПК
+    def __unicode__(self):
+        return u'%s %s' % (self.first_name, self.last_name) 
+
 
 class Partner(ProcessDeletedModel):
     partner_type = models.ForeignKey(PartnerType, verbose_name=_('Partner type'), related_name='partner')     
@@ -146,12 +179,22 @@ class Partner(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    
     def __unicode__(self):
         return u'%s' % self.name
+    
     def natural_key(self):
         return self.__unicode__()
+    
     class Meta:
         ordering = ['name']
+        verbose_name = _('Partner')
+        verbose_name_plural = _('Partners')
+    
     @models.permalink
     def get_absolute_url(self):
         return ('partner_detail', [str(self.id)])
+    
+    def get_staff(self):
+        return ', '.join([item.name for item in self.clients.all()])
+    

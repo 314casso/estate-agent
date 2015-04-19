@@ -8,16 +8,6 @@
 
 {% block js %}
 {{ form.media.js }}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"> </script>
-<script type="text/javascript">
-    $(function() {
-        $('#client-contacts tr').formset({
-            prefix : '{{ contact_formset.prefix }}',
-            addText : 'Добавить контакт',
-            deleteText : 'Удалить'
-        });
-    })                 
-</script>
 {% endblock js %}
 
 {% block left %}
@@ -32,7 +22,7 @@
                 </div></td>
             </tr>
         </thead>
-        {% include 'partner_form_content.html' %}
+        {% include 'extra_profile_form_content.html' %}
         <tfoot class="button">
             <tr>
                 <td colspan="100%">

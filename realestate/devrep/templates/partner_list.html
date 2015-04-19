@@ -7,11 +7,11 @@
 
 
 {% block css %}
-{{ bid_filter_form.media.css }}
+{{ filter_form.media.css }}
 {% endblock css %}
 
 {% block js %}
-{{ bid_filter_form.media.js }}
+{{ filter_form.media.js }}
 <script type="text/javascript">
     $(function() {
         $("#filter").dialog({
@@ -38,7 +38,7 @@
     {% if filtered %}
     <a class="btn-filter-remove" href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить фильтр</a>
     {% endif %}
-    {% include 'prev_view.html' %}    
+    {% include 'prev_view.html' %}   
 </div>
 <div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin: 3px 0">
     Всего партнеров: {{ total_count }},
@@ -54,22 +54,28 @@
             <th>Тип</th>
             <th>Наименование</th>
             <th>Адрес</th>           
+            <th>Состав</th>
 			<th>Действие</th>
         </tr>
     </thead>
     <tbody>
         {% for object_item in object_list %}
         <tr class="ui-widget-content">
-            <td><a title="Редактирование заявки" href="{% url partner_update object_item.pk %}?{{ next_url }}">{{ object_item.pk }}</a></td>
+            <td><a title="Редактирование карточки партнера" href="{% url partner_update object_item.pk %}?{{ next_url }}">{{ object_item.pk }}</a></td>
             <td style="white-space: nowrap">{{ object_item.history.modificated|date:"d M Y" }} </td>
             <td>{{ object_item.partner_type }}</td>            
             <td>
-                <a title="Просмотр заявки" href="{% url partner_detail object_item.pk %}?{{ next_url }}">
+                <a title="Просмотр карточки" href="{% url partner_detail object_item.pk %}?{{ next_url }}">
                 {{ object_item.name }}
                 </a>
             </td>            
             <td> {{ object_item.address  }} </td>
-            <td><a class="btn-delete-inline" href="{% url partner_delete object_item.pk %}?{{ next_url }}">Удалить</a></td>
+            <td>
+            	{% for client in object_item.clients.all %}
+                    <a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>{% include 'comma.html' %}                         
+                {% endfor %}            
+            </td>
+            <td>{% block lastcol %}<a class="btn-delete-inline" href="{% url partner_delete object_item.pk %}?{{ next_url }}">Удалить</a>{% endblock %}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -80,5 +86,24 @@
     {% digg_paginator %}
 </div>
 {% endif %}
+
+<div class="button table-form" id='filter'>
+    <form method="get">
+        <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
+            <tr>
+                <td class="top-align">
+                <table>
+                    {{ filter_form.as_table }}
+                </table></td>
+                <tfoot>
+                    <tr>
+                        <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                        <input type="submit" value="Применить"/>
+                        </td>
+                    </tr>
+                </tfoot>
+        </table>
+    </form>
+</div>
 
 {% endblock left %}

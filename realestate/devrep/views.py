@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.list import ListView
-from devrep.models import Partner, WorkType, ClientPartner, Gear
+from devrep.models import Partner, WorkType, ClientPartner, Gear, DevProfile,\
+    ExtraProfile
 from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView,\
     UpdateView
 from estatebase.helpers.functions import safe_next_link
 from devrep.forms import PartnerForm, ClientPartnerThroughUpdateForm,\
-    AddressForm
+    AddressForm, DevProfileForm, WorkTypeProfileFormSet, ExtraProfileForm,\
+    PartnerFilterForm
 from django.views.generic.detail import DetailView
 from estatebase.views import DeleteMixin, ClientListView, BaseMixin
 from estatebase.models import prepare_history, Client
@@ -14,26 +16,35 @@ from estatebase.forms import ClientFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 class PartnerListView(ListView):    
     filtered = False
     template_name = 'partner_list.html'
-    paginate_by = 7      
+    paginate_by = 7
+    filter_form = PartnerFilterForm
+    
+    @method_decorator(permission_required('devrep.developer', raise_exception=True))
+    def dispatch(self, *args, **kwargs):                
+        return super(PartnerListView, self).dispatch(*args, **kwargs)      
+    
     def get_queryset(self):        
         q = Partner.objects.all()        
-        #filter_form = self.filter_form(self.request.GET)
-        #filter_dict = filter_form.get_filter()        
-        #if filter_dict:
-        #    self.filtered = True                    
-        #q = set_estate_filter(q, filter_dict, user=self.request.user)
+        filter_form = self.filter_form(self.request.GET)
+        filter_dict = filter_form.get_filter()      
+        if filter_dict:
+            self.filtered = True
+        if len(filter_dict):
+            q = q.filter(**filter_dict)
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
         return q
+    
     def get_context_data(self, **kwargs):
         context = super(PartnerListView, self).get_context_data(**kwargs)
-#         filter_form = self.filter_form(self.request.GET)
-#         
+        filter_form = self.filter_form(self.request.GET)
         params = self.request.GET.copy()      
         get_params = params.urlencode()
                    
@@ -41,17 +52,38 @@ class PartnerListView(ListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Partner.objects.count(),
             'filter_count' : self.get_queryset().count(),
-#             'filter_form': filter_form,
-#             'filter_action': '%s?next=%s' % (reverse('estate-list'), self.request.GET.get('next','')),
+            'filter_form': filter_form,            
             'filtered' :self.filtered,
             'get_params': get_params,
         })        
         return context
 
+class PartnerSelectView(PartnerListView):
+    template_name = 'partner_select.html'
+    def get_client(self):
+        return Client.objects.get(pk=self.kwargs['client_pk'])            
+    def get_context_data(self, **kwargs):         
+        context = super(PartnerSelectView, self).get_context_data(**kwargs)                    
+        context.update ({            
+            'client' : self.get_client(),
+            'filter_form' : self.filter_form(self.request.GET),
+        })        
+        return context
+    def get_queryset(self):
+        q = super(PartnerSelectView, self).get_queryset()
+        client = self.get_client()
+        q = q.exclude(id__in=client.clientpartner_set.all().values_list('partner_id', flat=True))        
+        return q
+
 class PartnerMixin(ModelFormMixin):    
     form_class = PartnerForm
     template_name = 'partner_form.html'
     model = Partner 
+    
+    @method_decorator(permission_required('devrep.developer', raise_exception=True))
+    def dispatch(self, *args, **kwargs):                
+        return super(PartnerMixin, self).dispatch(*args, **kwargs)
+    
     def form_valid(self, form):
         context = self.get_context_data()
         address_form = context['address_form']
@@ -62,7 +94,7 @@ class PartnerMixin(ModelFormMixin):
             self.object.address = address                
             return super(PartnerMixin, self).form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form))
+            return self.render_to_response(self.get_context_data(form=form, address_form=address_form))
     
     def get_success_url(self):   
         next_url = self.request.REQUEST.get('next', '')         
@@ -87,6 +119,7 @@ class PartnerMixin(ModelFormMixin):
 class PartnerCreateView(PartnerMixin, CreateView): 
     pass    
 
+
 class PartnerUpdateView(PartnerMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(PartnerUpdateView, self).get_context_data(**kwargs)
@@ -94,6 +127,7 @@ class PartnerUpdateView(PartnerMixin, UpdateView):
             'dialig_title' : u'Редактирование портнера [%s] «%s»' % (self.object.pk, self.object) 
         })        
         return context
+
 
 class PartnerDetailView(PartnerMixin, DetailView):    
     template_name = 'partner_detail.html'
@@ -104,6 +138,7 @@ class PartnerDetailView(PartnerMixin, DetailView):
         })        
         return context  
     
+    
 class PartnerDeleteView(DeleteMixin, PartnerMixin, DeleteView):
     template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
@@ -113,6 +148,7 @@ class PartnerDeleteView(DeleteMixin, PartnerMixin, DeleteView):
             'dialig_body'  : u'Подтвердите удаление партнера: %s' % self.object,
         })
         return context
+
 
 class ClientPartnerSelectView(ClientListView):
     template_name = 'client_partner_select.html'
@@ -131,6 +167,7 @@ class ClientPartnerSelectView(ClientListView):
         q = q.exclude(bids_m2m__id=self.kwargs['partner_pk'])
         return q
 
+
 class ClientPartnerUpdateView(DetailView):   
     model = Client
     template_name = 'confirm.html'
@@ -147,7 +184,9 @@ class ClientPartnerUpdateView(DetailView):
     def post(self, request, *args, **kwargs):       
         self.update_object(self.kwargs['pk'], self.kwargs['partner_pk'])      
         prepare_history(Partner.objects.get(pk=self.kwargs['partner_pk']).history, self.request.user.pk)      
+        prepare_history(Client.objects.get(pk=self.kwargs['pk']).dev_profile.history, self.request.user.pk)
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
+
 
 class ClientPartnerRemoveView(ClientPartnerUpdateView):    
     def get_context_data(self, **kwargs):
@@ -159,6 +198,7 @@ class ClientPartnerRemoveView(ClientPartnerUpdateView):
         return context 
     def update_object(self, client_pk, partner_pk):                         
         ClientPartner.objects.get(partner_id=partner_pk, client_id=client_pk).delete() 
+
 
 class ClientPartnerThroughUpdateView(BaseMixin, UpdateView):
     model = ClientPartner
@@ -195,6 +235,121 @@ class PopupCreateMixin(CreateView):
             (escape(self.object.pk), escapejs(self.object)))                
         return super(PopupCreateMixin, self).form_valid(form)   
 
+
 class GearCreateView(PopupCreateMixin):
     title = u'Добавление новой техники'
     model = Gear    
+    
+    
+class DevProfileMixin(ModelFormMixin):
+    form_class = DevProfileForm
+    template_name = 'dev_profile_form.html'
+    model = DevProfile
+    
+    @method_decorator(permission_required('devrep.developer', raise_exception=True))
+    def dispatch(self, *args, **kwargs):                
+        return super(DevProfileMixin, self).dispatch(*args, **kwargs)
+    
+    def form_valid(self, form):
+        context = self.get_context_data()
+        worktype_formset = context['worktype_formset']
+        if worktype_formset.is_valid():
+            self.object = form.save(commit=False)
+            self.object._user_id = self.request.user.pk
+            self.object.save()
+            worktype_formset.instance = self.object
+            worktype_formset.save()            
+            client_pk = form.cleaned_data.get('client_pk', None)
+            if client_pk:        
+                client = Client.objects.get(pk=client_pk)
+                client.dev_profile = self.object
+                client.save() 
+            return super(DevProfileMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form,worktype_formset=worktype_formset))
+    def get_context_data(self, **kwargs):                         
+        context = super(DevProfileMixin, self).get_context_data(**kwargs)                        
+        if self.request.POST:
+            if not 'worktype_formset' in context:
+                context['worktype_formset'] = WorkTypeProfileFormSet(self.request.POST, instance=self.object)   
+        else:
+            context['worktype_formset'] = WorkTypeProfileFormSet(instance=self.object)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),    
+        })
+        return context
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('dev_profile_update', args=[self.object.id]), safe_next_link(next_url))
+        return next_url
+
+
+class DevProfileCreateView(DevProfileMixin, CreateView): 
+    def get_initial(self):        
+        initial = super(DevProfileCreateView, self).get_initial()
+        initial['client_pk'] = int(self.kwargs.get('client_pk'))        
+        return initial
+
+class DevProfileUpdateView(DevProfileMixin, UpdateView): 
+    pass
+
+
+class DevProfileDeleteView(DeleteMixin, DevProfileMixin, DeleteView):
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(DevProfileDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление профиля строителя...',
+            'dialig_body'  : u'Подтвердите удаление профиля: %s' % self.object,
+        })
+        return context
+
+
+class DevProfileDetailView(DevProfileMixin, DetailView): 
+    template_name = 'dev_profile_detail.html'
+
+class ExtraProfileMixin(ModelFormMixin):
+    form_class = ExtraProfileForm
+    template_name = 'extra_profile_form.html'
+    model = ExtraProfile
+    def form_valid(self, form):
+        context = self.get_context_data()
+        address_form = context['address_form']
+        if address_form.is_valid():
+            address = address_form.save()
+            self.object = form.save(commit=False)     
+            self.object.address = address         
+            self.object.save()                        
+            client_pk = form.cleaned_data.get('client_pk', None)
+            if client_pk:        
+                client = Client.objects.get(pk=client_pk)
+                client.extra_profile = self.object
+                client.save() 
+            return super(ExtraProfileMixin, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form, address_form=address_form))
+    def get_context_data(self, **kwargs):                         
+        context = super(ExtraProfileMixin, self).get_context_data(**kwargs)                        
+        address = self.object.address if self.object else None
+        if self.request.POST:
+            if not 'address_form' in context:                  
+                context['address_form'] = AddressForm(self.request.POST, instance=address)
+        else:
+            context['address_form'] = AddressForm(instance=address)            
+        return context
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse('extra_profile_update', args=[self.object.id]), safe_next_link(next_url))
+        return next_url
+    
+class ExtraProfileCreateView(ExtraProfileMixin, CreateView): 
+    def get_initial(self):        
+        initial = super(ExtraProfileCreateView, self).get_initial()
+        initial['client_pk'] = int(self.kwargs.get('client_pk'))        
+        return initial
+
+class ExtraProfileUpdateView(ExtraProfileMixin, UpdateView): 
+    pass
+        

@@ -11,7 +11,7 @@
 {% block topbar %}
 <div class="topbar button">       
 	<a title="Удалить партнера [{{ partner.id }}] в корзину" class="btn-delete" href="{% url partner_delete partner.pk %}?{{ next_url }}">Удалить</a> 
-    {% include 'prev_view.html' %}    
+    {% include 'prev_view.html' %}
 </div>
 {% endblock %}
 
@@ -28,7 +28,7 @@
     <tr>
         <td colspan="100%">
             <table class="inline-formset ui-widget ui-widget-content ui-corner-all">
-            <th><a title="Привязать работника к партнеру" href="{% url client_partner_select partner.pk %}?{{ next_url }}&client_type_1=8">Работники:</a></th>
+            <th><a title="Привязать работника к партнеру" href="{% url client_partner_select partner.pk %}?{{ next_url }}&client_type_1=8">Состав:</a></th>
             {% for clientpartner in partner.clientpartner_set.all %}
             <tr>    
                     <td><a title="Редактирование работника" href="{% url client_update clientpartner.client.pk %}?{{ next_url }}">[{{ clientpartner.client.pk }}]</a></td>         

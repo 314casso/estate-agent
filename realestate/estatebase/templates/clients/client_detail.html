@@ -3,6 +3,7 @@
 {% load paginator %}
 {% load query_string %}
 {% load humanize %}
+{% load report %}
 
 {% block page_header %}
 	Подробная информация о заказчике {{ client.name }}
@@ -37,12 +38,43 @@
 		<td style="font-weight: bold"><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
 	</tr>
 	<tr>
-		<th>Адрес:</th>
-		<td>{{ client.address }}</td>
+		<th>Место жительства:</th>
+		<td>
+		<span title="Адрес заказчика из карточки">{{ client.address }}</span>
+		{% if client.extra_profile %}
+			<br><span title="Адрес из анкеты"><small><a href="{% url extra_profile_update client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile.address }}</a></small></span>
+		{% endif %}
+		
+		</td>
 	</tr>    	
 	<tr>
 		<th>Примечание:</th>
 		<td>{{ client.note }}</td>
+	</tr>
+	{% if client.has_dev_profile %}
+	<tr>
+		<th>Профиль строителя:</th>
+		<td>
+		{% if client.dev_profile %}		
+			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">{{ client.dev_profile.work_types.all|to_comma_sep }}</a>
+			<a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">
+				<span style="float: right" class="ui-icon ui-icon-wrench"> </span>			
+			</a>
+		{% else %}
+			<a title="Заполнить профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">Заполнить</a>
+		{% endif %}
+		</td>
+	</tr>	
+	{% endif %}
+	<tr>
+		<th>Анкета:</th>
+		<td>
+		{% if client.extra_profile %}		
+			<a href="{% url extra_profile_update client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile }}</a>			
+		{% else %}
+			<a title="Заполнить дополнительные данные" href="{% url extra_profile_create client.pk %}?{{ next_url }}">Заполнить</a>
+		{% endif %}
+		</td>
 	</tr>
 </table>
 

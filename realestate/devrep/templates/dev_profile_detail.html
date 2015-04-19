@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% load paginator %}
+{% load query_string %}
+{% load humanize %}
+{% load report %}
+
+{% block page_header %}
+	Профиль для строителя - {{ devprofile.client }}
+{% endblock %}
+
+{% block topbar %}
+<div class="topbar button">       
+	<a title="Удалить профиль [{{ devprofile.id }}]" class="btn-delete" href="{% url dev_profile_delete devprofile.pk %}?{{ next_url }}">Удалить</a> 
+    {% include 'prev_view.html' %}    
+</div>
+{% endblock %}
+
+{% block left %}
+<fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Профиль</legend>
+<table>
+	<tr>
+        <th>Код профиля:</th>
+        <td title="Редактировать профиль" style="font-weight: bold"><a href="{% url dev_profile_update devprofile.pk %}?{{ next_url }}">{{ devprofile.pk }}</a></td>
+    </tr>
+    {% history devprofile.history %}
+    <tr>
+        <th>Строитель:</th>
+        <td title="Редактировать строителя" style="font-weight: bold"><a href="{% url client_update devprofile.client.pk %}?{{ next_url }}">{{ devprofile.client }}</a></td>
+    </tr>        
+    <tr>
+        <th>Районы:</th>
+        <td>{{ devprofile.get_coverage_regions }}</td>
+    </tr>
+    <tr>
+        <th>Населенные пункты:</th>
+        <td>{{ devprofile.get_coverage_localities }}</td>
+    </tr>
+    <tr>
+        <th>Качество:</th>
+        <td>{{ devprofile.quality|default_if_none:"-" }}</td>
+    </tr>
+    <tr>
+        <th>Опыт:</th>
+        <td>{{ devprofile.experience|default_if_none:"-" }}</td>
+    </tr>    
+    <tr>
+        <th>Транспорт:</th>
+        <td>{% if devprofile.has_transport  %}<span class="ui-icon ui-icon-check"></span>{% endif %}</td>
+    </tr>  
+    <tr>
+        <th>Инструменты:</th>
+        <td>{{ devprofile.gears.all|to_comma_sep }}</td>
+    </tr>
+    <tr>
+        <th>Примечание:</th>
+        <td>{{ devprofile.note }}</td>
+    </tr>
+</table>
+
+
+</fieldset>
+{% endblock %}
+
+
+
+{% block right %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Виды строительных работ</legend>
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Вид работ</th>
+            <th>Мин. цена</th>
+            <th>Макс. цена</th>
+            <th>Ед. изм.</th>
+            <th>Качество</th>       
+            <th>Опыт</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in devprofile.worktypeprofile_set.all %}
+        <tr class="ui-widget-content">            
+            <td>{{ item.work_type }}</td>
+            <td>{{ item.price_min }}</td>
+            <td>{{ item.price_max }}</td>
+            <td>{{ item.measure }}</td>
+            <td>{{ item.quality|default_if_none:"-" }}</td>
+            <td>{{ item.experience|default_if_none:"-" }}</td>           
+        </tr>
+        {% empty %}
+        <tr>
+        	<td colspan="100%">
+                Виды работ отсутствуют..
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</fieldset>
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Участвует в бригадах</legend>
+
+<div class="topbar button">
+    <a class="btn-bind" href="{% url partner_select devprofile.client.pk %}?{{ next_url }}">Включить строителя в бригаду</a>        
+</div>    
+        
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Код</th>
+            <th>Название</th>            
+            <th>Тип участия</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in devprofile.client.clientpartner_set.all %}
+        <tr class="ui-widget-content">            
+            <td><a title="Редактирование карточки партнера или бригады" href="{% url partner_update item.partner.pk %}?{{ next_url }}">{{ item.partner.id }}</td>
+            <td><a title="Просмотр карточки партнера или бригады" href="{% url partner_detail item.partner.pk %}?{{ next_url }}">{{ item.partner.name|default_if_none:"Неуказано" }}</a> <small>( {{ item.partner.get_staff }} )</small></td>
+			<td><a title="Отношение работника к партнеру или бригаде" href="{% url client_partner_through_update devprofile.client.pk item.partner.pk %}?{{ next_url }}">{{ item.partner_client_status }}</a></td>
+			<td><a class="btn-unbind-inline" href="{% url client_partner_unbind devprofile.client.pk item.partner.pk %}?{{ next_url }}">Отвязать</a></td>                                  
+        </tr>
+        {% empty %}
+        <tr>
+        	<td colspan="100%">
+                Виды работ отсутствуют..
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</fieldset>
+{% endblock right %}
