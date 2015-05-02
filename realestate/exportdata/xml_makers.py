@@ -70,7 +70,9 @@ class EstateBaseWrapper(object):
             return u'%s' % self._estate.microdistrict
                 
     def address(self):
-        return u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
+        if self._estate.street:
+            return u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
+        return ''
     
     @property
     def price(self):
