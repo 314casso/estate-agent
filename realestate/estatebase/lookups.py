@@ -19,6 +19,9 @@ class SimpleIdLookup(ModelLookup):
             return u"%s" % item.pk        
     def get_item_value(self, item):
         return u"%s" % (item.pk,)
+    def get_query(self, request, term):
+        term = re.sub(r'\D', '', term)
+        return super(SimpleIdLookup, self).get_query(request, term)        
 
 class ClientIdLookup(SimpleIdLookup):
     model = Client
