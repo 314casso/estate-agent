@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from devrep.models import Partner, ClientPartner, Address, DevProfile,\
-    WorkTypeProfile, ExtraProfile
+    WorkTypeProfile, ExtraProfile, GoodsProfileM2M, Goods
 from django.forms.models import ModelForm, BaseInlineFormSet,\
     inlineformset_factory
 from selectable.forms.widgets import AutoComboboxSelectMultipleWidget,\
     AutoComboboxSelectWidget, AutoCompleteSelectWidget,\
     AutoCompleteSelectMultipleWidget
 from devrep.lookups import PartnerTypeLookup, GearLookup,\
-    QualityLookup, ExperienceLookup, PartnerLookup, PartnerIdLookup
+    QualityLookup, ExperienceLookup, PartnerLookup, PartnerIdLookup,\
+    WorkTypeLookup, MeasureLookup, CitizenshipLookup
 from estatebase.lookups import RegionLookup, LocalityLookup, MicrodistrictLookup,\
     StreetLookup, ExUserLookup
 from django.forms.widgets import Textarea, DateTimeInput
@@ -56,14 +57,8 @@ class AddressForm(ModelForm):
         widgets = {
                     'region':AutoComboboxSelectWidget(RegionLookup), 
                     'locality':AutoCompleteSelectWidget(LocalityLookup),                   
-                    'microdistrict':AutoCompleteSelectWidget(MicrodistrictLookup),
                     'street':AutoCompleteSelectWidget(StreetLookup),
                   } 
-
-
-class WorkTypeProfileFormInlineForm(ModelForm):
-    class Meta:
-        model = WorkTypeProfile        
 
 
 class DevProfileForm(ModelForm):
@@ -74,7 +69,8 @@ class DevProfileForm(ModelForm):
         for multi_field in multi_fields:
             self.fields[multi_field].help_text = ''        
     class Meta:
-        exclude = ['work_types']
+#         exclude = ['work_types']
+        fields = ['coverage_regions', 'coverage_localities', 'quality', 'experience', 'has_transport', 'gears', 'bad_habits', 'progress', 'pc_skills', 'note',]
         model = DevProfile
         widgets = {
                     'coverage_regions':AutoComboboxSelectMultipleWidget(RegionLookup), 
@@ -97,7 +93,7 @@ class ExtraProfileForm(ModelForm):
         exclude = ['address',]
         model = ExtraProfile
         widgets = {
-                    'citizenship':AutoComboboxSelectWidget(ExperienceLookup),
+                    'citizenship':AutoComboboxSelectWidget(CitizenshipLookup),
                     'birthday': DateTimeInput(attrs={'class':'date-input'}, format='%d.%m.%Y'),
                   }
 
@@ -111,7 +107,28 @@ class RequiredWorkTypeProfileFormSet(BaseInlineFormSet):
                 return  
         raise ValidationError(u'В профиле нужно указать хотябы один вид работ!')
 
-WorkTypeProfileFormSet = inlineformset_factory(DevProfile, WorkTypeProfile, extra=1, form=WorkTypeProfileFormInlineForm, formset=RequiredWorkTypeProfileFormSet)
+
+class WorkTypeProfileFormInlineForm(ModelForm):
+    class Meta:
+        model = WorkTypeProfile
+        widgets = {                   
+                    'quality':AutoComboboxSelectWidget(QualityLookup),                                      
+                    'experience':AutoComboboxSelectWidget(ExperienceLookup),   
+                    'work_type':AutoComboboxSelectWidget(WorkTypeLookup),
+                    'measure':AutoComboboxSelectWidget(MeasureLookup),                  
+                  }
+        
+
+WorkTypeProfileFormSet = inlineformset_factory(DevProfile, WorkTypeProfile, extra=1, form=WorkTypeProfileFormInlineForm)
+
+
+class GoodsProfileM2MInlineForm(ModelForm):
+    class Meta:
+        model = GoodsProfileM2M
+        
+
+GoodsProfileM2MFormSet = inlineformset_factory(DevProfile, GoodsProfileM2M, extra=1, form=GoodsProfileM2MInlineForm)
+
 
 class PartnerFilterForm(Form):
     pk = AutoCompleteSelectMultipleField(

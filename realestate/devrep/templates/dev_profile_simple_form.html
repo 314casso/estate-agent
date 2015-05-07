@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load link_helper %}
+
+{% block css %}
+{{ form.media.css }}
+{% endblock css %}
+
+{% block js %}
+{{ form.media.js }}
+<script type="text/javascript">       
+    $(document).ready(function() {
+        $('#id_gears_0').addAnother({url : '{% url gear_create_popup %}', width: 350, height: 200, object_id: 'id_gears', hint:'Добавить новый инструмент' });
+    });
+</script>
+{% endblock js %}
+
+{% block left %}
+<form action="" method="post" class="table-form">
+    <table class="ui-widget ui-widget-content ui-corner-all">
+        <thead>
+            <tr>
+                <td colspan="100%">
+                <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
+                    {{ dialig_title|truncatechars:80 }}
+                    {% close_btn request.GET.next %}
+                </div></td>
+            </tr>
+        </thead>
+        {% include 'dev_profile_simple_form_content.html' %}
+        <tfoot class="button">
+            <tr>
+                <td colspan="100%">
+                <input value="{% trans 'Save and continue editing' %}" type="submit" name="_continue"/>
+                <input value="{% trans 'Save' %}" type="submit" name="_save"/>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</form>
+{% endblock %}
+

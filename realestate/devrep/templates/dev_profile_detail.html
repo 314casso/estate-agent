@@ -54,6 +54,18 @@
         <td>{{ devprofile.gears.all|to_comma_sep }}</td>
     </tr>
     <tr>
+        <th>Вредные привычки:</th>
+        <td>{{ devprofile.bad_habits }}</td>
+    </tr>
+    <tr>
+        <th>Достижения:</th>
+        <td>{{ devprofile.progress }}</td>
+    </tr>
+    <tr>
+        <th>Навыки работы с ПК:</th>
+        <td>{{ devprofile.pc_skills }}</td>
+    </tr>
+    <tr>
         <th>Примечание:</th>
         <td>{{ devprofile.note }}</td>
     </tr>
@@ -67,7 +79,8 @@
 
 {% block right %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 14px;">Виды строительных работ</legend>
+    <legend style="font-size: 14px;"><a title="Управление видами работ" href="{% url manage_worktype_profile devprofile.pk %}?{{ next_url }}">Виды строительных работ</a></legend>
+    
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
@@ -85,7 +98,7 @@
             <td>{{ item.work_type }}</td>
             <td>{{ item.price_min }}</td>
             <td>{{ item.price_max }}</td>
-            <td>{{ item.measure }}</td>
+            <td>{{ item.measure|default_if_none:"-" }}</td>
             <td>{{ item.quality|default_if_none:"-" }}</td>
             <td>{{ item.experience|default_if_none:"-" }}</td>           
         </tr>
@@ -101,16 +114,49 @@
 </fieldset>
 
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 14px;">Участвует в бригадах</legend>
+    <legend style="font-size: 14px;"><a title="Управление товарами и услугами" href="{% url manage_goods_profile devprofile.pk %}?{{ next_url }}">Товары и услуги</a></legend>
+    
+<table class="base-table-list ui-widget ui-widget-content">
+    <thead>     
+        <tr>
+            <th>Товар или услуга</th>
+            <th>Тип</th>
+            <th>Цена</th>            
+            <th>Ед. изм.</th>
+            <th>Примечание</th>      
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in devprofile.goodsprofilem2m_set.all %}
+        <tr class="ui-widget-content">            
+            <td>{{ item.goods }}</td>
+            <td>{{ item.goods.get_type_display }}</td>
+            <td>{{ item.price }}</td>            
+            <td>{{ item.measure }}</td>
+            <td>{{ item.note|default_if_none:"-" }}</td>                       
+        </tr>
+        {% empty %}
+        <tr>
+        	<td colspan="100%">
+                Виды работ отсутствуют..
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</fieldset>
 
-<div class="topbar button">
-    <a class="btn-bind" href="{% url partner_select devprofile.client.pk %}?{{ next_url }}">Включить строителя в бригаду</a>        
-</div>    
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">
+    <a title="Включить строителя в бригаду" href="{% url partner_select devprofile.client.pk %}?{{ next_url }}">Участвует в бригадах</a>
+    </legend>
         
 <table class="base-table-list ui-widget ui-widget-content">
     <thead>     
         <tr>
             <th>Код</th>
+            <th>Вид</th>
             <th>Название</th>            
             <th>Тип участия</th>
             <th></th>
@@ -119,7 +165,8 @@
     <tbody>
         {% for item in devprofile.client.clientpartner_set.all %}
         <tr class="ui-widget-content">            
-            <td><a title="Редактирование карточки партнера или бригады" href="{% url partner_update item.partner.pk %}?{{ next_url }}">{{ item.partner.id }}</td>
+            <td><a title="Редактирование карточки партнера или бригады" href="{% url partner_update item.partner.pk %}?{{ next_url }}">{{ item.partner.id }}</a></td>
+            <td>{{ item.partner.partner_type }}</td>
             <td><a title="Просмотр карточки партнера или бригады" href="{% url partner_detail item.partner.pk %}?{{ next_url }}">{{ item.partner.name|default_if_none:"Неуказано" }}</a> <small>( {{ item.partner.get_staff }} )</small></td>
 			<td><a title="Отношение работника к партнеру или бригаде" href="{% url client_partner_through_update devprofile.client.pk item.partner.pk %}?{{ next_url }}">{{ item.partner_client_status }}</a></td>
 			<td><a class="btn-unbind-inline" href="{% url client_partner_unbind devprofile.client.pk item.partner.pk %}?{{ next_url }}">Отвязать</a></td>                                  

@@ -1,6 +1,6 @@
 from estatebase.lookups import SimpleNameLookup, SimpleIdLookup
 from devrep.models import PartnerType, WorkType, Gear, Quality, Experience,\
-    Partner, Citizenship
+    Partner, Citizenship, Measure
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
 from selectable.base import ModelLookup
@@ -26,6 +26,9 @@ class PartnerLookup(SimpleNameLookup):
 class CitizenshipLookup(SimpleNameLookup):
     model = Citizenship
     
+class MeasureLookup(SimpleNameLookup):
+    model = Measure    
+    
 class WorkTypeLookup(ModelLookup):
     model = WorkType  
     search_fields = ('name__icontains',)
@@ -45,5 +48,6 @@ try:
     registry.register(PartnerLookup)
     registry.register(CitizenshipLookup)
     registry.register(PartnerIdLookup)
+    registry.register(MeasureLookup)    
 except LookupAlreadyRegistered:
     pass      

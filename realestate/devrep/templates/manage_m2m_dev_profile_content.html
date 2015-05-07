@@ -1,18 +1,13 @@
 {% load link_helper %}
-{{ form.as_table }}{% csrf_token %}
+{% csrf_token %}
 <th colspan="100%" class="inline-formset ui-widget ui-widget-content ui-corner-all">	
-	{{ worktype_formset.management_form }}	    
-	{% for form in worktype_formset %}
-	<div id="worktype-formset">
+	{{ formset.management_form }}	    
+	{% for form in formset %}
+	<div id="formset">
 			<div class="inline-formset ui-widget ui-widget-content ui-corner-all" style="margin-top:2px">
-		        
 		        {{ form.as_p }}
-		        
 	        </div>
 	</div>
 	{% endfor %}
-    <span>{{ worktype_formset.non_form_errors }}</span>
+    <span>{{ formset.non_form_errors }}</span>
 </th>
-
-
-

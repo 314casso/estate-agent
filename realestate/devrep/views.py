@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.list import ListView
 from devrep.models import Partner, WorkType, ClientPartner, Gear, DevProfile,\
-    ExtraProfile
+    ExtraProfile, Quality
 from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView,\
     UpdateView
 from estatebase.helpers.functions import safe_next_link
 from devrep.forms import PartnerForm, ClientPartnerThroughUpdateForm,\
     AddressForm, DevProfileForm, WorkTypeProfileFormSet, ExtraProfileForm,\
-    PartnerFilterForm
+    PartnerFilterForm, GoodsProfileM2MFormSet
 from django.views.generic.detail import DetailView
 from estatebase.views import DeleteMixin, ClientListView, BaseMixin
 from estatebase.models import prepare_history, Client
@@ -18,6 +18,9 @@ from django.utils.html import escape, escapejs
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
+from django.shortcuts import render_to_response, get_object_or_404, render
+from django.template.context import RequestContext
+from django.views.generic.base import View
 
 class PartnerListView(ListView):    
     filtered = False
@@ -243,7 +246,7 @@ class GearCreateView(PopupCreateMixin):
     
 class DevProfileMixin(ModelFormMixin):
     form_class = DevProfileForm
-    template_name = 'dev_profile_form.html'
+    template_name = 'dev_profile_simple_form.html'
     model = DevProfile
     
     @method_decorator(permission_required('devrep.developer', raise_exception=True))
@@ -251,31 +254,22 @@ class DevProfileMixin(ModelFormMixin):
         return super(DevProfileMixin, self).dispatch(*args, **kwargs)
     
     def form_valid(self, form):
-        context = self.get_context_data()
-        worktype_formset = context['worktype_formset']
-        if worktype_formset.is_valid():
-            self.object = form.save(commit=False)
-            self.object._user_id = self.request.user.pk
-            self.object.save()
-            worktype_formset.instance = self.object
-            worktype_formset.save()            
-            client_pk = form.cleaned_data.get('client_pk', None)
-            if client_pk:        
-                client = Client.objects.get(pk=client_pk)
+        self.object = form.save(commit=False)
+        self.object._user_id = self.request.user.pk
+        self.object.save()      
+        super(DevProfileMixin, self).form_valid(form)
+        client_pk = form.cleaned_data.get('client_pk', None)
+        if client_pk:   
+            client = Client.objects.get(pk=client_pk)
+            if not client.dev_profile:
                 client.dev_profile = self.object
                 client.save() 
-            return super(DevProfileMixin, self).form_valid(form)
-        else:
-            return self.render_to_response(self.get_context_data(form=form,worktype_formset=worktype_formset))
+        return super(DevProfileMixin, self).form_valid(form)
     def get_context_data(self, **kwargs):                         
-        context = super(DevProfileMixin, self).get_context_data(**kwargs)                        
-        if self.request.POST:
-            if not 'worktype_formset' in context:
-                context['worktype_formset'] = WorkTypeProfileFormSet(self.request.POST, instance=self.object)   
-        else:
-            context['worktype_formset'] = WorkTypeProfileFormSet(instance=self.object)        
+        context = super(DevProfileMixin, self).get_context_data(**kwargs)                       
         context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),    
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'dialig_title': u'Строительный профиль',    
         })
         return context
     def get_success_url(self):   
@@ -285,29 +279,106 @@ class DevProfileMixin(ModelFormMixin):
         return next_url
 
 
+class ManageM2M(View):
+    formset = None       
+    reverse_name = None   
+    template = None 
+    instance_model = None       
+    def dispatch(self, *args, **kwargs):
+        self.instance = get_object_or_404(self.instance_model, pk=kwargs['pk'])
+        return super(ManageM2M, self).dispatch(*args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):                 
+        formset = self.formset(self.request.POST, instance=self.instance)
+        if formset.is_valid():
+            formset.save()                             
+            return HttpResponseRedirect(self.get_success_url())        
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    
+    def get(self, request, *args, **kwargs):        
+        formset = self.formset(instance=self.instance, initial=[self.get_initial()])
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    
+    def get_context(self, request):
+        context = {               
+               'next_url': self.get_success_url(),
+               'dialig_title': self.get_dialig_title(), 
+               }     
+        return context
+                    
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse(self.reverse_name, args=[self.instance.id]), safe_next_link(next_url))
+        return next_url
+    
+    def get_initial(self):
+        return {}    
+
+class ManageDevProfileM2M(ManageM2M):          
+    template = "manage_m2m_dev_profile.html"
+    instance_model = DevProfile
+
+
+class ManageDevProfileM2MWorktype(ManageDevProfileM2M):    
+    formset = WorkTypeProfileFormSet       
+    reverse_name = "manage_worktype_profile"
+    
+    def get_dialig_title(self):
+        return u'Управление видами работ для "%s"' % self.instance.client
+    
+
+class ManageDevProfileM2MGoods(ManageDevProfileM2M):    
+    formset = GoodsProfileM2MFormSet       
+    reverse_name = "manage_goods_profile"
+    def get_dialig_title(self):
+        return u'Управление товарами и услугами для "%s"' % self.instance.client  
+
+
 class DevProfileCreateView(DevProfileMixin, CreateView): 
     def get_initial(self):        
         initial = super(DevProfileCreateView, self).get_initial()
         initial['client_pk'] = int(self.kwargs.get('client_pk'))        
-        return initial
+        return initial  
+    
+    def get_context_data(self, **kwargs):                         
+        context = super(DevProfileCreateView, self).get_context_data(**kwargs)                       
+        context.update({          
+            'dialig_title': u'Добавление строительного профиля',    
+        })
+        return context     
+
 
 class DevProfileUpdateView(DevProfileMixin, UpdateView): 
-    pass
+    def get_context_data(self, **kwargs):                         
+        context = super(DevProfileUpdateView, self).get_context_data(**kwargs)                       
+        context.update({          
+            'dialig_title': u'Редактирование строительного профиля для "%s"' % self.object.client,    
+        })
+        return context
 
 
-class DevProfileDeleteView(DeleteMixin, DevProfileMixin, DeleteView):
+class DevProfileDeleteView(DevProfileMixin, DeleteView):
     template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
-        context = super(DevProfileDeleteView, self).get_context_data(**kwargs)
+        context = super(DevProfileDeleteView, self).get_context_data(**kwargs)        
         context.update({
             'dialig_title' : u'Удаление профиля строителя...',
             'dialig_body'  : u'Подтвердите удаление профиля: %s' % self.object,
         })
         return context
+    
+    def get_success_url(self):
+        return reverse('client-list')        
 
 
 class DevProfileDetailView(DevProfileMixin, DetailView): 
     template_name = 'dev_profile_detail.html'
+
 
 class ExtraProfileMixin(ModelFormMixin):
     form_class = ExtraProfileForm
@@ -344,11 +415,13 @@ class ExtraProfileMixin(ModelFormMixin):
             return '%s?%s' % (reverse('extra_profile_update', args=[self.object.id]), safe_next_link(next_url))
         return next_url
     
+    
 class ExtraProfileCreateView(ExtraProfileMixin, CreateView): 
     def get_initial(self):        
         initial = super(ExtraProfileCreateView, self).get_initial()
         initial['client_pk'] = int(self.kwargs.get('client_pk'))        
         return initial
+
 
 class ExtraProfileUpdateView(ExtraProfileMixin, UpdateView): 
     pass

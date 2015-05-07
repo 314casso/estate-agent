@@ -1,10 +1,12 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 from devrep.models import WorkType, PartnerType, Quality, Experience, Measure,\
-    Gear, Partner, PartnerClientStatus, DevProfile, WorkTypeProfile
+    Gear, Partner, PartnerClientStatus, Goods, WorkTypeProfile, Citizenship
+
 
 class CustomMPTTModelAdmin(MPTTModelAdmin):    
     mptt_level_indent = 20
+
 
 class ParnterAdmin(admin.ModelAdmin):
     search_fields = ['id',]
@@ -14,6 +16,7 @@ class ParnterAdmin(admin.ModelAdmin):
     def queryset(self, request):                
         return Partner.all_objects
 
+
 admin.site.register(WorkType, CustomMPTTModelAdmin)
 admin.site.register(PartnerType)
 admin.site.register(Quality)
@@ -22,6 +25,6 @@ admin.site.register(Measure)
 admin.site.register(Gear)
 admin.site.register(Partner, ParnterAdmin)
 admin.site.register(PartnerClientStatus)
-# admin.site.register(DevProfile)
-# admin.site.register(WorkTypeProfile)
-
+admin.site.register(Goods)
+admin.site.register(WorkTypeProfile)
+admin.site.register(Citizenship)

@@ -56,12 +56,16 @@
 		<th>Профиль строителя:</th>
 		<td>
 		{% if client.dev_profile %}		
-			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">{{ client.dev_profile.work_types.all|to_comma_sep }}</a>
-			<a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">
-				<span style="float: right" class="ui-icon ui-icon-wrench"> </span>			
-			</a>
+			<span class="button"><a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">
+				Просмотр
+			</a></span>
+			<span class="button"><a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">
+				Правка			
+			</a></span>
 		{% else %}
-			<a title="Заполнить профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">Заполнить</a>
+			<span class="button"><a title="Создать профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">
+				Создать
+			</a></span>
 		{% endif %}
 		</td>
 	</tr>	

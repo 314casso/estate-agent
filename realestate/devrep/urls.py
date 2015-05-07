@@ -4,7 +4,8 @@ from devrep.views import PartnerListView, PartnerCreateView, PartnerDetailView,\
     ClientPartnerRemoveView, ClientPartnerSelectView,\
     ClientPartnerThroughUpdateView, GearCreateView, DevProfileCreateView,\
     DevProfileUpdateView, ExtraProfileCreateView, ExtraProfileUpdateView,\
-    DevProfileDeleteView, DevProfileDetailView, PartnerSelectView
+    DevProfileDeleteView, DevProfileDetailView, PartnerSelectView,\
+    ManageDevProfileM2MWorktype, ManageDevProfileM2MGoods
 
 
 urlpatterns = patterns('',    
@@ -29,7 +30,10 @@ urlpatterns += patterns('',
     url(r'^devprofilecreate/(?P<client_pk>\d+)$',DevProfileCreateView.as_view(), name='dev_profile_create'),    
     url(r'^devprofileupdate/(?P<pk>\d+)$',DevProfileUpdateView.as_view(), name='dev_profile_update'),
     url(r'^devprofiledelete/(?P<pk>\d+)$',DevProfileDeleteView.as_view(), name='dev_profile_delete'),
-    url(r'^devprofiledetail/(?P<pk>\d+)$',DevProfileDetailView.as_view(), name='dev_profile_detail'),
+    url(r'^devprofiledetail/(?P<pk>\d+)$',DevProfileDetailView.as_view(), name='dev_profile_detail'),    
+    url(r'^managegoodsprofile/(?P<pk>\d+)$',ManageDevProfileM2MGoods.as_view(), name='manage_goods_profile'),   
+    url(r'^manageworktypeprofile/(?P<pk>\d+)$',ManageDevProfileM2MWorktype.as_view(), name='manage_worktype_profile'),
+    
 )
 
 urlpatterns += patterns('',
