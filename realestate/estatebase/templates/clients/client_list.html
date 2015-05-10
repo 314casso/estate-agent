@@ -14,7 +14,7 @@
 
 		$("#filter").dialog({
 			modal : true,
-			width : 450,
+			width : {% if perms.devrep.developer %}700{% else %}350{% endif %},
 			title : 'Фильтр',
 			autoOpen : false
 		});		
@@ -50,7 +50,7 @@
             <th>{% anchor name 'Имя' %}</th>
             <th>Место жительства</th>
             <th>Контакты</th>
-            <th>Строитель</th>
+            <th>Стройпрофиль</th>
             <th>Действие</th>
         </tr>
     </thead>
@@ -62,7 +62,7 @@
             <td><a title="Показать карточку заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.address|default_if_none:"" }}</td>
             <td> {% contact_list client next_url %} </td>
-            <td>{% if client.has_dev_profile  %}<span class="ui-icon ui-icon-check"></span>{% endif %}</td>            
+            <td>{% if client.has_dev_profile  %}<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}"><span class="btn ui-icon ui-icon-check"></span></a>{% endif %}</td>            
             <td> {% block lastcol %} <a class="btn-delete-inline" href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a> {% endblock %} </td>
         </tr>
         {% endfor %}
@@ -79,16 +79,35 @@
         <table class="filter-table ui-widget ui-widget-content ui-corner-all" style="width:100%">
             <tr>
                 <td class="top-align">
-                <table>
-                    {{ client_filter_form.as_table }}
-                </table></td>
-                <tfoot>
+                  <table>
+                    {% for field in client_filter_form.fieldsets.basic %}
                     <tr>
-                        <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
-                        <input type="submit" value="Применить"/>
-                        </td>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }} </td>
                     </tr>
-                </tfoot>
+                    {% endfor %}
+                	</table>
+                </td>
+                {% if perms.devrep.developer %}
+                <td class="top-align">
+                  <table>
+                    {% for field in client_filter_form.fieldsets.devrep %}
+                    <tr>
+                        <th> {{ field.label_tag }} </th>
+                        <td> {{ field.errors }}{{ field }} </td>
+                    </tr>
+                    {% endfor %}
+                	</table>
+                </td>
+                {% endif %}
+            </tr>
+            <tfoot>
+                <tr>
+                    <td colspan=3><a href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить</a>
+                    <input type="submit" value="Применить"/>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </form>
 </div>

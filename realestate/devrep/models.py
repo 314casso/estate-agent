@@ -2,20 +2,19 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from estatebase.models import ProcessDeletedModel, Region, Locality,\
-    Street, SimpleDict, Microdistrict, HistoryMeta, Client
+     SimpleDict, HistoryMeta, Client
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from django.core.validators import RegexValidator
 
 
 class Address(models.Model):
-    region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
-    locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)    
-    street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)    
-    address = models.CharField(_('ExtraAddress'), max_length=50, blank=True, null=True)    
+    region = models.CharField(_('Region'), max_length=100, blank=True, null=True)
+    locality = models.CharField(_('Locality'), max_length=100, blank=True, null=True)  
+    address = models.CharField(_('ExtraAddress'), max_length=150, blank=True, null=True)    
     
     def __unicode__(self):
-        address_fields = [self.region, self.locality, self.street, self.address]
+        address_fields = [self.region, self.locality, self.address]
         result = []
         for address_field in address_fields:            
             if address_field:          
@@ -86,8 +85,8 @@ class Goods(MPTTModel):
 class GoodsProfileM2M(models.Model):
     goods = models.ForeignKey(Goods, verbose_name=_('Goods'))
     dev_profile = models.ForeignKey('DevProfile', verbose_name=_('DevProfile'))
-    price = models.IntegerField(verbose_name=_('Price min'))    
-    measure = models.ForeignKey('Measure', verbose_name=_('Measure'))
+    price = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)    
+    measure = models.ForeignKey('Measure', verbose_name=_('Measure'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     
     class Meta:
@@ -125,8 +124,8 @@ class Measure(SimpleDict):
 class WorkTypeProfile(models.Model):    
     work_type = models.ForeignKey(WorkType, verbose_name=_('WorkType'))
     dev_profile = models.ForeignKey('DevProfile', verbose_name=_('DevProfile'))
-    price_min = models.IntegerField(verbose_name=_('Price min'))
-    price_max = models.IntegerField(verbose_name=_('Price max'))
+    price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
+    price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     measure = models.ForeignKey(Measure, verbose_name=_('Measure'), blank=True, null=True) 
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
@@ -173,6 +172,7 @@ class DevProfile(models.Model):
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
+    goods = models.ManyToManyField(Goods, verbose_name=_('Goods'), blank=True, null=True, through=GoodsProfileM2M)
     gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)
     has_transport = models.BooleanField(_('HasTransport'), default=False)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -204,7 +204,7 @@ class ExtraProfile(models.Model):
     first_name = models.CharField(_('FirstName'), max_length=100,) # Имя
     patronymic = models.CharField(_('Patronymic'), max_length=100, blank=True) # Отчество
     address = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='extra_profile')
-    gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True, default='M')
+    gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, default='M')
     birthday = models.DateField(_('Birthday'), blank=True, null=True)
     birthplace = models.CharField(_('Birthplace'), max_length=250, blank=True, null=True)
     passport_number = models.CharField(_('PassportNumber'), max_length=6, blank=True, null=True,
@@ -222,7 +222,7 @@ class ExtraProfile(models.Model):
     citizenship = models.ForeignKey(Citizenship, verbose_name=_('Citizenship'), null=True, blank=True) # Гражданство
 
     def __unicode__(self):
-        return u'%s %s' % (self.first_name, self.last_name) 
+        return u'%s %s %s' % (self.first_name, self.last_name, self.patronymic) 
 
 
 class Partner(ProcessDeletedModel):

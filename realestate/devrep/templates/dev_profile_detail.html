@@ -28,14 +28,6 @@
     <tr>
         <th>Строитель:</th>
         <td title="Редактировать строителя" style="font-weight: bold"><a href="{% url client_update devprofile.client.pk %}?{{ next_url }}">{{ devprofile.client }}</a></td>
-    </tr>        
-    <tr>
-        <th>Районы:</th>
-        <td>{{ devprofile.get_coverage_regions }}</td>
-    </tr>
-    <tr>
-        <th>Населенные пункты:</th>
-        <td>{{ devprofile.get_coverage_localities }}</td>
     </tr>
     <tr>
         <th>Качество:</th>
@@ -51,26 +43,83 @@
     </tr>  
     <tr>
         <th>Инструменты:</th>
-        <td>{{ devprofile.gears.all|to_comma_sep }}</td>
-    </tr>
-    <tr>
-        <th>Вредные привычки:</th>
-        <td>{{ devprofile.bad_habits }}</td>
-    </tr>
-    <tr>
-        <th>Достижения:</th>
-        <td>{{ devprofile.progress }}</td>
-    </tr>
-    <tr>
-        <th>Навыки работы с ПК:</th>
-        <td>{{ devprofile.pc_skills }}</td>
+        <td>{{ devprofile.gears.all|to_comma_sep:"-" }}</td>
     </tr>
     <tr>
         <th>Примечание:</th>
-        <td>{{ devprofile.note }}</td>
+        <td>{{ devprofile.note|default_if_none:"-" }}</td>
     </tr>
 </table>
 
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Мобильность</legend>
+<table>        
+    <tr>
+        <th>Районы:</th>
+        <td>{{ devprofile.get_coverage_regions }}</td>
+    </tr>
+    <tr>
+        <th>Населенные пункты:</th>
+        <td>{{ devprofile.get_coverage_localities }}</td>
+    </tr>    
+</table>    
+</fieldset>
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Личностные качества</legend>
+<table>    
+    <tr>
+        <th>Вредные привычки:</th>
+        <td>{{ devprofile.bad_habits|default_if_none:"-" }}</td>
+    </tr>
+    <tr>
+        <th>Достижения:</th>
+        <td>{{ devprofile.progress|default_if_none:"-" }}</td>
+    </tr>
+    <tr>
+        <th>Навыки работы с ПК:</th>
+        <td>{{ devprofile.pc_skills|default_if_none:"-" }}</td>
+    </tr>
+</table>
+</fieldset>
+
+
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;">Анкетные данные</legend>
+    {% with extra_profile=devprofile.client.extra_profile %}
+
+	{% if extra_profile %}
+	<table>
+		<tr>
+	        <th>ФИО:</th>
+	        <td title="Редактировать анкету">
+				<a href="{% url extra_profile_update extra_profile.id %}?{{ next_url }}">
+				{{ extra_profile }}
+				</a>		
+	        </td>
+	    </tr>
+	    <tr>
+	        <th>Дата рождения:</th>
+	        <td>{{ extra_profile.birthday|default_if_none:"-" }}</td>
+	    </tr>
+	    <tr>
+	        <th>Место рождения:</th>
+	        <td>{{ extra_profile.birthplace|default_if_none:"-" }}</td>
+	    </tr>
+	    <tr>
+	        <th>Гражданство:</th>
+	        <td>{{ extra_profile.citizenship|default_if_none:"-" }}</td>
+	    </tr>
+	    <tr>
+	        <th>Место жительства:</th>
+	        <td>{{ extra_profile.address|default_if_none:"-" }}</td>
+	    </tr>
+	</table>
+	{% else %}
+		<a title="Заполнить анкетные данные" href="{% url extra_profile_create devprofile.client.pk %}?{{ next_url }}">Заполнить анкету</a>
+	{% endif %}        
+	{% endwith %}
+</fieldset>
 
 </fieldset>
 {% endblock %}
@@ -96,8 +145,8 @@
         {% for item in devprofile.worktypeprofile_set.all %}
         <tr class="ui-widget-content">            
             <td>{{ item.work_type }}</td>
-            <td>{{ item.price_min }}</td>
-            <td>{{ item.price_max }}</td>
+            <td>{{ item.price_min|default_if_none:"-" }}</td>
+            <td>{{ item.price_max|default_if_none:"-" }}</td>
             <td>{{ item.measure|default_if_none:"-" }}</td>
             <td>{{ item.quality|default_if_none:"-" }}</td>
             <td>{{ item.experience|default_if_none:"-" }}</td>           
@@ -105,7 +154,7 @@
         {% empty %}
         <tr>
         	<td colspan="100%">
-                Виды работ отсутствуют..
+                Виды работ отсутствуют...
             </td>
         </tr>
         {% endfor %}
@@ -131,14 +180,14 @@
         <tr class="ui-widget-content">            
             <td>{{ item.goods }}</td>
             <td>{{ item.goods.get_type_display }}</td>
-            <td>{{ item.price }}</td>            
-            <td>{{ item.measure }}</td>
+            <td>{{ item.price|default_if_none:"-" }}</td>            
+            <td>{{ item.measure|default_if_none:"-" }}</td>
             <td>{{ item.note|default_if_none:"-" }}</td>                       
         </tr>
         {% empty %}
         <tr>
         	<td colspan="100%">
-                Виды работ отсутствуют..
+                Услуги и товары отсутствуют...
             </td>
         </tr>
         {% endfor %}
@@ -174,7 +223,7 @@
         {% empty %}
         <tr>
         	<td colspan="100%">
-                Виды работ отсутствуют..
+                Не принимает участия в бригадах...
             </td>
         </tr>
         {% endfor %}

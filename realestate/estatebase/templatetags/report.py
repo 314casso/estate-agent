@@ -101,13 +101,13 @@ def estate_details(estate_item):
     return ''.join(result) 
 
 @register.filter
-def to_comma_sep(iterval):
+def to_comma_sep(iterval, if_none=u'в процессе'):
     result = []
     for doc in iterval:
         result.append(doc.name.lower())
     if result:
         return ', '.join(result)
-    return u'в процессе'
+    return if_none
 
 @register.simple_tag
 def newspaper_address(estate):

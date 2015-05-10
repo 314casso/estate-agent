@@ -39,6 +39,7 @@ from django.utils.safestring import mark_safe
 from django.template.base import Template
 from django.core.exceptions import ValidationError
 from exportdata.utils import EstateTypeMapper
+from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -132,7 +133,7 @@ class ClientForm(ModelForm):
             'valid' : CheckboxInput(attrs={'disabled':'disabled'}),            
         }
 
-class ClientFilterForm(Form):
+class ClientFilterForm(BetterForm):
     pk = AutoCompleteSelectMultipleField(
             lookup_class=ClientIdLookup,
             label=_('ID'),
@@ -166,6 +167,24 @@ class ClientFilterForm(Form):
     note = forms.CharField(required=False, label=_('Note'))
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     
+    work_types = AutoComboboxSelectMultipleField(
+            lookup_class=WorkTypeLookup,
+            label=_('WorkType'),
+            required=False,
+        )
+    
+    goods = AutoComboboxSelectMultipleField(
+            lookup_class=GoodsLookup,
+            label=_('Goods'),
+            required=False,
+        )
+    
+    partners = AutoComboboxSelectMultipleField(
+            lookup_class=PartnerLookup,
+            label=_('Partners'),
+            required=False,
+        ) 
+    
     def get_filter(self):
         if self.is_valid():
             return self.make_filter(self.cleaned_data)
@@ -196,6 +215,9 @@ class ClientFilterForm(Form):
                           'origin__in': 'origin',
                           'address__icontains': 'address',
                           'note__icontains': 'note',
+                          'dev_profile__work_types__in': 'work_types',
+                          'dev_profile__goods__in': 'goods',
+                          'dev_profile__client__partner__in' : 'partners'
                          }
         
         for key, value in simple_filter.iteritems():
@@ -206,7 +228,17 @@ class ClientFilterForm(Form):
         has_dev_profile = int(has_dev_profile) if has_dev_profile else 3
         if has_dev_profile < 3:            
             f['has_dev_profile__exact'] = has_dev_profile == 1        
-        return f   
+        return f
+    class Meta:
+        fieldsets = [('basic', {'fields': [
+                                         'pk','created','created_by','updated','updated_by','origin','client_type',
+                                         'has_dev_profile','name','address','contacts','note'
+                                         ]}),
+                     ('devrep', {'fields': [
+                                         'work_types','goods','partners'
+                                           ]}),                     
+                     ]
+           
                
 class EstateFilterForm(BetterForm):
     _filter_by_pk = True    

@@ -9,10 +9,10 @@ from selectable.forms.widgets import AutoComboboxSelectMultipleWidget,\
     AutoCompleteSelectMultipleWidget
 from devrep.lookups import PartnerTypeLookup, GearLookup,\
     QualityLookup, ExperienceLookup, PartnerLookup, PartnerIdLookup,\
-    WorkTypeLookup, MeasureLookup, CitizenshipLookup
+    WorkTypeLookup, MeasureLookup, CitizenshipLookup, GoodsLookup
 from estatebase.lookups import RegionLookup, LocalityLookup, MicrodistrictLookup,\
     StreetLookup, ExUserLookup
-from django.forms.widgets import Textarea, DateTimeInput
+from django.forms.widgets import Textarea, DateTimeInput, TextInput
 from django.core.exceptions import ValidationError
 from django import forms
 from selectable.forms.fields import AutoCompleteSelectMultipleField,\
@@ -53,11 +53,10 @@ class ClientPartnerThroughUpdateForm(ModelForm):
         
 class AddressForm(ModelForm):
     class Meta:
+        textWidget = TextInput(attrs={'class':'long-input'})
         model = Address
         widgets = {
-                    'region':AutoComboboxSelectWidget(RegionLookup), 
-                    'locality':AutoCompleteSelectWidget(LocalityLookup),                   
-                    'street':AutoCompleteSelectWidget(StreetLookup),
+                    'address':textWidget,
                   } 
 
 
@@ -95,6 +94,7 @@ class ExtraProfileForm(ModelForm):
         widgets = {
                     'citizenship':AutoComboboxSelectWidget(CitizenshipLookup),
                     'birthday': DateTimeInput(attrs={'class':'date-input'}, format='%d.%m.%Y'),
+                    'gender': forms.RadioSelect,
                   }
 
 
@@ -125,6 +125,10 @@ WorkTypeProfileFormSet = inlineformset_factory(DevProfile, WorkTypeProfile, extr
 class GoodsProfileM2MInlineForm(ModelForm):
     class Meta:
         model = GoodsProfileM2M
+        widgets = {
+                   'goods':AutoComboboxSelectWidget(GoodsLookup), 
+                   'measure':AutoComboboxSelectWidget(MeasureLookup),
+                   }
         
 
 GoodsProfileM2MFormSet = inlineformset_factory(DevProfile, GoodsProfileM2M, extra=1, form=GoodsProfileM2MInlineForm)

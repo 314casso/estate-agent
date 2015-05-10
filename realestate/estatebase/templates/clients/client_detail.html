@@ -56,16 +56,12 @@
 		<th>Профиль строителя:</th>
 		<td>
 		{% if client.dev_profile %}		
-			<span class="button"><a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">
-				Просмотр
-			</a></span>
-			<span class="button"><a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">
-				Правка			
-			</a></span>
+			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">Просмотр</a>			
+			<a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">Правка</a>
 		{% else %}
-			<span class="button"><a title="Создать профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">
+			<a title="Создать профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">
 				Создать
-			</a></span>
+			</a>
 		{% endif %}
 		</td>
 	</tr>	

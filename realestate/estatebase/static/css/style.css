@@ -601,3 +601,8 @@ input[type=text] {
 td ul.selectable-deck li.selectable-deck-item .selectable-deck-remove {
 	float: left;
 }
+
+span.btn {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
