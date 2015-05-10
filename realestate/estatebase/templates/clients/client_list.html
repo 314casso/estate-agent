@@ -62,7 +62,17 @@
             <td><a title="Показать карточку заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.address|default_if_none:"" }}</td>
             <td> {% contact_list client next_url %} </td>
-            <td>{% if client.has_dev_profile  %}<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}"><span class="btn ui-icon ui-icon-check"></span></a>{% endif %}</td>            
+            <td>
+            	{% if client.has_dev_profile  %}
+            		{% if client.dev_profile  %}
+            			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">
+            			<span class="btn ui-icon ui-icon-check"></span>
+            			</a>
+            		{% else %}
+            			<span class="ui-icon ui-icon-check"></span>
+            		{% endif %}            	
+            	{% endif %}
+            </td>            
             <td> {% block lastcol %} <a class="btn-delete-inline" href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a> {% endblock %} </td>
         </tr>
         {% endfor %}
