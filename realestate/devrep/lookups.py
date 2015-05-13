@@ -26,8 +26,15 @@ class PartnerLookup(SimpleNameLookup):
 class CitizenshipLookup(SimpleNameLookup):
     model = Citizenship
     
-class GoodsLookup(SimpleNameLookup):
+class GoodsLookup(ModelLookup):
     model = Goods    
+    search_fields = ('name__icontains',)
+    def get_query(self, request, term):
+        results = super(GoodsLookup, self).get_query(request, term)       
+        results = results.exclude(parent=None)
+        return results
+    def get_item_label(self, item):
+        return u"%s, %s" % (item, item.parent)
     
 class MeasureLookup(SimpleNameLookup):
     model = Measure    

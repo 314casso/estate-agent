@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from estatebase.models import ProcessDeletedModel, Region, Locality,\
-     SimpleDict, HistoryMeta, Client
+     SimpleDict, HistoryMeta, Client, AVAILABILITY_CHOICES
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from django.core.validators import RegexValidator
@@ -173,8 +173,8 @@ class DevProfile(models.Model):
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
     goods = models.ManyToManyField(Goods, verbose_name=_('Goods'), blank=True, null=True, through=GoodsProfileM2M)
-    gears = models.ManyToManyField('Gear', verbose_name=_('Gears'), related_name='owners', blank=True, null=True)
-    has_transport = models.BooleanField(_('HasTransport'), default=False)
+    gears = models.IntegerField(_('Gears'), choices=AVAILABILITY_CHOICES, blank=True, null=True)
+    transport = models.IntegerField(_('HasTransport'), choices=AVAILABILITY_CHOICES, blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     bad_habits = models.CharField(_('BadHabits'), max_length=100, blank=True, null=True) # Вредные привычки 
     progress = models.CharField(_('Progress'), max_length=200, blank=True, null=True) # Достижения

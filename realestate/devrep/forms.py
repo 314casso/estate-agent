@@ -69,12 +69,11 @@ class DevProfileForm(ModelForm):
             self.fields[multi_field].help_text = ''        
     class Meta:
 #         exclude = ['work_types']
-        fields = ['coverage_regions', 'coverage_localities', 'quality', 'experience', 'has_transport', 'gears', 'bad_habits', 'progress', 'pc_skills', 'note',]
+        fields = ['coverage_regions', 'coverage_localities', 'quality', 'experience', 'transport', 'gears', 'bad_habits', 'progress', 'pc_skills', 'note',]
         model = DevProfile
         widgets = {
                     'coverage_regions':AutoComboboxSelectMultipleWidget(RegionLookup), 
-                    'coverage_localities':AutoCompleteSelectMultipleWidget(LocalityLookup),                   
-                    'gears':AutoCompleteSelectMultipleWidget(GearLookup),
+                    'coverage_localities':AutoCompleteSelectMultipleWidget(LocalityLookup),                  
                     'quality':AutoComboboxSelectWidget(QualityLookup),                                      
                     'experience':AutoComboboxSelectWidget(ExperienceLookup),
                     'note': Textarea(attrs={'rows':'5'}),
