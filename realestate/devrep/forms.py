@@ -20,28 +20,19 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField,\
 from django.forms.forms import Form
 from estatebase.field_utils import history_filter
 from estatebase.fields import DateRangeField
+from django.db.models import Q
 
-
-#'coverage_regions', 'coverage_localities'
 
 class PartnerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PartnerForm, self).__init__(*args, **kwargs)
-#         multi_fields = ('partner_types',)
-#         for multi_field in multi_fields:
-#             self.fields[multi_field].help_text = ''
         self.fields['name'].widget.attrs = {'class':'long-input'}
             
     class Meta:                
         model = Partner
         fields = ('name', 'partner_type', 'person_count', 'note', 'parent',)
         widgets = {
-                    'partner_type':AutoComboboxSelectWidget(PartnerTypeLookup),
-                    #'coverage_regions':AutoComboboxSelectMultipleWidget(RegionLookup), 
-                    #'coverage_localities':AutoCompleteSelectMultipleWidget(LocalityLookup),                   
-                    #'gears':AutoCompleteSelectMultipleWidget(GearLookup),
-                    #'quality':AutoComboboxSelectWidget(QualityLookup),                                      
-                    #'experience':AutoComboboxSelectWidget(ExperienceLookup),
+                    'partner_type':AutoComboboxSelectWidget(PartnerTypeLookup),                    
                     'parent':AutoCompleteSelectWidget(PartnerLookup),
                     'note': Textarea(attrs={'rows':'5'}),
                   }
@@ -68,7 +59,6 @@ class DevProfileForm(ModelForm):
         for multi_field in multi_fields:
             self.fields[multi_field].help_text = ''        
     class Meta:
-#         exclude = ['work_types']
         fields = ['coverage_regions', 'coverage_localities', 'quality', 'experience', 'transport', 'gears', 'bad_habits', 'progress', 'pc_skills', 'note',]
         model = DevProfile
         widgets = {
@@ -83,11 +73,9 @@ class DevProfileForm(ModelForm):
 class ExtraProfileForm(ModelForm):
     client_pk = forms.IntegerField(widget=forms.HiddenInput(), required=False)
     def __init__(self, *args, **kwargs):
-        super(ExtraProfileForm, self).__init__(*args, **kwargs)
-#         multi_fields = ('coverage_regions', 'coverage_localities', 'gears',)
-#         for multi_field in multi_fields:
-#             self.fields[multi_field].help_text = ''        
+        super(ExtraProfileForm, self).__init__(*args, **kwargs)        
     class Meta:
+        fields = ['last_name','first_name','patronymic','gender','citizenship','birthday','birthplace','passport_series','passport_number']
         exclude = ['address',]
         model = ExtraProfile
         widgets = {
@@ -114,7 +102,10 @@ class WorkTypeProfileFormInlineForm(ModelForm):
                     'quality':AutoComboboxSelectWidget(QualityLookup),                                      
                     'experience':AutoComboboxSelectWidget(ExperienceLookup),   
                     'work_type':AutoComboboxSelectWidget(WorkTypeLookup),
-                    'measure':AutoComboboxSelectWidget(MeasureLookup),                  
+                    'measure':AutoComboboxSelectWidget(MeasureLookup, attrs={'class':'short-input'}),
+                    'price_min':TextInput(attrs={'class':'local-int short-input'}),                  
+                    'price_max':TextInput(attrs={'class':'local-int short-input'}),
+                    'note':TextInput(),
                   }
         
 
@@ -143,30 +134,15 @@ class PartnerFilterForm(Form):
     created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
     updated = DateRangeField(required=False, label=_('Updated'))
     updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
-#     origin = AutoComboboxSelectMultipleField(
-#             lookup_class=OriginLookup,
-#             label=_('Origin'),
-#             required=False,
-#         )
-#     client_type = AutoComboboxSelectMultipleField(
-#             lookup_class=ClientTypeLookup,
-#             label=_('ClientType'),
-#             required=False,
-#         )
-#         
-#     DEV_PROFILE_CHOICES = ((3, u'Неважно',), (0, u'Нет',), (1, u'Да',))
-#     has_dev_profile = forms.ChoiceField(label=_('HasDevProfile'), widget=forms.RadioSelect, choices=DEV_PROFILE_CHOICES, initial=3, required=False,)
-#     
-#     name = forms.CharField(required=False, label=_('Name'))
-#     address = forms.CharField(required=False, label=_('Address'))
-#     contacts = AutoCompleteSelectMultipleField(
-#             lookup_class=ContactLookup,
-#             label=_('Contact'),
-#             required=False,
-#         )
-#     note = forms.CharField(required=False, label=_('Note'))
-#     next = forms.CharField(required=False, widget=forms.HiddenInput())
-    
+    partner_types = AutoComboboxSelectMultipleField(
+            lookup_class=PartnerTypeLookup,
+            label=_('Partner type'),
+            required=False,
+        )
+    name = forms.CharField(required=False, label=_('Name'))
+    address = forms.CharField(required=False, label=_('Address'))
+    note = forms.CharField(required=False, label=_('Note'))
+#     next = forms.CharField(required=False, widget=forms.HiddenInput())    
     def get_filter(self):
         if self.is_valid():
             return self.make_filter(self.cleaned_data)
@@ -176,7 +152,15 @@ class PartnerFilterForm(Form):
         f = {}
         if not cleaned_data:
             return f        
-                
+        
+        q = Q()
+        address = cleaned_data['address']
+        if address:
+            q = q | Q(address__address__icontains=address) | Q(address__region__icontains=address) | Q(address__locality__icontains=address)
+        
+        if len(q):
+            f['Q'] = q 
+        
         history_fields = ('created','updated')
         for fld in history_fields:
             cleaned_value = cleaned_data[fld]
@@ -191,11 +175,9 @@ class PartnerFilterForm(Form):
         simple_filter = { 
                           'history__created_by__in': 'created_by',
                           'history__updated_by__in': 'updated_by',
-                         # 'contacts__in': 'contacts',
+                          'partner_type__in': 'partner_types',
                           'name__icontains': 'name',
-                         # 'client_type__in': 'client_type',
-                         # 'origin__in': 'origin',
-                         # 'address__icontains': 'address',
+                          'address__icontains': 'client_type',                                                   
                           'note__icontains': 'note',
                          }
         

@@ -35,9 +35,11 @@ class PartnerListView(ListView):
     def get_queryset(self):        
         q = Partner.objects.all()        
         filter_form = self.filter_form(self.request.GET)
-        filter_dict = filter_form.get_filter()      
+        filter_dict = filter_form.get_filter()             
         if filter_dict:
             self.filtered = True
+        if 'Q' in filter_dict:
+            q = q.filter(filter_dict.pop('Q'))
         if len(filter_dict):
             q = q.filter(**filter_dict)
         order_by = self.request.fields 
@@ -186,8 +188,7 @@ class ClientPartnerUpdateView(DetailView):
         ClientPartner.objects.create(client_id=client_pk, partner_id=partner_pk, partner_client_status_id=self.PARTNER_CLIENT_STATUS)                
     def post(self, request, *args, **kwargs):       
         self.update_object(self.kwargs['pk'], self.kwargs['partner_pk'])      
-        prepare_history(Partner.objects.get(pk=self.kwargs['partner_pk']).history, self.request.user.pk)      
-        prepare_history(Client.objects.get(pk=self.kwargs['pk']).dev_profile.history, self.request.user.pk)
+        prepare_history(Partner.objects.get(pk=self.kwargs['partner_pk']).history, self.request.user.pk)     
         return HttpResponseRedirect(self.request.REQUEST.get('next', ''))    
 
 

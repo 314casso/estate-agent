@@ -129,6 +129,7 @@ class WorkTypeProfile(models.Model):
     measure = models.ForeignKey(Measure, verbose_name=_('Measure'), blank=True, null=True) 
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
+    note = models.TextField(_('Note'), blank=True, null=True)
     
     class Meta:
         unique_together = ('work_type', 'dev_profile')  
@@ -170,7 +171,7 @@ class DevProfile(models.Model):
     coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage', blank=True, null=True)
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    note = models.TextField(_('Note'), blank=True, null=True)
     work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
     goods = models.ManyToManyField(Goods, verbose_name=_('Goods'), blank=True, null=True, through=GoodsProfileM2M)
     gears = models.IntegerField(_('Gears'), choices=AVAILABILITY_CHOICES, blank=True, null=True)
@@ -222,7 +223,7 @@ class ExtraProfile(models.Model):
     citizenship = models.ForeignKey(Citizenship, verbose_name=_('Citizenship'), null=True, blank=True) # Гражданство
 
     def __unicode__(self):
-        return u'%s %s %s' % (self.first_name, self.last_name, self.patronymic) 
+        return u'%s %s %s' % (self.last_name, self.first_name, self.patronymic) 
 
 
 class Partner(ProcessDeletedModel):
