@@ -572,6 +572,10 @@ input[type=text] {
 	width: 300px !important;
 }
 
+.short-input {
+	width: 75px !important;
+}
+
 .edit-form input[type="text"]{
 	width: 180px;
 	margin-right: 2px;
