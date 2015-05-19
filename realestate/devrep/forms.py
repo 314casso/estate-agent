@@ -19,7 +19,7 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField,\
     AutoComboboxSelectMultipleField
 from django.forms.forms import Form
 from estatebase.field_utils import history_filter
-from estatebase.fields import DateRangeField
+from estatebase.fields import DateRangeField, LocalIntegerField
 from django.db.models import Q
 
 
@@ -96,15 +96,15 @@ class RequiredWorkTypeProfileFormSet(BaseInlineFormSet):
 
 
 class WorkTypeProfileFormInlineForm(ModelForm):
+    price_min = LocalIntegerField(label=_('Price min'))
+    price_max = LocalIntegerField(label=_('Price max'))
     class Meta:
         model = WorkTypeProfile
         widgets = {                   
                     'quality':AutoComboboxSelectWidget(QualityLookup),                                      
                     'experience':AutoComboboxSelectWidget(ExperienceLookup),   
                     'work_type':AutoComboboxSelectWidget(WorkTypeLookup),
-                    'measure':AutoComboboxSelectWidget(MeasureLookup, attrs={'class':'short-input'}),
-                    'price_min':TextInput(attrs={'class':'local-int short-input'}),                  
-                    'price_max':TextInput(attrs={'class':'local-int short-input'}),
+                    'measure':AutoComboboxSelectWidget(MeasureLookup, attrs={'class':'short-input'}),                                   
                     'note':TextInput(),
                   }
         
@@ -113,6 +113,7 @@ WorkTypeProfileFormSet = inlineformset_factory(DevProfile, WorkTypeProfile, extr
 
 
 class GoodsProfileM2MInlineForm(ModelForm):
+    price = LocalIntegerField(label=_('Price min'))    
     class Meta:
         model = GoodsProfileM2M
         widgets = {
