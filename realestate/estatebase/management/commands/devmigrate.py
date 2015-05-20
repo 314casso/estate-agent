@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
-from estatebase.models import Client
+from estatebase.models import Estate
 
 
 class Command(BaseCommand):    
     def handle(self, *args, **options):
-        self.apply_checkbox()
+        self.do_job()
         
-    def apply_checkbox(self):
-        STROITEL = 8
-        CHASTNOE = 3
-        q  = Client.all_objects.filter(client_type_id=STROITEL)
-        for client in q:
-            print u'Processing %s' % client 
-            client.client_type_id = CHASTNOE
-            client.has_dev_profile = True
-            client.save()
+    def do_job(self):
+        q = Estate.objects.filter(estate_params__in=(10,6))
+        for e in q:
+            e.estate_params.remove(*[10,6])           
     
