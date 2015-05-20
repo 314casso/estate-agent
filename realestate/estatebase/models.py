@@ -228,6 +228,8 @@ class EstateParam(OrderedModel):
     '''
     Дополнительные параметры
     '''
+    AVITO = 15
+    RESTATE = 14
     POSTONSITE = 1
     IPOTEKA = 2
     PAYEXPORT = 16

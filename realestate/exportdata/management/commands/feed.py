@@ -7,6 +7,7 @@ from exportdata.custom_makers.domexxml import DomexXML
 from exportdata.custom_makers.cianxml import CianFlatsXML, CianCommerceXML
 from exportdata.custom_makers.avitoxml import AvitoXML
 from exportdata.custom_makers.bnxml import BnXML
+from exportdata.custom_makers.avitopayxml import AvitoXMLPay
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -25,6 +26,7 @@ class Command(BaseCommand):
                    CianCommerceXML.name : CianCommerceXML,
                    AvitoXML.name : AvitoXML,
                    BnXML.name : BnXML,
+                   AvitoXMLPay.name: AvitoXMLPay, 
                  }
         if arg in mapper:
             return mapper[arg]

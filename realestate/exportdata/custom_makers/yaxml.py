@@ -193,6 +193,7 @@ class YandexXML(BaseXML):
     def gen_XML(self, use_cache=True):   
         xhtml = self.get_XHTML(use_cache)    
         temp_file_name = u'%s~' % self.file_name
+        print temp_file_name
         etree.ElementTree(xhtml).write(temp_file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
         copyfile(temp_file_name, self.file_name)        
         
