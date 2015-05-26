@@ -8,7 +8,7 @@ class Command(BaseCommand):
         self.do_job()
         
     def do_job(self):
-        q = Estate.objects.filter(estate_params__in=(10,6))
+        q = Estate.objects.filter(estate_params__in=(16,))
         for e in q:
-            e.estate_params.remove(*[10,6])           
+            e.estate_params.add(*[14,])           
     

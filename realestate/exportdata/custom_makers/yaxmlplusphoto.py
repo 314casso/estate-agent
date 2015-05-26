@@ -15,8 +15,7 @@ class YaPlusPhoto(YandexPlusXML):
     def __init__(self, ya_plus_photo_wrapper):
         super(YandexPlusXML,self).__init__(ya_plus_photo_wrapper)
             
-    def get_queryset(self):
-        print self._wrapper        
+    def get_queryset(self):                
         MIN_PRICE_LIMIT = 100000  
         f = {
              'validity':Estate.VALID,
