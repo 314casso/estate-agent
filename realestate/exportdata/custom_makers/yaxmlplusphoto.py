@@ -28,4 +28,4 @@ class YaPlusPhoto(YandexPlusXML):
         q = Estate.objects.all()
         q = q.filter(**f)    
         q = q.exclude(estate_params__exact=EstateParam.RENT,)                      
-        return q
+        return q.distinct('id')
