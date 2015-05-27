@@ -483,6 +483,8 @@ class ClientListView(ListView):
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
+        if 'Q' in filter_dict:
+            q = q.filter(filter_dict.pop('Q'))
         if len(filter_dict):
             q = q.filter(**filter_dict)        
         order_by = self.request.fields 

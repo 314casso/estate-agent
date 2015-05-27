@@ -39,7 +39,8 @@ from django.utils.safestring import mark_safe
 from django.template.base import Template
 from django.core.exceptions import ValidationError
 from exportdata.utils import EstateTypeMapper
-from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup
+from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
+    ExperienceLookup, QualityLookup
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -165,6 +166,7 @@ class ClientFilterForm(BetterForm):
             required=False,
         )
     note = forms.CharField(required=False, label=_('Note'))
+    fio = forms.CharField(required=False, label=u'Ф.И.О.')
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     
     work_types = AutoComboboxSelectMultipleField(
@@ -185,6 +187,34 @@ class ClientFilterForm(BetterForm):
             required=False,
         ) 
     
+    birthday = DateRangeField(required=False, label=_('Birthday'))
+    
+    experience = AutoComboboxSelectMultipleField(
+            lookup_class=ExperienceLookup,
+            label=_('Experience'),
+            required=False,
+        )
+    
+    quality = AutoComboboxSelectMultipleField(
+            lookup_class=QualityLookup,
+            label=_('Quality'),
+            required=False,
+        )
+    
+    coverage_regions = AutoComboboxSelectMultipleField(
+            lookup_class=RegionLookup,
+            label=_('Regions'),
+            required=False,
+        )
+    
+    coverage_localities = AutoComboboxSelectMultipleField(
+            lookup_class=LocalityLookup,
+            label=_('Localities'),
+            required=False,
+        )
+    
+    dev_note = forms.CharField(required=False, label=u'Примечание строителя')
+    
     def get_filter(self):
         if self.is_valid():
             return self.make_filter(self.cleaned_data)
@@ -193,7 +223,24 @@ class ClientFilterForm(BetterForm):
     def make_filter(self, cleaned_data):
         f = {}
         if not cleaned_data:
-            return f        
+            return f   
+        
+        q = Q()
+        fio = cleaned_data['fio']
+        if fio:
+            parts = fio.split()
+            for part in parts:                
+                q = q | Q(extra_profile__last_name__icontains=part) | Q(extra_profile__first_name__icontains=part) | Q(extra_profile__patronymic__icontains=part) 
+        
+        address = cleaned_data['address']
+        if address:
+            parts = address.split()
+            for part in parts:
+                q = q | Q(extra_profile__address__address__icontains=part) | Q(extra_profile__address__region__icontains=part) | Q(extra_profile__address__locality__icontains=part)
+                q = q | Q(address__icontains=part)
+        
+        if len(q):
+            f['Q'] = q     
                 
         history_fields = ('created','updated')
         for fld in history_fields:
@@ -212,13 +259,25 @@ class ClientFilterForm(BetterForm):
                           'contacts__in': 'contacts',
                           'name__icontains': 'name',
                           'client_type__in': 'client_type',
-                          'origin__in': 'origin',
-                          'address__icontains': 'address',
+                          'origin__in': 'origin',                          
                           'note__icontains': 'note',
                           'dev_profile__work_types__in': 'work_types',
                           'dev_profile__goods__in': 'goods',
-                          'dev_profile__client__partner__in' : 'partners'
+                          'dev_profile__client__partner__in' : 'partners',
+                          'dev_profile__experience__in': 'experience',
+                          'dev_profile__quality__in': 'quality',
+                          'dev_profile__coverage_regions__in': 'coverage_regions', 
+                          'dev_profile__coverage_localities__in': 'coverage_localities', 
+                          'dev_profile__note__icontains': 'dev_note',                           
                          }
+        
+        two_number_fields = {'birthday':'extra_profile__birthday'}
+        
+        for fld, fld_name in two_number_fields.iteritems():
+            if check_value_list(cleaned_data[fld]):
+                result = from_to_values(cleaned_data[fld], fld_name)
+                if result: 
+                    f.update(result)
         
         for key, value in simple_filter.iteritems():
             if value in cleaned_data and cleaned_data[value]:                
@@ -232,10 +291,11 @@ class ClientFilterForm(BetterForm):
     class Meta:
         fieldsets = [('basic', {'fields': [
                                          'pk','created','created_by','updated','updated_by','origin','client_type',
-                                         'has_dev_profile','name','address','contacts','note'
+                                         'has_dev_profile','name','fio','birthday','address','contacts','note'
                                          ]}),
                      ('devrep', {'fields': [
-                                         'work_types','goods','partners'
+                                         'work_types','goods','partners','experience','quality','coverage_regions',
+                                         'coverage_localities','dev_note'
                                            ]}),                     
                      ]
            

@@ -157,7 +157,9 @@ class PartnerFilterForm(Form):
         q = Q()
         address = cleaned_data['address']
         if address:
-            q = q | Q(address__address__icontains=address) | Q(address__region__icontains=address) | Q(address__locality__icontains=address)
+            parts = address.split()
+            for part in parts:
+                q = q | Q(address__address__icontains=part) | Q(address__region__icontains=part) | Q(address__locality__icontains=part)
         
         if len(q):
             f['Q'] = q 
