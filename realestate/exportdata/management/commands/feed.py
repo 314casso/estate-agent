@@ -10,6 +10,7 @@ from exportdata.custom_makers.bnxml import BnXML
 from exportdata.custom_makers.avitopayxml import AvitoXMLPay
 from exportdata.custom_makers.restate import Restate
 from exportdata.custom_makers.yaxmlplusphoto import YaPlusPhoto
+from exportdata.custom_makers.nndvxml import NndvXML
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -31,6 +32,7 @@ class Command(BaseCommand):
                    AvitoXMLPay.name: AvitoXMLPay, 
                    Restate.name: Restate,
                    YaPlusPhoto.name: YaPlusPhoto,
+                   NndvXML.name: NndvXML, 
                  }
         if arg in mapper:
             return mapper[arg]
