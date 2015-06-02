@@ -64,6 +64,7 @@ class EstateTypeMapper(object):
     GARAZH = 9
     ZHILOYGARAZH = 70
     LODOCHNYYGARAZH = 8  
+    ZDANIEGARAZHNYHBOKSOV = 132
 
 class LayoutTypeMapper(object):    
     APPARTAMENTY = 53

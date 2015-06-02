@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import Estate, EstateTypeCategory, EstateParam
+from estatebase.models import Estate, EstateTypeCategory, EstateParam, Locality,\
+    YES
 from exportdata.xml_makers import SalesAgent, number2xml
 from lxml import etree
 from exportdata.custom_makers.yaxml import YandexWrapper
@@ -7,7 +8,7 @@ from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper, WallConstrucionMapper
 
 
-class NndvWrapper(YandexWrapper):
+class NndvWrapper(YandexWrapper):    
     category_mapper =  {
                         EstateTypeCategory.KVARTIRAU4ASTOK:u'Дома, дачи, коттеджи', EstateTypeCategory.KVARTIRA:u'flat',
                         EstateTypeCategory.DOM:u'Дома, дачи, коттеджи', EstateTypeCategory.U4ASTOK: u'Земельные участки',
@@ -17,6 +18,13 @@ class NndvWrapper(YandexWrapper):
     def offer_type(self):
         return u'продам'
     
+    def address(self):        
+        if self.is_outoftown():
+            return None         
+        if self._estate.street:
+            return u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
+        return ''
+    
     def kuhnya_area(self):
         if self._basic_bidg:         
             kuhnya_area = self._basic_bidg.get_kuhnya_area()
@@ -24,78 +32,108 @@ class NndvWrapper(YandexWrapper):
         return number2xml(result)    
     
     def get_item_name(self):
-        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-            if self._basic_bidg:
-                estate_type_id = self._basic_bidg.estate_type_id
-                mapper = {
-                            EstateTypeMapper.NOVOSTROYKA: u'building',
-                            EstateTypeMapper.KOMNATA: u'room',
-                         }
-                if estate_type_id in mapper:
-                    return mapper[estate_type_id] 
-                return u'flat'  
-        if self._estate.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK, EstateTypeCategory.U4ASTOK):
-            return u'outoftown'
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            return u'commerce'
+        if self.is_flat():
+            estate_type_id = self._basic_bidg.estate_type_id
+            mapper = {
+                        EstateTypeMapper.NOVOSTROYKA: u'building',
+                        EstateTypeMapper.KOMNATA: u'room',
+                     }
+            if estate_type_id in mapper:
+                return mapper[estate_type_id] 
+            return u'flat' 
+        if self.is_commerce():
+            return u'commerce'        
+        if self.is_outoftown():
+            return u'outoftown'                
         return u'other'    
     
-    def get_object_type(self):
-        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-            return        
-        if self._estate.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK):             
-            type_mapper = {
-                           EstateTypeMapper.DACHA:u'Дача',
-                           EstateTypeMapper.DOM:u'Дом',
-                           EstateTypeMapper.POLDOMA:u'Таунхаус',
-                           EstateTypeMapper.KVARTIRASUCHASTKOM:u'Таунхаус',
-                           EstateTypeMapper.KOTTEDZH:u'Коттедж',
-                           EstateTypeMapper.TAUNHAUS:u'Таунхаус',
-                           EstateTypeMapper.DUPLEKS:u'Таунхаус',                       
-                           }
-            return type_mapper.get(self._basic_bidg.estate_type_id) 
-        if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK:
-            type_mapper = {
-                           EstateTypeMapper.DACHNYYUCHASTOK :u'Сельхозназначения (СНТ, ДНП)',
-                           EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA:u'Поселений (ИЖС)',
-                           EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA:u'Сельхозназначения (СНТ, ДНП)',
-                           EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA:u'Промназначения',
-                           EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA:u'Промназначения',                                                  
-                           }
-            return type_mapper.get(self._basic_stead.estate_type_id)
-        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-            DEFAULT = u'здание';
-            estate_type_id = None
-            if self._basic_bidg:
-                estate_type_id = self._basic_bidg.estate_type_id
-            elif self._basic_stead:
-                estate_type_id = self._basic_stead.estate_type_id
-            type_mapper = {                  
-                           EstateTypeMapper.ADMINISTRATIVNOTORGOVOEZDANIE :u'Торговое помещение',                                                                            
-                           EstateTypeMapper.TORGOVYYPAVILON :u'Торговое помещение',
-                           EstateTypeMapper.MAGAZIN :u'Торговое помещение',
-                           EstateTypeMapper.GOSTINITSA :u'Гостиница',
-                           EstateTypeMapper.GOSTEVOYDOM :u'Гостиница',
-                           EstateTypeMapper.GOSTEVYEKOMNATY :u'Гостиница',
-                           EstateTypeMapper.GOSTINICHNYYKOMPLEKS :u'Гостиница',
-                           EstateTypeMapper.PANSIONAT :u'Гостиница',
-                           EstateTypeMapper.OTEL :u'Гостиница',
-                           EstateTypeMapper.MINIGOSTINITSA :u'Гостиница',
-                           EstateTypeMapper.SANATORIY :u'Гостиница',
-                           EstateTypeMapper.OFIS :u'Офисное помещение',
-                           EstateTypeMapper.ADMINISTRATIVNOEZDANIE :u'Офисное помещение',
-                           EstateTypeMapper.RESTORAN :u'Ресторан, кафе',
-                           EstateTypeMapper.KAFE :u'Ресторан, кафе',
-                           EstateTypeMapper.SALONKRASOTY :u'Салон красоты',
-                           EstateTypeMapper.SKLAD :u'Складское помещение',
-                           EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'Складское помещение',                           
-                           }
-            return type_mapper.get(estate_type_id, DEFAULT) 
+    def get_object_type(self):                
+        if self.is_flat():
+            return                
+        if self.is_commerce():
+            return self.get_commerce_object()
+        if self.is_outoftown():         
+            return self.get_outoftown_object()   
+        return self.get_other_object()
     
-    def is_flat(self, item_name):
-        flat_items = (u'flat', u'room', u'building')
-        if item_name in flat_items:
-            return True 
+    def is_flat(self):
+        if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
+            if self._basic_bidg:
+                return True
+        return False
+        
+    def is_commerce(self):
+        if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:        
+            return True
+        if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK and self._estate.com_status == YES:
+            return True            
+        return False
+    
+    def is_outoftown(self):         
+        if self._estate.locality.locality_type != Locality.CITY and not self.is_flat() and not self.is_commerce():
+            return True
+        return False
+    
+    def update_mapper_uchastok(self, type_mapper, common_name):        
+        uchastok_mapper = {
+                       EstateTypeMapper.DACHNYYUCHASTOK :common_name,
+                       EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA:common_name,
+                       EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA:common_name,
+                       EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA:common_name,
+                       EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA:common_name,                                                  
+                       }
+        type_mapper.update(uchastok_mapper)
+        return type_mapper
+        
+    def get_commerce_object(self):
+        type_mapper = {                  
+                       EstateTypeMapper.ZDANIEGARAZHNYHBOKSOV :u'гараж',
+                       EstateTypeMapper.ZDANIE :u'здание',                                             
+                       EstateTypeMapper.ADMINISTRATIVNOTORGOVOEZDANIE :u'торговый павильон',                                                                             
+                       EstateTypeMapper.TORGOVYYPAVILON :u'торговый павильон',
+                       EstateTypeMapper.MAGAZIN :u'магазин',                       
+                       EstateTypeMapper.OFIS :u'офис',
+                       EstateTypeMapper.ADMINISTRATIVNOEZDANIE :u'офис',                      
+                       EstateTypeMapper.SKLAD :u'складское',
+                       EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'производств. помещ',
+                       EstateTypeMapper.PROIZVODSTVENNAYABAZA: u'производств. помещ',
+                       }
+        type_mapper = self.update_mapper_uchastok(type_mapper, u'земельный участок')
+        return self.map_object(type_mapper, u'здание')     
+        
+    def get_outoftown_object(self):        
+        type_mapper = {                  
+                       EstateTypeMapper.DACHA:u'дача',
+                       EstateTypeMapper.DOM:u'дом',
+                       EstateTypeMapper.POLDOMA:u'таунхаус',
+                       EstateTypeMapper.KVARTIRASUCHASTKOM:u'таунхаус',
+                       EstateTypeMapper.KOTTEDZH:u'коттедж',
+                       EstateTypeMapper.TAUNHAUS:u'таунхаус',
+                       EstateTypeMapper.DUPLEKS:u'таунхаус',                         
+                       }
+        type_mapper = self.update_mapper_uchastok(type_mapper, u'участок')
+        return self.map_object(type_mapper, u'дом') 
+    
+    def get_other_object(self):        
+        type_mapper = {                  
+                       EstateTypeMapper.GARAZH:u'гараж',                       
+                       EstateTypeMapper.DOM:u'дом',
+                       EstateTypeMapper.POLDOMA:u'полдома',
+                       EstateTypeMapper.KVARTIRASUCHASTKOM:u'таунхаус',
+                       EstateTypeMapper.KOTTEDZH:u'дом',
+                       EstateTypeMapper.TAUNHAUS:u'таунхаус',
+                       EstateTypeMapper.DUPLEKS:u'таунхаус',
+                       EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA:u'участок под ижс',                         
+                       }        
+        return self.map_object(type_mapper, u'дом') 
+    
+    def map_object(self, type_mapper, default):       
+        estate_type_id = None
+        if self._basic_bidg:
+            estate_type_id = self._basic_bidg.estate_type_id
+        elif self._basic_stead:
+            estate_type_id = self._basic_stead.estate_type_id        
+        return type_mapper.get(estate_type_id, default)
     
     def house_type(self): 
         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
@@ -133,14 +171,17 @@ class NndvXML(YandexPlusXML):
         f = {
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
-             'agency_price__gte': MIN_PRICE_LIMIT, 
-             'estate_category_id': EstateTypeCategory.KVARTIRA,            
+             'agency_price__gte': MIN_PRICE_LIMIT,
              }
         q = Estate.objects.all()
         q = q.filter(**f)        
         q = q.exclude(street__name__exact = u'без улицы')   
         q = q.exclude(estate_params__exact = EstateParam.RENT,)     
         return q
+    
+    def to_int(self, d):
+        result = int(float(d))
+        return u'%s' % result 
     
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
@@ -153,10 +194,6 @@ class NndvXML(YandexPlusXML):
         offer = etree.Element(item_name)
         etree.SubElement(offer, "id").text = str(estate.id)              
         etree.SubElement(offer, "oborot").text = self._wrapper.offer_type()    
-        etree.SubElement(offer, "url").text = self._wrapper.url()        
-        etree.SubElement(offer, "creation-date").text = self.feed_date(self._wrapper.creation_date())
-        if self._wrapper.last_update_date():
-            etree.SubElement(offer, "last-update-date").text = self.feed_date(self._wrapper.last_update_date())
         #location  
         etree.SubElement(offer, "country").text = self._wrapper.country()
         etree.SubElement(offer, "region").text = self._wrapper.region()
@@ -169,41 +206,35 @@ class NndvXML(YandexPlusXML):
         etree.SubElement(sales_agent, "contact_phone").text = sa.phones()[0]  
         etree.SubElement(sales_agent, "contact_who").text = sa.category()
         etree.SubElement(sales_agent, "contact_firma").text = sa.organization()
-        etree.SubElement(sales_agent, "contact_email").text = sa.email()        
-        if sa.agency_id():
-            etree.SubElement(sales_agent, "agency-id").text = sa.agency_id()        
-        etree.SubElement(sales_agent, "url").text = sa.url()
-        etree.SubElement(sales_agent, "email").text = sa.email()
+        etree.SubElement(sales_agent, "contact_email").text = sa.email()    
         #price
         etree.SubElement(offer, "money").text = self._wrapper.price.value()   
-        images = self._wrapper.images()
+        images = self._wrapper.images()        
         if images:
-            for image in images:
-                etree.SubElement(offer, "image").text = image            
+            for i,image in enumerate(images, start=1):
+                etree.SubElement(offer, "image%s" % i).text = image                    
         etree.SubElement(offer, "comment").text = self._wrapper.description()
-        if self._wrapper.is_flat(item_name):
+        if self._wrapper.is_flat():
+            if self._wrapper.rooms():
+                etree.SubElement(offer, "rooms").text = self._wrapper.rooms()      
+            self.add_bool_element(etree, offer, 'phone', self._wrapper.phone())       
+            if self._wrapper.floor():
+                etree.SubElement(offer, "floor").text = self._wrapper.floor()        
+            if self._wrapper.floors_total():
+                etree.SubElement(offer, "floors").text = self._wrapper.floors_total()        
+            if self._wrapper.house_type():
+                etree.SubElement(offer, "house").text = self._wrapper.house_type()       
+            self.add_bool_element(etree, offer, 'lift', self._wrapper.lift())            
             if self._wrapper.area():
-                etree.SubElement(offer, "area_sum").text = self._wrapper.area()
+                etree.SubElement(offer, "area_sum").text = self.to_int(self._wrapper.area())
             if self._wrapper.living_space():
-                etree.SubElement(offer, "area_life").text = self._wrapper.living_space()          
+                etree.SubElement(offer, "area_life").text = self.to_int(self._wrapper.living_space())          
             if self._wrapper.kuhnya_area():
-                etree.SubElement(offer, "area_kitchen").text = self._wrapper.kuhnya_area()
+                etree.SubElement(offer, "area_kitchen").text = self.to_int(self._wrapper.kuhnya_area())
         else:
             etree.SubElement(offer, "object").text = self._wrapper.get_object_type()            
             if has_stead and item_name == u'outoftown': 
-                etree.SubElement(offer, "area_land").text = self._wrapper.lot_area()
+                etree.SubElement(offer, "area_land").text = self.to_int(self._wrapper.lot_area())
             else:
-                etree.SubElement(offer, "area").text = self._wrapper.lot_area() if is_stead else self._wrapper.area()
-                         
-        if self._wrapper.rooms():
-            etree.SubElement(offer, "rooms").text = self._wrapper.rooms()      
-        self.add_bool_element(etree, offer, 'phone', self._wrapper.phone())        
-        self.add_bool_element(etree, offer, 'internet', self._wrapper.internet())
-        if self._wrapper.floor():
-            etree.SubElement(offer, "floor").text = self._wrapper.floor()        
-        if self._wrapper.floors_total():
-            etree.SubElement(offer, "floors").text = self._wrapper.floors_total()        
-        if self._wrapper.house_type():
-            etree.SubElement(offer, "house").text = self._wrapper.house_type()       
-        self.add_bool_element(etree, offer, 'lift', self._wrapper.lift())               
+                etree.SubElement(offer, "area").text = self.to_int(self._wrapper.lot_area()) if is_stead else self.to_int(self._wrapper.area())                       
         return offer 
