@@ -141,6 +141,10 @@ class YandexXML(BaseXML):
         self.add_bool_element(etree, offer, 'gas-supply', self._wrapper.gas_supply())        
         return offer
     
+    def validate_offer(self, offer):
+        if offer is not None:            
+            return True
+    
     def get_offer(self, estate):
         if not estate.is_web_published:
             return 
@@ -148,9 +152,10 @@ class YandexXML(BaseXML):
             offer = self.get_cache(estate)
             if offer is not None:
                 return offer            
-        offer = self.create_offer(estate)        
-        self.set_cache(estate, offer)   
-        return offer    
+        offer = self.create_offer(estate)
+        if self.validate_offer(offer):        
+            self.set_cache(estate, offer)   
+            return offer    
 
     def get_queryset(self):
         MIN_PRICE_LIMIT = 100000  

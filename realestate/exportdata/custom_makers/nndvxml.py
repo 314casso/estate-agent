@@ -8,13 +8,7 @@ from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper, WallConstrucionMapper
 
 
-class NndvWrapper(YandexWrapper):    
-    category_mapper =  {
-                        EstateTypeCategory.KVARTIRAU4ASTOK:u'Дома, дачи, коттеджи', EstateTypeCategory.KVARTIRA:u'flat',
-                        EstateTypeCategory.DOM:u'Дома, дачи, коттеджи', EstateTypeCategory.U4ASTOK: u'Земельные участки',
-                        EstateTypeCategory.COMMERCE: u'Коммерческая недвижимость',
-                        }
-    
+class NndvWrapper(YandexWrapper):  
     def offer_type(self):
         return u'продам'
     
@@ -171,7 +165,7 @@ class NndvXML(YandexPlusXML):
         f = {
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
-             'agency_price__gte': MIN_PRICE_LIMIT,
+             'agency_price__gte': MIN_PRICE_LIMIT,             
              }
         q = Estate.objects.all()
         q = q.filter(**f)        
@@ -179,9 +173,34 @@ class NndvXML(YandexPlusXML):
         q = q.exclude(estate_params__exact = EstateParam.RENT,)     
         return q
     
+    def bool_to_value(self, bool_value):
+        return u'есть' if bool_value else u'нет'
+    
     def to_int(self, d):
         result = int(float(d))
         return u'%s' % result 
+    
+    def validate_offer(self, offer):
+        flat = ['id', 'region', 'naspunkt', 'oborot', 'money', 'rooms', 'area_sum', 'floors', 'floor', 'address', 'contact_who', 'contact_phone']
+        other = ['id', 'region', 'naspunkt', 'oborot', 'money', 'area', 'object', 'address', 'contact_who', 'contact_phone']
+        outoftown = ['id', 'region', 'naspunkt', 'oborot', 'money', 'object', 'contact_who', 'contact_phone']
+        required = {
+                    'building':flat,
+                    'room':flat,
+                    'flat':flat,
+                    'commerce':other,
+                    'outoftown':outoftown,
+                    'other':other,
+                    }
+        if offer is None:            
+            return False
+        item_name = offer.xpath("/*")[0].tag
+        required_tags = required.get(item_name)
+        for tag in required_tags:
+            if not offer.xpath("/*/%s" % tag):
+                print 'Validation error! Empty tag %s' % tag
+                return False
+        return True
     
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
