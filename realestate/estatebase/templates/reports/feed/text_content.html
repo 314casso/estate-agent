@@ -4,10 +4,10 @@
 {% spaceless %}
 {{ description }}, {% estate_details estate_item %} 
 {% if not short %} 
-	{{ estate_item.client_description }}
+{{ estate_item.client_description }}
 {% endif %}	
 {% include 'reports/feed/basic_bidg.html' with bidg=estate_item.basic_bidg %}
-{% if estate_item.client_description %}
+{% if estate_item.client_description and not short %}
 Дополнительно: {{ estate_item.client_description|default:'' }}
 {% endif %}
 Коммуникации: {% communication estate_item %} Код: {{ estate_item.id }}
