@@ -2,12 +2,13 @@
 {% load link_helper %}
 {% load report %}
 {% spaceless %}
-{{ description }}, {% estate_details estate_item %} {{ estate_item.client_description }}
+{{ description }}, {% estate_details estate_item %} 
 {% if not short %} 
-	{% include 'reports/feed/basic_bidg.html' with bidg=estate_item.basic_bidg %}
-	{% if estate_item.client_description %}
-	Дополнительно: {{ estate_item.client_description|default:'' }}
-	{% endif %}
+	{{ estate_item.client_description }}
+{% endif %}	
+{% include 'reports/feed/basic_bidg.html' with bidg=estate_item.basic_bidg %}
+{% if estate_item.client_description %}
+Дополнительно: {{ estate_item.client_description|default:'' }}
 {% endif %}
 Коммуникации: {% communication estate_item %} Код: {{ estate_item.id }}
 {% endspaceless %}
