@@ -206,9 +206,10 @@ class NndvXML(YandexPlusXML):
             if not offer.xpath("/*/%s" % tag):
                 print 'Validation error! Empty tag %s' % tag
                 return False
-        comment_len = len(offer.xpath("/*/comment")[0].text)
+        comment = offer.xpath("/*/comment")[0].text
+        comment_len = len(comment)
         if comment_len > 800:
-            print 'Validation error! Comment is over %s' % comment_len
+            print 'Validation error! Comment %s is over %s' % (comment, comment_len)
             return False            
         return True
     
