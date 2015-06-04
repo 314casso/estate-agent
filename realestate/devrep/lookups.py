@@ -1,6 +1,6 @@
 from estatebase.lookups import SimpleNameLookup, SimpleIdLookup
 from devrep.models import PartnerType, WorkType, Gear, Quality, Experience,\
-    Partner, Citizenship, Measure, Goods
+    Partner, Citizenship, Measure, Goods, DevProfile
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
 from selectable.base import ModelLookup
@@ -10,6 +10,9 @@ class PartnerTypeLookup(SimpleNameLookup):
 
 class PartnerIdLookup(SimpleIdLookup):
     model = Partner
+
+class DevProfileIdLookup(SimpleIdLookup):
+    model = DevProfile    
 
 class GearLookup(SimpleNameLookup):
     model = Gear
@@ -60,5 +63,6 @@ try:
     registry.register(PartnerIdLookup)
     registry.register(MeasureLookup)    
     registry.register(GoodsLookup)
+    registry.register(DevProfileIdLookup)
 except LookupAlreadyRegistered:
     pass      

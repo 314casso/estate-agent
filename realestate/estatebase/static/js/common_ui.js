@@ -73,11 +73,7 @@ $(document).ready(function() {
 
 	$('.active').addClass('ui-state-highlight');
 		
-	$('.local-int').autoNumeric({
-		aSep : String.fromCharCode(160),
-		aDec : ',',
-		mDec : 0
-	}).trigger('focusout');
+	localInt();
 	
 	localDecimal();
 	
@@ -90,11 +86,21 @@ $(document).ready(function() {
 });
 
 function localDecimal() {
-$('.local-decimal').autoNumeric({
+	updateAutoNumeric('.local-decimal', 2);
+}
+
+function localInt() {	
+	updateAutoNumeric('.local-int', 0);
+}
+
+function updateAutoNumeric(selector, decNum) {
+	var elem = $(selector);
+	elem.autoNumeric('destroy');
+	elem.autoNumeric('init', {
 		aSep : String.fromCharCode(160),
 		aDec : ',',
-		mDec : 2
-	}).trigger('focusout');
+		mDec : decNum
+	}).trigger('focusout');	
 }
 
 function setAnchor(obj, clazz) {

@@ -40,7 +40,7 @@ from django.template.base import Template
 from django.core.exceptions import ValidationError
 from exportdata.utils import EstateTypeMapper
 from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
-    ExperienceLookup, QualityLookup
+    ExperienceLookup, QualityLookup, DevProfileIdLookup
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -213,6 +213,12 @@ class ClientFilterForm(BetterForm):
             required=False,
         )
     
+    dev_profiles = AutoCompleteSelectMultipleField(
+            lookup_class=DevProfileIdLookup,
+            label=_('DevProfile'),
+            required=False,
+        )  
+    
     dev_note = forms.CharField(required=False, label=u'Примечание строителя')
     
     def get_filter(self):
@@ -268,7 +274,8 @@ class ClientFilterForm(BetterForm):
                           'dev_profile__quality__in': 'quality',
                           'dev_profile__coverage_regions__in': 'coverage_regions', 
                           'dev_profile__coverage_localities__in': 'coverage_localities', 
-                          'dev_profile__note__icontains': 'dev_note',                           
+                          'dev_profile__note__icontains': 'dev_note',
+                          'dev_profile__in': 'dev_profiles',
                          }
         
         two_number_fields = {'birthday':'extra_profile__birthday'}
@@ -294,7 +301,7 @@ class ClientFilterForm(BetterForm):
                                          'has_dev_profile','name','fio','birthday','address','contacts','note'
                                          ]}),
                      ('devrep', {'fields': [
-                                         'work_types','goods','partners','experience','quality','coverage_regions',
+                                         'dev_profiles', 'work_types','goods','partners','experience','quality','coverage_regions',
                                          'coverage_localities','dev_note'
                                            ]}),                     
                      ]

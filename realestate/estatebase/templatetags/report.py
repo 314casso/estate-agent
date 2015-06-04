@@ -14,25 +14,32 @@ def distance_helper(value):
         return u' - %s м' % intcomma(value) 
     return ''
 
+def value_helper(fk):
+    skip = u'подключено';
+    value = fk.name.lower()
+    if value != skip:
+        return u' %s' % value 
+    return ''
+
 @register.inclusion_tag('inclusion/communication.html')
 def communication(estate):
     comms = []
-    two_val_template = '%s <strong>%s%s</strong>'
-    one_val_template = '%s <strong>%s</strong>'
+    two_val_template = '%s<strong>%s%s</strong>'
+    one_val_template = '%s<strong>%s</strong>'
     if estate.electricity:
-        comms.append(two_val_template %  (u'свет', estate.electricity.name.lower(), distance_helper(estate.electricity_distance)))            
+        comms.append(two_val_template %  (u'свет', value_helper(estate.electricity), distance_helper(estate.electricity_distance)))            
     if estate.watersupply:
-        comms.append(two_val_template %  (u'вода', estate.watersupply.name.lower(), distance_helper(estate.watersupply_distance)))
+        comms.append(two_val_template %  (u'вода', value_helper(estate.watersupply), distance_helper(estate.watersupply_distance)))
     if estate.gassupply:
-        comms.append(two_val_template %  (u'газ', estate.gassupply.name.lower(), distance_helper(estate.gassupply_distance)))    
+        comms.append(two_val_template %  (u'газ', value_helper(estate.gassupply), distance_helper(estate.gassupply_distance)))    
     if estate.sewerage:
-        comms.append(two_val_template %  (u'канализация', estate.sewerage.name.lower(), distance_helper(estate.sewerage_distance)))        
+        comms.append(two_val_template %  (u'канализация', value_helper(estate.sewerage), distance_helper(estate.sewerage_distance)))        
     if estate.telephony:
-        comms.append(one_val_template %  (u'тел.', estate.telephony.name.lower()))    
+        comms.append(one_val_template %  (u'тел.', value_helper(estate.telephony)))   
     if estate.internet:
-        comms.append(one_val_template %  (u'интернет', estate.internet.name.lower()))    
+        comms.append(one_val_template %  (u'интернет', value_helper(estate.internet)))    
     if estate.driveway:
-        comms.append(two_val_template %  (u'подъезд', estate.driveway.name.lower(), distance_helper(estate.driveway_distance)))    
+        comms.append(two_val_template %  (u'подъезд', value_helper(estate.driveway), distance_helper(estate.driveway_distance)))    
     return {'comms': comms}
 
 @register.inclusion_tag('inclusion/comma_from_details.html')

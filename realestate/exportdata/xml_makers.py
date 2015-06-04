@@ -110,9 +110,9 @@ class EstateBaseWrapper(object):
                     pass                    
             return result
     
-    def render_content(self, estate, description):        
+    def render_content(self, estate, description, short=False):        
         t = loader.get_template('reports/feed/text_content.html')
-        c = Context({'estate_item':estate, 'description': description})
+        c = Context({'estate_item':estate, 'description': description, 'short': short})
         rendered = t.render(c)
         return re.sub(r"\s+"," ", rendered).strip()
     

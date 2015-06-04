@@ -6,6 +6,7 @@ from lxml import etree
 from exportdata.custom_makers.yaxml import YandexWrapper
 from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper, WallConstrucionMapper
+from django.template.defaultfilters import striptags
 
 
 class NndvWrapper(YandexWrapper):  
@@ -18,6 +19,10 @@ class NndvWrapper(YandexWrapper):
         if self._estate.street:
             return u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
         return ''
+    
+    def description(self):
+        description = self.render_post_description(self._estate)
+        return striptags(self.render_content(self._estate, description, True))
     
     def kuhnya_area(self):
         if self._basic_bidg:         
@@ -89,8 +94,8 @@ class NndvWrapper(YandexWrapper):
                        EstateTypeMapper.OFIS :u'офис',
                        EstateTypeMapper.ADMINISTRATIVNOEZDANIE :u'офис',                      
                        EstateTypeMapper.SKLAD :u'складское',
-                       EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'производств. помещ',
-                       EstateTypeMapper.PROIZVODSTVENNAYABAZA: u'производств. помещ',
+                       EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'производств. помещ.',
+                       EstateTypeMapper.PROIZVODSTVENNAYABAZA: u'производств. помещ.',
                        }
         type_mapper = self.update_mapper_uchastok(type_mapper, u'земельный участок')
         return self.map_object(type_mapper, u'здание')     
@@ -200,6 +205,10 @@ class NndvXML(YandexPlusXML):
             if not offer.xpath("/*/%s" % tag):
                 print 'Validation error! Empty tag %s' % tag
                 return False
+        comment_len = len(offer.xpath("/*/comment")[0].text)
+        if comment_len > 800:
+            print 'Validation error! Comment is over %s' % comment_len
+            return False            
         return True
     
     def create_offer(self, estate):                
