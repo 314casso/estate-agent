@@ -3,7 +3,7 @@
 {% spaceless %}
 {% wrapper_fieldset_comma bidg 'exterior_report_set' %}
 {% wrapper_fieldset_comma bidg 'interior_set' %}
-{% if bidg.levels.count > 0 and not short %}
+{% if bidg.levels.count > 0 %}
     {% for level in bidg.levels.all %}
     Планировка уровня/этажа "{{ level }}":
     {% bidg_layout_wp level %}
