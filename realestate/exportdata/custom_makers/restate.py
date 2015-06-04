@@ -12,7 +12,7 @@ class Restate(YandexPlusXML):
              'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,  
              'street__isnull': False, 
-             'estate_params__exact': EstateParam.RESTATE,          
+             'estate_params__exact': EstateParam.PAYEXPORT,          
              }
         q = Estate.objects.all()
         q = q.filter(**f)     
