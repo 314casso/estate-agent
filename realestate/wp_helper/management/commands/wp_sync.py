@@ -14,9 +14,9 @@ class Command(BaseCommand):
         self.sync_correct(wp_service)      
 
     def sync_correct(self, wp_service):
-        estates = Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC)
+        estates = Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC)[:9]
         for estate in estates:
-            time.sleep(10)            
+            time.sleep(3)            
             wp_service.sync_post(estate)
             
         
