@@ -95,8 +95,15 @@ function localInt() {
 
 function updateAutoNumeric(selector, decNum) {
 	var elem = $(selector);
-	elem.autoNumeric('destroy');
-	elem.autoNumeric('init', {
+	// elem.autoNumeric('destroy');
+
+	 elem.each(function () {
+                var $this = $(this);
+                $this.off('.autoNumeric');
+                $this.removeData('autoNumeric');
+            });
+
+	elem.autoNumeric({
 		aSep : String.fromCharCode(160),
 		aDec : ',',
 		mDec : decNum
