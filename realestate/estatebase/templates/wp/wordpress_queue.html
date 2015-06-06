@@ -22,7 +22,7 @@
 	<ol>
 	{% for item in err_queue %}
 	<li><strong>{{ item.pk }}</strong>, {{ item.estate_type }}, {{ item.wp_meta.updated }}, {{ item.wp_meta.get_status_display }},
-		{{ item.wp_meta.error_message }} </li>
+		{{ item.wp_meta.get_error_message }} </li>
 	{% endfor %}
 	</ol>
 <div>

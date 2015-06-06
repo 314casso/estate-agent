@@ -101,8 +101,23 @@ class EstateWordpressMeta(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATE_CHOICES, default=UNKNOWN)
     error_message = models.CharField(u'Ошибка', max_length=255, null=True)
+    
     def has_error(self):
-        return self.status in (self.STATUS_ERROR, self.ERROR, self.UNKNOWN) and self.error_message    
+        return self.status in (self.STATUS_ERROR, self.ERROR, self.UNKNOWN) and self.error_message
+    
+    def get_error_message(self):
+        value = self.error_message        
+        parts = [x.strip() for x in value.strip('><').split(":")]
+        result = []
+        for item in parts:
+            try: 
+                result.append(eval(item))
+            except:
+                result.append(item)
+        return u': '.join(result)
+                
+
+        
             
 def load_data(data, model):       
     list_r = data.split(',')
