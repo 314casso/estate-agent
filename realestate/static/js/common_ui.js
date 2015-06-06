@@ -95,8 +95,6 @@ function localInt() {
 
 function updateAutoNumeric(selector, decNum) {
 	var elem = $(selector);
-	// elem.autoNumeric('destroy');
-
 	 elem.each(function () {
                 var $this = $(this);
                 $this.off('.autoNumeric');
