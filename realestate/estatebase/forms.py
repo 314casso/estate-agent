@@ -41,6 +41,7 @@ from django.core.exceptions import ValidationError
 from exportdata.utils import EstateTypeMapper
 from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
     ExperienceLookup, QualityLookup, DevProfileIdLookup
+from wp_helper.models import EstateWordpressMeta
 
 class EstateForm(BetterModelForm):              
     beside_distance = LocalIntegerField(label='')
@@ -298,7 +299,7 @@ class ClientFilterForm(BetterForm):
     class Meta:
         fieldsets = [('basic', {'fields': [
                                          'pk','created','created_by','updated','updated_by','origin','client_type',
-                                         'has_dev_profile','name','fio','birthday','address','contacts','note'
+                                         'has_dev_profile','name','fio','birthday','address','contacts','note','next'
                                          ]}),
                      ('devrep', {'fields': [
                                          'dev_profiles', 'work_types','goods','partners','experience','quality','coverage_regions',
@@ -441,9 +442,11 @@ class EstateFilterForm(BetterForm):
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     cadastral_number = forms.CharField(required=False, label=_('Cadastral number'))
     client_description = forms.CharField(required=False, label=_('Client description'))
+    wp_status = forms.ChoiceField(required=False, label=u'Статус на сайте', initial='')
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
-        self.fields['next'].label = ''
+        self.fields['next'].label = ''         
+        self.fields['wp_status'].choices = [('', '------')] + list(EstateWordpressMeta.STATE_CHOICES)
     def type_filter(self, cleaned_data):
         if not cleaned_data:
             return
@@ -501,7 +504,8 @@ class EstateFilterForm(BetterForm):
                          'bidgs__levels__layout__layout_type__in' : 'layouts', 
                          'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
                          'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
-                         'client_description__icontains': 'client_description'                         
+                         'client_description__icontains': 'client_description',
+                         'wp_meta__status':'wp_status',                        
                          }
         
         for key, value in simple_filter.iteritems():
@@ -545,7 +549,7 @@ class EstateFilterForm(BetterForm):
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
-                                         'microdistrict', 'beside', 'agency_price',
+                                         'microdistrict', 'beside', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
@@ -555,7 +559,7 @@ class EstateFilterForm(BetterForm):
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'cadastral_number', 'purposes', 'electricity', 'watersupply', 
                                            'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
-                                           'description', 'comment', 'next', 'foto_choice', 'wp_choice'
+                                           'description', 'comment', 'next', 'foto_choice',
                                           ]})
                      ]
 
