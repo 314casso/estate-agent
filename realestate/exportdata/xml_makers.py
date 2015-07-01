@@ -9,7 +9,7 @@ from django.template.context import Context
 from django.template.defaultfilters import striptags
 from django.core.cache import cache
 import cPickle as pickle
-from estatebase.models import Locality
+from estatebase.models import Locality, Office, EstateParam
 import pytz
 from settings import MEDIA_ROOT
 from exportdata.utils import EstateTypeMapper
@@ -98,7 +98,7 @@ class EstateBaseWrapper(object):
     def images(self, clear_watermark=False):        
         from urlparse import urljoin       
         from sorl.thumbnail import get_thumbnail              
-        images = self._estate.images.all()[:4]
+        images = self._estate.images.all()[:8]
         if images:
             result = []
             for img in images:
@@ -193,6 +193,13 @@ class EstateBaseWrapper(object):
         if self._basic_bidg:
             return number2xml(self._basic_bidg.ceiling_height)
     
+    def mortgage(self):
+        '''
+        возможность ипотеки
+        '''
+        if len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0:
+            return True
+    
     def heating_supply(self):
         PERSONAL_GAS = 1
         PERSONAL_TD = 2
@@ -252,6 +259,7 @@ class EstateBaseWrapper(object):
 class SalesAgent(object):
     def __init__(self, estate):
         self._estate = estate
+        self._office = estate.region.office_set.all()[:1].get()
     def phones(self):      
         return ['8-800-250-7075', '8-918-049-9494']
     
@@ -261,6 +269,11 @@ class SalesAgent(object):
     def organization(self):
         return u'Дома на юге'
     
+    def head_name(self):        
+        return u'%s' % self._office.head.first_name
+        
+    def head_phone(self):
+        return u'%s' % self._office.head.userprofile.phone    
     
     def agency_id(self):        
         return None

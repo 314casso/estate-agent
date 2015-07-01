@@ -24,12 +24,17 @@ class YandexWrapper(EstateBaseWrapper):
         if cat_id in self.category_mapper:
             return self.category_mapper[cat_id]
         result = u'%s' % self._estate.estate_category
-        return result.lower()
+        return result.lower()    
+    
+    def is_studio(self):
+        cat_id = self._estate.estate_category_id
+        if cat_id == EstateTypeCategory.KVARTIRA and self._basic_bidg is not None:
+            if self._basic_bidg.estate_type_id == EstateTypeMapper.KVARTIRASTUDIYA:
+                return True
+        return False
     
     def address(self):
-        if self._estate.locality.locality_type_id == Locality.CITY:
-#             if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA and self._estate.estate_number:
-#                 return u'%s, %s' % (super(YandexWrapper, self).address(), self._estate.estate_number) 
+        if self._estate.locality.locality_type_id == Locality.CITY: 
             return super(YandexWrapper, self).address() 
         
 class YandexXML(BaseXML):
@@ -87,8 +92,8 @@ class YandexXML(BaseXML):
             etree.SubElement(location, "address").text = self._wrapper.address()
         #sales-agent
         sales_agent = etree.SubElement(offer, "sales-agent")
-        for phone in sa.phones():
-            etree.SubElement(sales_agent, "phone").text = phone  
+        etree.SubElement(sales_agent, "name").text = sa.head_name()
+        etree.SubElement(sales_agent, "phone").text = sa.head_phone()        
         etree.SubElement(sales_agent, "category").text = sa.category()
         etree.SubElement(sales_agent, "organization").text = sa.organization()
         if sa.agency_id():
@@ -120,9 +125,16 @@ class YandexXML(BaseXML):
         if self._wrapper.rooms():
             etree.SubElement(offer, "rooms").text = self._wrapper.rooms()        
         if self._wrapper.rooms_offered():
-            etree.SubElement(offer, "rooms-offered").text = self._wrapper.rooms_offered()        
+            etree.SubElement(offer, "rooms-offered").text = self._wrapper.rooms_offered()
+        
+        if self._wrapper.is_studio():
+            self.add_bool_element(etree, offer, 'open-plan', self._wrapper.is_studio())
+                        
         self.add_bool_element(etree, offer, 'phone', self._wrapper.phone())        
         self.add_bool_element(etree, offer, 'internet', self._wrapper.internet())
+        self.add_bool_element(etree, offer, 'mortgage', self._wrapper.mortgage())
+        
+        
         if self._wrapper.floor():
             etree.SubElement(offer, "floor").text = self._wrapper.floor()        
         if self._wrapper.floors_total():

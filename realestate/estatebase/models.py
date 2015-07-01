@@ -28,12 +28,14 @@ class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
     class Meta:
+        ordering = ['first_name','last_name']
         proxy = True
 
 class UserProfile(models.Model):    
     user = models.OneToOneField(User)    
     geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)
-    office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)                
+    office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)
+    phone = models.CharField(_('Phone'), max_length=255, blank=True, null=True,)                
 
 class SimpleDict(models.Model):
     #objects = caching.base.CachingManager()
@@ -73,6 +75,7 @@ class Office(SimpleDict):
     regions = models.ManyToManyField(Region, verbose_name=_('Region'))
     address = models.TextField(_('Address'))
     address_short = models.TextField(_('Short address'))
+    head = models.ForeignKey(ExUser, verbose_name=_('Head'), on_delete=models.PROTECT, blank=True, null=True) 
     class Meta(SimpleDict.Meta):
         verbose_name = _('Office')
         verbose_name_plural = _('Offices')
