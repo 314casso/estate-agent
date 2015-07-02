@@ -134,7 +134,12 @@ class YandexXML(BaseXML):
         self.add_bool_element(etree, offer, 'internet', self._wrapper.internet())
         self.add_bool_element(etree, offer, 'mortgage', self._wrapper.mortgage())
         
-        
+        if self._wrapper.renovation():
+            etree.SubElement(offer, "renovation").text = self._wrapper.renovation()
+                
+        if self._wrapper.quality():
+            etree.SubElement(offer, "quality").text = self._wrapper.quality()        
+                
         if self._wrapper.floor():
             etree.SubElement(offer, "floor").text = self._wrapper.floor()        
         if self._wrapper.floors_total():

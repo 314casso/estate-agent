@@ -12,7 +12,7 @@ import cPickle as pickle
 from estatebase.models import Locality, Office, EstateParam
 import pytz
 from settings import MEDIA_ROOT
-from exportdata.utils import EstateTypeMapper
+from exportdata.utils import EstateTypeMapper, InteriorMapper
 from django.utils import translation
 
 def number2xml(d):
@@ -201,8 +201,51 @@ class EstateBaseWrapper(object):
             return True
     
     def renovation(self):
-        mapper = {u'евро', u'дизайнерский', u'черновая отделка', u'требует ремонта', u'частичный ремонт', u'с отделкой', u'хороший'}
+        mapper = {                    
+                    InteriorMapper.BEZOTDELKI : u'черновая отделка',
+                    InteriorMapper.VETHOE : u'требует ремонта',
+                    InteriorMapper.DIZAYNERSKIYREMONT : u'дизайнерский', 
+                    InteriorMapper.EVROREMONT : u'евро',
+                    InteriorMapper.ZHILOE : u'частичный ремонт',
+                    InteriorMapper.KAPITALNYYREMONT : u'хороший',
+                    InteriorMapper.KOSMETICHESKIYREMONT : u'частичный ремонт',
+                    InteriorMapper.NEDOSTROEN : u'требует ремонта',
+                    InteriorMapper.OTLICHNOE : u'хороший',
+                    InteriorMapper.PREDCHISTOVAYAOTDELKA : u'с отделкой',                   
+                    InteriorMapper.REMONT : u'хороший',
+                    InteriorMapper.TREBUETKAPITALNOGOREMONTA : u'требует ремонта',
+                    InteriorMapper.TREBUETKOSMETICHESKOGOREMONTA : u'требует ремонта',
+                    InteriorMapper.UDOVLETVORITELNOE : u'требует ремонта',
+                    InteriorMapper.HOROSHEE : u'хороший',
+                    InteriorMapper.CHASTICHNAYAOTDELKA : u'частичный ремонт',
+                    InteriorMapper.CHISTOVAYAOTDELKA : u'с отделкой',
+                  }        
+        if self._basic_bidg is not None:
+            if self._basic_bidg.interior.id in mapper:
+                return mapper[self._basic_bidg.interior.id]
     
+    def quality(self):        
+        mapper = {                    
+                    InteriorMapper.VETHOE : u'плохое',
+                    InteriorMapper.DIZAYNERSKIYREMONT : u'отличное', 
+                    InteriorMapper.EVROREMONT : u'отличное',
+                    InteriorMapper.ZHILOE : u'нормальное',
+                    InteriorMapper.KAPITALNYYREMONT : u'отличное',
+                    InteriorMapper.KOSMETICHESKIYREMONT : u'хорошее',                    
+                    InteriorMapper.OTLICHNOE : u'отличное',
+                    InteriorMapper.RAZRUSHEN : u'плохое',
+                    InteriorMapper.REMONT : u'хорошее',
+                    InteriorMapper.TREBUETKAPITALNOGOREMONTA : u'плохое',
+                    InteriorMapper.TREBUETKOSMETICHESKOGOREMONTA : u'нормальное',
+                    InteriorMapper.UDOVLETVORITELNOE : u'нормальное',
+                    InteriorMapper.HOROSHEE : u'хорошее',
+                    InteriorMapper.CHISTOVAYAOTDELKA : u'хорошее',
+                  }        
+        if self._basic_bidg is not None:
+            if self._basic_bidg.interior.id in mapper:
+                return mapper[self._basic_bidg.interior.id]
+        
+        
     def heating_supply(self):
         PERSONAL_GAS = 1
         PERSONAL_TD = 2
