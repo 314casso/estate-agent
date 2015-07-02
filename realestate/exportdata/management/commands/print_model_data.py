@@ -83,7 +83,18 @@ _lower_case_letters = {
     u'ь': u'',
     u'э': u'e',
     u'ю': u'yu',
-    u'я': u'ya',}
+    u'я': u'ya',
+    u'0': u'0', 
+    u'1': u'1',
+    u'2': u'2',
+    u'3': u'3',
+    u'4': u'4',
+    u'5': u'5',
+    u'6': u'6',
+    u'7': u'7',
+    u'8': u'8',
+    u'9': u'9',
+    }
 
 def transliterate(string):
     capital_letters = _capital_letters
