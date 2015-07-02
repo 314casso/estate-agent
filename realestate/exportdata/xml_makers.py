@@ -200,6 +200,9 @@ class EstateBaseWrapper(object):
         if len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0:
             return True
     
+    def renovation(self):
+        mapper = {u'евро', u'дизайнерский', u'черновая отделка', u'требует ремонта', u'частичный ремонт', u'с отделкой', u'хороший'}
+    
     def heating_supply(self):
         PERSONAL_GAS = 1
         PERSONAL_TD = 2

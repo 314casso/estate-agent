@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import LayoutFeature
+from django.core.management.base import BaseCommand 
+from django.db.models.loading import get_model
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        if len(args) != 2:
+            print u'Specify app_label and model_name... estatebase layoutfeature'
+            return
+        model = get_model(args[0],args[1])
+        if not model:
+            return        
+        for st in model.objects.all().order_by('name'):
+            result = '%s = %s' % (transliterate(st.name), st.pk)
+            print result.upper()
+             
 
 _capital_letters = {
     u'А': u'A',
@@ -91,12 +105,4 @@ def transliterate(string):
         else:
             repl = ''
         translit_string += repl
-    return translit_string
-
-
-for st in LayoutFeature.objects.all().order_by('name'):
-    result = '%s = %s' % (transliterate(st.name), st.pk)
-    print result.upper()     
-
-# lst = list(WallConstrucion.objects.values_list('name', flat=True).order_by('id'))
-# print ', '.join(lst)
+    return translit_string 
