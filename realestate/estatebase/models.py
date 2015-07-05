@@ -761,6 +761,13 @@ class LayoutType(SimpleDict):
     '''
     Вид объекта планировки    
     '''
+    LIVING_SPACE = 1
+    KITCHEN_SPACE = 2    
+    CATEGORY_CHOICES = (
+        (LIVING_SPACE, u'Жилая площадь'),
+        (KITCHEN_SPACE, u'Кухня'),        
+    )    
+    layout_category = models.IntegerField(_('Category'), choices=CATEGORY_CHOICES, blank=True, null=True,)
     class Meta(SimpleDict.Meta):
         verbose_name = _('Layout type')
         verbose_name_plural = _('Layout types')
@@ -854,12 +861,22 @@ class Bidg(models.Model):
             kuhnya_area = 0
             sanuzel_sovmest = 0
             sanuzel_razdel = 0
+            room_izol = 0
+            room_smezh = 0
             balcons = 0
             loggias = 0
+            rooms_space = []
             for l in layouts:                 
-                if l.layout_type_id in (LayoutTypeMapper.KUHNYA, LayoutTypeMapper.KUHNYAGOSTINAYA, LayoutTypeMapper.KUHNYASTOLOVAYA):
+                if l.layout_type.layout_category in (LayoutType.KITCHEN_SPACE,):
                     if l.area:
                         kuhnya_area += l.area
+                if l.layout_type.layout_category in (LayoutType.LIVING_SPACE,):
+                    if l.area:
+                        rooms_space.append(l.area)
+                    if l.layout_feature_id == LayoutFeatureMapper.IZOLIROVANNAYA:
+                        room_izol += 1
+                    elif l.layout_feature_id == LayoutFeatureMapper.SMEZHNAYA:
+                        room_smezh += 1                     
                 if l.layout_type_id in (LayoutTypeMapper.SANUZEL,):
                     if l.layout_feature_id == LayoutFeatureMapper.SOVMESCHENNYY:
                         sanuzel_sovmest += 1
@@ -870,20 +887,32 @@ class Bidg(models.Model):
                 if l.layout_type_id in (LayoutTypeMapper.LODZHIYA,):
                     loggias += 1                                        
             result['kuhnya_area'] = kuhnya_area
+            result['rooms_area'] = rooms_space
             result['sanuzel_sovmest'] = sanuzel_sovmest
             result['sanuzel_razdel'] = sanuzel_razdel
             result['balcons'] = balcons
-            result['loggias'] = loggias            
+            result['loggias'] = loggias
+            result['room_izol'] = room_izol
+            result['room_smezh'] = room_smezh                         
             self._layout = result
         return self._layout
-        
+    
     def get_layout_key(self, key):
         layout = self.get_layout()
         if layout:
             return layout[key]
+
+    def get_room_izol(self):
+        return self.get_layout_key('room_izol')
+    
+    def get_room_smezh(self):
+        return self.get_layout_key('room_smezh')
     
     def get_kuhnya_area(self):
         return self.get_layout_key('kuhnya_area')
+        
+    def get_rooms_area(self):
+        return self.get_layout_key('rooms_area')
         
     def get_sanuzel_sovmest_count(self):
         return self.get_layout_key('sanuzel_sovmest')

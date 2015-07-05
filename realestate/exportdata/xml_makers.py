@@ -136,6 +136,21 @@ class EstateBaseWrapper(object):
         if self._basic_bidg:
             return number2xml(self._basic_bidg.used_area)
     
+    def kitchen_space(self):       
+        return number2xml(self._basic_bidg.get_kuhnya_area())
+    
+    def rooms_space(self):
+        return [number2xml(x) for x in self._basic_bidg.get_rooms_area()]
+    
+    def rooms_type(self):
+        room_smezh = self._basic_bidg.get_room_smezh()
+        room_izol = self._basic_bidg.get_room_izol()
+        if room_smezh > 0 or room_izol > 0:
+            if room_smezh > room_izol:
+                return u'смежные'
+            else:
+                return u'раздельные'
+    
     def lot_area(self):        
         if self._basic_stead:
             return number2xml(self._basic_stead.total_area_sotka or '')

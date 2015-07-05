@@ -149,7 +149,3 @@ admin.site.register(Purpose)
 admin.site.register(LocalityType)
 admin.site.register(StreetType)
 admin.site.register(Validity)
-
-
-
-

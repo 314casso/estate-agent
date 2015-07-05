@@ -117,6 +117,12 @@ class YandexXML(BaseXML):
             self.unit_wrapper(etree, etree.SubElement(offer, "area"), self._wrapper.area())
             if self._wrapper.living_space():
                 self.unit_wrapper(etree, etree.SubElement(offer, "living-space"), self._wrapper.living_space())
+            if self._wrapper.kitchen_space():
+                self.unit_wrapper(etree, etree.SubElement(offer, "kitchen-space"), self._wrapper.kitchen_space())
+            for room_space in self._wrapper.rooms_space():
+                self.unit_wrapper(etree, etree.SubElement(offer, "room-space"), room_space)
+            if self._wrapper.rooms_type():
+                etree.SubElement(offer, "rooms-type").text = self._wrapper.rooms_type()
         else:
             etree.SubElement(offer, "lot-type").text = self._wrapper.lot_type()            
         if has_stead: 
