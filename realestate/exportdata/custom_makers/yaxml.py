@@ -123,8 +123,8 @@ class YandexXML(BaseXML):
                 self.unit_wrapper(etree, etree.SubElement(offer, "room-space"), room_space)
             if self._wrapper.rooms_type():
                 etree.SubElement(offer, "rooms-type").text = self._wrapper.rooms_type()            
-            self.add_bool_element(etree, offer, 'kitchen_furniture', self._wrapper.kitchen_furniture())
-            self.add_bool_element(etree, offer, 'room_furniture', self._wrapper.room_furniture())
+            self.add_bool_element(etree, offer, 'kitchen-furniture', self._wrapper.kitchen_furniture())
+            self.add_bool_element(etree, offer, 'room-furniture', self._wrapper.room_furniture())
         else:
             etree.SubElement(offer, "lot-type").text = self._wrapper.lot_type()            
         if has_stead: 
