@@ -136,11 +136,23 @@ class EstateBaseWrapper(object):
         if self._basic_bidg:
             return number2xml(self._basic_bidg.used_area)
     
-    def kitchen_space(self):       
-        return number2xml(self._basic_bidg.get_kuhnya_area())
+    def kitchen_space(self):
+        if self._basic_bidg:       
+            return number2xml(self._basic_bidg.get_kuhnya_area())
+    
+    def kitchen_furniture(self):
+        if self._basic_bidg:
+            if self._basic_bidg.get_kitchen_furniture():
+                return True       
+    
+    def room_furniture(self):
+        if self._basic_bidg:
+            if self._basic_bidg.get_room_furniture():        
+                return True 
     
     def rooms_space(self):
-        return [number2xml(x) for x in self._basic_bidg.get_rooms_area()]
+        if self._basic_bidg:
+            return [number2xml(x) for x in self._basic_bidg.get_rooms_area()]
     
     def rooms_type(self):
         room_smezh = self._basic_bidg.get_room_smezh()

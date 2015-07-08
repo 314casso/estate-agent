@@ -122,7 +122,9 @@ class YandexXML(BaseXML):
             for room_space in self._wrapper.rooms_space():
                 self.unit_wrapper(etree, etree.SubElement(offer, "room-space"), room_space)
             if self._wrapper.rooms_type():
-                etree.SubElement(offer, "rooms-type").text = self._wrapper.rooms_type()
+                etree.SubElement(offer, "rooms-type").text = self._wrapper.rooms_type()            
+            self.add_bool_element(etree, offer, 'kitchen_furniture', self._wrapper.kitchen_furniture())
+            self.add_bool_element(etree, offer, 'room_furniture', self._wrapper.room_furniture())
         else:
             etree.SubElement(offer, "lot-type").text = self._wrapper.lot_type()            
         if has_stead: 
@@ -156,7 +158,8 @@ class YandexXML(BaseXML):
             etree.SubElement(offer, "built-year").text = self._wrapper.built_year()        
         self.add_bool_element(etree, offer, 'lift', self._wrapper.lift())                
         if self._wrapper.ceiling_height():
-            etree.SubElement(offer, "ceiling-height").text = self._wrapper.ceiling_height()        
+            etree.SubElement(offer, "ceiling-height").text = self._wrapper.ceiling_height()  
+              
         self.add_bool_element(etree, offer, 'heating-supply', self._wrapper.heating_supply())
         self.add_bool_element(etree, offer, 'water-supply', self._wrapper.water_supply())
         self.add_bool_element(etree, offer, 'sewerage-supply', self._wrapper.sewerage_supply())

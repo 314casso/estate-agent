@@ -866,17 +866,23 @@ class Bidg(models.Model):
             balcons = 0
             loggias = 0
             rooms_space = []
+            room_furniture = False
+            kitchen_furniture = False
             for l in layouts:                 
                 if l.layout_type.layout_category in (LayoutType.KITCHEN_SPACE,):
                     if l.area:
                         kuhnya_area += l.area
+                    if l.furniture:
+                        kitchen_furniture = True
                 if l.layout_type.layout_category in (LayoutType.LIVING_SPACE,):
                     if l.area:
                         rooms_space.append(l.area)
                     if l.layout_feature_id == LayoutFeatureMapper.IZOLIROVANNAYA:
                         room_izol += 1
                     elif l.layout_feature_id == LayoutFeatureMapper.SMEZHNAYA:
-                        room_smezh += 1                     
+                        room_smezh += 1
+                    if l.furniture:
+                        room_furniture = True                                             
                 if l.layout_type_id in (LayoutTypeMapper.SANUZEL,):
                     if l.layout_feature_id == LayoutFeatureMapper.SOVMESCHENNYY:
                         sanuzel_sovmest += 1
@@ -894,6 +900,8 @@ class Bidg(models.Model):
             result['loggias'] = loggias
             result['room_izol'] = room_izol
             result['room_smezh'] = room_smezh                         
+            result['room_furniture'] = room_furniture
+            result['kitchen_furniture'] = kitchen_furniture
             self._layout = result
         return self._layout
     
@@ -910,6 +918,12 @@ class Bidg(models.Model):
     
     def get_kuhnya_area(self):
         return self.get_layout_key('kuhnya_area')
+    
+    def get_kitchen_furniture(self):
+        return self.get_layout_key('kitchen_furniture')
+    
+    def get_room_furniture(self):
+        return self.get_layout_key('room_furniture')
         
     def get_rooms_area(self):
         return self.get_layout_key('rooms_area')
