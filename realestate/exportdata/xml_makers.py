@@ -12,7 +12,7 @@ import cPickle as pickle
 from estatebase.models import Locality, Office, EstateParam
 import pytz
 from settings import MEDIA_ROOT
-from exportdata.utils import EstateTypeMapper, InteriorMapper
+from exportdata.utils import EstateTypeMapper, InteriorMapper, ApplianceMapper
 from django.utils import translation
 
 def number2xml(d):
@@ -227,6 +227,26 @@ class EstateBaseWrapper(object):
         if len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0:
             return True
     
+    def television(self):
+        if self._basic_bidg:            
+            if self._basic_bidg.appliances.filter(id=ApplianceMapper.TELEVIZOR):
+                return True                
+    
+    def washing_machine(self):
+        if self._basic_bidg:            
+            if self._basic_bidg.appliances.filter(id=ApplianceMapper.STIRALNAYAMASHINA):
+                return True
+            
+    def refrigerator(self):
+        if self._basic_bidg:            
+            if self._basic_bidg.appliances.filter(id=ApplianceMapper.HOLODILNIK):
+                return True
+    
+    def alarm(self):
+        if self._basic_bidg:            
+            if self._basic_bidg.appliances.filter(id=ApplianceMapper.OHRANNAYASIGNALIZATSIYA):
+                return True
+    
     def renovation(self):
         mapper = {                    
                     InteriorMapper.BEZOTDELKI : u'черновая отделка',
@@ -340,7 +360,7 @@ class SalesAgent(object):
         return u'агентство'    
     
     def organization(self):
-        return u'Дома на юге'
+        return u'Дома на юге - недвижимость и строительство'
     
     def head_name(self):        
         return u'%s' % self._office.head.first_name

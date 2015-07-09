@@ -125,6 +125,10 @@ class YandexXML(BaseXML):
                 etree.SubElement(offer, "rooms-type").text = self._wrapper.rooms_type()            
             self.add_bool_element(etree, offer, 'kitchen-furniture', self._wrapper.kitchen_furniture())
             self.add_bool_element(etree, offer, 'room-furniture', self._wrapper.room_furniture())
+            self.add_bool_element(etree, offer, 'television', self._wrapper.television())
+            self.add_bool_element(etree, offer, 'washing-machine', self._wrapper.washing_machine())
+            self.add_bool_element(etree, offer, 'refrigerator', self._wrapper.refrigerator())
+            self.add_bool_element(etree, offer, 'alarm', self._wrapper.alarm())
         else:
             etree.SubElement(offer, "lot-type").text = self._wrapper.lot_type()            
         if has_stead: 
