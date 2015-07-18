@@ -18,7 +18,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
-    BidEventForm, BidUpdateForm
+    BidEventForm, BidUpdateForm, EntranceEstateFormSet
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -35,6 +35,7 @@ from wp_helper.models import EstateWordpressMeta,\
 from django.contrib.auth.decorators import user_passes_test
 import unicodecsv
 from estatebase.lib import format_phone
+from django.shortcuts import render
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -1343,3 +1344,53 @@ def set_bid_basic_client(request, client_pk, bid_pk):
     bid.client_id = client_pk
     bid.save()            
     return HttpResponseRedirect(next_url)
+
+class ManageM2M(View):
+    formset = None       
+    reverse_name = None   
+    template = None 
+    instance_model = None       
+    def dispatch(self, *args, **kwargs):
+        self.instance = get_object_or_404(self.instance_model, pk=kwargs['pk'])
+        return super(ManageM2M, self).dispatch(*args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):                 
+        formset = self.formset(self.request.POST, instance=self.instance)
+        if formset.is_valid():
+            formset.save()                             
+            return HttpResponseRedirect(self.get_success_url())        
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    
+    def get(self, request, *args, **kwargs):        
+        formset = self.formset(instance=self.instance, initial=[self.get_initial()])
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    
+    def get_context(self, request):
+        context = {               
+               'next_url': self.get_success_url(),
+               'dialig_title': self.get_dialig_title(), 
+               }     
+        return context
+                    
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse(self.reverse_name, args=[self.instance.id]), safe_next_link(next_url))
+        return next_url
+    
+    def get_initial(self):
+        return {}
+
+class ManageEstateM2M(ManageM2M):          
+    template = "estate_dialog/manage_m2m_estate.html"
+    instance_model = Estate
+
+class ManageEstateM2MEntrance(ManageEstateM2M):    
+    formset = EntranceEstateFormSet       
+    reverse_name = "manage_entrances"
+    def get_dialig_title(self):
+        return u'Виды и выходы для "%s"' % self.instance  

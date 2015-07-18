@@ -182,9 +182,10 @@
     <div id="tab-basic">
         <div style="float: left">
             {% include "estate_dialog/basic.html" %}
+            {% include "estate_dialog/entrances.html" %}
             {% if perms.estatebase.view_private %}
             {% include "estate_dialog/salers.html" %}
-            {% endif %}
+            {% endif %}            
             {% include "estate_dialog/marks.html" %}
         </div>
         <div style="float: left; margin-left: 10px">

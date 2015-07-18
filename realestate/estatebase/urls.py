@@ -20,7 +20,7 @@ from estatebase.views import ClientListView, \
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
-    set_bid_basic_client
+    set_bid_basic_client, ManageEstateM2MEntrance
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -58,6 +58,8 @@ urlpatterns += patterns('',
     url (r'^estatecommupdate/(?P<pk>\d+)$', view=EstateCommunicationUpdateView.as_view(), name='estate_comm_update'),    
     url (r'^estateparamsupdate/(?P<pk>\d+)$', view=EstateParamUpdateView.as_view(), name='estate_params_update'),
     url (r'^estateimages/(?P<estate>\d+)$', view=EstateImagesView.as_view(), name='estate_images'),
+    url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
+    
 )
 
 urlpatterns += patterns('',

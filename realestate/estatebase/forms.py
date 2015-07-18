@@ -25,7 +25,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     OutbuildingLookup, PurposeLookup, HeatingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateType, EstateClient, BidEvent, EstateTypeCategory
+    EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -958,3 +958,15 @@ class BidEventForm(ModelForm):
                    'date': DateTimeInput(attrs={'class':'date-time-input'}, format='%d.%m.%Y %H:%M'),
                    'bid': forms.HiddenInput
         }
+
+
+class EntranceEstateInlineForm(ModelForm):        
+    class Meta:
+        model = EntranceEstate
+        fields = ['beside', 'type', 'distance', 'basic']
+        widgets = {
+                  'beside':AutoComboboxSelectWidget(BesideLookup), 
+                   }
+
+
+EntranceEstateFormSet = inlineformset_factory(Estate, EntranceEstate, extra=1, form=EntranceEstateInlineForm)

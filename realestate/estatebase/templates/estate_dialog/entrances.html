@@ -1,0 +1,17 @@
+{% extends "dialog_block.html" %}
+{% load link_helper %}
+{% block title_left %}
+<a title="Изменение открывающегося вида и/или направления выхода" href="{% url manage_entrances estate.pk %}?{{ next_url }}">Вид и/или выход</a>
+{% endblock %}
+{% block content %}
+{% for item in estate.entranceestate_set.all %}
+	<div>	
+	{{ item.get_human_desc }}
+	{% if item.basic %}
+		<span title="Основной" style="display: inline-block" class="ui-icon ui-icon-check"> </span>
+	{% endif %}
+	</div>
+{% endfor %}
+{% endblock %}
+{% block title_right %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% load link_helper %}
+{% csrf_token %}
+<th colspan="100%" class="inline-formset ui-widget ui-widget-content ui-corner-all">	
+	{{ formset.management_form }}	    
+	{% for form in formset %}
+	{{ form.id }}
+	<div class="formset-row">
+			<div class="inline-formset ui-widget ui-widget-content ui-corner-all" style="margin-top:2px">
+		        {{ form.as_p }}
+	        </div>
+	</div>
+	{% endfor %}
+    <span>{{ formset.non_form_errors }}</span>
+</th>

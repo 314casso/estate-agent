@@ -158,6 +158,8 @@ class Beside(SimpleDict):
     '''
     name_gent = models.CharField(_('Gent'), max_length=255, blank=True, null=True)
     name_loct = models.CharField(_('Loct'), max_length=255, blank=True, null=True)
+    name_dativ = models.CharField(_('Dativ'), max_length=255, blank=True, null=True)
+    name_accus =models.CharField(_('Accus'), max_length=255, blank=True, null=True)
     class Meta(SimpleDict.Meta):
         verbose_name = _('beside')
         verbose_name_plural = _('besides')
@@ -388,6 +390,39 @@ class Validity(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('Validity')
         verbose_name_plural = _('Validitys')    
+ 
+class EntranceEstate(models.Model):
+    ENTRANCE = 1
+    OVERLOOK = 2    
+    TYPE_CHOICES = (
+        (ENTRANCE, u'Выход'),
+        (OVERLOOK, u'Вид'),        
+    )
+    type = models.IntegerField(_('Type'), choices=TYPE_CHOICES) 
+    distance = models.IntegerField(_('Distance'))
+    basic = models.BooleanField(_('Basic'), default=False)
+    beside = models.ForeignKey('Beside', verbose_name=_('Object'))
+    estate = models.ForeignKey('Estate')   
+    class Meta:
+        unique_together = ('beside', 'estate')
+    
+    def get_human_distance(self):
+        if self.distance < 1000:
+            return u'%g м.' % self.distance
+        else:
+            return u'%g км.' % round(self.distance/1000.0, 1)
+    def get_human_desc(self):
+        result = []        
+        if self.type == self.ENTRANCE:
+            e = self.beside.name_dativ if self.beside.name_dativ else self.beside.name
+            result.append(u'Выход к %s' % e)
+        elif self.type == self.OVERLOOK:
+            o = self.beside.name_dativ if self.beside.name_accus else self.beside.name
+            result.append(u'Вид на %s' % o)
+        if self.distance:
+            result.append(u'расстояние %s' % self.get_human_distance())            
+        return ', '.join(result)
+        
     
 class Estate(ProcessDeletedModel):
     '''
@@ -415,6 +450,7 @@ class Estate(ProcessDeletedModel):
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.PROTECT)
     beside_distance = models.PositiveIntegerField(_('Beside distance'), blank=True, null=True)
+    entrances = models.ManyToManyField('Beside', verbose_name=_('Entrances'), blank=True, null=True, through=EntranceEstate, related_name='estates')
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
     agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
