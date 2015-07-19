@@ -399,7 +399,7 @@ class EntranceEstate(models.Model):
         (OVERLOOK, u'Вид'),        
     )
     type = models.IntegerField(_('Type'), choices=TYPE_CHOICES) 
-    distance = models.IntegerField(_('Distance'))
+    distance = models.IntegerField(_('Distance'), blank=True, null=True)
     basic = models.BooleanField(_('Basic'), default=False)
     beside = models.ForeignKey('Beside', verbose_name=_('Object'))
     estate = models.ForeignKey('Estate')   
