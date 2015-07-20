@@ -394,9 +394,11 @@ class Validity(SimpleDict):
 class EntranceEstate(models.Model):
     ENTRANCE = 1
     OVERLOOK = 2    
+    DISTANCE = 3
     TYPE_CHOICES = (
         (ENTRANCE, u'Выход'),
         (OVERLOOK, u'Вид'),        
+        (DISTANCE, u'Расстояние'),
     )
     type = models.IntegerField(_('Type'), choices=TYPE_CHOICES) 
     distance = models.IntegerField(_('Distance'), blank=True, null=True)
@@ -416,12 +418,15 @@ class EntranceEstate(models.Model):
         if self.type == self.ENTRANCE:
             e = self.beside.name_dativ if self.beside.name_dativ else self.beside.name
             result.append(u'Выход к %s' % e)
+        elif self.type == self.DISTANCE:
+            o = self.beside.name_gent if self.beside.name_gent else self.beside.name
+            result.append(u'Расстояние до %s' % o)    
         elif self.type == self.OVERLOOK:
             o = self.beside.name_dativ if self.beside.name_accus else self.beside.name
             result.append(u'Вид на %s' % o)
         if self.distance:
-            result.append(u'расстояние %s' % self.get_human_distance())            
-        return ', '.join(result)
+            result.append(u'%s' % self.get_human_distance())            
+        return ' '.join(result)
         
     
 class Estate(ProcessDeletedModel):
