@@ -15,12 +15,7 @@
 </div>
 
 <div title="Адрес" class="ui-widget-content descr">
-	{% address estate %}
-	{% if estate.beside %}
-	<div>
-		Расстояние до <strong>{{ estate.beside }} {{ estate.beside_distance|default:'' }}</strong> м
-	</div>
-	{% endif %}	
+	{% address estate %}		
 </div>
 
 <table class="detail-table">
