@@ -8,7 +8,7 @@ from wp_helper.models import WordpressTaxonomyTree, EstateWordpressMeta
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.base import Template
 from django.template.context import Context
-from estatebase.models import Locality
+from estatebase.models import Locality, EntranceEstate
 from django.template import loader
 import re
 import os
@@ -169,13 +169,12 @@ class WPService(object):
         return result
     
     def render_post_tags(self, estate):
-        locality = estate.locality
-        beside = estate.beside  
+        locality = estate.locality  
         region = estate.locality.region
         result = set()
         result.add(u'купить %s в %s' % (estate.estate_type_accs, locality.name_loct))
         result.add(u'%s в %s' % (estate.estate_type, locality.name_loct))
-        if beside:
+        for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
             result.add(u'%s у %s' % (estate.estate_type, beside.name_gent))
             result.add(u'недвижимость на %s' % beside.name_loct)
             result.add(beside.name)
