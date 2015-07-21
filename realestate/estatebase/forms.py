@@ -9,7 +9,7 @@ from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
     CheckboxInput
 from django.utils.translation import ugettext_lazy as _
 from estatebase.field_utils import from_to_values, split_string, \
-    complex_field_parser, check_value_list, history_filter
+    complex_field_parser, check_value_list, history_filter, from_to
 from estatebase.fields import ComplexField, LocalIntegerField, DateRangeField, \
     IntegerRangeField, DecimalRangeField, LocalDecimalField
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
@@ -399,7 +399,7 @@ class EstateFilterForm(BetterForm):
             label=_('Origin'),
             required=False,
         )  
-    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
+    entrances = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
     interior = AutoComboboxSelectMultipleField(
             lookup_class=InteriorLookup,
             label=_('Interior'),
@@ -535,20 +535,27 @@ class EstateFilterForm(BetterForm):
             if cleaned_data[key] and int(cleaned_data[key]) < 3:                
                 f[value] = int(cleaned_data[key]) == 0
             
-        complex_fields = ['beside', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
+        complex_fields = ['electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']
         lst = {}
         for fld in complex_fields:
             result = complex_field_parser(cleaned_data[fld], fld)
             if result: 
                 lst.update(result)          
         f.update(lst)    
+        
+        if cleaned_data['entrances'][0]:
+            f.update({'%s__exact' % 'entrances' : cleaned_data['entrances'][0]})
+            if cleaned_data['entrances'][1]:
+                num = from_to(cleaned_data['entrances'][1], 'entranceestate_set__distance')
+                if num:
+                    f.update(num)
         return f    
     
     class Meta:
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
-                                         'microdistrict', 'beside', 'agency_price', 'wp_choice','wp_status',
+                                         'microdistrict', 'entrances', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 

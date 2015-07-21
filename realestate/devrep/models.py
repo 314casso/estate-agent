@@ -234,7 +234,7 @@ class Partner(ProcessDeletedModel):
     person_count = models.IntegerField(_('Persons'), default=0)                  
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
-    note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
+    note = models.CharField(_('Note'), blank=True, null=True, max_length=1000)
     
     def __unicode__(self):
         return u'%s' % self.name

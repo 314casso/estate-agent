@@ -404,7 +404,7 @@ class EntranceEstate(models.Model):
     distance = models.IntegerField(_('Distance'), blank=True, null=True)
     basic = models.BooleanField(_('Basic'), default=False)
     beside = models.ForeignKey('Beside', verbose_name=_('Object'))
-    estate = models.ForeignKey('Estate')   
+    estate = models.ForeignKey('Estate',related_name='entranceestate_set')   
     class Meta:
         unique_together = ('beside', 'estate')
     
@@ -422,7 +422,7 @@ class EntranceEstate(models.Model):
             o = self.beside.name_gent if self.beside.name_gent else self.beside.name
             result.append(u'Расстояние до %s' % o)    
         elif self.type == self.OVERLOOK:
-            o = self.beside.name_dativ if self.beside.name_accus else self.beside.name
+            o = self.beside.name_accus if self.beside.name_accus else self.beside.name
             result.append(u'Вид на %s' % o)
         if self.distance:
             result.append(u'%s' % self.get_human_distance())            

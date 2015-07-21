@@ -34,7 +34,7 @@ class PartnerForm(ModelForm):
         widgets = {
                     'partner_type':AutoComboboxSelectWidget(PartnerTypeLookup),                    
                     'parent':AutoCompleteSelectWidget(PartnerLookup),
-                    'note': Textarea(attrs={'rows':'5'}),
+                    'note': Textarea(attrs={'style':'height:150px; width:500px'}),
                   }
     
 class ClientPartnerThroughUpdateForm(ModelForm):
