@@ -7,7 +7,7 @@ class Command(BaseCommand):
         self.do_job()
         
     def do_job(self):        
-        EntranceEstate.objects.all().delete()
+#         EntranceEstate.objects.all().delete()
         q = Estate.objects.filter(entrances__isnull=True)
         q = q.exclude(beside__isnull=True)
         for e in q:            

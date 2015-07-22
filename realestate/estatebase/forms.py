@@ -399,7 +399,7 @@ class EstateFilterForm(BetterForm):
             label=_('Origin'),
             required=False,
         )  
-    entrances = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
+    beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
     interior = AutoComboboxSelectMultipleField(
             lookup_class=InteriorLookup,
             label=_('Interior'),
@@ -543,10 +543,10 @@ class EstateFilterForm(BetterForm):
                 lst.update(result)          
         f.update(lst)    
         
-        if cleaned_data['entrances'][0]:
-            f.update({'%s__exact' % 'entrances' : cleaned_data['entrances'][0]})
-            if cleaned_data['entrances'][1]:
-                num = from_to(cleaned_data['entrances'][1], 'entranceestate_set__distance')
+        if cleaned_data['beside'][0]:
+            f.update({'%s__exact' % 'entrances' : cleaned_data['beside'][0]})
+            if cleaned_data['beside'][1]:
+                num = from_to(cleaned_data['beside'][1], 'entranceestate_set__distance')
                 if num:
                     f.update(num)
         return f    
@@ -555,7 +555,7 @@ class EstateFilterForm(BetterForm):
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
-                                         'microdistrict', 'entrances', 'agency_price', 'wp_choice','wp_status',
+                                         'microdistrict', 'beside', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
@@ -908,7 +908,7 @@ class EstateRegisterFilterForm(BidFilterForm):
                     ]
 
 class BidPicleForm(EstateFilterForm):
-    _filter_by_pk = False       
+    _filter_by_pk = False
     def __init__(self, *args, **kwargs):
         super(BidPicleForm, self).__init__(*args, **kwargs)
         self.fields['estates'].label = u'Коды на осмотр'
