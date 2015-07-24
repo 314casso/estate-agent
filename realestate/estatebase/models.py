@@ -417,13 +417,13 @@ class EntranceEstate(models.Model):
         result = []        
         if self.type == self.ENTRANCE:
             e = self.beside.name_dativ if self.beside.name_dativ else self.beside.name
-            result.append(u'Выход к %s' % e)
+            result.append(u'выход к %s' % e)
         elif self.type == self.DISTANCE:
             o = self.beside.name_gent if self.beside.name_gent else self.beside.name
-            result.append(u'Расстояние до %s' % o)    
+            result.append(u'расстояние до %s' % o)    
         elif self.type == self.OVERLOOK:
             o = self.beside.name_accus if self.beside.name_accus else self.beside.name
-            result.append(u'Вид на %s' % o)
+            result.append(u'вид на %s' % o)
         if self.distance:
             result.append(u'%s' % self.get_human_distance())            
         return ' '.join(result)
