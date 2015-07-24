@@ -95,9 +95,12 @@ def bidg_layout_wp(level):
             
 @register.simple_tag            
 def estate_details(estate_item):
-    result = []    
+    result = [] 
+    entrances = []   
     for entrance in estate_item.entranceestate_set.all():
-        result.append(entrance.get_human_desc())
+        entrances.append(entrance.get_human_desc())
+    if entrances:
+        result.append(u'. '.join(entrances))
     if estate_item.microdistrict:
         microdistrict = u'%s' % estate_item.microdistrict
         result.append(u'%s. ' % microdistrict.title())
