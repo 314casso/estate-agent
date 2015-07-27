@@ -3,7 +3,7 @@
 {% load report %}
 {% spaceless %}
 {{ images|safe }}
-<div>{{ description }}, {% estate_details estate_item %}</div>
+<div>{{ description }}. {% estate_details estate_item %}</div>
 <!--more-->
 <div class="wrapper">{% include 'reports/bidg_include_wp.html' with bidg=estate_item.basic_bidg %}</div>
 {% with stead=estate_item.stead %}

@@ -52,6 +52,7 @@ encoding//realestate/wp_helper/service.py=utf-8
 encoding//realestate/wp_helper/tests.py=utf-8
 encoding//spyder/realty/realty/fields_parser.py=utf-8
 encoding//spyder/realty/realty/pipelines.py=utf-8
+encoding//spyder/realty/realty/spiders/avito.py=utf-8
 encoding//spyder/realty/realty/spiders/liferealty.py=utf-8
 encoding//spyder/realty/realty/spiders/orbitataman.py=utf-8
 encoding//spyder/realty/realty/spiders/slrgel.py=utf-8

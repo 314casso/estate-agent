@@ -96,16 +96,21 @@ def bidg_layout_wp(level):
 @register.simple_tag            
 def estate_details(estate_item):
     result = []       
+    entrances = []
     for entrance in estate_item.entranceestate_set.all():
-        result.append(entrance.get_human_desc())    
+        entrances.append(entrance.get_human_desc())
+    if entrances:
+        entrances_str = ', '.join(entrances)
+        entrances_str = entrances_str[:1].upper() + entrances_str[1:]        
+        result.append(entrances_str) 
     if estate_item.microdistrict:
         microdistrict = u'%s' % estate_item.microdistrict
         result.append(u'%s' % microdistrict.title())
     if estate_item.com_status:
         status = u'%s' % estate_item.com_status                    
-        status = u'<br /><label>коммерческое использование:</label> <strong>%s</strong>.' % status.lower() 
+        status = u'<br /><label>Коммерческое использование:</label> <strong>%s</strong>.' % status.lower() 
         result.append(status)     
-    return ', '.join(result) 
+    return '. '.join(result) 
 
 @register.filter
 def to_comma_sep(iterval, if_none=u'в процессе'):

@@ -395,10 +395,12 @@ class EntranceEstate(models.Model):
     ENTRANCE = 1
     OVERLOOK = 2    
     DISTANCE = 3
+    WINDOWVIEW = 4
     TYPE_CHOICES = (
         (ENTRANCE, u'Выход'),
         (OVERLOOK, u'Вид'),        
         (DISTANCE, u'Расстояние'),
+        (WINDOWVIEW, u'Вид из окна'),
     )
     type = models.IntegerField(_('Type'), choices=TYPE_CHOICES) 
     distance = models.IntegerField(_('Distance'), blank=True, null=True)
@@ -410,9 +412,9 @@ class EntranceEstate(models.Model):
     
     def get_human_distance(self):
         if self.distance < 1000:
-            return u'%g м.' % self.distance
+            return u'%g м' % self.distance
         else:
-            return u'%g км.' % round(self.distance/1000.0, 1)
+            return u'%g км' % round(self.distance/1000.0, 1)
     def get_human_desc(self):
         result = []        
         if self.type == self.ENTRANCE:
@@ -421,6 +423,9 @@ class EntranceEstate(models.Model):
         elif self.type == self.DISTANCE:
             o = self.beside.name_gent if self.beside.name_gent else self.beside.name
             result.append(u'расстояние до %s' % o)    
+        elif self.type == self.WINDOWVIEW:
+            o = self.beside.name_accus if self.beside.name_accus else self.beside.name
+            result.append(u'вид из окона на %s' % o)
         elif self.type == self.OVERLOOK:
             o = self.beside.name_accus if self.beside.name_accus else self.beside.name
             result.append(u'вид на %s' % o)
