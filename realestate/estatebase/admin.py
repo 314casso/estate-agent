@@ -10,7 +10,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     WallConstrucion, ExteriorFinish, Interior, WallFinish, EstateClientStatus,\
     BidEvent, BidStatus, LayoutFeature, Furniture, LayoutType,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
-    Validity, EstateRegister, StreetType
+    Validity, EstateRegister, StreetType, LandType
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -119,7 +119,7 @@ admin.site.register(Internet)
 admin.site.register(Driveway)
 admin.site.register(LevelName)
 admin.site.register(EstatePhoto)
-#admin.site.register(Stead)
+admin.site.register(LandType)
 #admin.site.register(UserProfile)
 admin.site.register(GeoGroup)
 admin.site.register(Bid, BidAdmin)
