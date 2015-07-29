@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save, post_delete,\
     m2m_changed
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam,\
-    Layout
+    Layout, EntranceEstate, EstatePhoto
 
 def save_estate(sender, instance, created, **kwargs):    
     if hasattr(instance.level, 'bidg'):
@@ -47,6 +47,10 @@ def update_estate(sender, instance, created, **kwargs):
             estate.set_contact()
             estate.save()            
             prepare_history(estate.history, instance.user_id)                                
+
+def update_estate_m2m(sender, instance, created, **kwargs):
+    prepare_history(instance.estate.history, instance.estate.history.updated_by)
+    estate_wp_meta_base(instance.estate) 
 
 def bid_event_history(sender, instance, created, **kwargs):
     if created:
@@ -119,6 +123,8 @@ def connect_signals():
     post_save.connect(bid_event_history, sender=BidEvent)
     post_save.connect(estate_wp_meta, sender=Estate)
     m2m_changed.connect(estate_param_wp_meta, sender=Estate.estate_params.through)  # @UndefinedVariable
+    post_save.connect(update_estate_m2m, sender=EntranceEstate)  # @UndefinedVariable    
+    post_save.connect(update_estate_m2m, sender=EstatePhoto)  # @UndefinedVariable
     post_save.connect(save_estate, sender=Layout)
     
     

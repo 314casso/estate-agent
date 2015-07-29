@@ -108,9 +108,9 @@ def estate_details(estate_item):
         result.append(u'%s' % microdistrict.title())
     if estate_item.com_status:
         status = u'%s' % estate_item.com_status                    
-        status = u'<br /><label>Коммерческое использование:</label> <strong>%s</strong>.' % status.lower() 
+        status = u'<br /><label>Коммерческое использование:</label> <strong>%s</strong>' % status.lower() 
         result.append(status)     
-    return '. '.join(result) 
+    return u'%s.' % '. '.join(result) 
 
 @register.filter
 def to_comma_sep(iterval, if_none=u'в процессе'):

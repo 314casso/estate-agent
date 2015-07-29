@@ -425,7 +425,7 @@ class EntranceEstate(models.Model):
             result.append(u'расстояние до %s' % o)    
         elif self.type == self.WINDOWVIEW:
             o = self.beside.name_accus if self.beside.name_accus else self.beside.name
-            result.append(u'вид из окона на %s' % o)
+            result.append(u'вид из окон на %s' % o)
         elif self.type == self.OVERLOOK:
             o = self.beside.name_accus if self.beside.name_accus else self.beside.name
             result.append(u'вид на %s' % o)
@@ -1137,8 +1137,8 @@ class Contact(models.Model):
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator(verify_exists=False)
-        validate_phone = RegexValidator(regex=r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,9}\d{1}$')        
-        if self.contact_type.id == self.PHONE:
+        validate_phone = RegexValidator(regex=r'^8\d{8,}$')        
+        if self.contact_type.id == self.PHONE:            
             validate_phone(self.contact)
         elif self.contact_type.id == self.EMAIL:
             validate_email(self.contact)
