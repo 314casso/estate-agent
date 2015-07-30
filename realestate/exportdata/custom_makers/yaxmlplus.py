@@ -18,6 +18,7 @@ class YandexPlusWrapper(YandexWrapper):
         return super(YandexPlusWrapper, self).estate_category()
 
 class YandexPlusXML(YandexXML):
+    VALID_DAYS = 100
     name = 'yaxmlplus'
     def __init__(self, yandex_plus_wrapper):
         super(YandexPlusXML,self).__init__(yandex_plus_wrapper)         

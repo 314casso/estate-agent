@@ -40,6 +40,7 @@ class YandexWrapper(EstateBaseWrapper):
 class YandexXML(BaseXML):
     name = 'yaxml'
     encoding="UTF-8"
+    VALID_DAYS = 44
     XHTML_NAMESPACE = "http://webmaster.yandex.ru/schemas/feed/realty/2010-06"
     def __init__(self, yandex_wrapper):
         super(YandexXML, self).__init__()   
