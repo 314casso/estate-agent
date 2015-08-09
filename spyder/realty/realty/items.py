@@ -22,6 +22,7 @@ class RealtyItem(Item):
     street = Field()
     estate_number = Field()
     room_count = Field()
+    phone_filename = Field()
         
     def has_extra_bidg(self):        
         for field in self.BIDG_FIELDS:
@@ -37,7 +38,7 @@ class RealtyItem(Item):
                     txt += u'%s ' % v                                     
             else:
                 txt = '%s' % value            
-            print "%s: %s" % (key, txt)
+            print "KEY [ %s: %s ]" % (key, txt)
         print '********* END *********'
             
     

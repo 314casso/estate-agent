@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from estatebase.models import Estate
 
 class SpiderMeta(models.Model):
     NEW = 0
@@ -20,6 +21,8 @@ class SpiderMeta(models.Model):
     spider = models.CharField(db_index=True, max_length=100)
     url = models.URLField(db_index=True, max_length=255)
     status = models.IntegerField(choices=STATUS_CHOICES, db_index=True, default=NEW)
+    phone_filename = models.CharField(max_length=250, blank=True, null=True)
+    estate = models.ForeignKey(Estate, related_name='spider_meta', blank=True, null=True)
     class Meta:
         unique_together = ('spider', 'url')
     

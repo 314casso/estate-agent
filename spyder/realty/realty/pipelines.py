@@ -111,6 +111,7 @@ class RealtyPipeline(object):
         spider_meta, created = SpiderMeta.objects.get_or_create(spider=spider, url=get_url_path(url))  # @UnusedVariable
         spider_meta.status = status
         spider_meta.save()
+        return spider_meta
         
         
     
