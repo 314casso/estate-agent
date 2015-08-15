@@ -213,7 +213,7 @@ class SpyderJS(object):
     
     def get_full_filename(self, url):
         if not self._full_filename:
-            driver = webdriver.PhantomJS()        
+            driver = webdriver.PhantomJS(port=65000)        
             driver.get(url)
             elem = driver.find_element_by_class_name("js-phone-show__insert")
             elem.click()
