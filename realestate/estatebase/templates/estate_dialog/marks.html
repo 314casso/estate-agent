@@ -59,4 +59,23 @@
 </fieldset>
 {% endif %}
 
+{% if estate.spider_meta and perms.estatebase.view_private and estate.estate_status_id == 2 %}
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
+    <legend>
+        Сводка по источнику:
+    </legend>
+    	<ul>
+    	{% for spider_meta in estate.spider_meta.all %}
+    		<li><strong>Дата:</strong> {{ spider_meta.event_date }}</li>
+    		<li><strong>Паук:</strong> {{ spider_meta.spider }}</li>	
+    		<li><strong>Статус:</strong> {{ spider_meta.get_status_display }}</li>
+    		<li title="Вероятность распознавания телефона"><strong>Вероятность тел.:</strong> {{ spider_meta.phone_guess }}</li>
+    		{% if spider_meta.full_url %}
+				<li><a href="{{ spider_meta.full_url }}">Ссылка на источник</a></li>
+			{% endif %}
+		{% endfor %}
+		</ul>
+</fieldset>	
+{% endif %}
+
 {% endblock %}

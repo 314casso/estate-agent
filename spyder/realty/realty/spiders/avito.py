@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from scrapy import log
 from realty.utils import process_value_base, join_strings
 from urlparse import parse_qs, urlparse
 from scrapy.selector import Selector
 import re
-from realty.fields_parser import BaseFieldsParser
-from estatebase.models import EstateType, Locality
+from realty.fields_parser import BasePhoneImageParser
+from estatebase.models import Locality
 from exportdata.utils import EstateTypeMapper, LocalityMapper
 from scrapy.http import Request
 from realty.items import RealtyItem
 from selenium import webdriver
 from time import sleep
-import StringIO
-from PIL import Image
 import base64
 import md5
 from settings import MEDIA_ROOT, STATIC_ROOT
 import os
 import datetime
-import cStringIO
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from realty.vector import ImageDecoder, VectorCompare
@@ -33,21 +29,28 @@ DECODER_SETTINGS = {
                             }                     
            }
 
-class AvitoFleldsParser(BaseFieldsParser):    
+class AvitoFleldsParser(BasePhoneImageParser): 
+    _phone_data = None  
+    _breadcrumb = None     
     def __init__(self, *a, **kw):
-        self.localities = kw.pop('localities')
+        self.data = kw.pop('data')
+        self.localities = self.data['localities'] 
+        self.spider_js = SpyderJS()
         super(AvitoFleldsParser, self).__init__(*a, **kw)
         
     def title_parser(self):
         return self.sel.xpath('//h1[@itemprop="name"]/text()').extract()
 
     def breadcrumbs_parser(self):
-        a = self.sel.xpath('//a[@class="breadcrumb-link"]/text()')
-        breadcrumbs = [x.lower() for x in a.extract()]
-        return breadcrumbs
+        breadcrumbs = self.sel.xpath('//a[@class="breadcrumb-link"]/text()')
+        
+        breadcrumb = breadcrumbs[-1].extract().lower()
+        return breadcrumb
 
     def get_breadcrumbs(self):
-        return join_strings(self.breadcrumbs_parser())
+        if not self._breadcrumb:            
+            self._breadcrumb = self.breadcrumbs_parser()
+        return self._breadcrumb
                  
     def estate_type_parser(self):
         mapper = {
@@ -63,32 +66,20 @@ class AvitoFleldsParser(BaseFieldsParser):
                          ur'поселений': EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA,
                          ur'сельхозназначения': EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA,
                          ur'промназначения': EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA,
-                         ur'коммерческая': self.commerce_parser,                         
+                         ur'гостиница' : EstateTypeMapper.GOSTINITSA,                                                  
+                         ur'офисное' : EstateTypeMapper.OFIS,                         
+                         ur'свободного' : EstateTypeMapper.ZDANIE,
+                         ur'производственное' : EstateTypeMapper.PROIZVODSTVENNAYABAZA,
+                         ur'складское' : EstateTypeMapper.SKLAD,
+                         ur'торговое' : EstateTypeMapper.MAGAZIN,                         
                          } 
-        txt = self.get_breadcrumbs()        
+        txt = self.get_breadcrumbs()
+        print "BREADCRUMBS: %s" % txt        
         if txt:           
             result = self.re_mapper(mapper, txt)
             if callable(result):
                 return result()
         return result or self.ZDANIE
-    
-    def commerce_parser(self):
-        return self.ZDANIE
-#         COMMERCE_CAT_ID = 6        
-#         full_txt = join_strings(self.sel.xpath('//div[@class="media-body"]/p[@class="text_justify"]/text()').extract())
-#         txt = join_strings(full_txt.split()[:3], ' ')   
-#         print  txt
-#         key = 'commerce_mapper_smart'  
-#         from django.core.cache import cache
-#         mapper = cache.get(key)
-#         if not mapper:                                
-#             types = EstateType.objects.filter(estate_type_category_id=COMMERCE_CAT_ID) 
-#             mapper = {}
-#             for t in types:
-#                 mapper[ur'%s\s' % t.name] = t.id
-#                 mapper[ur'%s\s' % t.name_accs] = t.id
-#             cache.set(key, mapper, 3600)  
-#         return self.re_mapper(mapper, txt) or self.ZDANIE 
     
     def phone_parser(self): 
         return self.sel.xpath('//i[@class="icon-phone-sign red_phone"]/../text()').extract()        
@@ -113,12 +104,11 @@ class AvitoFleldsParser(BaseFieldsParser):
     def name_parser(self):
         return self.sel.xpath('//div[@itemprop="seller"]/strong[@itemprop="name"]/text()').extract()  
     
-    def desc_parser(self):
-        return "DESC"
+    def desc_parser(self):        
         result = []
         result.append(self.title())
         result.append('\n')
-        result.append(join_strings(self.sel.xpath('//div[@class="media-body"]//text()').extract(), ', '))        
+        result.append(join_strings(self.sel.xpath('//div[@itemprop="description"]//text()').extract(), ', '))        
         return result
     
     def price_parser(self):
@@ -132,11 +122,19 @@ class AvitoFleldsParser(BaseFieldsParser):
             self._locality_id = self.locality_parser()            
         return self._locality_id
     
-    def phone(self):
-        PHONECODE = '86133'
-        phones = self.filter_phone()
-        if phones:
-            return ['8%s%s' % (PHONECODE, phone) if 5 <= len(phone) < 10 else phone for phone in phones]
+    def get_phone_data(self):
+        if not self._phone_data:
+            self._phone_data = self.spider_js.decode_phone(self.url)
+        return self._phone_data
+    
+    def phone(self):        
+        return [self.get_phone_data()['phone']]
+    
+    def phone_filename(self):      
+        return self.get_phone_data()['filename']
+    
+    def phone_guess(self):      
+        return self.get_phone_data()['guess']
 
 def process_value(value):   
     return process_value_base(value, AvitoSpider.name)
@@ -148,13 +146,7 @@ class AvitoSpider(CrawlSpider):
     _last_page = {}
     name = 'avito'
     allowed_domains = ['avito.ru']
-    localities = {'gelendzhik':LocalityMapper.GELENDZHIK,}
-    #start_urls = [
-#                   'http://www.avito.ru/anapa/nedvizhimost?view=list&user=1',
-#                   'https://www.avito.ru/gelendzhik/kvartiry/prodam?view=list&user=1', 
-#                   'https://www.avito.ru/gelendzhik/komnaty/prodam?user=1&view=list',                 
-#                   ]
-           
+    localities = {'gelendzhik':LocalityMapper.GELENDZHIK,}  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
         Rule (SgmlLinkExtractor(restrict_xpaths=('//div[@class="title"]/h3[@class="h3 fader"]/a',), process_value=process_value), callback='parse_item'),
@@ -162,23 +154,25 @@ class AvitoSpider(CrawlSpider):
        
     def start_requests(self):
         template = "https://www.avito.ru/%s/%s/prodam?user=1&view=list"
+        com_template = "https://www.avito.ru/%s/kommercheskaya_nedvizhimost/prodam/%s/za_vse?user=1&view=list"
         urls = []
         
-        types = ['kvartiry',]# 'komnaty', 'doma_dachi_kottedzhi', 'zemelnye_uchastki', 'garazhi_i_mashinomesta', 'kommercheskaya_nedvizhimost']
+        types = ['kvartiry','komnaty', 'doma_dachi_kottedzhi', 'zemelnye_uchastki', 'garazhi_i_mashinomesta',]
+        com_types = ['magazin', 'gostinicy', 'drugoe', 'proizvodstvo', 'sklad', 'ofis']
         for l in self.localities.iterkeys():            
             for t in types:
-                urls.append(template % (l, t))
+                urls.append(template % (l, t))                
+            for com_type in com_types:
+                urls.append(com_template % (l, com_type)) 
         for url in urls:
             yield Request(url, self.parse)
     
     def parse_item(self, response):
         item = RealtyItem()
-        fields_parser = AvitoFleldsParser(Selector(response), response.url, localities=self.localities)
-        spyder_js = SpyderJS()
+        fields_parser = AvitoFleldsParser(Selector(response), response.url, data={'localities': self.localities})
         fields_parser.populate_item(item)        
-        spyder_js.populate_item(item)            
         item.print_item()
-#         return item
+        return item
 
     def process_response_filter(self, response):
         dates = Selector(response).xpath('//span[@class="date"]/text()')
@@ -213,43 +207,42 @@ class AvitoSpider(CrawlSpider):
     
 
 class SpyderJS(object):
+    _full_filename = None
     def __init__(self):
         self.IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'spyder', 'avito')
     
-    def save_phone_image(self, url):
-        driver = webdriver.PhantomJS()        
-        driver.get(url)
-        elem = driver.find_element_by_class_name("js-phone-show__insert")
-        elem.click()
-        sleep(1)
-        res = driver.execute_script("""
-          var phone_imgs = document.getElementsByClassName("description__phone-img");
-          var canvas = document.createElement("canvas");
-          canvas.width = 102;
-          canvas.height = 16;
-          var ctx = canvas.getContext("2d");          
-          ctx.drawImage(phone_imgs[0], 0, 0);
-          return canvas.toDataURL("image/png").split(",")[1];
-        """)
-       
-        plaindata = base64.b64decode(res)
-        today = datetime.date.today()
-        directory = os.path.join(self.IMAGE_ROOT, today.strftime('%d%m%Y'))
-        if not os.path.exists(directory):
-            os.makedirs(directory)        
-        filename = '%s.png' %  md5.new(url).hexdigest()
-        full_filename = os.path.join(directory, filename)      
-        default_storage.save(full_filename, ContentFile(plaindata))
-        subprocess.call('convert %s -transparent "#FFFFFF" -alpha background %s' % (full_filename, full_filename), shell=True)        
-        return full_filename
-    
-    def populate_item(self, item):
-        phone_filename = self.save_phone_image(item['link'][0])         
-        item['phone_filename'] = phone_filename 
-        item['phone'] = [self.decode_phone(phone_filename)]
+    def get_full_filename(self, url):
+        if not self._full_filename:
+            driver = webdriver.PhantomJS()        
+            driver.get(url)
+            elem = driver.find_element_by_class_name("js-phone-show__insert")
+            elem.click()
+            sleep(1)
+            res = driver.execute_script("""
+              var phone_imgs = document.getElementsByClassName("description__phone-img");
+              var canvas = document.createElement("canvas");
+              canvas.width = 102;
+              canvas.height = 16;
+              var ctx = canvas.getContext("2d");          
+              ctx.drawImage(phone_imgs[0], 0, 0);
+              return canvas.toDataURL("image/png").split(",")[1];
+            """)
+           
+            plaindata = base64.b64decode(res)
+            today = datetime.date.today()
+            directory = os.path.join(self.IMAGE_ROOT, today.strftime('%d%m%Y'))
+            if not os.path.exists(directory):
+                os.makedirs(directory)        
+            filename = '%s.png' %  md5.new(url).hexdigest()
+            self._full_filename = os.path.join(directory, filename)      
+            default_storage.save(self._full_filename, ContentFile(plaindata))
+            subprocess.call('convert %s -transparent "#FFFFFF" -alpha background %s' % (self._full_filename, self._full_filename), shell=True)        
+        return self._full_filename
         
-    def decode_phone(self, phone_filename): 
+    def decode_phone(self, url): 
+        full_filename = self.get_full_filename(url)
         image_decoder = ImageDecoder(DECODER_SETTINGS['avito_phone'], VectorCompare())
-        result = image_decoder.decode(phone_filename)
-        if result[1] == 1:
-            return ''.join(result[0])                            
+        result = image_decoder.decode(full_filename)
+        guess = result[1]
+        phone = ''.join(result[0])        
+        return {'filename': full_filename, 'guess': guess, 'phone': phone}                                     

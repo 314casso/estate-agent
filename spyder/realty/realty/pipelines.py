@@ -13,14 +13,14 @@ class RealtyPipeline(object):
         print 'processing... %s' % item['link'] 
         if 'do_not_process' in item and item['do_not_process']:
             print 'Do not process...' 
-            self._create_spyder_meta(spider.name, item['link'], SpiderMeta.DO_NOT_PROCESS)
+            self._create_spyder_meta(spider.name, item, SpiderMeta.DO_NOT_PROCESS)
             return item            
         if 'phone' not in item or not item['phone']:
-            self._create_spyder_meta(spider.name, item['link'], SpiderMeta.NOPHONE)
+            self._create_spyder_meta(spider.name, item, SpiderMeta.NOPHONE)
             return item
         for phone in item['phone']:                
             if self.is_phone_exist(phone):
-                self._create_spyder_meta(spider.name, item['link'], SpiderMeta.EXISTSPHONE)
+                self._create_spyder_meta(spider.name, item, SpiderMeta.EXISTSPHONE)
                 return item
         estate_type = EstateType.objects.get(pk=item['estate_type_id'])
         if not estate_type:
@@ -29,8 +29,8 @@ class RealtyPipeline(object):
         client = self._create_client(name, spider.ORIGIN_ID)
         for phone in item['phone']:
             self._create_contact(phone, client.id)        
-        self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
-        self._create_spyder_meta(spider.name, item['link'], SpiderMeta.PROCESSED)
+        e = self._create_estate(item, spider.ORIGIN_ID, client.id, estate_type)
+        self._create_spyder_meta(spider.name, item, SpiderMeta.PROCESSED, e)
         return item
     
     def clean_price_digit(self, item_price_digit):
@@ -40,6 +40,7 @@ class RealtyPipeline(object):
         return 0
 
     def is_phone_exist(self, phone):
+        print "CHECK PHONE %s" % phone 
         if phone:
             contacts = Contact.objects.filter(contact=phone, contact_type_id=Contact.PHONE)
             if contacts:
@@ -97,6 +98,7 @@ class RealtyPipeline(object):
         EstateClient.objects.create(client_id=client_id,
                                 estate_client_status_id=EstateClient.ESTATE_CLIENT_STATUS,
                                 estate=e)
+        return e
     
     def get_description(self, item):
         result_desc = []
@@ -107,9 +109,15 @@ class RealtyPipeline(object):
         result_desc.append(u' '.join(item['desc']))      
         return u'\n'.join(result_desc)
     
-    def _create_spyder_meta(self, spider, url, status):        
-        spider_meta, created = SpiderMeta.objects.get_or_create(spider=spider, url=get_url_path(url))  # @UnusedVariable
+    def _create_spyder_meta(self, spider, item, status, e=None):        
+        spider_meta, created = SpiderMeta.objects.get_or_create(spider=spider, url=get_url_path(item['link']))  # @UnusedVariable
         spider_meta.status = status
+        spider_meta.phone = item['phone'][0]
+        spider_meta.phone_filename = item['phone_filename']
+        spider_meta.phone_guess = item['phone_guess']
+        spider_meta.estate = e
+        url = item['link']
+        spider_meta.full_url = url if isinstance(url, basestring) else url[0]
         spider_meta.save()
         return spider_meta
         

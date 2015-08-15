@@ -10,6 +10,7 @@ def abstractmethod(method):
     return default_abstract_method
 
 class BaseFieldsParser(object):
+    _phone = None
     _title = None
     _prices = None
     _locality_id = 0
@@ -104,7 +105,7 @@ class BaseFieldsParser(object):
         item['estate_type_id'] = self.estate_type_id()                         
         item['region_id'] = self.region_id()   
         item['locality_id'] = self.locality_id()        
-        item['room_count'] = self.room_count()    
+        item['room_count'] = self.room_count()  
     
     def title(self):
         if not self._title:
@@ -156,3 +157,18 @@ class BaseFieldsParser(object):
                 mapper[ur'%s' % getattr(locality, field_name)] = locality.id
             cache.set(key, mapper, 3600)  
         return self.re_mapper(mapper, txt)
+    
+class BasePhoneImageParser(BaseFieldsParser):
+    def populate_item(self, item):
+        super(BasePhoneImageParser, self).populate_item(item)
+        item['phone_filename'] = self.phone_filename()
+        item['phone_guess'] = self.phone_guess()
+    
+    @abstractmethod
+    def phone_filename(self):
+        pass
+    
+    @abstractmethod
+    def phone_guess(self):
+        pass
+         
