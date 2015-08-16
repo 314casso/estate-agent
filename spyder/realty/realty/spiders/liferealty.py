@@ -157,6 +157,8 @@ class LiferealtySpider(BaseSpider):
         return 0        
     
     def filter_phone(self, phone_str):
+        if not phone_str:
+            return None
         phones = phone_str.split(',')
         result = []
         for phone in phones:         
