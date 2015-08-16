@@ -22,6 +22,8 @@ from django.core.files.storage import default_storage
 from realty.vector import ImageDecoder, VectorCompare
 import subprocess
 
+driver = webdriver.PhantomJS(port=65000)
+
 DECODER_SETTINGS = {
            'avito_phone': {
                             'icons_path': os.path.join(STATIC_ROOT, 'avito_lib'),                            
@@ -212,8 +214,7 @@ class SpyderJS(object):
         self.IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'spyder', 'avito')
     
     def get_full_filename(self, url):
-        if not self._full_filename:
-            driver = webdriver.PhantomJS(port=65000)        
+        if not self._full_filename:                    
             driver.get(url)
             elem = driver.find_element_by_class_name("js-phone-show__insert")
             elem.click()
