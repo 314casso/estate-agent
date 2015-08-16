@@ -112,7 +112,8 @@ class RealtyPipeline(object):
     def _create_spyder_meta(self, spider, item, status, e=None):        
         spider_meta, created = SpiderMeta.objects.get_or_create(spider=spider, url=get_url_path(item['link']))  # @UnusedVariable
         spider_meta.status = status
-        spider_meta.phone = item['phone'][0]
+        if item['phone']:
+            spider_meta.phone = item['phone'][0]
         spider_meta.phone_filename = item.get('phone_filename')
         spider_meta.phone_guess = item.get('phone_guess')
         spider_meta.estate = e
@@ -120,9 +121,4 @@ class RealtyPipeline(object):
         spider_meta.full_url = url if isinstance(url, basestring) else url[0]
         spider_meta.save()
         return spider_meta
-        
-        
-    
-    
-    
-        
+            
