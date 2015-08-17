@@ -17,7 +17,8 @@ ITEM_PIPELINES = {
     'realty.pipelines.RealtyPipeline': 300,    
 }
 
-DOWNLOAD_DELAY = 1.25
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'
+DOWNLOAD_DELAY = 5
 LOG_LEVEL = 'INFO'
 
 from realty.local_settings import DJANGO_PATHES
