@@ -135,7 +135,10 @@ class ImageDecoder(object):
 #             print "",guess[0] 
             result.append(guess[0][1])
             probabilities.append(guess[0][0])
-        probability = sum(probabilities) / len(probabilities)
+        if len(probabilities):    
+            probability = sum(probabilities) / len(probabilities)
+        else:
+            probability = 0            
         return (result, probability)
     
     def decode(self, file_name):

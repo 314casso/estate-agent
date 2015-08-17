@@ -156,7 +156,7 @@ class AvitoSpider(CrawlSpider):
     name = 'avito'
     allowed_domains = ['avito.ru']
     custom_settings = {'DOWNLOAD_DELAY': 7}
-    localities = {'gelendzhik':LocalityMapper.GELENDZHIK,}  
+    localities = {'gelendzhik':LocalityMapper.GELENDZHIK, 'anapa': LocalityMapper.ANAPA}  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
         Rule (SgmlLinkExtractor(restrict_xpaths=('//div[@class="title"]/h3[@class="h3 fader"]/a',), process_value=process_value), callback='parse_item'),
@@ -225,6 +225,8 @@ class SpyderJS(object):
         if not self._full_filename:                    
             driver.get(url)
             elem = driver.find_element_by_class_name("js-phone-show__insert")
+            if not elem:
+                return None
             elem.click()
             sleep(1)
             res = driver.execute_script("""
@@ -250,6 +252,8 @@ class SpyderJS(object):
         
     def decode_phone(self, url): 
         full_filename = self.get_full_filename(url)
+        if not full_filename:
+            return {'filename': None, 'guess': 0, 'phone': None}
         image_decoder = ImageDecoder(DECODER_SETTINGS['avito_phone'], VectorCompare())
         result = image_decoder.decode(full_filename)
         guess = result[1]
