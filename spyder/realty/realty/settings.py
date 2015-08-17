@@ -17,7 +17,7 @@ ITEM_PIPELINES = {
     'realty.pipelines.RealtyPipeline': 300,    
 }
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'
+USER_AGENT = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 4.0; obot)'
 DOWNLOAD_DELAY = 5
 LOG_LEVEL = 'INFO'
 
