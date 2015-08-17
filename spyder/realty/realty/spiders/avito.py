@@ -21,8 +21,15 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from realty.vector import ImageDecoder, VectorCompare
 import subprocess
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-driver = webdriver.PhantomJS(port=65000)
+dcap = dict(DesiredCapabilities.PHANTOMJS)
+dcap["phantomjs.page.settings.userAgent"] = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
+    "(KHTML, like Gecko) Chrome/15.0.87"
+)
+
+driver = webdriver.PhantomJS(port=65000, desired_capabilities=dcap)
 
 DECODER_SETTINGS = {
            'avito_phone': {
