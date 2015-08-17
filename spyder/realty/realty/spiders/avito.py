@@ -148,7 +148,7 @@ class AvitoSpider(CrawlSpider):
     _last_page = {}
     name = 'avito'
     allowed_domains = ['avito.ru']
-    custom_settings = {'USER_AGENT':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0', 'DOWNLOAD_DELAY': 5}
+    custom_settings = {'DOWNLOAD_DELAY': 7}
     localities = {'gelendzhik':LocalityMapper.GELENDZHIK,}  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
