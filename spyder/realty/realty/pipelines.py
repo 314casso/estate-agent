@@ -15,7 +15,7 @@ class RealtyPipeline(object):
             print 'Do not process...' 
             self._create_spyder_meta(spider.name, item, SpiderMeta.DO_NOT_PROCESS)
             return item            
-        if 'phone' not in item or not item['phone']:
+        if 'phone' not in item or not item['phone'] or not item['phone'][0]:
             self._create_spyder_meta(spider.name, item, SpiderMeta.NOPHONE)
             return item
         for phone in item['phone']:                

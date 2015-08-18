@@ -156,7 +156,7 @@ class AvitoSpider(CrawlSpider):
     name = 'avito'
     allowed_domains = ['avito.ru']
     custom_settings = {'DOWNLOAD_DELAY': 7}
-    localities = {'gelendzhik':LocalityMapper.GELENDZHIK, 'anapa': LocalityMapper.ANAPA}  
+    localities = {'gelendzhik':LocalityMapper.GELENDZHIK, 'anapa': LocalityMapper.ANAPA, 'novorossiysk':LocalityMapper.NOVOROSSIYSK, 'temryuk':LocalityMapper.TEMRYUK}  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
         Rule (SgmlLinkExtractor(restrict_xpaths=('//div[@class="title"]/h3[@class="h3 fader"]/a',), process_value=process_value), callback='parse_item'),
@@ -228,7 +228,7 @@ class SpyderJS(object):
             if not elem:
                 return None
             elem.click()
-            sleep(1)
+            sleep(2)
             res = driver.execute_script("""
               var phone_imgs = document.getElementsByClassName("description__phone-img");
               var canvas = document.createElement("canvas");
