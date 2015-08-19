@@ -156,7 +156,39 @@ class AvitoSpider(CrawlSpider):
     name = 'avito'
     allowed_domains = ['avito.ru']
     custom_settings = {'DOWNLOAD_DELAY': 7}
-    localities = {'gelendzhik':LocalityMapper.GELENDZHIK, 'anapa': LocalityMapper.ANAPA, 'novorossiysk':LocalityMapper.NOVOROSSIYSK, 'temryuk':LocalityMapper.TEMRYUK}  
+    localities = {
+                    'gelendzhik':LocalityMapper.GELENDZHIK,
+                    'anapa': LocalityMapper.ANAPA, 
+                    'novorossiysk':LocalityMapper.NOVOROSSIYSK, 
+                    'temryuk':LocalityMapper.TEMRYUK,
+                    'abrau-dyurso': LocalityMapper,
+                    'abrau-dyurso': LocalityMapper,
+                    'anapskaya': LocalityMapper.ANAPSKAYA,
+                    'arhipo-osipovka': LocalityMapper.ARHIPOOSIPOVKA,
+                    'ahtanizovskaya': LocalityMapper.AHTANIZOVSKAYA,
+                    'verhnebakanskiy': LocalityMapper.VERHNEBAKANSKIY,
+                    'vinogradnyy': LocalityMapper.VINOGRADNYY,
+                    'vityazevo': LocalityMapper.VITYAZEVO,
+                    'vyshesteblievskaya': LocalityMapper.VYSHESTEBLIEVSKAYA,
+                    'gayduk': LocalityMapper.GAYDUK,
+                    'glebovka': LocalityMapper.GLEBOVSKOE,
+                    'golubitskaya': LocalityMapper.GOLUBITSKAYA,
+                    'gostagaevskaya': LocalityMapper.GOSTAGAEVSKAYA,
+                    'kurchanskaya': LocalityMapper.KURCHANSKAYA,
+                    'kabardinka': LocalityMapper.KABARDINKA,
+                    'divnomorskoe': LocalityMapper.DIVNOMORSKOE,
+                    'dzhiginka': LocalityMapper.DZHIGINKA,
+                    'myshako': LocalityMapper.MYSHAKO,
+                    'natuhaevskaya': LocalityMapper.NATUHAEVSKAYA,
+                    'raevskaya': LocalityMapper.RAEVSKAYA,
+                    'yurovka': LocalityMapper.YUROVKA,
+                    'tsibanobalka': LocalityMapper.TSYBANOBALKA,
+                    'taman': LocalityMapper.TAMAN,
+                    'supseh': LocalityMapper.SUPSEH,
+                    'krasnodarskiy_kray_strelka': LocalityMapper.STRELKA,
+                    'starotitarovskaya': LocalityMapper.STAROTITAROVSKAYA,
+                    'sennoy': LocalityMapper.SENNOY,
+                  }  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
         Rule (SgmlLinkExtractor(restrict_xpaths=('//div[@class="title"]/h3[@class="h3 fader"]/a',), process_value=process_value), callback='parse_item'),
