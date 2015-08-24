@@ -59,7 +59,7 @@
 </fieldset>
 {% endif %}
 
-{% if estate.spider_meta and perms.estatebase.view_private %}
+{% if estate.spider_meta.all and perms.estatebase.view_private %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 9px">
     <legend>
         Сводка по источнику:
