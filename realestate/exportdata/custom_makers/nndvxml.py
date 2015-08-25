@@ -9,7 +9,8 @@ from exportdata.utils import EstateTypeMapper, WallConstrucionMapper
 from django.template.defaultfilters import striptags
 
 
-class NndvWrapper(YandexWrapper):  
+class NndvWrapper(YandexWrapper):
+    max_images = 4  
     def offer_type(self):
         return u'продам'
     
@@ -242,9 +243,7 @@ class NndvXML(YandexPlusXML):
         images = self._wrapper.images()        
         if images:
             for i,image in enumerate(images, start=1):
-                etree.SubElement(offer, "image%s" % i).text = image
-                if i >= 4:
-                    break                    
+                etree.SubElement(offer, "image%s" % i).text = image                    
         etree.SubElement(offer, "comment").text = self._wrapper.description()
         if self._wrapper.is_flat():
             if self._wrapper.rooms():

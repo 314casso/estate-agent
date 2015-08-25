@@ -20,6 +20,7 @@ def number2xml(d):
 
 class EstateBaseWrapper(object):
     _layout = None
+    max_images = 8
     def __init__(self):        
         self._domain = 'http://%s' % Site.objects.get_current().domain
     
@@ -98,7 +99,7 @@ class EstateBaseWrapper(object):
     def images(self, clear_watermark=False):        
         from urlparse import urljoin       
         from sorl.thumbnail import get_thumbnail              
-        images = self._estate.images.all()[:8]
+        images = self._estate.images.all()[:self.max_images]
         if images:
             result = []
             for img in images:
