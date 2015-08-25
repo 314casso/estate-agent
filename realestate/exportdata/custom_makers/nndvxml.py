@@ -239,7 +239,7 @@ class NndvXML(YandexPlusXML):
         etree.SubElement(sales_agent, "contact_email").text = sa.email()    
         #price
         etree.SubElement(offer, "money").text = self._wrapper.price.value()   
-        images = self._wrapper.images()        
+        images = self._wrapper.images()[:4]        
         if images:
             for i,image in enumerate(images, start=1):
                 etree.SubElement(offer, "image%s" % i).text = image                    
