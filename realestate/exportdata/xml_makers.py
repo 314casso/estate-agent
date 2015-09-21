@@ -206,7 +206,7 @@ class EstateBaseWrapper(object):
    
     def building_type(self):
         # матириал стен
-        if self._basic_bidg:
+        if self._basic_bidg and self._basic_bidg.wall_construcion:
             return self._basic_bidg.wall_construcion.name
     
     def built_year(self):        
