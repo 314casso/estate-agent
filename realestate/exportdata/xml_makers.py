@@ -290,7 +290,7 @@ class EstateBaseWrapper(object):
                     InteriorMapper.CHISTOVAYAOTDELKA : u'хорошее',
                   }        
         if self._basic_bidg is not None:
-            if self._basic_bidg.interior.id in mapper:
+            if self._basic_bidg.interior and self._basic_bidg.interior.id in mapper:
                 return mapper[self._basic_bidg.interior.id]
         
         
