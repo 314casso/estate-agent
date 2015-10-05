@@ -19,7 +19,7 @@ class MlsnXML(YandexXML):
         
     def get_queryset(self):
         q = super(MlsnXML,self).get_queryset()
-        q.filter(estate_params__exact = EstateParam.PAYEXPORT)
+        q = q.filter(estate_params__exact = EstateParam.PAYEXPORT)
         return q
         
     def get_sales_agent(self, estate):
