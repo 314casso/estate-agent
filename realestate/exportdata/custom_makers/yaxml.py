@@ -37,6 +37,7 @@ class YandexWrapper(EstateBaseWrapper):
         if self._estate.locality.locality_type_id == Locality.CITY: 
             return super(YandexWrapper, self).address() 
         
+        
 class YandexXML(BaseXML):
     name = 'yaxml'
     encoding="UTF-8"
@@ -67,11 +68,14 @@ class YandexXML(BaseXML):
         if not value is None:             
             etree.SubElement(parent, name).text = self.bool_to_value(value)
     
+    def get_sales_agent(self, estate):
+        return SalesAgent(estate)
+    
     def create_offer(self, estate):        
         self._wrapper.set_estate(estate)
         is_stead = estate.estate_category.is_stead
         has_stead = estate.estate_category.can_has_stead and estate.basic_stead        
-        sa = SalesAgent(estate)
+        sa = self.get_sales_agent(estate)
         #offer
         offer = etree.Element("offer", {'internal-id':str(estate.id)})     
         etree.SubElement(offer, "type").text = self._wrapper.offer_type()         

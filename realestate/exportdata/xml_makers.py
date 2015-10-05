@@ -354,7 +354,7 @@ class SalesAgent(object):
     def __init__(self, estate):
         self._estate = estate
         self._office = estate.region.office_set.all()[:1].get()
-    def phones(self):      
+    def phones(self):              
         return ['8-800-250-7075', '8-918-049-9494']
     
     def category(self):
@@ -388,7 +388,7 @@ class BaseXML(object):
         self.tz = pytz.timezone('Europe/Moscow')        
         self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)        
         self._use_cache = True
-        translation.activate('ru')
+        translation.activate('ru')        
     def get_delta(self):    
         return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
     def get_cache_key(self, estate):
