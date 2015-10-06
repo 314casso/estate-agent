@@ -389,5 +389,5 @@ class WPService(object):
             wp_meta.save()           
         
 def prepare_err_msg(err):
-    s =  "%s" % err
+    s =  u"%s" % err
     return s[:255]
