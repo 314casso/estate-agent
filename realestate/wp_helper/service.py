@@ -88,7 +88,6 @@ class WPService(object):
                 taxonomy_item = list(wp_cats)[0]
                 remote_taxonomy = None
                 try:
-                    print taxonomy_item.wp_id, estate_type_name                                        
                     remote_taxonomy = self.create_taxonomy(taxonomy_item.wp_id, estate_type_name)
                 except:
                     raise Exception(u'Не удалось создать категорию на стороне wordpress! Если категория существует на сайте, запустите синхронизацию...')
@@ -128,6 +127,7 @@ class WPService(object):
             if wp_cat_id:             
                 params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            
                 result.append(self.wrap_to_wp_category(params_taxonomy_tree))
+        print result       
         return result
     
     def delete_taxonomy(self, term_id):
