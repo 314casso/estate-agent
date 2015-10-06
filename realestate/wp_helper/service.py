@@ -87,7 +87,8 @@ class WPService(object):
             else:
                 taxonomy_item = list(wp_cats)[0]
                 remote_taxonomy = None
-                try:                                        
+                try:
+                    print taxonomy_item.wp_id, estate_type_name                                        
                     remote_taxonomy = self.create_taxonomy(taxonomy_item.wp_id, estate_type_name)
                 except:
                     raise Exception(u'Не удалось создать категорию на стороне wordpress! Если категория существует на сайте, запустите синхронизацию...')
