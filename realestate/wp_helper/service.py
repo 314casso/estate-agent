@@ -127,7 +127,8 @@ class WPService(object):
             if wp_cat_id:             
                 params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            
                 result.append(self.wrap_to_wp_category(params_taxonomy_tree))
-        print result.parent, result.taxonomy       
+        for r in result:
+            print r.parent, r.taxonomy       
         return result
     
     def delete_taxonomy(self, term_id):
