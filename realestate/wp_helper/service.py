@@ -127,8 +127,6 @@ class WPService(object):
             if wp_cat_id:             
                 params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            
                 result.append(self.wrap_to_wp_category(params_taxonomy_tree))
-        for r in result:
-            print r.parent, r.id       
         return result
     
     def delete_taxonomy(self, term_id):
@@ -390,6 +388,7 @@ class WPService(object):
             wp_meta.status = EstateWordpressMeta.OUT
             wp_meta.save()           
         
-def prepare_err_msg(err):
+def prepare_err_msg(err):    
     s =  u"%s" % err
+    print s
     return s[:255]
