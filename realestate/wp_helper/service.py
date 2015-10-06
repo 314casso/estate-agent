@@ -357,10 +357,10 @@ class WPService(object):
             wp_meta.save()
             return True
         except xmlrpclib.ProtocolError as err:
-            wp_meta.error_message = err.errmsg
+            wp_meta.error_message = prepare_err_msg(err.errmsg)
             wp_meta.save()            
         except Exception, err:                       
-            wp_meta.error_message = err
+            wp_meta.error_message = prepare_err_msg(err)
             wp_meta.status = EstateWordpressMeta.ERROR
             wp_meta.save()
         return False
@@ -378,13 +378,16 @@ class WPService(object):
                 wp_meta.status = EstateWordpressMeta.UPTODATE
                 wp_meta.save()                
             except xmlrpclib.ProtocolError as err:            
-                wp_meta.error_message = err                
+                wp_meta.error_message = prepare_err_msg(err)                
                 wp_meta.save()                
             except Exception, err:            
-                wp_meta.error_message = err.errmsg
+                wp_meta.error_message = prepare_err_msg(err.errmsg)
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
         else:
             wp_meta.status = EstateWordpressMeta.OUT
             wp_meta.save()           
         
+def prepare_err_msg(err):
+    s =  "%s" % err
+    return s[:255]
