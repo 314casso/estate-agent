@@ -442,6 +442,7 @@ class EstateFilterForm(BetterForm):
     cadastral_number = forms.CharField(required=False, label=_('Cadastral number'))
     client_description = forms.CharField(required=False, label=_('Client description'))
     wp_status = forms.ChoiceField(required=False, label=u'Статус на сайте', initial='')
+    layout_area = DecimalRangeField(required=False, label=_('Area'))
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''         
@@ -515,7 +516,7 @@ class EstateFilterForm(BetterForm):
                              'floor':'bidgs__floor', 'floor_count':'bidgs__floor_count',
                              'total_area':'bidgs__total_area', 'used_area':'bidgs__used_area',
                              'room_count':'bidgs__room_count', 'stead_area':'stead__total_area',
-                             'face_area':'stead__face_area'}
+                             'face_area':'stead__face_area','layout_area': 'bidgs__levels__layout__area'}
         for fld, fld_name in two_number_fields.iteritems():
             if check_value_list(cleaned_data[fld]):
                 result = from_to_values(cleaned_data[fld], fld_name)
@@ -560,7 +561,7 @@ class EstateFilterForm(BetterForm):
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
-                                            'room_count', 'interior', 'heating', 'layouts' ,'outbuildings', 'broker'
+                                            'room_count', 'interior', 'heating', 'layouts', 'layout_area', 'outbuildings', 'broker'
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'cadastral_number', 'purposes', 'electricity', 'watersupply', 
@@ -929,7 +930,7 @@ class BidPicleForm(EstateFilterForm):
         return cleaned_data    
     class Meta:        
         fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'com_status', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
-                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'layouts', 'outbuildings']}),
+                     ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'layouts', 'layout_area', 'outbuildings']}),
                      ('right', {'fields': ['stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
 
