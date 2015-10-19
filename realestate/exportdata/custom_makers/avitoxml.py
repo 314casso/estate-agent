@@ -149,7 +149,8 @@ class AvitoWrapper(YandexWrapper):
         if self._estate.street:
             return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)
     
-class AvitoXML(YandexPlusXML):    
+class AvitoXML(YandexPlusXML):   
+    feed_locality_name = 'avito' 
     name = 'avito'    
     root_name = 'Ads'           
     def __init__(self, avito_wrapper):
@@ -220,7 +221,7 @@ class AvitoXML(YandexPlusXML):
             etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
                 
         etree.SubElement(offer, "Region").text = self._wrapper.region()
-        feed_locality = self._wrapper.feed_locality(self.name)
+        feed_locality = self._wrapper.feed_locality(self.feed_locality_name)
         etree.SubElement(offer, "City").text = feed_locality['city']
         if 'locality' in feed_locality:
             etree.SubElement(offer, "Locality").text = feed_locality['locality']
