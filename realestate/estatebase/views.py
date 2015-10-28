@@ -1234,7 +1234,7 @@ class WordpressQueue(TemplateView):
                 'meta_title' : meta_titles[meta_report],                       
             })                        
         context.update({
-            'queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.XMLRPC),
+            'queue' : Estate.objects.filter(wp_meta__status__in=[EstateWordpressMeta.XMLRPC,EstateWordpressMeta.UNKNOWN], validity=Estate.VALID),
             'err_queue' : Estate.objects.filter(wp_meta__status=EstateWordpressMeta.ERROR),
         })
         return context     
