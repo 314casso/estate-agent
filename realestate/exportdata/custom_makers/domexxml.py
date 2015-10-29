@@ -3,6 +3,11 @@ from estatebase.models import EstateTypeCategory, Estate, EstateParam
 from exportdata.custom_makers.yaxml import COMMERCE_STEADS, YandexWrapper
 from exportdata.custom_makers.yaxmlplus import YandexPlusXML
 from exportdata.utils import EstateTypeMapper
+from exportdata.xml_makers import SalesAgent
+
+class DomexSalesAgent(SalesAgent):
+    def head_phone(self):
+        return u'%s' % '8-918-980-2870'
 
 class DomexWrapper(YandexWrapper):
     def estate_type(self):        
@@ -51,5 +56,7 @@ class DomexXML(YandexPlusXML):
     name = 'domex'
     def __init__(self, domex_wrapper):
         super(DomexXML,self).__init__(domex_wrapper)         
-      
+    
+    def get_sales_agent(self, estate):
+        return DomexSalesAgent(estate)  
     
