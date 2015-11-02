@@ -56,3 +56,14 @@ class GdeetotdomXML(Restate):
 class GdeetotdomSalesAgent(SalesAgent):
     def head_phone(self):
         return u'%s' % '8-988-669-3067'
+    
+
+class CianYaXML(Restate):
+    name = 'cianya'
+    def get_sales_agent(self, estate):
+        return CianYaSalesAgent(estate)
+
+
+class CianYaSalesAgent(SalesAgent):
+    def head_phone(self):
+        return u'%s' % '8-918-492-7529'    

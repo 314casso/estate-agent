@@ -9,7 +9,7 @@ from exportdata.custom_makers.avitoxml import AvitoXML
 from exportdata.custom_makers.bnxml import BnXML
 from exportdata.custom_makers.avitopayxml import AvitoXMLPay
 from exportdata.custom_makers.restate import Restate, IrrXML, NersXML,\
-    GdeetotdomXML
+    GdeetotdomXML, CianYaXML
 from exportdata.custom_makers.yaxmlplusphoto import YaPlusPhoto
 from exportdata.custom_makers.nndvxml import NndvXML
 from exportdata.custom_makers.mlsnxml import MlsnXML
@@ -41,6 +41,7 @@ class Command(BaseCommand):
                    IrrXML.name: IrrXML,
                    NersXML.name: NersXML,
                    GdeetotdomXML.name: GdeetotdomXML,  
+                   CianYaXML.name: CianYaXML,
                  }
         if arg in mapper:
             return mapper[arg]
