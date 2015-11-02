@@ -184,7 +184,7 @@ class AvitoXML(YandexPlusXML):
             
     def create_offer(self, estate):                
         self._wrapper.set_estate(estate)
-        sa = SalesAgent(estate)
+        sa = self.get_sales_agent(estate)
         offer = etree.Element("Ad")
         etree.SubElement(offer, "Id").text = str(estate.id)
         category = self._wrapper.estate_category() 
@@ -243,6 +243,12 @@ class AvitoXML(YandexPlusXML):
                     image_node.set("url", image)
         etree.SubElement(offer, "CompanyName").text = sa.organization()
         etree.SubElement(offer, "EMail").text = sa.email()
-        etree.SubElement(offer, "ContactPhone").text = sa.phones()[0]
+        etree.SubElement(offer, "ContactPhone").text = sa.head_phone()
         etree.SubElement(offer, "AdStatus").text = self._wrapper.ad_status()
         return offer   
+    
+    def get_sales_agent(self, estate):
+        return AvitoSalesAgent(estate)
+    
+class AvitoSalesAgent(SalesAgent):
+    pass

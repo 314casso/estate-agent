@@ -8,10 +8,12 @@ from exportdata.custom_makers.cianxml import CianFlatsXML, CianCommerceXML
 from exportdata.custom_makers.avitoxml import AvitoXML
 from exportdata.custom_makers.bnxml import BnXML
 from exportdata.custom_makers.avitopayxml import AvitoXMLPay
-from exportdata.custom_makers.restate import Restate
+from exportdata.custom_makers.restate import Restate, IrrXML, NersXML,\
+    GdeetotdomXML
 from exportdata.custom_makers.yaxmlplusphoto import YaPlusPhoto
 from exportdata.custom_makers.nndvxml import NndvXML
 from exportdata.custom_makers.mlsnxml import MlsnXML
+from exportdata.custom_makers.idinaidixml import IdinaidiXML
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -35,6 +37,10 @@ class Command(BaseCommand):
                    YaPlusPhoto.name: YaPlusPhoto,
                    NndvXML.name: NndvXML, 
                    MlsnXML.name: MlsnXML,
+                   IdinaidiXML.name: IdinaidiXML,
+                   IrrXML.name: IrrXML,
+                   NersXML.name: NersXML,
+                   GdeetotdomXML.name: GdeetotdomXML,  
                  }
         if arg in mapper:
             return mapper[arg]

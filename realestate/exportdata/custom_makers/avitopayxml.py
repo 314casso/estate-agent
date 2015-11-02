@@ -1,5 +1,6 @@
 from exportdata.custom_makers.avitoxml import AvitoXML
 from estatebase.models import Estate, EstateTypeCategory, EstateParam
+from exportdata.xml_makers import SalesAgent
 
 class AvitoXMLPay(AvitoXML):
     name = 'avitopay'
@@ -15,3 +16,10 @@ class AvitoXMLPay(AvitoXML):
         q = Estate.objects.all()
         q = q.filter(**f)
         return q
+    
+    def get_sales_agent(self, estate):
+        return AvitoPaySalesAgent(estate)
+    
+class AvitoPaySalesAgent(SalesAgent):
+    def head_phone(self):
+        return u'%s' % '8-918-040-9494'
