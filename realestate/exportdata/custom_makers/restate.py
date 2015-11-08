@@ -45,18 +45,7 @@ class NersXML(Restate):
 class NersSalesAgent(SalesAgent):
     def head_phone(self):
         return u'%s' % '8-989-770-6040'
-
-
-class GdeetotdomXML(Restate):
-    name = 'gdeetotdom'
-    def get_sales_agent(self, estate):
-        return GdeetotdomSalesAgent(estate)
-
-
-class GdeetotdomSalesAgent(SalesAgent):
-    def head_phone(self):
-        return u'%s' % '8-988-669-3067'
-    
+  
 
 class CianYaXML(Restate):
     name = 'cianya'
