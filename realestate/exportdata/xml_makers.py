@@ -9,7 +9,7 @@ from django.template.context import Context
 from django.template.defaultfilters import striptags
 from django.core.cache import cache
 import cPickle as pickle
-from estatebase.models import Locality, Office, EstateParam
+from estatebase.models import Locality, Office, EstateParam, EstateTypeCategory
 import pytz
 from settings import MEDIA_ROOT
 from exportdata.utils import EstateTypeMapper, InteriorMapper, ApplianceMapper
@@ -72,7 +72,10 @@ class EstateBaseWrapper(object):
                 
     def address(self):
         if self._estate.street:
-            return u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
+            bld_number = ''            
+            if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
+                bld_number = u", %s" % self._estate.estate_number
+            return u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
         return ''
     
     @property

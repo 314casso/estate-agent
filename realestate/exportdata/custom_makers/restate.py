@@ -20,6 +20,7 @@ class Restate(YandexPlusXML):
     def get_sales_agent(self, estate):
         return RestateSalesAgent(estate)
     
+    
 class RestateSalesAgent(SalesAgent):
     def head_phone(self):
         return u'%s' % '8-918-492-7528'    
@@ -56,3 +57,26 @@ class CianYaXML(Restate):
 class CianYaSalesAgent(SalesAgent):
     def head_phone(self):
         return u'%s' % '8-918-492-7529'    
+    
+
+class MoveSuXML(YandexPlusXML):
+    name = 'movesu'    
+    def get_queryset(self):
+        MIN_PRICE_LIMIT = 100000  
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),             
+             'agency_price__gte': MIN_PRICE_LIMIT,  
+             'estate_params__exact': EstateParam.AVITO,          
+             }
+        q = Estate.objects.all()
+        q = q.filter(**f)     
+        return q    
+    
+    def get_sales_agent(self, estate):
+        return MoveSuSalesAgent(estate)
+    
+    
+class MoveSuSalesAgent(SalesAgent):
+    def head_phone(self):
+        return u'%s' % '8-918-492-7529'       
