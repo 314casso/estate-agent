@@ -83,13 +83,13 @@ class AvitoFleldsParser(BasePhoneImageParser):
                          ur'торговое' : EstateTypeMapper.MAGAZIN,                         
                          } 
         txt = self.get_breadcrumbs()
-        print "BREADCRUMBS: %s" % txt        
+        print u"BREADCRUMBS: %s" % txt        
         if txt:           
             result = self.re_mapper(mapper, txt)
             if callable(result):
                 return result()
         return result or self.ZDANIE
-    
+        
     def phone_parser(self): 
         return self.sel.xpath('//i[@class="icon-phone-sign red_phone"]/../text()').extract()        
     
