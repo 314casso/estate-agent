@@ -22,6 +22,7 @@ from django.core.files.storage import default_storage
 from realty.vector import ImageDecoder, VectorCompare
 import subprocess
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.wait import WebDriverWait
 
 dcap = dict(DesiredCapabilities.PHANTOMJS)
 dcap["phantomjs.page.settings.userAgent"] = (
@@ -30,6 +31,17 @@ dcap["phantomjs.page.settings.userAgent"] = (
 )
 
 driver = webdriver.PhantomJS(port=65000, desired_capabilities=dcap)
+
+def login_avito(driver):
+    username = "olegpe2000@mail.ru"
+    password = "jwtyrf15052014"
+    login_url = "https://www.avito.ru/profile/login"    
+    driver.get(login_url)    
+    WebDriverWait(driver, 30).until(lambda driver : driver.find_element_by_name("login")).send_keys(username)
+    WebDriverWait(driver, 30).until(lambda driver : driver.find_element_by_name("password")).send_keys(password)
+    WebDriverWait(driver, 30).until(lambda driver : driver.find_element_by_class_name("btn-yellow")).submit()
+
+login_avito(driver)
 
 DECODER_SETTINGS = {
            'avito_phone': {
