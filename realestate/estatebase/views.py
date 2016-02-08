@@ -36,6 +36,8 @@ from django.contrib.auth.decorators import user_passes_test
 import unicodecsv
 from estatebase.lib import format_phone
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.conf.global_settings import LOGOUT_URL
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -43,7 +45,10 @@ class BaseMixin(object):
             return self.request.REQUEST.get('next', '')
         return ''    
 
-class DeleteMixin(object):
+class DeleteMixin(SingleObjectMixin):
+    @method_decorator(user_passes_test(lambda u: u.is_superuser, login_url=LOGOUT_URL, redirect_field_name='nonext'))   
+    def dispatch(self, *args, **kwargs):
+        return super(DeleteMixin, self).dispatch(*args, **kwargs)
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object._user_id = self.request.user.pk
