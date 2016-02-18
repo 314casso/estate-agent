@@ -16,7 +16,7 @@ from exportdata.utils import EstateTypeMapper, InteriorMapper, ApplianceMapper
 from django.utils import translation
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('estate')
 
 def number2xml(d):
     return '%.12g' % d if d else ''
@@ -114,7 +114,7 @@ class EstateBaseWrapper(object):
                     head, tail = os.path.split(im.name)  # @UnusedVariable                                
                     result.append(urljoin(self._domain, im.url))                  
                 except:
-                    logger.error('Wrong image file %s, lot %s!' % (img.image.file, img.estate))                    
+                    logger.debug('Wrong image file %s, lot %s!' % (img.image.file, img.estate))                    
             return result
     
     def render_content(self, estate, description, short=False):        

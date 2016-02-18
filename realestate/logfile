@@ -1,2 +1,98 @@
 [26/Oct/2013 16:43:03] DEBUG [estate:220] Hey there it works!!
 [26/Oct/2013 16:45:34] DEBUG [estate:231] {'estate_images': {u'/home/picasso/Documents/Aptana Studio 3 Workspace/estate-agent/realestate/media/cache/65/36/6536f46861d0c597b7cd63eafce00b77.jpg': u'6536f46861d0c597b7cd63eafce00b77.jpg', u'/home/picasso/Documents/Aptana Studio 3 Workspace/estate-agent/realestate/media/cache/3e/12/3e1284c2910b339cf53487515c1a6efb.jpg': u'3e1284c2910b339cf53487515c1a6efb.jpg', u'/home/picasso/Documents/Aptana Studio 3 Workspace/estate-agent/realestate/media/cache/9b/fb/9bfb2ca2d76f7cb441d5803eaf6a3f16.jpg': u'9bfb2ca2d76f7cb441d5803eaf6a3f16.jpg', u'/home/picasso/Documents/Aptana Studio 3 Workspace/estate-agent/realestate/media/cache/e1/23/e1230048f77bdb26afce3d6767b0961a.jpg': u'e1230048f77bdb26afce3d6767b0961a.jpg'}, 'same_items': set([])}
+[19/Feb/2016 00:09:48] DEBUG [estate:9] TESTTEST
+[19/Feb/2016 00:13:16] DEBUG [estate:29] TESTTEST!!!!!!!!!!!!
+[19/Feb/2016 00:14:46] DEBUG [estate:212] START!
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/sklad/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/ofis/za_vse?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/dzhiginka/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/dzhiginka/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/dzhiginka/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:15:38] DEBUG [estate:224] https://www.avito.ru/dzhiginka/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:15:39] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:15:43] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:15:50] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:15:56] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:16:04] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/sklad/za_vse?user=1&view=list
+[19/Feb/2016 00:16:11] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/ofis/za_vse?user=1&view=list
+[19/Feb/2016 00:16:17] DEBUG [estate:224] https://www.avito.ru/vityazevo/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:16:22] DEBUG [estate:224] https://www.avito.ru/vityazevo/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:16:29] DEBUG [estate:224] https://www.avito.ru/vityazevo/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:16:36] DEBUG [estate:224] https://www.avito.ru/vityazevo/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:16:41] DEBUG [estate:224] https://www.avito.ru/vityazevo/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:16:47] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/sklad/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/supseh/kommercheskaya_nedvizhimost/prodam/ofis/za_vse?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/dzhiginka/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/dzhiginka/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/dzhiginka/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:18:28] DEBUG [estate:224] https://www.avito.ru/dzhiginka/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:18:29] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:18:35] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:18:41] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:18:47] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:18:53] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/sklad/za_vse?user=1&view=list
+[19/Feb/2016 00:18:59] DEBUG [estate:224] https://www.avito.ru/dzhiginka/kommercheskaya_nedvizhimost/prodam/ofis/za_vse?user=1&view=list
+[19/Feb/2016 00:19:06] DEBUG [estate:224] https://www.avito.ru/vityazevo/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:19:12] DEBUG [estate:224] https://www.avito.ru/vityazevo/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:19:19] DEBUG [estate:224] https://www.avito.ru/vityazevo/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:19:23] DEBUG [estate:224] https://www.avito.ru/vityazevo/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:19:30] DEBUG [estate:224] https://www.avito.ru/vityazevo/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:19:37] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:19:42] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:19:48] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:19:54] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:20:01] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/sklad/za_vse?user=1&view=list
+[19/Feb/2016 00:20:07] DEBUG [estate:224] https://www.avito.ru/vityazevo/kommercheskaya_nedvizhimost/prodam/ofis/za_vse?user=1&view=list
+[19/Feb/2016 00:20:12] DEBUG [estate:224] https://www.avito.ru/sennoy/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:20:19] DEBUG [estate:224] https://www.avito.ru/sennoy/komnaty/prodam?user=1&view=list
+[19/Feb/2016 00:20:25] DEBUG [estate:224] https://www.avito.ru/sennoy/doma_dachi_kottedzhi/prodam?user=1&view=list
+[19/Feb/2016 00:20:30] DEBUG [estate:224] https://www.avito.ru/sennoy/zemelnye_uchastki/prodam?user=1&view=list
+[19/Feb/2016 00:20:37] DEBUG [estate:224] https://www.avito.ru/sennoy/garazhi_i_mashinomesta/prodam?user=1&view=list
+[19/Feb/2016 00:20:42] DEBUG [estate:224] https://www.avito.ru/sennoy/kommercheskaya_nedvizhimost/prodam/magazin/za_vse?user=1&view=list
+[19/Feb/2016 00:20:48] DEBUG [estate:224] https://www.avito.ru/sennoy/kommercheskaya_nedvizhimost/prodam/gostinicy/za_vse?user=1&view=list
+[19/Feb/2016 00:20:55] DEBUG [estate:224] https://www.avito.ru/sennoy/kommercheskaya_nedvizhimost/prodam/drugoe/za_vse?user=1&view=list
+[19/Feb/2016 00:21:01] DEBUG [estate:224] https://www.avito.ru/sennoy/kommercheskaya_nedvizhimost/prodam/proizvodstvo/za_vse?user=1&view=list
+[19/Feb/2016 00:22:17] DEBUG [estate:224] https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:22:18] DEBUG [estate:262] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:22:24] DEBUG [estate:235] Url https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:22:24] DEBUG [estate:262] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list!
+[19/Feb/2016 00:22:24] DEBUG [estate:262] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=3&user=1&view=list!
+[19/Feb/2016 00:28:06] DEBUG [estate:224] https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:28:07] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:28:14] DEBUG [estate:235] Url https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:28:14] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list!
+[19/Feb/2016 00:28:14] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=3&user=1&view=list!
+[19/Feb/2016 00:31:01] DEBUG [estate:224] https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:31:01] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:31:07] DEBUG [estate:236] Url https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:31:07] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list!
+[19/Feb/2016 00:31:07] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=3&user=1&view=list!
+[19/Feb/2016 00:35:38] DEBUG [estate:224] https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list
+[19/Feb/2016 00:35:38] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:35:45] DEBUG [estate:236] Url https://www.avito.ru/gelendzhik/kvartiry/prodam?p=2&user=1&view=list!
+[19/Feb/2016 00:35:45] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?user=1&view=list!
+[19/Feb/2016 00:35:45] DEBUG [estate:263] process_request_filter https://www.avito.ru/gelendzhik/kvartiry/prodam?p=3&user=1&view=list!
+[19/Feb/2016 00:35:51] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/2-k_kvartira_57.4_m_45_et._698339839!
+[19/Feb/2016 00:36:07] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/5-k_kvartira_130_m_14_et._660193130!
+[19/Feb/2016 00:36:15] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/1-k_kvartira_43_m_79_et._677541768!

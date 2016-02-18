@@ -202,7 +202,7 @@ class AvitoSpider(CrawlSpider):
                   }  
     rules = (            
         Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="pagination__nav clearfix"]/a',)), follow=True, process_request='process_request_filter', callback='process_response_filter'),
-        Rule (SgmlLinkExtractor(restrict_xpaths=('//div[@class="title"]/h3[@class="h3 fader"]/a',), process_value=process_value), callback='parse_item'),
+        Rule (SgmlLinkExtractor(restrict_xpaths=('//a[@class="description-title-link"]',), process_value=process_value), callback='parse_item'),
     )   
        
     def start_requests(self):
@@ -217,8 +217,7 @@ class AvitoSpider(CrawlSpider):
                 urls.append(template % (l, t))                
             for com_type in com_types:
                 urls.append(com_template % (l, com_type)) 
-        for url in urls:
-            print url
+        for url in urls:            
             yield Request(url, self.parse)
     
     def parse_item(self, response):
