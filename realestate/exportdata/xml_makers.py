@@ -14,6 +14,9 @@ import pytz
 from settings import MEDIA_ROOT
 from exportdata.utils import EstateTypeMapper, InteriorMapper, ApplianceMapper
 from django.utils import translation
+import logging
+
+logger = logging.getLogger(__name__)
 
 def number2xml(d):
     return '%.12g' % d if d else ''
@@ -110,8 +113,8 @@ class EstateBaseWrapper(object):
                     im = get_thumbnail(img.image.file, '800x600', clear_watermark=clear_watermark)
                     head, tail = os.path.split(im.name)  # @UnusedVariable                                
                     result.append(urljoin(self._domain, im.url))                  
-                except IOError:
-                    pass                    
+                except:
+                    logger.error('Wrong image file %s, lot %s!' % (img.image.file, img.estate))                    
             return result
     
     def render_content(self, estate, description, short=False):        

@@ -1228,7 +1228,7 @@ class WordpressQueue(TemplateView):
                            }
             meta_querysets = {}
             meta_localities = []
-            for tax in WordpressTaxonomyTree.objects.exclude(wp_meta_locality=None):
+            for tax in WordpressTaxonomyTree.objects.exclude(wp_meta_locality=None):  # @UndefinedVariable
                 meta_localities.append(tax.wp_meta_locality)
             meta_querysets['meta_localities'] = meta_localities
             meta_querysets['meta_estate_types'] = WordpressMetaEstateType.objects.all()                
