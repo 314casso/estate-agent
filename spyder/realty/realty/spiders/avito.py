@@ -94,8 +94,7 @@ class AvitoFleldsParser(BasePhoneImageParser):
                          ur'складское' : EstateTypeMapper.SKLAD,
                          ur'торговое' : EstateTypeMapper.MAGAZIN,                         
                          } 
-        txt = self.get_breadcrumbs()
-        print u"BREADCRUMBS: %s" % txt        
+        txt = self.get_breadcrumbs()                
         if txt:           
             result = self.re_mapper(mapper, txt)
             if callable(result):
