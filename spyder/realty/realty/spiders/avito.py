@@ -218,6 +218,7 @@ class AvitoSpider(CrawlSpider):
             for com_type in com_types:
                 urls.append(com_template % (l, com_type)) 
         for url in urls:
+            print url
             yield Request(url, self.parse)
     
     def parse_item(self, response):
