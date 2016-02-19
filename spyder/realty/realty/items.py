@@ -30,14 +30,19 @@ class RealtyItem(Item):
             if self[field]:
                 return True  
         
-    def print_item(self):        
-        print '********* ITEM *********'
-        for key, value in self._values.iteritems():
-            txt = ''
-            if type(value) is list:
-                for v in value:
-                    txt += u'%s ' % v                                     
-            else:
-                txt = '%s' % value            
-            print "KEY [ %s: %s ]" % (key, txt)
-        print '********* END *********'
+    def print_item(self):
+        try:        
+            print '********* ITEM *********'
+            for key, value in self._values.iteritems():
+                txt = ''
+                if type(value) is list:
+                    for v in value:
+                        txt += u'%s ' % v                                     
+                else:
+                    txt = u'%s' % value            
+                print u"KEY [ %s: %s ]" % (key, txt)
+            print '********* END *********'
+        except:
+            print u'PRINT ITEM ERROR'  
+            
+                
