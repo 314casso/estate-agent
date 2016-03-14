@@ -50,8 +50,21 @@ class NersSalesAgent(SalesAgent):
 
 class CianYaXML(Restate):
     name = 'cianya'
+    
     def get_sales_agent(self, estate):
         return CianYaSalesAgent(estate)
+    
+    def get_queryset(self):
+        MIN_PRICE_LIMIT = 100000  
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),             
+             'agency_price__gte': MIN_PRICE_LIMIT,  
+             'estate_params__exact': EstateParam.AVITO,          
+             }
+        q = Estate.objects.all()
+        q = q.filter(**f)     
+        return q
 
 
 class CianYaSalesAgent(SalesAgent):
