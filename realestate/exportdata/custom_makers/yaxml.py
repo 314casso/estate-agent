@@ -177,9 +177,21 @@ class YandexXML(BaseXML):
         return offer
     
     def validate_offer(self, offer):
-        if offer is not None:            
-            return True
-    
+        if offer is None:  
+            return False        
+        offer_id = offer.xpath("/offer/@internal-id")[0]
+        rooms = offer.xpath("/offer/rooms/text()")
+        if len(rooms):
+            rooms_count = int(rooms[0])
+            room_space = offer.xpath("/offer/room-space")
+            room_space_tags = len(room_space)
+            if room_space_tags:
+                if room_space_tags != rooms_count:
+                    error = u"%s\tROOMS: %s\tROOM_SPACE: %s" % (offer_id, rooms_count, room_space_tags)
+                    self.write_XML_error(error)   
+                    return False               
+        return True
+            
     def get_offer(self, estate):
         if not estate.is_web_published:
             return 
@@ -236,4 +248,5 @@ class YandexXML(BaseXML):
         print temp_file_name
         etree.ElementTree(xhtml).write(temp_file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
         copyfile(temp_file_name, self.file_name)        
-        
+            
+

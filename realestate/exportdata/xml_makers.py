@@ -392,9 +392,15 @@ class BaseXML(object):
         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
         self.NSMAP = {None : self.XHTML_NAMESPACE}
         self.tz = pytz.timezone('Europe/Moscow')        
-        self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)        
+        self.file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % self.name)
+        self.errors_file_name = os.path.join(MEDIA_ROOT, 'feed' ,'errors_%s.txt' % self.name)        
         self._use_cache = True
-        translation.activate('ru')        
+        translation.activate('ru')
+        try:
+            os.remove(self.errors_file_name)
+        except OSError:
+            pass
+                
     def get_delta(self):    
         return datetime.datetime.now() - datetime.timedelta(days=self.VALID_DAYS)
     def get_cache_key(self, estate):
@@ -415,6 +421,10 @@ class BaseXML(object):
         pickle_xml = pickle.dumps(pickled_dict)
         cache.set(self.get_cache_key(estate), pickle_xml, self.CACHE_TIME)
 
-
+    def write_XML_error(self, line):
+        error_line = u"%s\t%s\t%s\n" % (datetime.datetime.now(), self.name, line)
+        with open(self.errors_file_name, 'a') as f:
+            f.write(error_line)
+          
 
 
