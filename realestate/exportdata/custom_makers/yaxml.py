@@ -189,7 +189,7 @@ class YandexXML(BaseXML):
                 if room_space_tags != rooms_count:
                     error = u"%s\tROOMS: %s\tROOM_SPACE: %s" % (offer_id, rooms_count, room_space_tags)
                     self.write_XML_error(error)   
-                    return False               
+                    #return False               
         return True
             
     def get_offer(self, estate):
