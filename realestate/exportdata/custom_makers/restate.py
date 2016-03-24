@@ -60,7 +60,7 @@ class CianYaXML(Restate):
              'validity':Estate.VALID,
              'history__modificated__gte':self.get_delta(),             
              'agency_price__gte': MIN_PRICE_LIMIT,  
-             'estate_params__exact': EstateParam.AVITO,          
+             'estate_params__exact': EstateParam.PAYEXPORT,          
              }
         q = Estate.objects.all()
         q = q.filter(**f)     
