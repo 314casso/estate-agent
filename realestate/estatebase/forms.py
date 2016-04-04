@@ -25,7 +25,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     OutbuildingLookup, PurposeLookup, HeatingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate
+    EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate,\
+    EstateFile
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -711,6 +712,11 @@ class ImageUpdateForm(ModelForm):
     class Meta:
         model = EstatePhoto   
         fields = ('name', 'note', 'image')     
+
+class FileUpdateForm(ModelForm):
+    class Meta:
+        model = EstateFile   
+        fields = ('name', 'note', 'file')
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')    

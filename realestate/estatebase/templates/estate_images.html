@@ -38,7 +38,7 @@
 
         {% thumbnail image.image "110x80" crop="center" as im %}        
         {% thumbnail image.image "800x600" as bim %}
-        <a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+        	<a rel="lightbox[{{ estate.pk }}]" href="{{ bim.url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
         {% endthumbnail %}
         {% endthumbnail %}
         <div>

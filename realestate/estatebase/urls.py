@@ -20,7 +20,8 @@ from estatebase.views import ClientListView, \
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
-    set_bid_basic_client, ManageEstateM2MEntrance
+    set_bid_basic_client, ManageEstateM2MEntrance, EstateFilesView, upload_files,\
+    FileDeleteView, FileUpdateView
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -58,6 +59,7 @@ urlpatterns += patterns('',
     url (r'^estatecommupdate/(?P<pk>\d+)$', view=EstateCommunicationUpdateView.as_view(), name='estate_comm_update'),    
     url (r'^estateparamsupdate/(?P<pk>\d+)$', view=EstateParamUpdateView.as_view(), name='estate_params_update'),
     url (r'^estateimages/(?P<estate>\d+)$', view=EstateImagesView.as_view(), name='estate_images'),
+    url (r'^estatefiles/(?P<estate>\d+)$', view=EstateFilesView.as_view(), name='estate_files'),
     url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
     
 )
@@ -76,9 +78,12 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
     url (r'^uploadimages/$', view=upload_images, name='upload_images'),
+    url (r'^uploadfiles/$', view=upload_files, name='upload_files'),
     url (r'^imageswap/(?P<estate>\d+)/(?P<pk>\d+)/(?P<direction>\w+)$', view=SwapEstatePhotoView.as_view(), name='image_swap'),
     url (r'^imageupdate/(?P<pk>\d+)$', view=ImageUpdateView.as_view(), name='image_update'),
-    url (r'^imagedelete/(?P<pk>\d+)$', view=ImageDeleteView.as_view(), name='image_delete'),    
+    url (r'^imagedelete/(?P<pk>\d+)$', view=ImageDeleteView.as_view(), name='image_delete'),
+    url (r'^filedelete/(?P<pk>\d+)$', view=FileDeleteView.as_view(), name='file_delete'),
+    url (r'^fileupdate/(?P<pk>\d+)$', view=FileUpdateView.as_view(), name='file_update'),        
 )
 
 urlpatterns += patterns('',

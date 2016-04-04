@@ -76,11 +76,11 @@ class WPService(object):
     def get_or_create_category(self, estate):
         locality_id = estate.locality_id
         estate_type_name = estate.basic_estate_type.name 
-        wp_cat = WordpressTaxonomyTree.objects.filter(parent__localities__id=locality_id, name__iexact=estate_type_name)[:1]    
+        wp_cat = WordpressTaxonomyTree.objects.filter(parent__localities__id=locality_id, name__iexact=estate_type_name)[:1]    # @UndefinedVariable
         if wp_cat:
             return wp_cat.get()
         else:
-            wp_cats = WordpressTaxonomyTree.objects.filter(localities__id=locality_id)
+            wp_cats = WordpressTaxonomyTree.objects.filter(localities__id=locality_id)  # @UndefinedVariable
             len_cats = len(wp_cats)
             if len_cats != 1:
                 raise ObjectDoesNotExist(u'Населенный пункт с id %s, связан с %s категорией wordperss!'  % (locality_id, len_cats))
@@ -92,7 +92,7 @@ class WPService(object):
                 except:
                     raise Exception(u'Не удалось создать категорию на стороне wordpress! Если категория существует на сайте, запустите синхронизацию...')
                 if remote_taxonomy:
-                    return WordpressTaxonomyTree.objects.create(
+                    return WordpressTaxonomyTree.objects.create(  # @UndefinedVariable
                                                          name=remote_taxonomy.name,
                                                          wp_parent_id=taxonomy_item.wp_id,
                                                          wp_id=remote_taxonomy.id,                                                         
@@ -125,7 +125,7 @@ class WPService(object):
         wp_cats = estate.estate_params.exclude(wp_taxons=None).values_list('wp_taxons__taxonomy_tree', flat=True)
         for wp_cat_id in wp_cats:
             if wp_cat_id:             
-                params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            
+                params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            # @UndefinedVariable
                 result.append(self.wrap_to_wp_category(params_taxonomy_tree))
         return result
     

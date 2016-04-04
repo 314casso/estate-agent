@@ -707,6 +707,23 @@ class EstatePhoto(OrderedModel):
         verbose_name = _('EstatePhoto')
         verbose_name_plural = _('EstatePhotos') 
 
+def get_file_upload_to(instance, filename):    
+    return os.path.join(u'files',  force_unicode(instance.estate_id),  force_unicode(filename))
+
+class EstateFile(OrderedModel):
+    '''
+    Файлы
+    '''
+    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='files')
+    name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
+    note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
+    file = models.FileField(verbose_name=_('File'), upload_to=get_file_upload_to)
+    def __unicode__(self):
+        return u'%s' % (self.name or self.file.name)
+    class Meta(OrderedModel.Meta):
+        verbose_name = _('EstateFile')
+        verbose_name_plural = _('EstateFiles') 
+
 class WallConstrucion(SimpleDict):
     '''
     Стены

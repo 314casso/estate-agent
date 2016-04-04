@@ -190,6 +190,7 @@
         </div>
         <div style="float: left; margin-left: 10px">
             {% include "estate_dialog/photo_base.html" %}
+            {% include "estate_dialog/file_base.html" %}
             {% if estate.basic_bidg and estate.basic_bidg.is_independent %}
             {% include "estate_dialog/basic_bidg_summary.html" with basic_bidg=estate.basic_bidg %}
             {% endif %}

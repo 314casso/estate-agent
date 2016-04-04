@@ -1,0 +1,18 @@
+{% extends "dialog_block.html" %}
+{% load thumbnail %}
+{% block title_left %}
+<a href="{% url estate_files estate.pk %}?{{ next_url }}">Редактирование файлов</a>
+{% endblock %}
+{% block content %}
+
+<div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px;">
+    {% for file in files %}   
+    <span style="padding: 1px 2px; margin: 2px" class="ui-widget-content ui-corner-all new-state">
+        <a href="{{ file.file.url }}">{{ file.name }}</a>
+    </span>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+

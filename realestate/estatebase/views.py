@@ -18,11 +18,11 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
-    BidEventForm, BidUpdateForm, EntranceEstateFormSet
+    BidEventForm, BidUpdateForm, EntranceEstateFormSet, FileUpdateForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent, BidClient
+    ExUser, Bidg, BidEvent, BidClient, EstateFile
 from models import EstateTypeCategory
 from settings import CORRECT_DELTA
 from django.core.exceptions import ObjectDoesNotExist
@@ -91,6 +91,16 @@ def upload_images(request):
             next_url = request.REQUEST.get('next', '')            
     return HttpResponseRedirect(next_url)         
 
+def upload_files(request):
+    if request.method == 'POST':           
+        for upfile in request.FILES.getlist('form_file'):
+            estate_file = EstateFile(estate_id=request.REQUEST.get('estate', None)) 
+            file_content = ContentFile(upfile.read()) 
+            estate_file.file.save(upfile.name, file_content)
+            estate_file.name = upfile.name
+            estate_file.save()  
+            next_url = request.REQUEST.get('next', '')            
+    return HttpResponseRedirect(next_url)
 
 class SwapMixin(SingleObjectMixin, View):
     def get_context_data(self, **kwargs):
@@ -125,6 +135,19 @@ class ImageUpdateView(BaseMixin, UpdateView):
         context = super(ImageUpdateView, self).get_context_data(**kwargs)        
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
+            'title': 'Фото',
+        })        
+        return context    
+    
+class FileUpdateView(BaseMixin, UpdateView):
+    model = EstateFile
+    template_name = 'image_update.html'
+    form_class = FileUpdateForm
+    def get_context_data(self, **kwargs):
+        context = super(FileUpdateView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'title': 'Файл',
         })        
         return context    
     
@@ -140,6 +163,19 @@ class ImageDeleteView(DeleteView):
         return context
     def get_success_url(self):   
         return self.request.REQUEST.get('next', '')                    
+
+class FileDeleteView(DeleteView):
+    model = EstateFile
+    template_name = 'confirm.html'
+    def get_context_data(self, **kwargs):
+        context = super(FileDeleteView, self).get_context_data(**kwargs)
+        context.update({
+            'dialig_title' : u'Удаление файла...',
+            'dialig_body'  : u'Подтвердите удаление файла: %s' % self.object,
+        })
+        return context
+    def get_success_url(self):   
+        return self.request.REQUEST.get('next', '')
 
 class EstateTypeView(TemplateView):    
     template_name = 'index.html'        
@@ -364,6 +400,7 @@ class EstateListDetailsView(EstateListView):
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%s (~%s%%)' % (intcomma(r), int(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
+            'files': self.estate and self.estate.files.all()[:6] or None,
             'estate': self.estate,
         })                
         return context        
@@ -410,6 +447,16 @@ class EstateImagesView(TemplateView):
             'estate': Estate.objects.get(pk=kwargs['estate'])            
         })        
         return context      
+
+class EstateFilesView(TemplateView): 
+    template_name = 'estate_files.html'
+    def get_context_data(self, **kwargs):
+        context = super(EstateFilesView, self).get_context_data(**kwargs)        
+        context.update({            
+            'next_url': safe_next_link(self.request.get_full_path()),
+            'estate': Estate.objects.get(pk=kwargs['estate'])            
+        })        
+        return context
 
 class ClientUpdateEstateView(DetailView):   
     model = Client
