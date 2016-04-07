@@ -23,6 +23,9 @@ from django.utils.encoding import force_unicode
 import re
 from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
     LayoutFeatureMapper
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.generic import GenericForeignKey,\
+    GenericRelation
 
 class ExUser(User):
     def __unicode__(self):
@@ -489,6 +492,8 @@ class Estate(ProcessDeletedModel):
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
     validity = models.ForeignKey(Validity, verbose_name=_('Validity'), blank=True, null=True)
     broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
+    #attachments
+    files = GenericRelation('EstateFile')
     def check_contact(self):
         return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
     def check_validity(self):
@@ -708,13 +713,15 @@ class EstatePhoto(OrderedModel):
         verbose_name_plural = _('EstatePhotos') 
 
 def get_file_upload_to(instance, filename):    
-    return os.path.join(u'files',  force_unicode(instance.estate_id),  force_unicode(filename))
+    return os.path.join(u'files', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
 
 class EstateFile(OrderedModel):
     '''
     Файлы
     '''
-    estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='files')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
     name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
     note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
     file = models.FileField(verbose_name=_('File'), upload_to=get_file_upload_to)
@@ -901,7 +908,7 @@ class Bidg(models.Model):
     appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=True)    
-    description = models.TextField(_('Description'), blank=True, null=True)
+    description = models.TextField(_('Description'), blank=True, null=True)    
     class Meta:
         verbose_name = _('bidg')
         verbose_name_plural = _('bidgs')
@@ -1206,6 +1213,8 @@ class Bid(ProcessDeletedModel):
     #Конец из пикле    
     note = models.TextField(_('Note'), blank=True, null=True)
     bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True,null=True)
+    #attachments
+    files = GenericRelation('EstateFile')
     @property
     def mixed_estate_types(self):
         result = []        

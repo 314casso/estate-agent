@@ -38,6 +38,7 @@ from estatebase.lib import format_phone
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
+from devrep.models import Partner
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -93,8 +94,11 @@ def upload_images(request):
 
 def upload_files(request):
     if request.method == 'POST':           
-        for upfile in request.FILES.getlist('form_file'):
-            estate_file = EstateFile(estate_id=request.REQUEST.get('estate', None)) 
+        object_pk = request.REQUEST.get('object_pk')
+        model_key = request.REQUEST.get('model_key')        
+        content_object = get_files_content_object(model_key, object_pk)        
+        for upfile in request.FILES.getlist('form_file'):                        
+            estate_file = EstateFile(content_object=content_object) 
             file_content = ContentFile(upfile.read()) 
             estate_file.file.save(upfile.name, file_content)
             estate_file.name = upfile.name
@@ -448,13 +452,24 @@ class EstateImagesView(TemplateView):
         })        
         return context      
 
-class EstateFilesView(TemplateView): 
-    template_name = 'estate_files.html'
+def get_files_model(model_key):
+    model_keys = {'estate':Estate, 'bid': Bid, 'partner': Partner}
+    return model_keys.get(model_key)
+
+def get_files_content_object(model_key, object_pk):
+    files_model = get_files_model(model_key)
+    return files_model.objects.get(pk=object_pk)
+
+class GenericFilesView(TemplateView): 
+    template_name = 'generic_files.html'    
     def get_context_data(self, **kwargs):
-        context = super(EstateFilesView, self).get_context_data(**kwargs)        
+        model_key = kwargs['model_key']        
+        content_object = get_files_content_object(model_key, kwargs['object_pk'])        
+        context = super(GenericFilesView, self).get_context_data(**kwargs)                 
         context.update({            
-            'next_url': safe_next_link(self.request.get_full_path()),
-            'estate': Estate.objects.get(pk=kwargs['estate'])            
+            'next_url': safe_next_link(self.request.get_full_path()),            
+            'content_object': content_object,            
+            'model_key': model_key,
         })        
         return context
 

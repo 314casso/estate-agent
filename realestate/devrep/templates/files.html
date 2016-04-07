@@ -1,0 +1,8 @@
+<fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
+    <legend style="font-size: 14px;"><a title="Загрузка и редактирование присоединенных файлов" href="{% url generic_files 'partner' partner.pk %}?{{ next_url }}">Присоединенные файлы</a></legend>   
+	    {% for file in partner.files.all %}   
+	    <span style="padding: 1px 2px; margin: 2px" class="ui-widget-content ui-corner-all new-state">
+	        <a href="{{ file.file.url }}">{{ file.name }}</a>
+	    </span>
+	    {% endfor %}	
+</fieldset>

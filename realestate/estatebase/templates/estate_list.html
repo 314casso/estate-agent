@@ -186,11 +186,11 @@
             {% if perms.estatebase.view_private %}
             {% include "estate_dialog/salers.html" %}
             {% endif %}            
-            {% include "estate_dialog/marks.html" %}
+            {% include "estate_dialog/file_base.html" %}
+            {% include "estate_dialog/marks.html" %}            
         </div>
         <div style="float: left; margin-left: 10px">
-            {% include "estate_dialog/photo_base.html" %}
-            {% include "estate_dialog/file_base.html" %}
+            {% include "estate_dialog/photo_base.html" %}            
             {% if estate.basic_bidg and estate.basic_bidg.is_independent %}
             {% include "estate_dialog/basic_bidg_summary.html" with basic_bidg=estate.basic_bidg %}
             {% endif %}

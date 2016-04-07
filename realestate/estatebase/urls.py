@@ -20,8 +20,8 @@ from estatebase.views import ClientListView, \
     EstateRegisterBindView, MultiBindEstateToRegister, WordpressQueue,\
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
-    set_bid_basic_client, ManageEstateM2MEntrance, EstateFilesView, upload_files,\
-    FileDeleteView, FileUpdateView
+    set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
+    FileDeleteView, FileUpdateView, GenericFilesView
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -59,7 +59,7 @@ urlpatterns += patterns('',
     url (r'^estatecommupdate/(?P<pk>\d+)$', view=EstateCommunicationUpdateView.as_view(), name='estate_comm_update'),    
     url (r'^estateparamsupdate/(?P<pk>\d+)$', view=EstateParamUpdateView.as_view(), name='estate_params_update'),
     url (r'^estateimages/(?P<estate>\d+)$', view=EstateImagesView.as_view(), name='estate_images'),
-    url (r'^estatefiles/(?P<estate>\d+)$', view=EstateFilesView.as_view(), name='estate_files'),
+    url (r'^genericfiles/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=GenericFilesView.as_view(), name='generic_files'),
     url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
     
 )

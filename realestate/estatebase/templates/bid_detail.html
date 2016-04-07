@@ -86,14 +86,14 @@
 	<tr>
 		<th>Примечание:</th>
 		<td>{{ bid.note }}</td>
-	</tr>
+	</tr>	
 </table>
-
 </fieldset>
 {% endblock %}
 
 
 {% block right %}
+{% include 'bid/files.html' %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Подборки</legend>    
 <div class="topbar button">

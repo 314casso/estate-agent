@@ -8,7 +8,8 @@
     {% csrf_token %}
     <input required type="file" name="form_file" id="form_file" multiple="multiple"/>
     <input type="hidden" name="next" id="next_after" value="{{ request.get_full_path }}"/>
-    <input type="hidden" name="estate" id="estate_pk" value="{{ estate.pk }}"/>
+    <input type="hidden" name="model_key" id="model_key_pk" value="{{ model_key }}"/>
+    <input type="hidden" name="object_pk" id="object_pk" value="{{ content_object.pk }}"/>
     <button type="submit">
         Загрузить
     </button>

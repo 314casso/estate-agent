@@ -2,10 +2,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from estatebase.models import ProcessDeletedModel, Region, Locality,\
-     SimpleDict, HistoryMeta, Client, AVAILABILITY_CHOICES
+     SimpleDict, HistoryMeta, Client, AVAILABILITY_CHOICES, EstateFile
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from django.core.validators import RegexValidator
+from django.contrib.contenttypes.generic import GenericRelation
 
 
 class Address(models.Model):
@@ -235,7 +236,8 @@ class Partner(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     parent = models.ForeignKey('self', verbose_name=_('Parent'), null=True, blank=True, related_name='children')
     note = models.CharField(_('Note'), blank=True, null=True, max_length=1000)
-    
+    #attachments
+    files = GenericRelation(EstateFile)
     def __unicode__(self):
         return u'%s' % self.name
     
