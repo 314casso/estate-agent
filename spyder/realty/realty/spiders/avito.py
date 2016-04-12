@@ -24,13 +24,13 @@ import subprocess
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 
-dcap = dict(DesiredCapabilities.PHANTOMJS)
-dcap["phantomjs.page.settings.userAgent"] = (
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
-    "(KHTML, like Gecko) Chrome/15.0.87"
-)
+# dcap = dict(DesiredCapabilities.PHANTOMJS)
+# dcap["phantomjs.page.settings.userAgent"] = (
+#     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
+#     "(KHTML, like Gecko) Chrome/15.0.87"
+# )
 
-driver = webdriver.PhantomJS(port=65000, desired_capabilities=dcap)
+# driver = webdriver.PhantomJS(port=65000, desired_capabilities=dcap)
 
 def login_avito(driver):
     username = "olegpe2000@mail.ru"
@@ -41,7 +41,7 @@ def login_avito(driver):
     WebDriverWait(driver, 30).until(lambda driver : driver.find_element_by_name("password")).send_keys(password)
     WebDriverWait(driver, 30).until(lambda driver : driver.find_element_by_class_name("btn-yellow")).submit()
 
-login_avito(driver)
+#login_avito(driver)
 
 DECODER_SETTINGS = {
            'avito_phone': {
@@ -260,11 +260,18 @@ class AvitoSpider(CrawlSpider):
 
 class SpyderJS(object):
     _full_filename = None
-    def __init__(self):
+    _driver = None
+    def __init__(self):               
         self.IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'spyder', 'avito')
     
-    def get_full_filename(self, url):
-        if not self._full_filename:                    
+    def get_driver(self):
+        if not self._driver:
+            self._driver = ""    
+        return self._driver
+    
+    def get_full_filename(self, url):        
+        if not self._full_filename:
+            driver = self.get_driver()                    
             driver.get(url)
             elem = driver.find_element_by_class_name("js-phone-show__insert")
             if not elem:
@@ -275,7 +282,7 @@ class SpyderJS(object):
               var phone_imgs = document.getElementsByClassName("description__phone-img");
               var canvas = document.createElement("canvas");
               canvas.width = 102;
-              canvas.height = 16;
+              canvas.height = 16Partner;
               var ctx = canvas.getContext("2d");          
               ctx.drawImage(phone_imgs[0], 0, 0);
               return canvas.toDataURL("image/png").split(",")[1];
