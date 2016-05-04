@@ -48,7 +48,7 @@ class SlrgelSpider(BaseSpider):
         phone = phone.replace('-', '')
         if 5 <= len(phone) < 10:
             return '8%s%s' % (GELCODE, phone)   
-        return '8%s' % phone   
+        return '%s' % phone   
        
     def filter_price(self, price):
         mesures = {u'т.р.':1000, u'млн.р.':1000000}
