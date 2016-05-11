@@ -16,8 +16,7 @@ class GdeetotdomXML(AvitoXML):
              'agency_price__gte': MIN_PRICE_LIMIT,             
              }
         q = Estate.objects.all()
-        q = q.filter(**f)        
-        q = q.exclude(street__name__exact = u'без улицы')   
+        q = q.filter(**f)      
         q = q.exclude(estate_params__exact = EstateParam.RENT,)     
         return q
 
