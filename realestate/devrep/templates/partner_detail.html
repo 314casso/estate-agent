@@ -4,6 +4,14 @@
 {% load query_string %}
 {% load humanize %}
 
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/lightbox.css">
+{% endblock css %}
+
+{% block js %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/lightbox.js"></script>
+{% endblock js %}
+
 {% block page_header %}
 	Подробная информация о партнере {{ partner.name }}
 {% endblock %}

@@ -729,7 +729,10 @@ class EstateFile(OrderedModel):
         return u'%s' % (self.name or self.file.name)
     class Meta(OrderedModel.Meta):
         verbose_name = _('EstateFile')
-        verbose_name_plural = _('EstateFiles') 
+        verbose_name_plural = _('EstateFiles')
+    def is_image(self):
+        import imghdr        
+        return imghdr.what(self.file.path) is not None 
 
 class WallConstrucion(SimpleDict):
     '''
