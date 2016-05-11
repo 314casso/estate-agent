@@ -1,12 +1,25 @@
 from exportdata.custom_makers.avitoxml import AvitoXML
 from exportdata.xml_makers import SalesAgent
 from exportdata.custom_makers.avitopayxml import AvitoXMLPay
+from estatebase.models import Estate, EstateParam
 
     
 class GdeetotdomXML(AvitoXML):
     name = 'gdeetotdom'
     def get_sales_agent(self, estate):
         return GdeetotdomSalesAgent(estate)
+    def get_queryset(self):
+        MIN_PRICE_LIMIT = 100000  
+        f = {
+             'validity':Estate.VALID,
+             'history__modificated__gte':self.get_delta(),             
+             'agency_price__gte': MIN_PRICE_LIMIT,             
+             }
+        q = Estate.objects.all()
+        q = q.filter(**f)        
+        q = q.exclude(street__name__exact = u'без улицы')   
+        q = q.exclude(estate_params__exact = EstateParam.RENT,)     
+        return q
 
 
 class GdeetotdomSalesAgent(SalesAgent):
