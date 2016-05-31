@@ -2,12 +2,13 @@
 
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # Create a Dispatcher; this handles the calls and translates info to function maps
 #dispatcher = SimpleXMLRPCDispatcher() # Python 2.4
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None) # Python 2.5
  
-
+@csrf_exempt
 def rpc_handler(request):
         """
         the actual handler:
