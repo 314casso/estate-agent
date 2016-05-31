@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'django.contrib.auth.views.login',name='login'),     
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login',name='logout'),
     url(r'session_security/', include('session_security.urls')),
-    url(r'^devrep/', include('devrep.urls')),    
+    url(r'^devrep/', include('devrep.urls')),
+    url(r'^xmlrpc/', include('xmlrpc.urls')),    
 )
 
 if settings.DEBUG:

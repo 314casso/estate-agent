@@ -1,5 +1,7 @@
 from django.db import models
 from estatebase.models import Locality
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.generic import GenericForeignKey
 
 class FeedLocality(models.Model):    
     feed_name = models.CharField(db_index=True, max_length=15)
@@ -11,3 +13,10 @@ class FeedLocality(models.Model):
         ordering = ['locality']
         unique_together = ('feed_name', 'locality')    
         unique_together = ('feed_code', 'locality')
+
+class FeedMapper(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    feed_name = models.CharField(db_index=True, max_length=15)  
+    xml_value = models.CharField(db_index=True, max_length=255)

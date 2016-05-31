@@ -177,7 +177,8 @@ INSTALLED_APPS = (
     'exportdata',    
     'session_security',  
     'request',  
-    'debug_toolbar',    
+    'debug_toolbar', 
+    'xmlrpc',   
 )
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')
