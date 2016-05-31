@@ -51,3 +51,5 @@ def multiply(a, b):
         Returns the result of the multiplication!
         """
         return a*b
+    
+dispatcher.register_function(multiply, 'multiply')    
