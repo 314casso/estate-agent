@@ -3,10 +3,11 @@
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from xmlrpc.services import SpiderStoreService
 
 # Create a Dispatcher; this handles the calls and translates info to function maps
 #dispatcher = SimpleXMLRPCDispatcher() # Python 2.4
-dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None) # Python 2.5
+dispatcher = SimpleXMLRPCDispatcher(allow_none=True, encoding=None) # Python 2.5
  
 @csrf_exempt
 def rpc_handler(request):
@@ -35,7 +36,7 @@ def rpc_handler(request):
                         sig = dispatcher.system_methodSignature(method)
 
                         # this just reads your docblock, so fill it in!
-                        help =  dispatcher.system_methodHelp(method)
+                        help =  dispatcher.system_methodHelp(method)  # @ReservedAssignment
 
                         response.write("<li><b>%s</b>: [%s] %s" % (method, sig, help))
 
@@ -45,12 +46,9 @@ def rpc_handler(request):
         response['Content-length'] = str(len(response.content))
         return response
 
-def multiply(a, b):
-        """
-        Multiplication is fun!
-        Takes two arguments, which are multiplied together.
-        Returns the result of the multiplication!
-        """
-        return a*b
+def add_lot(item_dict):
+    store_service = SpiderStoreService()    
+    return store_service.add_lot(item_dict)
     
-dispatcher.register_function(multiply, 'multiply')    
+        
+dispatcher.register_function(add_lot, 'add_lot')    

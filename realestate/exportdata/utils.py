@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class EstateTypeMapper(object):
     DACHA = 13
     DOM = 16
@@ -364,4 +365,3 @@ class RegionMapper(object):
     GELENDZHIKSKIY = 2
     NOVOROSSIYSKIY = 3
     TEMRYUKSKIY = 4
-         
