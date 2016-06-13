@@ -36,7 +36,12 @@ class SpiderData(object):
         return False    
             
 class SpiderStoreService(object):
-    USER_ID = 4 #Бузенкова     
+    USER_ID = 4 #Бузенкова
+    NEW = 0
+    PROCESSED = 1    
+    ERROR = 2
+    NOPHONE = 3
+    EXISTSPHONE = 4  
     @transaction.commit_on_success
     def add_lot(self, item_dict):
         try:                
@@ -45,17 +50,28 @@ class SpiderStoreService(object):
             empty = spider_data.get_empty()                    
             if len(empty):
                 raise ValueError('Spider item has empty fields %s' % ', '.join(empty))                                 
-            item = spider_data.item
+            item = spider_data.item            
+            if self._if_phone_exists(item.phone):
+                result['status'] = self.EXISTSPHONE
+                result['error_message'] = 'Phone %s is already exists' % item.phone 
+                return result            
             client = self._create_client(item.name, item.origin_id)        
             self._create_contact(item.phone, client.id)        
             e = self._create_estate(spider_data, client.id)
             self._create_spyder_meta(spider_data.meta, e)
             result['estate_id'] = e.id
-            result['status'] = 1
+            result['status'] = self.PROCESSED
         except Exception, e:            
-            result['status'] = 0
+            result['status'] = self.ERROR
             result['error_message'] = str(e)             
         return result
+    
+    def _if_phone_exists(self, phone): 
+        if phone:
+            contacts = Contact.objects.filter(contact=phone, contact_type_id=Contact.PHONE)
+            if contacts:
+                return True
+        return False
         
     def _create_client(self, name, origin_id):        
         CLIENT_TYPE_ID = 3 #Частное лицо        
