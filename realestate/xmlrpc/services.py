@@ -76,7 +76,8 @@ class SpiderStoreService(object):
         return False
         
     def _create_client(self, name, origin_id):        
-        CLIENT_TYPE_ID = 3 #Частное лицо        
+        CLIENT_TYPE_ID = 3 #Частное лицо
+        name = u'неизвестно' if not name else name        
         history = HistoryMeta()        
         history.created = datetime.datetime.now()                
         history.created_by_id = self.USER_ID                
