@@ -119,7 +119,7 @@ class SpiderStoreService(object):
         e.save() 
         if spider_data.has_bidg():
             bidg = e.basic_bidg
-            for k,v in spider_data._bidg:
+            for k,v in spider_data._bidg.iteritems():
                 if v:                 
                     setattr(bidg, k, v) 
             bidg.save() 
