@@ -65,7 +65,8 @@ class SpiderStoreService(object):
         except Exception, e:            
             result['status'] = self.ERROR
             result['error_message'] = str(e)
-            transaction.rollback()             
+            if transaction.is_dirty():
+                transaction.rollback()             
         return result
     
     def _if_phone_exists(self, phone): 
