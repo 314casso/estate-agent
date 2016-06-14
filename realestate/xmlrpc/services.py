@@ -42,7 +42,7 @@ class SpiderStoreService(object):
     ERROR = 2
     NOPHONE = 3
     EXISTSPHONE = 4  
-    @transaction.commit_manually
+    @transaction.commit_on_success
     def add_lot(self, item_dict):
         try:                
             result = {}            
@@ -60,13 +60,11 @@ class SpiderStoreService(object):
             e = self._create_estate(spider_data, client.id)
             self._create_spyder_meta(spider_data.meta, e)
             result['estate_id'] = e.id
-            result['status'] = self.PROCESSED
-            transaction.commit()
+            result['status'] = self.PROCESSED            
         except Exception, e:            
             result['status'] = self.ERROR
-            result['error_message'] = str(e)
-            if transaction.is_dirty():
-                transaction.rollback()             
+            result['error_message'] = str(e)  
+            raise                       
         return result
     
     def _if_phone_exists(self, phone): 
