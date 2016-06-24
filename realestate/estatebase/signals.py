@@ -60,6 +60,7 @@ def bid_event_history(sender, instance, created, **kwargs):
         post_save.connect(bid_event_history, sender=BidEvent)
     else:
         prepare_history(instance.history, instance._user_id)
+    prepare_history(instance.bid.history, instance._user_id)
 
 def update_from_pickle(sender, instance, **kwargs):
     cleaned_data = instance.cleaned_filter    
