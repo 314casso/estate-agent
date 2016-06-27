@@ -11,7 +11,8 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login',name='logout'),
     url(r'session_security/', include('session_security.urls')),
     url(r'^devrep/', include('devrep.urls')),
-    url(r'^xmlrpc/', include('xmlrpc.urls')),    
+    url(r'^xmlrpc/', include('xmlrpc.urls')),
+    url(r'^export/', include('exportdata.urls')),
 )
 
 if settings.DEBUG:

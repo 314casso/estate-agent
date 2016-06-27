@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% block left %}
+<p><button id="submit">Сохранить</button></p>
+<div style="margin:5px; padding:5px 10px;" class="widget ui-widget-content" id="result"></div>
+<table class="base-table-list ui-widget ui-widget-content">
+	<thead>
+		<tr>
+			<th>Cправочник</th>
+			<th>Фид {{ feed }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for content_obj in items %}
+	<tr>
+		<td>{{ content_obj }}</td>
+		<td>
+		<input data-contenttype="{{ content_obj.content_type.id }}" data-feedid="{{ feed.id }}" data-objid="{{ content_obj.id }}" type='text' id="feed_map{{ forloop.counter }}" name="feed_map{{ forloop.counter }}" value="{{ content_obj.feed_map.xml_value }}" />		
+		</td>
+	</tr>
+	{% endfor %}			
+	</tbody>	
+</table>
+	
+<script>	
+	$(function() {
+		$("#result").hide()
+		$("#submit").button();	
+		$("#submit").on('click', save);		
+	});
+	
+	function save() {
+		var objlist = {}; 
+  		var elements = $('[id^="feed_map"]');
+  		elements.each(function(index) {
+  			obj = {}
+  			obj.object = $( this ).data( "objid" );
+  			obj.feed = $( this ).data( "feedid" );  			
+  			obj.contenttype = $( this ).data( "contenttype" );
+  			obj.xmlvalue = $( this ).val();
+  			if (!obj.xmlvalue) {
+  				$( this ).data( "feedmapper", '' );
+  			}  			
+  			objlist[index] = obj   			  			
+		});
+			
+		$.ajax({
+		    url: '{% url save_data %}',
+		    type: 'POST',
+		    contentType: 'application/json; charset=utf-8',
+		    data: JSON.stringify(objlist),
+		    dataType: 'text',
+		    success: function(data) {
+		    var result = JSON.parse(data);		    
+		    	$("#result").removeClass("ui-state-error ui-state-highlight");
+		    	if (result.result == 1) {		    		
+		        	$("#result").html("Данные успешно сохранены.");		        		
+		        	$("#result").addClass("ui-state-highlight");
+		        	$("#result").fadeIn(900).delay(3000).fadeOut(900)	        			        			        
+		        } else {		        	
+		        	$("#result").html("При сохранении произошла ошибка: "  + result.error);
+		        	$("#result").addClass("ui-state-error");
+		        	$("#result").fadeIn(900)
+		        }
+		        	        
+		    }
+		});		 
+			
+	}
+	
+</script>
+	
+
+	
+{% endblock %}

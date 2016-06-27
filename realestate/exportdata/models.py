@@ -14,9 +14,26 @@ class FeedLocality(models.Model):
         unique_together = ('feed_name', 'locality')    
         unique_together = ('feed_code', 'locality')
 
+class BaseFeed(models.Model):
+    name = models.CharField(db_index=True, max_length=15)
+    active = models.BooleanField()
+    rules_url = models.URLField()
+    def __unicode__(self):
+        return u'%s' % self.name
+
 class FeedMapper(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    feed_name = models.CharField(db_index=True, max_length=15)  
-    xml_value = models.CharField(db_index=True, max_length=255)
+    feed = models.ForeignKey(BaseFeed)  
+    xml_value = models.CharField(db_index=True, max_length=255, blank=True, null=True,)
+    class Meta:
+        unique_together = ('content_type', 'object_id', 'feed')
+    
+class FeedContentType(models.Model):
+    feeds = models.ManyToManyField(BaseFeed)
+    content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
+    def __unicode__(self):
+        return u'%s' % self.content_type
+    
+    

@@ -25,6 +25,7 @@ from local_settings import * #@UnusedWildImport
 LOGIN_REQUIRED_URLS = (
     r'/estatebase/(.*)$',    
     r'/devrep/(.*)$',
+    r'/export/(.*)$',
 )
 
 LOGIN_REQUIRED_URLS_EXCEPTIONS = ('logon',)

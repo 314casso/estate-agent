@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load link_helper %}
+{% block left %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#feed-content-type").accordion({
+			autoHeight : false,
+			active : 0
+		});
+	}); 
+</script>
+
+<div id="feed-content-type">	
+	{% for object in object_list %}
+	<h3><a href="#">{{ object }}</a></h3>
+	<div>		
+		<ul>
+			{% for feed in object.feeds.all %}
+			<li>				
+				<a href="{% url type_detail object.id feed.id  %}">{{ feed.name }}</a>	
+			</li>			
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</div>
+
+{% endblock %}
