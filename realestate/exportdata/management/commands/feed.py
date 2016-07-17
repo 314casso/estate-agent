@@ -17,6 +17,7 @@ from exportdata.custom_makers.idinaidixml import IdinaidiXML
 from exportdata.custom_makers.avitobased import GdeetotdomXML, KvadroomXML,\
     UbuXML
 from exportdata.custom_makers.yaxmlbased import NaydidomXML, MailruXML
+from exportdata.custom_makers.yaxmlplus import AnapaXML
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -50,6 +51,7 @@ class Command(BaseCommand):
                    MoveSuXML.name: MoveSuXML,
                    KvadroomXML.name: KvadroomXML,
                    UbuXML.name: UbuXML,
+                   AnapaXML.name: AnapaXML,
                  }
         if arg in mapper:
             return mapper[arg]
