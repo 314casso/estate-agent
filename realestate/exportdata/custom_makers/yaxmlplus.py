@@ -89,7 +89,7 @@ class AnapaXML(YandexXML):
         is_stead = estate.estate_category.is_stead
         has_stead = estate.estate_category.can_has_stead and estate.basic_stead       
         #offer        
-        offer = etree.Element("offer", {'internal-id':str(estate.id), 'anapa':'wake'})     
+        offer = etree.Element("offer", {'internal-id':str(estate.id), 'validity': u"%s" % estate.validity})     
         etree.SubElement(offer, "type").text = self._wrapper.offer_type()         
         etree.SubElement(offer, "property-type").text = self._wrapper.estate_type()
         etree.SubElement(offer, "category").text = self._wrapper.estate_category()
