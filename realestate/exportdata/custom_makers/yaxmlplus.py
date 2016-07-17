@@ -68,7 +68,7 @@ class AnapaWrapper(YandexWrapper):
         return super(AnapaWrapper, self).estate_category()  
     
 class AnapaXML(YandexXML):
-    VALID_DAYS = 1000
+    VALID_DAYS = 10
     name = 'anapa'
     def __init__(self, anapa_wrapper):
         super(AnapaXML,self).__init__(anapa_wrapper)
