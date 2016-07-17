@@ -3,7 +3,7 @@ from django.views.generic.list import ListView
 from exportdata.models import ContentTypeMapper, ValueMapper, MappedNode
 from django.views.generic.detail import DetailView
 from django.contrib.contenttypes.models import ContentType
-import simplejson as json
+import json as json
 from django.http import HttpResponse
 from django.db import transaction
 
