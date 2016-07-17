@@ -686,6 +686,9 @@ class Estate(ProcessDeletedModel):
             return len(wp_meta.post_id) > 0
         except:
             return False
+    @property
+    def modificated(self):
+        return self.history.modificated    
                         
     class Meta:
         verbose_name = _('estate')

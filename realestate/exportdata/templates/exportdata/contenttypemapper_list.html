@@ -15,12 +15,13 @@
 	{% for object in object_list %}
 	<h3><a href="#">{{ object }}</a></h3>
 	<div>		
-		<ul>
-			{% for feed in object.feeds.all %}
-			<li>				
-				<a href="{% url type_detail object.id feed.id  %}">{{ feed.name }}</a>	
-			</li>			
-			{% endfor %}
+		<ul>				
+				{% for node in object.nodes.all %}
+					<li>
+						<a title="XML feed node - {{ node }}" href="{% url type_detail object.id node.id  %}">{{ node.xml_node }}</a>
+					</li>
+				{% endfor %}	
+			
 		</ul>
 	</div>
 	{% endfor %}

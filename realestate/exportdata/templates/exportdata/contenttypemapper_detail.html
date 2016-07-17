@@ -7,7 +7,7 @@
 	<thead>
 		<tr>
 			<th>Cправочник</th>
-			<th>Фид {{ feed }}</th>
+			<th>Узел {{ mapped_node }}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,7 +15,7 @@
 	<tr>
 		<td>{{ content_obj }}</td>
 		<td>
-		<input data-contenttype="{{ content_obj.content_type.id }}" data-feedid="{{ feed.id }}" data-objid="{{ content_obj.id }}" type='text' id="feed_map{{ forloop.counter }}" name="feed_map{{ forloop.counter }}" value="{{ content_obj.feed_map.xml_value }}" />		
+		<input data-contenttype="{{ content_obj.content_type.id }}" data-mappednode="{{ mapped_node.id }}" data-objid="{{ content_obj.id }}" type='text' id="value_mapper{{ forloop.counter }}" name="value_mapper{{ forloop.counter }}" value="{{ content_obj.value_mapper.xml_value }}" />		
 		</td>
 	</tr>
 	{% endfor %}			
@@ -31,11 +31,11 @@
 	
 	function save() {
 		var objlist = {}; 
-  		var elements = $('[id^="feed_map"]');
+  		var elements = $('[id^="value_mapper"]');
   		elements.each(function(index) {
   			obj = {}
   			obj.object = $( this ).data( "objid" );
-  			obj.feed = $( this ).data( "feedid" );  			
+  			obj.mappednode = $( this ).data( "mappednode" );  			
   			obj.contenttype = $( this ).data( "contenttype" );
   			obj.xmlvalue = $( this ).val();
   			if (!obj.xmlvalue) {
