@@ -94,11 +94,20 @@ class BaseEngine(object):
             else:             
                 etree.SubElement(offer, node).text = text
         return sub_element
-    
+        
     def write_error_log(self, file_name):
-        print file_name
-        for k, v in self.error_log.iteritems():
-            print k, v 
+        try:
+            os.remove(file_name)
+        except OSError:
+            pass
+        if not self.error_log:
+            return
+        xhtml = etree.Element('Errors')     
+        for lot_id, err_dict in self.error_log.iteritems():
+            lot_node = etree.SubElement(xhtml, 'lot', {'id': u'%s' % lot_id})
+            for err_type, err_msg in err_dict.iteritems():
+                etree.SubElement(lot_node, 'error', {'type': err_type}).text = err_msg 
+        etree.ElementTree(xhtml).write(file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
             
             
     

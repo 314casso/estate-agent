@@ -24,7 +24,7 @@ from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
     ExUser, Bidg, BidEvent, BidClient, EstateFile
 from models import EstateTypeCategory
-from settings import CORRECT_DELTA
+from settings import CORRECT_DELTA, PUBLIC_MEDIA_URL
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
 import urlparse
@@ -1000,7 +1000,8 @@ class EstateRegisterMixin(ModelFormMixin):
         return initial
     def get_context_data(self, **kwargs):                         
         context = super(EstateRegisterMixin, self).get_context_data(**kwargs)
-        context.update({            
+        context.update({
+            'PUBLIC_MEDIA_URL' : PUBLIC_MEDIA_URL,
             'next_url': safe_next_link(self.request.get_full_path()),
             'addlist' : self._addlist,
         })

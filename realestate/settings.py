@@ -9,6 +9,7 @@ DEBUG = socket.gethostname() == 'picasso-kubuntu'
 #DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
+PUBLIC_MEDIA_URL = "http://copy.domnatamani.ru"
 
 ADMINS = (
      ('Picasso', 'picasso75@yandex.ru'),

@@ -87,6 +87,7 @@ class BaseMapper(object):
         _district = None    
         _street = None
         _bld_number = None
+        _distance_to_city = None 
         
         def __init__(self, estate):
             self._estate = estate
@@ -116,6 +117,12 @@ class BaseMapper(object):
             if not self._bld_number:
                 self._bld_number = self._estate.estate_number
             return self._bld_number
+        
+        @property
+        def distance_to_city(self):
+            if self._distance_to_city:
+                self._distance_to_city = number2xml(0)
+            return self._distance_to_city
         
         @property    
         def country(self):
