@@ -50,71 +50,48 @@ class AvitoEngine(BaseEngine):
             else:
                 empty_nodes.append("BldNumber")               
         
-                
         el_maker("Street", u', '.join(street), False)
-        
-        el_maker("DistanceToCity", address.distance_to_city, mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки'])
-                    
+        if mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки']:
+            el_maker("DistanceToCity", address.distance_to_city, mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки'])
+        el_maker("Description", mapper.description)
         el_maker("Rooms", mapper.rooms,  
                  required=(mapper.category in [u'Квартиры', u'Комнаты'])
                        )
         
-
-#         if category == u'Комнаты':             
-#             if self._wrapper.living_space():
-#                 etree.SubElement(offer, "Square").text = self._wrapper.living_space()
-#         else:
-#             if self._wrapper.area():
-#                 etree.SubElement(offer, "Square").text = self._wrapper.area()
-#         
-#         if self._wrapper.lot_area():
-#             etree.SubElement(offer, "LandArea").text = self._wrapper.lot_area()
-#             
-#         if self._wrapper.distance_to_city() is not None:
-#             etree.SubElement(offer, "DistanceToCity").text = self._wrapper.distance_to_city()
-#         
-#         if estate.estate_category_id != EstateTypeCategory.COMMERCE:                
-#             if self._wrapper.floor():            
-#                 etree.SubElement(offer, "Floor").text = self._wrapper.floor()        
-#             if self._wrapper.floors_total():
-#                 etree.SubElement(offer, "Floors").text = self._wrapper.floors_total()            
-#             if self._wrapper.house_type():
-#                 etree.SubElement(offer, "HouseType").text = self._wrapper.house_type()            
-#             if self._wrapper.walls_type():
-#                 etree.SubElement(offer, "WallsType").text = self._wrapper.walls_type()
-# 
-#         if estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-#             etree.SubElement(offer, "MarketType").text = self._wrapper.new_flat()
-#                 
-#         etree.SubElement(offer, "Region").text = self._wrapper.region()
-#         feed_locality = self._wrapper.feed_locality(self.feed_locality_name)
-#         etree.SubElement(offer, "City").text = feed_locality['city']
-#         if 'locality' in feed_locality:
-#             etree.SubElement(offer, "Locality").text = feed_locality['locality']
-#         
-#         etree.SubElement(offer, "District").text = self._wrapper.district()                            
-#         etree.SubElement(offer, "Street").text = self._wrapper.street()
-#         
-#         etree.SubElement(offer, "ObjectType").text = mapper.object_type()
-#         
-#         
-#         etree.SubElement(offer, "Description").text = self._wrapper.description()
+        if mapper.category in [u'Коммерческая недвижимость']:
+            el_maker("Title", mapper.title, False)
+            
         etree.SubElement(offer, "Price").text = mapper.price.value()
         etree.SubElement(offer, "PriceType").text = mapper.price.type()
+        square = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area         
+        el_maker("Square", square, required=(mapper.category not in [u'Земельные участки']))
+        el_maker("LandArea", mapper.land_area, required=(mapper.category in [u'Земельные участки', u'Дома, дачи, коттеджи']))
         
-#         images = self._wrapper.images(True)
-#         if images:
-#             images_root = etree.SubElement(offer, "Images")        
-#             if images:
-#                 for image in images:
-#                     image_node = etree.SubElement(images_root, "Image")
-#                     image_node.set("url", image)
-#         etree.SubElement(offer, "CompanyName").text = sa.organization()
-#         etree.SubElement(offer, "EMail").text = sa.email()
-#         etree.SubElement(offer, "ContactPhone").text = sa.head_phone()
+        if mapper.category in [u'Квартиры', u'Комнаты']:
+            el_maker("Floor", mapper.floor)        
+        
+        el_maker("Floors", mapper.floors, required=(mapper.category in [u'Квартиры', u'Комнаты', u'Дома, дачи, коттеджи']))
+        
+        if mapper.category in [u'Квартиры', u'Комнаты']:
+            el_maker("HouseType", mapper.house_type)
+            
+        if mapper.category in [u'Дома, дачи, коттеджи']:
+            el_maker("WallsType", mapper.walls_type)
+            
+        if mapper.category in [u'Квартиры']:
+            el_maker("MarketType", mapper.market_type)
+            
+        if mapper.category not in [u'Квартиры', u'Комнаты']:
+            el_maker("ObjectType", mapper.object_type)        
+             
+        images = mapper.images(10)
+        print images
+        if images:
+            images_root = etree.SubElement(offer, "Images")       
+            for image in images:
+                etree.SubElement(images_root, "Image", {'url': image})                
         
         if len(empty_nodes):
             errors['empty_nodes'] = u', '.join(empty_nodes)
                    
-        return (offer, errors) 
-    
+        return (offer, errors)  

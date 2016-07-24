@@ -18,7 +18,17 @@ class FeedContentTypeDetailView(DetailView):
         items = []        
         mapped_node = self.kwargs.get('mapped_node')
         print self.request
-        for obj in self.object.content_type.model_class().objects.all().order_by('name'):
+        q = self.object.content_type.model_class().objects.all()
+        if self.object.filter:
+            f = {}
+            pairs = self.object.filter.split(',')
+            for pair in pairs:
+                k,v = pair.split('=')
+                f[k.strip()] = v.strip()
+            q = q.filter(**f)
+        order_by = [x.strip() for x in self.object.order_by.split(',')] if self.object.order_by else ['name']               
+        q = q.order_by(*order_by)
+        for obj in q:
             content_type = ContentType.objects.get_for_model(obj)
             obj.content_type = content_type
             try:

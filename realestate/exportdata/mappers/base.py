@@ -1,24 +1,40 @@
 # -*- coding: utf-8 -*-
-from estatebase.models import EstateTypeCategory, EstateType, Locality
+from estatebase.models import EstateTypeCategory, EstateType, Locality,\
+    WallConstrucion
 from exportdata.models import ValueMapper
 import re
 from django.core.cache import cache
+from django.template import loader
+from django.template.context import Context
+from django.template.defaultfilters import striptags
 from django.contrib.contenttypes.models import ContentType
 import hashlib
+import os
+import logging
+
+logger = logging.getLogger('estate')
 
 def number2xml(d):
     return '%.12g' % d if d else ''
 
-class BaseMapper(object):    
+class BaseMapper(object):
+    _description = None  
+    _living_space = None  
+    _area = None
+    _land_area = None
+    _floor = None
+    _floors = None
+    
     def __init__(self, estate, feed):
         self._estate = estate
         self._basic_bidg = estate.basic_bidg
-        self._basic_bidg = self._estate.basic_bidg        
+        self._basic_stead = self._estate.basic_stead                
         self._layout = None
         self._price = self.Price(estate)      
         self._address = self.Address(estate)
         self._contact = self.Contact(estate, feed.campaign)
         self._feed = feed
+        self._domain = 'http://%s' % 'feed.domnatamani.ru' 
     
     class Contact:
         _office = None
@@ -54,7 +70,7 @@ class BaseMapper(object):
     @staticmethod
     def get_value_mapper(model_class, object_id, xml_node):
         cache_key = hashlib.md5(("%s%s%s" % (model_class, object_id, xml_node))).hexdigest()                                               
-        xml_value = cache.get(cache_key)
+        xml_value = cache.get(cache_key)        
         if xml_value is not None:            
             return xml_value
         try:
@@ -120,8 +136,8 @@ class BaseMapper(object):
         
         @property
         def distance_to_city(self):
-            if self._distance_to_city:
-                self._distance_to_city = number2xml(0)
+            if not self._distance_to_city:
+                self._distance_to_city = u'0'
             return self._distance_to_city
         
         @property    
@@ -136,13 +152,89 @@ class BaseMapper(object):
         def __init__(self, estate):
             self._estate = estate     
         def value(self):
-            return re.sub(r'\s', '', str(self._estate.agency_price))       
-    
+            return re.sub(r'\s', '', str(self._estate.agency_price))
         
+    def render_content(self, estate, description, short=False):        
+        t = loader.get_template('reports/feed/text_content.html')
+        c = Context({'estate_item':estate, 'description': description, 'short': short})
+        rendered = t.render(c)
+        return re.sub(r"\s+"," ", rendered).strip()
+    
+    def render_post_description(self, estate):
+        region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
+        location = u'%s %s' % (estate.locality.name_loct, region)
+        result = u'Продается %s в %s' % (estate.estate_type.lower(), location)             
+        return result
+    
+    @property        
+    def description(self):
+        if not self._description:
+            description = self.render_post_description(self._estate)        
+            return striptags(self.render_content(self._estate, description))
+        return self._description
+    
+    @property
+    def living_space(self):
+        # жилая площадь (при продаже комнаты — площадь комнаты)
+        if not self._living_space:
+            if self._basic_bidg:             
+                self._living_space = number2xml(self._basic_bidg.used_area)            
+        return self._living_space       
+    
+    @property
+    def area(self):
+        # общая площадь
+        if not self._area:
+            if self._basic_bidg:             
+                self._area = number2xml(self._basic_bidg.total_area)            
+        return self._area
+        
+    @property
+    def land_area(self):
+        if not self._land_area:        
+            if self._basic_stead:
+                self._land_area = number2xml(self._basic_stead.total_area_sotka or '')
+        return self._land_area
+    
+    @property
+    def floor(self):
+        if not self._floor:
+            if self._basic_bidg:
+                self._floor = number2xml(self._basic_bidg.floor)
+        return self._floor
+    
+    @property
+    def floors(self):
+        if not self._floors:
+            if self._basic_bidg:
+                floor_count = self._basic_bidg.floor_count
+                if floor_count is not None:
+                    self._floors = number2xml(int(floor_count))
+        return self._floors
+        
+    def images(self, max_images, clear_watermark=True):        
+        from urlparse import urljoin       
+        from sorl.thumbnail import get_thumbnail              
+        images = self._estate.images.all()[:max_images]
+        if images:
+            result = []
+            for img in images:
+                try:               
+                    im = get_thumbnail(img.image.file, '800x600', clear_watermark=clear_watermark)
+                    head, tail = os.path.split(im.name)  # @UnusedVariable                                
+                    result.append(urljoin(self._domain, im.url))                  
+                except:
+                    logger.debug('Wrong image file %s, lot %s!' % (img.image.file, img.estate))                    
+            return result       
 
 class AvitoMapper(BaseMapper):    
     _id = None
     _category = None
+    _title = None
+    _house_type = None
+    _walls_type = None
+    _market_type = None
+    _object_type = None 
     
     @property    
     def id(self):
@@ -179,82 +271,44 @@ class AvitoMapper(BaseMapper):
                 self._city = BaseMapper.get_value_mapper(Locality, self._estate.locality_id, 'City')
             return self._city
     
-#     
-#     def distance_to_city(self):
-#         if self._estate.estate_category_id in (EstateTypeCategory.KVARTIRA, EstateTypeCategory.COMMERCE):
-#             return
-#         return u'0'
-#         
-#     def sale_rooms(self):
-#         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-#             self.rooms()
-#     
-#     def object_type(self):
-#         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:
-#             return        
-#         if self._estate.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRAU4ASTOK):             
-#             type_mapper = {
-#                            EstateTypeMapper.DACHA:u'Дача',
-#                            EstateTypeMapper.DOM:u'Дом',
-#                            EstateTypeMapper.POLDOMA:u'Таунхаус',
-#                            EstateTypeMapper.KVARTIRASUCHASTKOM:u'Таунхаус',
-#                            EstateTypeMapper.KOTTEDZH:u'Коттедж',
-#                            EstateTypeMapper.TAUNHAUS:u'Таунхаус',
-#                            EstateTypeMapper.DUPLEKS:u'Таунхаус',                       
-#                            }
-#             return type_mapper.get(self._basic_bidg.estate_type_id) 
-#         if self._estate.estate_category_id == EstateTypeCategory.U4ASTOK:
-#             type_mapper = {
-#                            EstateTypeMapper.DACHNYYUCHASTOK :u'Сельхозназначения (СНТ, ДНП)',
-#                            EstateTypeMapper.UCHASTOKDLYASTROITELSTVADOMA:u'Поселений (ИЖС)',
-#                            EstateTypeMapper.UCHASTOKSELSKOHOZYAYSTVENNOGONAZNACHENIYA:u'Сельхозназначения (СНТ, ДНП)',
-#                            EstateTypeMapper.UCHASTOKKOMMERCHESKOGONAZNACHENIYA:u'Промназначения',
-#                            EstateTypeMapper.UCHASTOKINOGONAZNACHENIYA:u'Промназначения',                                                  
-#                            }
-#             return type_mapper.get(self._basic_stead.estate_type_id)
-#         if self._estate.estate_category_id == EstateTypeCategory.COMMERCE:
-#             DEFAULT = u'Помещение свободного назначения';
-#             estate_type_id = None
-#             if self._basic_bidg:
-#                 estate_type_id = self._basic_bidg.estate_type_id
-#             elif self._basic_stead:
-#                 estate_type_id = self._basic_stead.estate_type_id
-#             type_mapper = {
-#                            EstateTypeMapper.ADMINISTRATIVNOTORGOVOEZDANIE :u'Торговое помещение',                                                                            
-#                            EstateTypeMapper.TORGOVYYPAVILON :u'Торговое помещение',
-#                            EstateTypeMapper.MAGAZIN :u'Торговое помещение',
-#                            EstateTypeMapper.GOSTINITSA :u'Гостиница',
-#                            EstateTypeMapper.GOSTEVOYDOM :u'Гостиница',
-#                            EstateTypeMapper.GOSTEVYEKOMNATY :u'Гостиница',
-#                            EstateTypeMapper.GOSTINICHNYYKOMPLEKS :u'Гостиница',
-#                            EstateTypeMapper.PANSIONAT :u'Гостиница',
-#                            EstateTypeMapper.OTEL :u'Гостиница',
-#                            EstateTypeMapper.MINIGOSTINITSA :u'Гостиница',
-#                            EstateTypeMapper.SANATORIY :u'Гостиница',
-#                            EstateTypeMapper.OFIS :u'Офисное помещение',
-#                            EstateTypeMapper.ADMINISTRATIVNOEZDANIE :u'Офисное помещение',
-#                            EstateTypeMapper.RESTORAN :u'Ресторан, кафе',
-#                            EstateTypeMapper.KAFE :u'Ресторан, кафе',
-#                            EstateTypeMapper.SALONKRASOTY :u'Салон красоты',
-#                            EstateTypeMapper.SKLAD :u'Складское помещение',
-#                            EstateTypeMapper.PROIZVODSTVENNOSKLADSKAYABAZA :u'Складское помещение',                           
-#                            }
-#             return type_mapper.get(estate_type_id, DEFAULT)
-#             
-#     def feed_locality(self, feed_name):
-#         result = {}
-#         try:
-#             feed_locality = FeedLocality.objects.get(feed_name=feed_name, locality=self._estate.locality)
-#             result['city'] = feed_locality.locality.name
-#             return result            
-#         except FeedLocality.DoesNotExist:
-#             result['city'] = self._estate.locality.region.metropolis.name
-#             result['locality'] = self._estate.locality.name
-#             return result
-#     
-#     def ad_status(self):
-#         return u'Free'             
-#      
+    @property
+    def title(self):
+        if not self._title:
+            self._title = self._estate.estate_category.name
+        return self._title
+
+    @property
+    def house_type(self):
+        if not self._house_type:
+            if self._basic_bidg:                
+                self._house_type = BaseMapper.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'HouseType')
+        return self._house_type            
+    
+    @property
+    def walls_type(self):
+        if not self._house_type:
+            if self._basic_bidg:                
+                self._house_type = BaseMapper.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'WallsType')
+        return self._house_type
+         
+    @property
+    def market_type(self):
+        if not self._market_type:
+            self._market_type = u'Вторичка'
+        return self._market_type
+        
+    @property
+    def object_type(self):
+        if not self._object_type:
+            estate_type_id = None
+            if self._estate.estate_category.is_stead and self._basic_stead:
+                estate_type_id = self._basic_stead.estate_type_id
+            elif self._basic_bidg:
+                estate_type_id = self._basic_bidg.estate_type_id                         
+            if estate_type_id:                
+                self._object_type = BaseMapper.get_value_mapper(EstateType, estate_type_id, 'ObjectType')
+        return self._object_type
+      
     @property
     def operation_type(self):        
         return u'Продам'
@@ -266,57 +320,3 @@ class AvitoMapper(BaseMapper):
     @property
     def allow_email(self):
         return u'Да'
-       
-    
-#     
-#     def living_space(self):
-#         used_area = self._basic_bidg.used_area
-#         if used_area:
-#             return number2xml(used_area)        
-#         return number2xml(round(random.uniform(0.55, 0.62) * round(self._basic_bidg.total_area), 1))
-#             
-#     def new_flat(self):
-#         new_flat = super(AvitoWrapper,self).new_flat()        
-#         return u'Новостройка' if new_flat else u'Вторичка'
-#     
-#     def format_int_result(self, value, if_none='0'):
-#         return number2xml(value) if value else if_none
-#     
-#     def house_type(self):
-#         if self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:    
-#             mapper = { 
-#                       WallConstrucionMapper.PANEL: u'Панельный', WallConstrucionMapper.KIRPICH: u'Кирпичный', 
-#                       WallConstrucionMapper.MONOLIT: u'Монолитный', WallConstrucionMapper.BLOK: u'Блочный',
-#                       WallConstrucionMapper.DEREVO: u'Деревянный'
-#                      }        
-#             wall_construcion_id = self._basic_bidg.wall_construcion_id
-#             if wall_construcion_id in mapper:
-#                 return mapper.get(wall_construcion_id)        
-#             
-#     def walls_type(self):
-#         if not self._estate.estate_category_id == EstateTypeCategory.KVARTIRA and self._basic_bidg:    
-#             mapper = { 
-#                       WallConstrucionMapper.PANEL: u'Ж/б панели', WallConstrucionMapper.KIRPICH: u'Кирпич', 
-#                       WallConstrucionMapper.PENOBLOK: u'Пеноблоки', WallConstrucionMapper.PENOBETON:u'Пеноблоки', 
-#                       WallConstrucionMapper.DEREVO: u'Бревно', WallConstrucionMapper.BRUS:u'Брус', 
-#                       WallConstrucionMapper.METALL:u'Металл', WallConstrucionMapper.BLOK:u'Пеноблоки', 
-#                      }        
-#             wall_construcion_id = self._basic_bidg.wall_construcion_id
-#             if wall_construcion_id in mapper:
-#                 return mapper.get(wall_construcion_id)
-#     
-#     def locality(self):
-#         GOROD = 1
-#         pref = []
-#         if self._estate.locality.locality_type_id != GOROD:             
-#             pref.append(self._estate.locality.region.regular_name)
-#             locality_type = self._estate.locality.locality_type.name.lower()
-#             pref.append(locality_type)
-#         if pref:
-#             pref_str = u', '.join(pref)
-#             return u'%s %s' % (pref_str, self._estate.locality.name)   
-#         return self._estate.locality.name
-#     
-#     def street(self):
-#         if self._estate.street:
-#             return u'%s %s' % (self._estate.street.street_type or '', self._estate.street.name)

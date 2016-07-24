@@ -96,3 +96,12 @@
 [19/Feb/2016 00:35:51] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/2-k_kvartira_57.4_m_45_et._698339839!
 [19/Feb/2016 00:36:07] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/5-k_kvartira_130_m_14_et._660193130!
 [19/Feb/2016 00:36:15] DEBUG [estate:228] parse_item https://www.avito.ru/gelendzhik/kvartiry/1-k_kvartira_43_m_79_et._677541768!
+[24/Jul/2016 23:51:39] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00681.JPG, lot 96791!
+[24/Jul/2016 23:51:40] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00693.JPG, lot 96791!
+[24/Jul/2016 23:51:41] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00701.JPG, lot 96791!
+[24/Jul/2016 23:53:46] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00681.JPG, lot 96791!
+[24/Jul/2016 23:53:46] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00693.JPG, lot 96791!
+[24/Jul/2016 23:53:46] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00701.JPG, lot 96791!
+[24/Jul/2016 23:54:49] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00681.JPG, lot 96791!
+[24/Jul/2016 23:54:49] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00693.JPG, lot 96791!
+[24/Jul/2016 23:54:49] DEBUG [estate:226] Wrong image file /home/picasso/Documents/DjangoSpace/estate-agent/realestate/media/photos/96791/DSC00701.JPG, lot 96791!

@@ -76,14 +76,23 @@ class BaseFeed(models.Model):
     def __unicode__(self):
         return u'%s' % self.name        
     
+    def get_delta(self):    
+        if self.valid_days:
+            return datetime.datetime.now() - datetime.timedelta(days=self.valid_days)
+    
     def get_queryset(self):
         MIN_PRICE_LIMIT = 100000  
         f = {
-             'validity':Estate.VALID,                          
+             'validity':Estate.VALID,      
              'agency_price__gte': MIN_PRICE_LIMIT,
              'estate_category_id__in': (list(self.estate_categories.all())),             
              'estate_params__exact': self.estate_param,             
              }
+        
+        delta = self.get_delta()
+        if delta:
+            f['history__modificated__gte'] = delta
+            
         q = Estate.objects.all()
         q = q.filter(**f)
         return q
@@ -105,6 +114,8 @@ class ValueMapper(models.Model):
 class ContentTypeMapper(models.Model):
     feed_engine = models.ForeignKey(FeedEngine)    
     content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
+    filter = models.CharField(max_length=255, blank=True, null=True,)
+    order_by = models.CharField(max_length=150, blank=True, null=True,)
     def __unicode__(self):
         return u'%s (%s)' % (self.content_type, self.feed_engine)
     class Meta:
