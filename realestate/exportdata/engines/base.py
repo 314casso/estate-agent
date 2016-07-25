@@ -10,9 +10,6 @@ import sys
 logger = logging.getLogger('estate')
 import abc
 
-reload(sys)
-sys.setdefaultencoding('utf8')       
-
 # translation.activate('ru')
 #rules_url
 #encoding UTF-8 windows-1251
