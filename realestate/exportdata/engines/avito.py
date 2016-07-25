@@ -84,8 +84,7 @@ class AvitoEngine(BaseEngine):
         if mapper.category not in [u'Квартиры', u'Комнаты']:
             el_maker("ObjectType", mapper.object_type)        
              
-        images = mapper.images(10)
-        print images
+        images = mapper.images(10)        
         if images:
             images_root = etree.SubElement(offer, "Images")       
             for image in images:

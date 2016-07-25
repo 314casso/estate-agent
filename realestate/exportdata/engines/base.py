@@ -92,7 +92,7 @@ class BaseEngine(object):
                 if required:
                     empty_nodes.append(node)
             else:             
-                etree.SubElement(offer, node).text = text
+                etree.SubElement(offer, node).text = u'%s' % text
         return sub_element
         
     def write_error_log(self, file_name):
