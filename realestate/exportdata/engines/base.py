@@ -93,7 +93,7 @@ class BaseEngine(object):
                     empty_nodes.append(node)
             else:
                 print "*" * 50    
-                print text
+                print "'%s'" % text
                 print "*" * 50
                 etree.SubElement(offer, node).text = text
         return sub_element
