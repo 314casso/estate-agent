@@ -91,7 +91,8 @@ class BaseEngine(object):
             if not text:
                 if required:
                     empty_nodes.append(node)
-            else:             
+            else:     
+                print u'%s' % text        
                 etree.SubElement(offer, node).text = u'%s' % text
         return sub_element
         
