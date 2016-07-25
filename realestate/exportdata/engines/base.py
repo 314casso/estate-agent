@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from lxml import etree
 import datetime
 import os
@@ -7,9 +6,12 @@ from django.core.cache import cache
 import cPickle as pickle
 import pytz
 import logging
+import sys
 logger = logging.getLogger('estate')
 import abc
-       
+
+reload(sys)
+sys.setdefaultencoding('utf8')       
 
 # translation.activate('ru')
 #rules_url
