@@ -75,9 +75,9 @@ class BaseMapper(object):
             return u'%s' % xml_value
         try:
             value_mapper = ValueMapper.objects.get(content_type=ContentType.objects.get_for_model(model_class), object_id=object_id, mapped_node__xml_node=xml_node)
-            xml_value = value_mapper.xml_value
+            xml_value = u'%s' % value_mapper.xml_value
             cache.set(cache_key, xml_value, 300)
-            return u'%s' % xml_value             
+            return xml_value             
         except ValueMapper.DoesNotExist:
             return
     
