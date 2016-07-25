@@ -18,7 +18,8 @@ class AvitoEngine(BaseEngine):
         self.add_offers(xhtml, lots)
         return xhtml
             
-    def create_offer(self, lot):        
+    def create_offer(self, lot):
+        print lot.id         
         mapper = AvitoMapper(lot, self._feed)
         empty_nodes = []  
         errors = {}     
