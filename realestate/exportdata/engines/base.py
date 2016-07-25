@@ -92,6 +92,7 @@ class BaseEngine(object):
                 if required:
                     empty_nodes.append(node)
             else:    
+                print text
                 etree.SubElement(offer, node).text = text
         return sub_element
         
