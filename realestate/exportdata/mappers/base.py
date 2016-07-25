@@ -70,9 +70,9 @@ class BaseMapper(object):
     @staticmethod
     def get_value_mapper(model_class, object_id, xml_node):
         cache_key = hashlib.md5(("%s%s%s" % (model_class, object_id, xml_node))).hexdigest()                                               
-#         xml_value = cache.get(cache_key)        
-#         if xml_value is not None:            
-#             return u'%s' % xml_value
+        xml_value = cache.get(cache_key)        
+        if xml_value is not None:            
+            return u'%s' % xml_value
         try:
             value_mapper = ValueMapper.objects.get(content_type=ContentType.objects.get_for_model(model_class), object_id=object_id, mapped_node__xml_node=xml_node)
             xml_value = u'%s' % value_mapper.xml_value
