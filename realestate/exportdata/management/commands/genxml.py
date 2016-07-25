@@ -26,6 +26,6 @@ class Command(BaseCommand):
         feed_name = args[0]                
         feed = BaseFeed.objects.get(name=feed_name)        
         feed_engine = FeedEngineFactory.get_feed_engine(feed)                          
-        file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % 'avito')         
+        file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed_name)         
         feed_engine.gen_XML(feed.get_queryset(), file_name, use_cache)                    
         
