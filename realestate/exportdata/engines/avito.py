@@ -35,10 +35,13 @@ class AvitoEngine(BaseEngine):
         el_maker("ContactPhone", contact.phone)
                 
         address = mapper.address
-        el_maker("Region", address.region)                      
-        el_maker("City", address.city, False)
-        street = []
-        if not address.city:
+        el_maker("Region", address.region)                     
+        
+        street = []        
+        if address.city:
+            el_maker("City", address.city, False)        
+        else:
+            el_maker("City", address.metropolis, False)
             street.append(address.district)
             street.append(address.locality)
         if mapper.category in [u'Квартиры', u'Комнаты', u'Дома, дачи, коттеджи', u'Коммерческая недвижимость'] and not address.street:
@@ -54,18 +57,21 @@ class AvitoEngine(BaseEngine):
         if mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки']:
             el_maker("DistanceToCity", address.distance_to_city, mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки'])
         el_maker("Description", mapper.description)
-        el_maker("Rooms", mapper.rooms,  
-                 required=(mapper.category in [u'Квартиры', u'Комнаты'])
-                       )
+        
+        if mapper.category in [u'Квартиры', u'Комнаты']:
+            el_maker("Rooms", mapper.rooms)
         
         if mapper.category in [u'Коммерческая недвижимость']:
             el_maker("Title", mapper.title, False)
-            
-        etree.SubElement(offer, "Price").text = mapper.price.value()
-        etree.SubElement(offer, "PriceType").text = mapper.price.type()
+            el_maker("PriceType", mapper.price.type(), False)
+                    
+        el_maker("Price", mapper.price.value(), False)
+        
         square = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area         
         el_maker("Square", square, required=(mapper.category not in [u'Земельные участки']))
-        el_maker("LandArea", mapper.land_area, required=(mapper.category in [u'Земельные участки', u'Дома, дачи, коттеджи']))
+        
+        if mapper.category in [u'Земельные участки', u'Дома, дачи, коттеджи']:
+            el_maker("LandArea", mapper.land_area)
         
         if mapper.category in [u'Квартиры', u'Комнаты']:
             el_maker("Floor", mapper.floor)        

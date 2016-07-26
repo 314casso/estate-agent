@@ -105,6 +105,7 @@ class BaseMapper(object):
         _street = None
         _bld_number = None
         _distance_to_city = None 
+        _metropolis = None
         
         def __init__(self, estate):
             self._estate = estate
@@ -114,6 +115,12 @@ class BaseMapper(object):
             if not self._city:
                 self._city = u'%s %s' % (self._estate.locality.name, self._estate.locality.locality_type.sort_name)
             return self._city
+        
+        @property
+        def metropolis(self):
+            if not self._metropolis:
+                self._metropolis = u'%s' % self._estate.region.metropolis
+            return self._metropolis            
         
         @property    
         def district(self):
