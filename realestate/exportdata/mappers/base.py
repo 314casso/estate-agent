@@ -328,3 +328,13 @@ class AvitoMapper(BaseMapper):
     @property
     def allow_email(self):
         return u'Да'
+    
+    @property
+    def living_space(self):
+        min_value = 20        
+        if not self._living_space:
+            if self._basic_bidg:             
+                used_area = self._basic_bidg.used_area
+                if used_area: 
+                    self._living_space = number2xml(used_area if used_area > min_value else min_value)            
+        return self._living_space

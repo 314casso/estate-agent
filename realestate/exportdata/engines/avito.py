@@ -67,7 +67,7 @@ class AvitoEngine(BaseEngine):
                     
         el_maker("Price", mapper.price.value(), False)
         
-        square = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area         
+        square = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area                 
         el_maker("Square", square, required=(mapper.category not in [u'Земельные участки']))
         
         if mapper.category in [u'Земельные участки', u'Дома, дачи, коттеджи']:
@@ -90,7 +90,17 @@ class AvitoEngine(BaseEngine):
         if mapper.category not in [u'Квартиры', u'Комнаты']:
             el_maker("ObjectType", mapper.object_type)        
              
-        images = mapper.images(10)        
+        max_images = {     
+            u"Квартиры" : 20,
+            u"Комнаты" : 10,
+            u"Дома, дачи, коттеджи" : 20,
+            u"Земельные участки" : 5,
+            u"Гаражи и машиноместа" : 5,
+            u"Коммерческая недвижимость" : 10,
+            u"Недвижимость за рубежом" : 10
+        }
+             
+        images = mapper.images(max_images.get(mapper.category, 5))        
         if images:
             images_root = etree.SubElement(offer, "Images")       
             for image in images:
