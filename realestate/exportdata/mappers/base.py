@@ -330,11 +330,11 @@ class AvitoMapper(BaseMapper):
         return u'Да'
     
     @property
-    def living_space(self):
+    def area(self):
         min_value = 20        
-        if not self._living_space:
+        if not self._area:
             if self._basic_bidg:             
-                used_area = self._basic_bidg.used_area
-                if used_area: 
-                    self._living_space = number2xml(used_area if used_area > min_value else min_value)            
-        return self._living_space
+                total_area = self._basic_bidg.total_area
+                if total_area: 
+                    self._area = number2xml(total_area if total_area > min_value else min_value)            
+        return self._area
