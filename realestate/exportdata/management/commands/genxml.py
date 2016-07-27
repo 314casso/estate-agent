@@ -17,15 +17,14 @@ class Command(BaseCommand):
             help='Do not use cache'),                                             
         )
           
-    def handle(self, *args, **options):        
-        if len(args) == 0:
-            print "Error! Please provide feed name in the first argument!"
-            return
+    def handle(self, *args, **options):       
         translation.activate('ru')
-        use_cache = not options['nocache']               
-        feed_name = args[0]                
-        feed = BaseFeed.objects.get(name=feed_name)        
-        feed_engine = FeedEngineFactory.get_feed_engine(feed)                          
-        file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed_name)         
-        feed_engine.gen_XML(feed.get_queryset(), file_name, use_cache)                    
+        use_cache = not options['nocache']
+        f = {'active': True}
+        if len(args) > 0:               
+            f['name'] = args[0]                        
+        for feed in BaseFeed.objects.filter(**f):         
+            feed_engine = FeedEngineFactory.get_feed_engine(feed)                          
+            file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed.name)         
+            feed_engine.gen_XML(feed.get_queryset(), file_name, use_cache)                    
         
