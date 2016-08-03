@@ -796,7 +796,12 @@ class BidFilterForm(BetterForm):
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
-        )  
+        )      
+    bid_status = AutoComboboxSelectMultipleField(
+            lookup_class=BidStatusLookup,
+            label=_('BidStatus'),
+            required=False,
+        )    
     agency_price = IntegerRangeField(label=_('Price'), required=False)
     bid_event_category = AutoComboboxSelectMultipleField(lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
     date_event = DateRangeField(required=False, label=_('Event date'))
@@ -831,7 +836,9 @@ class BidFilterForm(BetterForm):
         if self['clients'].value():
             f['clients__id__in'] = self['clients'].value()    
         if self['contacts'].value():
-            f['clients__contacts__id__in'] = self['contacts'].value()
+            f['clients__contacts__id__in'] = self['contacts'].value()        
+        if self['bid_status'].value():
+            f['bid_status__id__in'] = self['bid_status'].value()         
         if self['estates'].value():
             f['estates__id__in'] = self['estates'].value()            
         if self['estate_type'].value():
@@ -853,7 +860,8 @@ class BidFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [
-                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'updated_by', 'broker', 'origin', 'estate_type', 'estates', 
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'updated_by', 'broker', 'bid_status', 
+                                          'origin', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
                                           'bid_event_category', 'date_event', 'note', 
                                           'next' ], 'legend': ''}),                    
