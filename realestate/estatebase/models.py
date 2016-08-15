@@ -535,6 +535,8 @@ class Estate(ProcessDeletedModel):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.KOMNATA,): 
                     if not self.basic_bidg.get_kuhnya_area():
                         report[self.DRAFT].append(u'Площадь кухни в планировке')
+                if not self.estate_number:
+                    report[self.DRAFT].append(unicode(_('Estate number')))
             
             if self.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRA, EstateTypeCategory.KVARTIRAU4ASTOK):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.DACHA,):                 
@@ -912,6 +914,10 @@ class Bidg(models.Model):
     ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True, on_delete=models.PROTECT)
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
+    #Новостройка
+#     yandex_building_id
+#     ready_quarter
+#     building_state
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=True)    
     description = models.TextField(_('Description'), blank=True, null=True)    
