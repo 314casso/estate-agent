@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from estatebase.models import EstateTypeCategory, EstateType, Locality,\
-    WallConstrucion
+    WallConstrucion, EstateParam, EntranceEstate, Beside, Interior
 from exportdata.models import ValueMapper
 import re
 from django.core.cache import cache
@@ -12,19 +12,29 @@ import hashlib
 import os
 import logging
 from django.utils.encoding import smart_unicode
+import pytz
+from exportdata.utils import EstateTypeMapper, ApplianceMapper
 
 logger = logging.getLogger('estate')
+tz = pytz.timezone('Europe/Moscow')
 
 def number2xml(d):
     return '%.12g' % d if d else ''
 
+def xml_date(date):        
+    return tz.localize(date).replace(microsecond=0).isoformat()
+
 class BaseMapper(object):
+    _id = None
     _description = None  
     _living_space = None  
     _area = None
     _land_area = None
     _floor = None
     _floors = None
+    _category = None
+    _object_type = None
+    _estate_type_id = None
     
     def __init__(self, estate, feed):
         self._estate = estate
@@ -32,10 +42,28 @@ class BaseMapper(object):
         self._basic_stead = self._estate.basic_stead                
         self._layout = None
         self._price = self.Price(estate)      
-        self._address = self.Address(estate)
+        self._address = self.Address(estate, self)
         self._contact = self.Contact(estate, feed.campaign)
         self._feed = feed
-        self._domain = 'http://%s' % 'feed.domnatamani.ru' 
+        self._domain = 'http://%s' % 'feed.domnatamani.ru'
+        if self._basic_bidg:
+            self._estate_type_id = self._basic_bidg.estate_type_id
+        elif self._basic_stead:
+            self._estate_type_id = self._basic_stead.estate_type_id
+            
+    
+    @property    
+    def id(self):
+        if not self._id:
+            self._id = u'%s' % self._estate.id           
+        return self._id 
+    
+    @property
+    def object_type(self):
+        if not self._object_type:                                     
+            if self._estate_type_id:                
+                self._object_type = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
+        return self._object_type
     
     class Contact:
         _office = None
@@ -60,22 +88,22 @@ class BaseMapper(object):
         def email(self):    
             if self._campaign and self._campaign.valid and self._campaign.email:
                 return u'%s' % self._campaign.email     
-            return u'%s' % self._office.head.email
+            return u'pochta@domanayuge.ru'
          
         @property
         def phone(self):    
             if self._campaign and self._campaign.valid and self._campaign.phone:
                 return u'%s' % self._campaign.phone     
             return u'%s' % self._office.head.userprofile.phone
-    
-    @staticmethod
-    def get_value_mapper(model_class, object_id, xml_node):
-        cache_key = hashlib.md5(("%s%s%s" % (model_class, object_id, xml_node))).hexdigest()                                               
+        
+    def get_value_mapper(self, model_class, object_id, xml_node):
+        cache_key = hashlib.md5(("%s%s%s%s" % (model_class, object_id, xml_node, self._feed.feed_engine))).hexdigest()                                               
         xml_value = cache.get(cache_key)        
         if xml_value is not None:            
             return smart_unicode(xml_value)
         try:
-            value_mapper = ValueMapper.objects.get(content_type=ContentType.objects.get_for_model(model_class), object_id=object_id, mapped_node__xml_node=xml_node)
+            value_mapper = ValueMapper.objects.get(content_type=ContentType.objects.get_for_model(model_class), object_id=object_id, 
+                                                   mapped_node__xml_node=xml_node, mapped_node__type_mapper__feed_engine=self._feed.feed_engine)
             xml_value = value_mapper.xml_value
             cache.set(cache_key, xml_value, 300)
             return xml_value             
@@ -107,8 +135,9 @@ class BaseMapper(object):
         _distance_to_city = None 
         _metropolis = None
         
-        def __init__(self, estate):
+        def __init__(self, estate, parent):
             self._estate = estate
+            self._parent = parent
                 
         @property
         def locality(self):
@@ -157,10 +186,14 @@ class BaseMapper(object):
             return u'Краснодарский край'
     
     class Price:
+        _value = None
         def __init__(self, estate):
-            self._estate = estate     
+            self._estate = estate
+        @property     
         def value(self):
-            return re.sub(r'\s', '', str(self._estate.agency_price))
+            if not self._value:
+                self._value = re.sub(r'\s', '', str(self._estate.agency_price))
+            return self._value
         
     def render_content(self, estate, description, short=False):        
         t = loader.get_template('reports/feed/text_content.html')
@@ -235,40 +268,28 @@ class BaseMapper(object):
                     logger.debug('Wrong image file %s, lot %s!' % (img.image.file, img.estate))                    
             return result       
 
-class AvitoMapper(BaseMapper):    
-    _id = None
-    _category = None
+class AvitoMapper(BaseMapper):  
     _title = None
     _house_type = None
     _walls_type = None
     _market_type = None
-    _object_type = None 
-    
-    @property    
-    def id(self):
-        if not self._id:
-            self._id = self.get_id()           
-        return self._id 
         
     @property
     def category(self):
         if not self._category:
             self._category = self.get_category()
         return self._category
-
-    def get_id(self):
-        return str(self._estate.id)
     
     def get_category(self):
         cat_id = self._estate.estate_category_id
-        if cat_id == EstateTypeCategory.KVARTIRA and self._basic_bidg is not None:
-            type_id = self._basic_bidg.estate_type_id                                            
-            category = BaseMapper.get_value_mapper(EstateType, type_id, 'ObjectType')
+        if cat_id == EstateTypeCategory.KVARTIRA and self._basic_bidg is not None:                                                        
+            category = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
             if category:
                 return category             
-        return BaseMapper.get_value_mapper(EstateTypeCategory, cat_id, 'Category')
+        return self.get_value_mapper(EstateTypeCategory, cat_id, 'Category')
                      
     class Price(BaseMapper.Price):
+        @property    
         def type(self):
             return u'за всё'
     
@@ -276,7 +297,7 @@ class AvitoMapper(BaseMapper):
         @property
         def city(self):
             if not self._city:
-                self._city = BaseMapper.get_value_mapper(Locality, self._estate.locality_id, 'City')
+                self._city = self._parent.get_value_mapper(Locality, self._estate.locality_id, 'City')
             return self._city
     
     @property
@@ -289,14 +310,14 @@ class AvitoMapper(BaseMapper):
     def house_type(self):
         if not self._house_type:
             if self._basic_bidg:                
-                self._house_type = BaseMapper.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'HouseType')
+                self._house_type = self.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'HouseType')
         return self._house_type            
     
     @property
     def walls_type(self):
         if not self._house_type:
             if self._basic_bidg:                
-                self._house_type = BaseMapper.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'WallsType')
+                self._house_type = self.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'WallsType')
         return self._house_type
          
     @property
@@ -304,18 +325,6 @@ class AvitoMapper(BaseMapper):
         if not self._market_type:
             self._market_type = u'Вторичка'
         return self._market_type
-        
-    @property
-    def object_type(self):
-        if not self._object_type:
-            estate_type_id = None
-            if self._estate.estate_category.is_stead and self._basic_stead:
-                estate_type_id = self._basic_stead.estate_type_id
-            elif self._basic_bidg:
-                estate_type_id = self._basic_bidg.estate_type_id                         
-            if estate_type_id:                
-                self._object_type = BaseMapper.get_value_mapper(EstateType, estate_type_id, 'ObjectType')
-        return self._object_type
       
     @property
     def operation_type(self):        
@@ -338,3 +347,447 @@ class AvitoMapper(BaseMapper):
                 if total_area: 
                     self._area = number2xml(total_area if total_area > min_value else min_value)            
         return self._area
+
+class YandexMapper(BaseMapper):
+    _url = None
+    _creation_date = None
+    _last_update_date = None
+    _mortgage = None
+    _rooms_space = None
+    _kitchen_space = None
+    _renovation = None
+    _quality = None
+    _lot_type = None
+    _new_flat = None
+    _studio = None
+    _apartments = None
+    _rooms_type = None   
+    _phone = None
+    _internet = None
+    _kitchen_furniture = None
+    _room_furniture = None   
+    _balcony = None
+    _bathroom_unit = None
+    _floor_covering = None
+    _window_view = None
+    _heating_supply = None
+    _water_supply = None
+    _sewerage_supply = None
+    _electricity_supply = None
+    _gas_supply = None
+    _building_type = None
+    _building_name = None
+    _yandex_building_id = None
+    _built_year = None
+    _ready_quarter = None
+    _building_state = None
+    
+    def bool_to_xml(self, bool_value):
+        return u'да' if bool_value else u'нет'
+    
+    def bool_or_null(self, bool_value):
+        if bool_value:
+            return self.bool_to_xml(bool_value)       
+    
+    @property
+    def category(self):
+        if not self._category:
+            self._category = self.get_category()
+        return self._category
+    
+    @property
+    def url(self):
+        if not self._url:
+            self._url = u'http://www.domnatamani.ru/?p=%s' % self._estate.wp_meta.post_id
+        return self._url
+    
+    @property
+    def creation_date(self):
+        if not self._creation_date:
+            self._creation_date = xml_date(self._estate.history.created) 
+        return self._creation_date
+    
+    @property
+    def last_update_date(self):        
+        if not self._last_update_date:
+            self._last_update_date = xml_date(self._estate.history.modificated) 
+        return self._last_update_date
+    
+    def get_category(self):
+        cat_id = self._estate.estate_category_id
+        if cat_id == EstateTypeCategory.KVARTIRA and self._basic_bidg is not None:                                                        
+            category = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
+            if category:
+                return category             
+        return self.get_value_mapper(EstateTypeCategory, cat_id, 'Category')
+    
+    def get_appliances(self, appliance_id):
+        attr = '%s_%s' % ('appliance', appliance_id)
+        result = getattr(self, attr, None)
+        if not result:
+            if self._basic_bidg:            
+                result = self.bool_or_null(self._basic_bidg.appliances.filter(id=appliance_id))
+                setattr(self, attr, result)
+        return result
+    
+    @property
+    def type(self):        
+        return u'продажа' 
+    
+    @property
+    def property_type(self):
+        return u'жилая' 
+    
+    class Address(BaseMapper.Address):
+        _microdistrict = None   
+        @property
+        def locality(self):
+            if not self._city:
+                self._city = u'%s' % (self._estate.locality.name)
+            return self._city
+        
+        @property
+        def sub_locality(self):
+            if not self._microdistrict:        
+                microdistrict = self._estate.microdistrict
+                if microdistrict is not None:          
+                    self._microdistrict = u'%s' % self._estate.microdistrict
+            return self._microdistrict
+        
+        @property
+        def street(self):
+            if not self._street:
+                if self._estate.street:
+                    bld_number = ''            
+                    if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
+                        bld_number = u", %s" % self._estate.estate_number
+                    self._street = u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
+            return self._street
+     
+    class Contact(BaseMapper.Contact):
+        _category = None
+        _organization = None
+        _url = None
+
+        @property
+        def category(self):
+            if not self._category:
+                self._category = u'агентство' 
+            return self._category
+        
+        @property
+        def organization(self):
+            if not self._organization:
+                self._organization = u'Дома на юге - недвижимость и строительство' 
+            return self._organization
+
+        @property
+        def url(self):
+            if not self._url:
+                self._url = u'http://www.domnatamani.ru/' 
+            return self._url
+    
+    class Price(BaseMapper.Price):      
+        @property    
+        def currency(self):
+            return u'RUB'
+    
+    @property
+    def mortgage(self):
+        '''
+        возможность ипотеки
+        '''
+        if not self._mortgage:
+            if len(self._estate.estate_params.filter(pk=EstateParam.IPOTEKA)) > 0:
+                self._mortgage = self.bool_to_xml(True)
+        return self._mortgage
+    
+    @property
+    def deal_status(self):
+        pass
+       
+    @property
+    def rooms_space(self):
+        if not self._rooms_space: 
+            if self._basic_bidg:
+                self._rooms_space = [number2xml(x) for x in self._basic_bidg.get_rooms_area()]
+        return self._rooms_space  
+    
+    @property
+    def kitchen_space(self):
+        if not self._kitchen_space:
+            if self._basic_bidg:       
+                self._kitchen_space = number2xml(self._basic_bidg.get_kuhnya_area())
+        return self._kitchen_space
+    
+    @property
+    def renovation(self):
+        if not self._renovation:
+            # TODO: admin Interior
+            if self._basic_bidg:
+                self._renovation = self.get_value_mapper(Interior, self._basic_bidg.wall_construcion_id, 'Renovation')
+        return self._renovation
+            
+    @property
+    def quality(self):
+        if not self._quality:
+            # TODO: admin Interior
+            if self._basic_bidg:
+                self._quality = self.get_value_mapper(Interior, self._basic_bidg.wall_construcion_id, 'Quality')
+        return self._quality        
+    
+    @property
+    def lot_type(self):
+        if not self._lot_type:
+            self._lot_type = self._estate.estate_type
+        return self._lot_type
+        
+    @property
+    def new_flat(self):
+        if not self._new_flat:        
+            if self._basic_bidg:                
+                self._new_flat = self.bool_or_null(self._estate_type_id == EstateTypeMapper.NOVOSTROYKA)
+        return self._new_flat 
+    
+    @property
+    def studio(self):
+        if not self._studio:        
+            if self._basic_bidg:
+                self._studio = self.bool_or_null(self._estate_type_id == EstateTypeMapper.KVARTIRASTUDIYA)
+        return self._studio
+
+    @property
+    def apartments(self):
+        if not self._apartments:        
+            if self._basic_bidg:
+                self._apartments = self.bool_or_null(self._estate_type_id == EstateTypeMapper.APPARTAMENTY)
+        return self._apartments
+    
+    @property
+    def rooms_type(self):
+        if not self._rooms_type:
+            room_smezh = self._basic_bidg.get_room_smezh()
+            room_izol = self._basic_bidg.get_room_izol()
+            if room_smezh > 0 or room_izol > 0:
+                if room_smezh > room_izol:
+                    self._rooms_type = u'смежные'
+                else:
+                    self._rooms_type = u'раздельные'
+        return self._rooms_type
+    
+    @property
+    def phone(self):                
+        CONNECTED = 3
+        if not self._phone:        
+            self._phone = self.bool_or_null(self._estate.telephony_id == CONNECTED)                
+        return self._phone
+    
+    @property                
+    def internet(self):
+        CONNECTED = 3      
+        if not self._internet:  
+            self._internet = self.bool_or_null(self._estate.internet_id == CONNECTED)
+        return self._internet
+    
+    @property   
+    def kitchen_furniture(self):
+        if not self._kitchen_furniture:
+            if self._basic_bidg:
+                self._kitchen_furniture = self.bool_or_null(self._basic_bidg.get_kitchen_furniture())
+        return self._kitchen_furniture       
+    
+    @property
+    def room_furniture(self):
+        if not self._room_furniture:
+            if self._basic_bidg:
+                self._room_furniture = self.bool_or_null(self._basic_bidg.get_room_furniture())        
+        return self._room_furniture     
+    
+    @property
+    def television(self):
+        return self.get_appliances(ApplianceMapper.TELEVIZOR)
+    
+    @property
+    def washing_machine(self):
+        return self.get_appliances(ApplianceMapper.STIRALNAYAMASHINA)        
+    
+    @property
+    def refrigerator(self):
+        return self.get_appliances(ApplianceMapper.HOLODILNIK)        
+    
+    @property
+    def air_conditioner(self):
+        return self.get_appliances(ApplianceMapper.KONDITSIONER)
+        
+    @property
+    def ventilation(self):
+        return self.get_appliances(ApplianceMapper.VENTILYATORY)
+    
+    def _supply(self, true_ids, no_id, fk):                         
+            if fk == no_id:
+                return self.bool_to_xml(False)
+            else:
+                return self.bool_or_null(fk in true_ids)
+    
+    @property
+    def heating_supply(self):
+        if not self._heating_supply:
+            PERSONAL_GAS = 1
+            PERSONAL_TD = 2
+            PERSONAL_ELECTRIC = 3
+            CENTRAL = 4  
+            NO = 8      
+            true_ids = (PERSONAL_GAS,PERSONAL_TD,PERSONAL_ELECTRIC,CENTRAL)                    
+            if self._basic_bidg:                
+                self._heating_supply = self._supply(true_ids, NO, self._basic_bidg.heating_id)
+        return self._heating_supply
+    
+    @property
+    def water_supply(self):
+        if not self._water_supply:
+            VODOPROVOD = 1
+            PODKLUCHENO = 7
+            NO = 10 
+            true_ids = (VODOPROVOD,PODKLUCHENO)
+            self._water_supply = self._supply(true_ids, NO, self._estate.watersupply_id)
+        return self._water_supply
+
+    @property
+    def sewerage_supply(self):
+        if not self._sewerage_supply:
+            PODKLUCHENO = 5
+            CENTRAL = 8
+            NO = 9
+            true_ids = (CENTRAL,PODKLUCHENO)
+            self._sewerage_supply = self._supply(true_ids, NO, self._estate.sewerage_id)
+        return self._sewerage_supply
+    
+    @property
+    def electricity_supply(self):
+        if not self._electricity_supply:
+            PODKLUCHENO = 5
+            NO = 7
+            true_ids = (PODKLUCHENO,)             
+            self._electricity_supply = self._supply(true_ids, NO, self._estate.electricity_id)
+        return self._electricity_supply
+    
+    @property
+    def gas_supply(self):
+        if not self._gas_supply:
+            PODKLUCHENO = 5
+            NO = 7
+            true_ids = (PODKLUCHENO,)             
+            self._gas_supply = self._supply(true_ids, NO, self._estate.gassupply_id)
+        return self._gas_supply
+        
+    @property
+    def balcony(self):
+        if not self._balcony:     
+            balcons_node = None
+            loggias_node = None
+            result = []        
+            if self._basic_bidg:
+                balcons_count = self._basic_bidg.get_balcons_count()            
+                if balcons_count == 1:
+                    balcons_node = u'балкон'
+                elif 1 < balcons_count < 5:
+                    balcons_node = u'%s балкона' % balcons_count
+                elif  balcons_count > 5:
+                    balcons_node = u'%s балконов' % balcons_count            
+                if balcons_node:
+                    result.append(balcons_node)            
+                loggias_count = self._basic_bidg.get_loggias_count()
+                if loggias_count == 1:
+                    loggias_node = u'лоджия'
+                elif 1 < loggias_count < 5:
+                    loggias_node = u'%s лоджии' % balcons_count
+                elif  loggias_count > 5:
+                    loggias_node = u'%s лоджий' % balcons_count            
+                if loggias_node:
+                    result.append(loggias_node)            
+                if result:
+                    self._balcony = u', '.join(result)          
+        return self._balcony
+    
+    @property
+    def bathroom_unit(self):
+        if not self._bathroom_unit:
+            result = []
+            if self._basic_bidg:
+                sovmest_count = self._basic_bidg.get_sanuzel_sovmest_count()
+                if sovmest_count == 1:
+                    result.append(u'совмещенный')
+                if sovmest_count > 1:
+                    result.append(u'%s совмещенных' % sovmest_count)                
+                razdel_count = self._basic_bidg.get_sanuzel_razdel_count()                
+                if razdel_count == 1:
+                    result.append(u'раздельный')
+                if razdel_count > 1:
+                    result.append(u'%s раздельных' % razdel_count)
+                if result:
+                    self._bathroom_unit = u', '.join(result)
+        return self._bathroom_unit
+    
+    @property                
+    def floor_covering(self):
+        if not self._floor_covering:
+            if self._basic_bidg and self._basic_bidg.flooring:
+                self._floor_covering = u'%s' % self._basic_bidg.flooring
+                self._floor_covering.lower() 
+        return self._floor_covering
+             
+    @property           
+    def window_view(self):
+        if not self._window_view:
+            try:
+                beside = self._estate.entrances.get(entranceestate__type=EntranceEstate.WINDOWVIEW)
+                self._window_view = u'%s' % beside.name                
+            except Beside.DoesNotExist:
+                pass                
+        return self._window_view
+    
+    @property
+    def building_name(self):
+        if not self._building_name:
+            if self.new_flat:
+                self._building_name = self.address.sub_locality
+        return self._building_name
+    
+    @property
+    def yandex_building_id(self):
+        if not self._yandex_building_id:
+            if self.new_flat:
+                self._yandex_building_id = 'TODO'
+                # TODO:              
+        return self._yandex_building_id
+    
+    @property    
+    def building_type(self):
+        if not self._building_type:
+            if self._basic_bidg: 
+                # TODO: admin WallConstrucion               
+                self._building_type = self.get_value_mapper(WallConstrucion, self._basic_bidg.wall_construcion_id, 'BuildingType')
+        return self._building_type
+    
+    @property    
+    def built_year(self):
+        if not self._built_year:
+            if self._basic_bidg:
+                self._built_year = number2xml(self._basic_bidg.year_built)    
+        return self._built_year
+             
+    @property  
+    def ready_quarter(self):
+        if not self._ready_quarter:
+            if self._new_flat:
+                # TODO: Квартал
+                self._ready_quarter = number2xml(4)
+        return self._ready_quarter   
+                    
+    @property    
+    def building_state(self):
+        if not self._building_state:
+            if self._new_flat:
+                # TODO: Строго ограниченные значения: «unfinished» (строится), «built» (дом построен, но не сдан), «hand-over» (сдан в эксплуатацию).
+                self._building_state = u'hand-over'
+        return self._building_state    

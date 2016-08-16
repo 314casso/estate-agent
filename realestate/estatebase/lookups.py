@@ -4,7 +4,7 @@ from estatebase.models import Street, Locality, Microdistrict, EstateType, \
     ClientType, Bid, EstateRegister, EstateTypeCategory, Internet, Telephony, \
     LayoutType, LevelName, ComStatus, EstateClientStatus, Shape, EstateParam,\
     Validity, Appliance, BidEventCategory, RegisterCategory, ExteriorFinish,\
-    BidStatus, Purpose, Heating
+    BidStatus, Purpose, Heating, YandexBuilding
 from selectable.base import ModelLookup
 from selectable.exceptions import LookupAlreadyRegistered
 from selectable.registry import registry
@@ -206,6 +206,9 @@ class BidStatusLookup(SimpleNameLookup):
 
 class PurposeLookup(SimpleNameLookup):
     model = Purpose
+
+class YandexBuildingLookup(SimpleNameLookup):
+    model = YandexBuilding    
     
 try:
     registry.register(StreetLookup)
@@ -248,7 +251,8 @@ try:
     registry.register(BidStatusLookup)
     registry.register(OutbuildingLookup)
     registry.register(PurposeLookup)
-    registry.register(HeatingLookup)    
+    registry.register(HeatingLookup) 
+    registry.register(YandexBuildingLookup)   
     
 except LookupAlreadyRegistered:
     pass    

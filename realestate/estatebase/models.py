@@ -518,7 +518,7 @@ class Estate(ProcessDeletedModel):
         if self.basic_bidg and self.basic_bidg.is_independent:
             if not self.basic_bidg.year_built:
                 report[self.DRAFT].append(unicode(_('Year built')))
-            if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template in (HOUSE, OUTBUILDINGS):                                
+            if not self.basic_bidg.floor and not self.basic_bidg.estate_type.template in (HOUSE, OUTBUILDINGS, GARAGE):                                
                 report[self.DRAFT].append(unicode(_('Floor')))
             if not self.basic_bidg.floor_count:
                 report[self.DRAFT].append(unicode(_('Floor count')))
@@ -535,13 +535,13 @@ class Estate(ProcessDeletedModel):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.KOMNATA,): 
                     if not self.basic_bidg.get_kuhnya_area():
                         report[self.DRAFT].append(u'Площадь кухни в планировке')
-                if not self.estate_number:
-                    report[self.DRAFT].append(unicode(_('Estate number')))
             
             if self.estate_category_id in (EstateTypeCategory.DOM, EstateTypeCategory.KVARTIRA, EstateTypeCategory.KVARTIRAU4ASTOK):
                 if self.basic_bidg.estate_type_id not in (EstateTypeMapper.DACHA,):                 
                     if not self.basic_bidg.used_area:
                         report[self.DRAFT].append(unicode(_('Used area')))
+                    if not self.estate_number:
+                        report[self.DRAFT].append(unicode(_('Estate number')))
                     
         if self.basic_stead:
             if not self.basic_stead.total_area:
@@ -915,9 +915,7 @@ class Bidg(models.Model):
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
     appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
     #Новостройка
-#     yandex_building_id
-#     ready_quarter
-#     building_state
+    yandex_building = models.ForeignKey('YandexBuilding', verbose_name=_('YandexBuilding'), blank=True, null=True, on_delete=models.PROTECT)
     #param
     basic = models.BooleanField(_('Basic'), default=False, editable=True)    
     description = models.TextField(_('Description'), blank=True, null=True)    
@@ -1320,6 +1318,28 @@ class BidClient(models.Model):
     bid = models.ForeignKey('Bid')   
     class Meta:
         unique_together = ('client', 'bid')
+   
+class YandexBuilding(SimpleDict):
+    '''
+    YandexBuilding
+    '''        
+    QUARTER_CHOICES = (
+        (1, u'1-й квартал'),
+        (2, u'2-й квартал'),        
+        (3, u'3-й квартал'),
+        (4, u'4-й квартал'),
+    )
+    STATE_CHOICES = (
+        ('unfinished', u'строится'),
+        ('built', u'дом построен, но не сдан'),        
+        ('hand-over', u'сдан в эксплуатацию'),
+    )
+    building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50) 
+    ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
+    building_state = models.CharField(_('Building state'), choices=STATE_CHOICES, max_length=15)
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('YandexBuilding')
+        verbose_name_plural = _('YandexBuildings')   
    
 from estatebase.signals import connect_signals
 connect_signals()

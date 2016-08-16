@@ -1,34 +1,20 @@
 # -*- coding: utf-8 -*-
 from lxml import etree
-import datetime
 import os
 from django.core.cache import cache
 import cPickle as pickle
-import pytz
 import logging
-import sys
 logger = logging.getLogger('estate')
 import abc
 
-# translation.activate('ru')
-#rules_url
-#encoding UTF-8 windows-1251
-#xhtml_namespace
-
-
 class BaseEngine(object):
     encoding = 'UTF-8'    
-    CACHE_TIME = 3600 * 24  
-    VALID_DAYS = 100
-    XHTML_NAMESPACE = None
-    error_log = {}    
-    def __init__(self, feed):               
-#         self.XHTML = "{%s}" % self.XHTML_NAMESPACE
-#         self.NSMAP = {None : self.XHTML_NAMESPACE}
-#         self.tz = pytz.timezone('Europe/Moscow')       
+    CACHE_TIME = 3600 * 24
+    def __init__(self, feed):              
         self._use_cache = True          
         self._feed = feed
-        self._feed_name = feed.name                
+        self._feed_name = feed.name  
+        self.error_log = {}              
               
     def get_cache_key(self, lot):
         return '%s%s' % (self._feed_name, lot.id) 
@@ -67,9 +53,10 @@ class BaseEngine(object):
             offer = self.get_cache(lot)
             if offer is not None:
                 return offer            
-        offer, errors  = self.create_offer(lot)
-        if errors:
-            self.error_log[lot.id] = errors            
+        offer, log  = self.create_offer(lot)
+        if log['errors'] or log['warnings']:                       
+            self.error_log[lot.id] = log                 
+        if log['errors']:                        
             return            
         if offer is not None:                      
             self.set_cache(lot, offer)   
@@ -81,32 +68,32 @@ class BaseEngine(object):
             if offer is not None:                                  
                 xhtml.append(offer)    
                                 
-    def gen_XML(self, lots, file_name, use_cache=True):   
-        xhtml = self.get_XHTML(lots, use_cache)  
+    def gen_XML(self, lots, file_name, use_cache=True):           
+        xhtml = self.get_XHTML(lots, use_cache) 
         etree.ElementTree(xhtml).write(file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
         self.write_error_log('%s.errors.xml' % file_name)   
     
-    def el_maker(self, offer, empty_nodes):
-        def sub_element(node, text, required=True): 
+    def el_maker(self, offer, empty_nodes):        
+        def sub_element(node, text, required=True):             
             if not text:
-                if required:
-                    empty_nodes.append(node)
+                if required:                    
+                    empty_nodes.append(u'%s/%s' % (offer.tag, node))
             else:                
                 etree.SubElement(offer, node).text = text
         return sub_element
         
-    def write_error_log(self, file_name):
+    def write_error_log(self, file_name):        
         try:
             os.remove(file_name)
         except OSError:
-            pass
-        if not self.error_log:
-            return
-        xhtml = etree.Element('Errors')     
-        for lot_id, err_dict in self.error_log.iteritems():
+            pass                
+        xhtml = etree.Element('messages')     
+        for lot_id, log in self.error_log.iteritems():            
             lot_node = etree.SubElement(xhtml, 'lot', {'id': u'%s' % lot_id})
-            for err_type, err_msg in err_dict.iteritems():
+            for err_type, err_msg in log['errors'].iteritems():
                 etree.SubElement(lot_node, 'error', {'type': err_type}).text = err_msg 
+            for warning_type, warning_msg in log['warnings'].iteritems():
+                etree.SubElement(lot_node, 'warning', {'type': warning_type}).text = warning_msg
         etree.ElementTree(xhtml).write(file_name, pretty_print=True, xml_declaration=True, encoding=self.encoding)
             
             

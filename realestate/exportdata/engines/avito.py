@@ -4,24 +4,21 @@ from lxml import etree
 from exportdata.mappers.base import AvitoMapper
 
 
-class AvitoEngine(BaseEngine):   
-    feed_locality_name = 'avito'
-    root = 'Ads'     
-    target = 'Avito.ru'         
-    version = '3'    
-            
+class AvitoEngine(BaseEngine): 
+    VERSION = '3'   
     def get_XHTML(self, lots, use_cache):
         self._use_cache = use_cache     
-        xhtml = etree.Element(self.root)
-        xhtml.set("target", self.target)
-        xhtml.set("formatVersion", self.version)
+        xhtml = etree.Element('Ads')
+        xhtml.set("target", 'Avito.ru')
+        xhtml.set("formatVersion", self.VERSION)
         self.add_offers(xhtml, lots)
         return xhtml
             
     def create_offer(self, lot):                 
         mapper = AvitoMapper(lot, self._feed)
         empty_nodes = []  
-        errors = {}     
+        errors = {}  
+        warnings = {}   
         offer = etree.Element("Ad")
         el_maker = self.el_maker(offer, empty_nodes)
         el_maker("Id", mapper.id)        
@@ -61,11 +58,12 @@ class AvitoEngine(BaseEngine):
         if mapper.category in [u'Квартиры', u'Комнаты']:
             el_maker("Rooms", mapper.rooms)
         
+        price = mapper.price        
         if mapper.category in [u'Коммерческая недвижимость']:
             el_maker("Title", mapper.title, False)
-            el_maker("PriceType", mapper.price.type(), False)
+            el_maker("PriceType", price.type, False)
                     
-        el_maker("Price", mapper.price.value(), False)
+        el_maker("Price", price.value, False)
         
         square = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area                 
         el_maker("Square", square, required=(mapper.category not in [u'Земельные участки']))
@@ -109,4 +107,4 @@ class AvitoEngine(BaseEngine):
         if len(empty_nodes):
             errors['empty_nodes'] = u', '.join(empty_nodes)
                    
-        return (offer, errors)  
+        return (offer, {'errors': errors, 'warnings': warnings})  

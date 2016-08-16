@@ -19,8 +19,10 @@ class FeedLocality(models.Model):
 
 class FeedEngine(models.Model):
     AVITO = 'AVITO'     
+    YANDEX = 'YANDEX'
     FEEDENGINE_CHOICES = (
         (AVITO, 'Avito'),        
+        (YANDEX, 'Yandex'),
     )          
     name = models.CharField(db_index=True, max_length=15)
     engine = models.CharField(

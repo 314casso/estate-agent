@@ -30,6 +30,7 @@ encoding//realestate/exportdata/custom_makers/yaxml.py=utf-8
 encoding//realestate/exportdata/custom_makers/yaxmlplus.py=utf-8
 encoding//realestate/exportdata/engines/avito.py=utf-8
 encoding//realestate/exportdata/engines/base.py=utf-8
+encoding//realestate/exportdata/engines/yandex.py=utf-8
 encoding//realestate/exportdata/management/commands/dataconv.py=utf-8
 encoding//realestate/exportdata/management/commands/feed.py=utf-8
 encoding//realestate/exportdata/management/commands/genxml.py=utf-8

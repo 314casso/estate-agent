@@ -24,7 +24,8 @@ class Command(BaseCommand):
         if len(args) > 0:               
             f['name'] = args[0]                        
         for feed in BaseFeed.objects.filter(**f):         
-            feed_engine = FeedEngineFactory.get_feed_engine(feed)                          
-            file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed.name)         
-            feed_engine.gen_XML(feed.get_queryset(), file_name, use_cache)                    
+            feed_engine = FeedEngineFactory.get_feed_engine(feed)                                     
+            file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed.name)                     
+            feed_engine.gen_XML(feed.get_queryset(), file_name, use_cache)
+                                
         

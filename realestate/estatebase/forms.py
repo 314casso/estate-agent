@@ -22,7 +22,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
-    OutbuildingLookup, PurposeLookup, HeatingLookup
+    OutbuildingLookup, PurposeLookup, HeatingLookup, YandexBuildingLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate,\
@@ -41,7 +41,7 @@ from django.template.base import Template
 from django.core.exceptions import ValidationError
 from exportdata.utils import EstateTypeMapper
 from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
-    ExperienceLookup, QualityLookup, DevProfileIdLookup
+    ExperienceLookup, QualityLookup, DevProfileIdLookup 
 from wp_helper.models import EstateWordpressMeta
 
 class EstateForm(BetterModelForm):              
@@ -643,6 +643,7 @@ class ObjectForm(ModelForm):
            'documents' : forms.CheckboxSelectMultiple(),
            'interior' : AutoComboboxSelectWidget(InteriorLookup),
            'appliances': AutoComboboxSelectMultipleWidget(ApplianceLookup),
+           'yandex_building':AutoComboboxSelectWidget(YandexBuildingLookup), 
         }
 
 class BidgForm(ObjectForm):    

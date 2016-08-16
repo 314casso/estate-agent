@@ -332,13 +332,16 @@ class EstateParamUpdateView(EstateUpdateView):
     template_name = 'estate_params.html'
     form_class = EstateParamForm
 
-def set_estate_filter(q, filter_dict, force_valid=False, user=None):
+def set_estate_filter(q, filter_dict, force_valid=False, user=None, force_delta=False):
     if 'Q' in filter_dict:
         q = q.filter(filter_dict.pop('Q'))
     if force_valid:
         filter_dict.update({
            'validity_id' : Estate.VALID,
-           'history__modificated__gt' : CORRECT_DELTA
+        })
+    if force_delta:
+        filter_dict.update({           
+            'history__modificated__gt' : CORRECT_DELTA,
         })
     if user:
         filter_dict.update({'region__geo_group__userprofile__user__exact': user })  

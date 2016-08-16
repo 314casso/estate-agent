@@ -86,6 +86,10 @@ class ApartmentWrapper(BidgWrapper):
             
 class NewapartWrapper(ApartmentWrapper):    
     year_built = u'Год сдачи'    
+    def __init__(self):
+        super(NewapartWrapper, self).__init__()
+        self.extra_set.append('yandex_building')
+        self.summary_set.append('yandex_building')
 
 class HomeWrapper(BidgWrapper):
     summary_set = ['total_area', 'used_area', 'room_count', 'wall_construcion', 'exterior_finish', 'year_built', 'floor_count', 'interior']    
