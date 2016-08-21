@@ -139,14 +139,17 @@ class YandexEngine(BaseEngine):
         
         el_maker("floors-total", mapper.floors, mapper.new_flat)
        
-       
-        el_maker("building-name", mapper.building_name, mapper.new_flat) # TODO: Новостройки
-        el_maker("yandex-building-id", mapper.yandex_building_id, mapper.new_flat) # TODO: Новостройки
-                
         el_maker("building-type", mapper.building_type, False)
         el_maker("built-year", mapper.built_year, mapper.new_flat)
-        el_maker("ready-quarter", mapper.ready_quarter, mapper.new_flat)
-        el_maker("building-state", mapper.building_state, mapper.new_flat)
+        
+        if mapper.new_flat:
+            el_maker("building-name", mapper.building_name, mapper.new_flat)
+            el_maker("ready-quarter", mapper.ready_quarter)
+            el_maker("building-state", mapper.building_state)
+            el_maker("yandex-building-id", mapper.yandex_building_id, mapper.new_flat)
+        
+        el_maker("lift", mapper.lift, False)
+        el_maker("ceiling-height", mapper.ceiling_height, False)
                      
         max_images = {     
             u"квартира" : 20,

@@ -22,7 +22,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     LevelNameLookup, EstateClientStatusLookup, ShapeLookup, EstateParamLookup,\
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
-    OutbuildingLookup, PurposeLookup, HeatingLookup, YandexBuildingLookup
+    OutbuildingLookup, PurposeLookup, HeatingLookup, YandexBuildingLookup,\
+    DealStatusLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate,\
@@ -45,13 +46,13 @@ from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
 from wp_helper.models import EstateWordpressMeta
 
 class EstateForm(BetterModelForm):              
-    beside_distance = LocalIntegerField(label='')
+#     beside_distance = LocalIntegerField(label='')
     agency_price = LocalIntegerField(label=_('Agency price'))
     saler_price = LocalIntegerField(label=_('Saler price'))
     class Meta:                
         model = Estate
         fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status')
+                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),            
             'region': AutoComboboxSelectWidget(RegionLookup),
@@ -61,6 +62,7 @@ class EstateForm(BetterModelForm):
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),
             'com_status': AutoComboboxSelectWidget(ComChoiceLookup),
+            'deal_status': AutoComboboxSelectWidget(DealStatusLookup),
         }
 
 class EstateCreateForm(EstateForm):

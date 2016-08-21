@@ -486,7 +486,8 @@ class Estate(ProcessDeletedModel):
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True, related_name='estates')    
     description = models.TextField(_('Description'), blank=True, null=True)
     client_description = models.TextField(_('Client description'), blank=True, null=True)
-    comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)  
+    comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)
+    deal_status = models.ForeignKey('DealStatus', verbose_name=_('DealStatus'), blank=True, null=True, on_delete=models.PROTECT)  
     #Изменения
     history = models.OneToOneField(HistoryMeta, blank=True, null=True)
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
@@ -1340,6 +1341,14 @@ class YandexBuilding(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('YandexBuilding')
         verbose_name_plural = _('YandexBuildings')   
+
+class DealStatus(SimpleDict):
+    '''
+    Статус сделки
+    '''      
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('DealStatus')
+        verbose_name_plural = _('DealStatuses') 
    
 from estatebase.signals import connect_signals
 connect_signals()

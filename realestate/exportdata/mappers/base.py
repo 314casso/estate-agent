@@ -377,10 +377,14 @@ class YandexMapper(BaseMapper):
     _gas_supply = None
     _building_type = None
     _building_name = None
+    _yandex_building = None 
     _yandex_building_id = None
     _built_year = None
     _ready_quarter = None
     _building_state = None
+    _lift = None
+    _ceiling_height = None
+    
     
     def bool_to_xml(self, bool_value):
         return u'да' if bool_value else u'нет'
@@ -745,20 +749,28 @@ class YandexMapper(BaseMapper):
             except Beside.DoesNotExist:
                 pass                
         return self._window_view
+
+    def get_yandex_building(self):
+        if not self._yandex_building:
+            if self.new_flat and self._basic_bidg:
+                self._yandex_building = self._basic_bidg.yandex_building
+        return self._yandex_building
     
     @property
     def building_name(self):
         if not self._building_name:
             if self.new_flat:
-                self._building_name = self.address.sub_locality
+                yandex_building = self.get_yandex_building()                                
+                self._building_name = u'%s' % yandex_building.name if yandex_building else u'%s' % self.address.sub_locality 
         return self._building_name
-    
+        
     @property
     def yandex_building_id(self):
         if not self._yandex_building_id:
             if self.new_flat:
-                self._yandex_building_id = 'TODO'
-                # TODO:              
+                yandex_building = self.get_yandex_building()
+                if yandex_building:
+                    self._yandex_building_id = u'%s' % yandex_building.building_id                              
         return self._yandex_building_id
     
     @property    
@@ -780,14 +792,32 @@ class YandexMapper(BaseMapper):
     def ready_quarter(self):
         if not self._ready_quarter:
             if self._new_flat:
-                # TODO: Квартал
-                self._ready_quarter = number2xml(4)
+                yandex_building = self.get_yandex_building()
+                if yandex_building:                    
+                    self._ready_quarter = number2xml(yandex_building.ready_quarter)
         return self._ready_quarter   
                     
     @property    
     def building_state(self):
         if not self._building_state:
             if self._new_flat:
-                # TODO: Строго ограниченные значения: «unfinished» (строится), «built» (дом построен, но не сдан), «hand-over» (сдан в эксплуатацию).
-                self._building_state = u'hand-over'
-        return self._building_state    
+                yandex_building = self.get_yandex_building()
+                if yandex_building:
+                    self._building_state = u'%s' % yandex_building.building_state
+        return self._building_state
+    
+    @property
+    def lift(self):
+        if not self._lift:
+            if self._basic_bidg and self._basic_bidg.elevator:
+                self._lift = self.bool_to_xml(True)
+        return self._lift
+    
+    @property
+    def ceiling_height(self):
+        if not self._ceiling_height:        
+            if self._basic_bidg:
+                self._ceiling_height = number2xml(self._basic_bidg.ceiling_height)
+        return self._ceiling_height
+        
+        
