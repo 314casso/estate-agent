@@ -64,7 +64,7 @@ class YandexEngine(BaseEngine):
         el_price("value", price.value, False)
         el_price("currency", price.currency, False)
         
-        el_price("mortgage", mapper.mortgage, False)
+        el_maker("mortgage", mapper.mortgage, False)
                 
         if mapper.category not in [u'земельный участок']:
             area = mapper.living_space if mapper.category in [u'комната'] else mapper.area
