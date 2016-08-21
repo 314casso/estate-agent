@@ -828,7 +828,7 @@ class YandexMapper(BaseMapper):
             if self._estate_type_id:                
                 self._object_type = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
                 if not self._object_type:
-                    name = u'%s' % self._estate.estate_type.name.lower()
+                    name = u'%s' % self._basic_bidg.estate_type.name.lower()
                     self._object_type = name                     
         return self._object_type    
         
