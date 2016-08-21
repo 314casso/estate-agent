@@ -821,5 +821,14 @@ class YandexMapper(BaseMapper):
             if self._basic_bidg:
                 self._ceiling_height = number2xml(self._basic_bidg.ceiling_height)
         return self._ceiling_height
-        
+    
+    @property
+    def object_type(self):
+        if not self._object_type:                                     
+            if self._estate_type_id:                
+                self._object_type = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
+                if not self._object_type:
+                    name = u'%s' % self._estate_type.name.lower()
+                    self._object_type = name                     
+        return self._object_type    
         
