@@ -384,7 +384,7 @@ class YandexMapper(BaseMapper):
     _building_state = None
     _lift = None
     _ceiling_height = None
-    
+    _deal_status = None
     
     def bool_to_xml(self, bool_value):
         return u'да' if bool_value else u'нет'
@@ -508,7 +508,9 @@ class YandexMapper(BaseMapper):
     
     @property
     def deal_status(self):
-        pass
+        if not self._deal_status:
+            self._deal_status = u'%s' % self._estate.deal_status if self._estate.deal_status else u'прямая продажа'
+        return self._deal_status
        
     @property
     def rooms_space(self):

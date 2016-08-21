@@ -150,6 +150,8 @@ class YandexEngine(BaseEngine):
         
         el_maker("lift", mapper.lift, False)
         el_maker("ceiling-height", mapper.ceiling_height, False)
+        
+        el_maker("deal-status", mapper.deal_status)
                      
         max_images = {     
             u"квартира" : 20,
