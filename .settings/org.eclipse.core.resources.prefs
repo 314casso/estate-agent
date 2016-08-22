@@ -37,6 +37,7 @@ encoding//realestate/exportdata/management/commands/feed.py=utf-8
 encoding//realestate/exportdata/management/commands/genxml.py=utf-8
 encoding//realestate/exportdata/management/commands/load_data.py=utf-8
 encoding//realestate/exportdata/management/commands/print_model_data.py=utf-8
+encoding//realestate/exportdata/management/commands/remove_param.py=utf-8
 encoding//realestate/exportdata/management/commands/yaxml.py=utf-8
 encoding//realestate/exportdata/management/commands/yaxmlplus.py=utf-8
 encoding//realestate/exportdata/mappers/base.py=utf-8

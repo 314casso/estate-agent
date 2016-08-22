@@ -385,6 +385,7 @@ class YandexMapper(BaseMapper):
     _lift = None
     _ceiling_height = None
     _deal_status = None
+    _suburban = None
     
     def bool_to_xml(self, bool_value):
         return u'да' if bool_value else u'нет'
@@ -441,6 +442,12 @@ class YandexMapper(BaseMapper):
     @property
     def property_type(self):
         return u'жилая' 
+    
+    @property
+    def suburban(self):
+        if not self._suburban:
+            self._suburban = not self._estate.locality.locality_type_id == Locality.CITY               
+        return self._suburban
     
     class Address(BaseMapper.Address):
         _microdistrict = None   
