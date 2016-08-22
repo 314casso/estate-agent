@@ -446,7 +446,7 @@ class YandexMapper(BaseMapper):
     @property
     def suburban(self):
         if not self._suburban:
-            self._suburban = not self._estate.locality.locality_type_id == Locality.CITY               
+            self._suburban = (not self._estate.locality.locality_type_id == Locality.CITY) or (self._estate.estate_category_id == EstateTypeCategory.U4ASTOK)
         return self._suburban
     
     class Address(BaseMapper.Address):
