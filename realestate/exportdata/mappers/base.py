@@ -753,7 +753,7 @@ class YandexMapper(BaseMapper):
     def window_view(self):
         if not self._window_view:
             try:
-                beside = self._estate.entrances.get(entranceestate__type=EntranceEstate.WINDOWVIEW)
+                beside = self._estate.entrances.get(entranceestate__type=EntranceEstate.WINDOWVIEW, entranceestate__basic=True)
                 self._window_view = u'%s' % beside.name                
             except Beside.DoesNotExist:
                 pass                
