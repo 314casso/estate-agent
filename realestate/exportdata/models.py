@@ -1,8 +1,10 @@
 from django.db import models
-from estatebase.models import Locality, EstateTypeCategory, EstateParam, Estate
+from estatebase.models import Locality, EstateTypeCategory, EstateParam, Estate,\
+    EstateType
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.generic import GenericForeignKey
 import datetime
+from django.db.models.query_utils import Q
       
 
 class FeedLocality(models.Model):    
@@ -68,6 +70,7 @@ class BaseFeed(models.Model):
     name = models.CharField(db_index=True, max_length=15)
     active = models.BooleanField()    
     estate_categories = models.ManyToManyField(EstateTypeCategory)
+    estate_types = models.ManyToManyField(EstateType, blank=True, null=True,)
     estate_param = models.ForeignKey(EstateParam, blank=True, null=True,)
     valid_days = models.IntegerField()
     feed_engine = models.ForeignKey(FeedEngine, )        
@@ -83,21 +86,40 @@ class BaseFeed(models.Model):
             return datetime.datetime.now() - datetime.timedelta(days=self.valid_days)
     
     def get_queryset(self):
-        MIN_PRICE_LIMIT = 100000  
+        MIN_PRICE_LIMIT = 100000 
+        
         f = {
              'validity':Estate.VALID,      
-             'agency_price__gte': MIN_PRICE_LIMIT,
-             'estate_category_id__in': (list(self.estate_categories.all())),             
+             'agency_price__gte': MIN_PRICE_LIMIT,                     
              'estate_params__exact': self.estate_param,             
              }
+               
+        type_fifter = Q()        
+        cats = list(self.estate_categories.all())       
+        types = list(self.estate_types.all())        
+        for t in types:
+            if t.estate_type_category in cats:
+                cats.remove(t.estate_type_category)
+            type_fifter = type_fifter | Q(bidgs__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
+            type_fifter = type_fifter | Q(stead__estate_type_id__exact=t.pk, estate_category_id__exact=t.estate_type_category_id)
+        if len(cats):
+            type_fifter = type_fifter | Q(estate_category__in=cats)
         
+        f['Q'] = type_fifter
+                
         delta = self.get_delta()
         if delta:
             f['history__modificated__gte'] = delta
-            
+              
         q = Estate.objects.all()
-        q = q.filter(**f)
-        return q
+        return self.set_filter(q, f)       
+    
+    def set_filter(self, q, filter_dict):
+        if 'Q' in filter_dict:
+            q = q.filter(filter_dict.pop('Q'))          
+        if len(filter_dict):
+            q = q.filter(**filter_dict)            
+        return q.distinct()
     
     def get_feed_engine(self):
         return self.feed_engine.get_engine()(self)
