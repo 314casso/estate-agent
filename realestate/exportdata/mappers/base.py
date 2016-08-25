@@ -35,6 +35,7 @@ class BaseMapper(object):
     _category = None
     _object_type = None
     _estate_type_id = None
+    _rooms = None
     
     def __init__(self, estate, feed):
         self._estate = estate
@@ -112,8 +113,13 @@ class BaseMapper(object):
     
     @property
     def rooms(self):
-        if self._basic_bidg:
-            return number2xml(self._basic_bidg.room_count)
+        return number2xml(self.get_rooms())
+      
+    def get_rooms(self):
+        if not self._rooms: 
+            if self._basic_bidg:
+                self._rooms = self._basic_bidg.room_count
+        return self._rooms
             
     @property
     def price(self):
@@ -755,7 +761,7 @@ class YandexMapper(BaseMapper):
             try:
                 beside = self._estate.entrances.get(entranceestate__type=EntranceEstate.WINDOWVIEW, entranceestate__basic=True)
                 self._window_view = u'%s' % beside.name                
-            except Beside.DoesNotExist:
+            except:
                 pass                
         return self._window_view
 

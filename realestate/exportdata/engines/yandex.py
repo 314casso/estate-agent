@@ -74,7 +74,7 @@ class YandexEngine(BaseEngine):
             self.square(self.el_maker(etree.SubElement(offer, 'lot-area'), empty_nodes), mapper.land_area, True, u'сот')
             
         if mapper.rooms_space is not None:
-            if len(mapper.rooms_space) != int(mapper.rooms):
+            if len(mapper.rooms_space) != mapper.get_rooms():
                 warnings['rooms_space'] = u'Количество комнат %s, с указанной площадью %s' % (mapper.rooms, len(mapper.rooms_space))
             else:
                 for room_space in mapper.rooms_space:
