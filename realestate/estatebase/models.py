@@ -891,7 +891,8 @@ class Appliance(SimpleDict):
     
 
 class Bidg(models.Model):
-    _layout = None     
+    _layout = None 
+    _layout_living_area = None    
     estate = models.ForeignKey(Estate, verbose_name=_('Estate'), related_name='bidgs')
     estate_type = models.ForeignKey(EstateType, verbose_name=_('EstateType'), on_delete=models.PROTECT)   
     room_number = models.CharField(_('Room number'), max_length=10, blank=True, null=True)
@@ -927,6 +928,12 @@ class Bidg(models.Model):
     @property    
     def layout_area(self):
         return Layout.objects.filter(level__in=self.levels.all()).aggregate(Sum('area'))['area__sum']    
+    @property    
+    def layout_living_area(self):
+        if not self._layout_living_area:
+            l = self.get_layout()        
+            self._layout_living_area = sum(l.get('rooms_area'))
+        return self._layout_living_area
     @property    
     def is_facility(self):
         return self.estate_type.template in [FACILITIES, LANDSCAPING]

@@ -20,6 +20,9 @@
 {% block title_right %}
 {% with area=bidg.layout_area %}
 {% if area %}
+	{% if bidg.layout_living_area %}
+	{{ bidg.layout_living_area }} /
+	{% endif %}
 {{ area }} м<sup>2</sup>
 {% endif %}
 {% endwith %}
