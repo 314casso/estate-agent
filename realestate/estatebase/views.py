@@ -226,6 +226,10 @@ class PlaceableTypeViewAjax(TemplateView):
 
 class EstateMixin(BaseMixin, ModelFormMixin):
     model = Estate
+    def get_initial(self):        
+        initial = super(EstateMixin, self).get_initial()                    
+        initial['_user'] = self.request.user
+        return initial   
     def form_valid(self, form):
         self.object = form.save(commit=False)         
         self.object.history = prepare_history(self.object.history, self.request.user.pk)        
@@ -239,7 +243,7 @@ class EstateCreateView(EstateMixin, CreateView):
         if 'estate_type' in self.kwargs:                  
             initial['estate_type'] = self.kwargs['estate_type']        
         initial['estate_status'] = 2
-        initial['broker'] = self.request.user            
+        initial['broker'] = self.request.user           
         return initial
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        

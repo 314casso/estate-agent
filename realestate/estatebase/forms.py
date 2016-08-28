@@ -45,14 +45,23 @@ from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
     ExperienceLookup, QualityLookup, DevProfileIdLookup 
 from wp_helper.models import EstateWordpressMeta
 
-class EstateForm(BetterModelForm):              
-#     beside_distance = LocalIntegerField(label='')
+class EstateForm(BetterModelForm):             
     agency_price = LocalIntegerField(label=_('Agency price'))
     saler_price = LocalIntegerField(label=_('Saler price'))
+
+    def __init__(self, *args, **kwargs):
+        super(EstateForm, self).__init__(*args, **kwargs)        
+        exclude = ['no_address_yet',]
+        _user = self.initial.get('_user')
+        su = _user and _user.is_superuser
+        if not su:         
+            for field in exclude:
+                del self.fields[field] 
+                
     class Meta:                
         model = Estate
-        fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status')
+        fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
+                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status', 'no_address_yet')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),            
             'region': AutoComboboxSelectWidget(RegionLookup),
@@ -62,7 +71,7 @@ class EstateForm(BetterModelForm):
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),
             'com_status': AutoComboboxSelectWidget(ComChoiceLookup),
-            'deal_status': AutoComboboxSelectWidget(DealStatusLookup),
+            'deal_status': AutoComboboxSelectWidget(DealStatusLookup),           
         }
 
 class EstateCreateForm(EstateForm):
@@ -76,8 +85,8 @@ class EstateCreateForm(EstateForm):
             label=_('Estate type')
         )
     class Meta(EstateForm.Meta):        
-        fields = ('estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
+        fields = ('estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'no_address_yet')
 
 class EstateCreateClientForm(EstateCreateForm):
     client_status = AutoComboboxSelectField(lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
@@ -93,7 +102,7 @@ class EstateCreateClientForm(EstateCreateForm):
 class EstateCreateWizardForm(EstateCreateClientForm):
     class Meta(EstateCreateClientForm.Meta):        
         fields = ('client', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'no_address_yet')
 
 class EstateCommunicationForm(ModelForm):
     class Meta:                
@@ -403,6 +412,7 @@ class EstateFilterForm(BetterForm):
             required=False,
         )  
     beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
+    beside_type = forms.ChoiceField(label=u'Тип выхода/вида', choices=(('','------'),) + EntranceEstate.TYPE_CHOICES, required=False, initial='')
     interior = AutoComboboxSelectMultipleField(
             lookup_class=InteriorLookup,
             label=_('Interior'),
@@ -547,6 +557,9 @@ class EstateFilterForm(BetterForm):
                 lst.update(result)          
         f.update(lst)    
         
+        if cleaned_data['beside_type']:
+            f.update({'entranceestate_set__type': cleaned_data['beside_type']})            
+        
         if cleaned_data['beside'][0]:
             f.update({'%s__exact' % 'entrances' : cleaned_data['beside'][0]})
             if cleaned_data['beside'][1]:
@@ -559,7 +572,7 @@ class EstateFilterForm(BetterForm):
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
-                                         'microdistrict', 'beside', 'agency_price', 'wp_choice','wp_status',
+                                         'microdistrict', 'beside_type', 'beside', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
@@ -946,7 +959,7 @@ class BidPicleForm(EstateFilterForm):
             raise forms.ValidationError(u'Необходимо указать категорию или вид недвижимости')
         return cleaned_data    
     class Meta:        
-        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'com_status', 'region', 'locality', 'microdistrict', 'street', 'beside', 'agency_price', ], 'legend': ''}),
+        fieldsets = [('left', {'fields': ['num', 'estates', 'estate_category' , 'estate_type', 'com_status', 'region', 'locality', 'microdistrict', 'street', 'beside_type', 'beside', 'agency_price', ], 'legend': ''}),
                      ('center', {'fields': ['year_built', 'floor', 'floor_count', 'wall_construcion', 'exterior_finish' , 'total_area', 'used_area', 'room_count', 'interior', 'layouts', 'layout_area', 'outbuildings']}),
                      ('right', {'fields': ['stead_area', 'face_area', 'shape', 'purposes', 'electricity', 'watersupply', 'gassupply', 'sewerage', 'driveway']})
                      ]
