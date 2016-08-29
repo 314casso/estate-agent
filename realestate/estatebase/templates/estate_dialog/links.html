@@ -1,0 +1,13 @@
+{% extends "dialog_block.html" %}
+{% load thumbnail %}
+{% block title_left %}
+<a title="Управление ссылками" href="{% url manage_links 'estate' estate.pk %}?{{ next_url }}">Ссылки</a>
+{% endblock %}
+{% block content %}
+
+<div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px;">
+    {% for link in links %}
+    	 <a href="{{ link.url }}">{{ link.name }}</a>
+    {% endfor %}
+</div>
+{% endblock %}

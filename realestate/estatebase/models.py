@@ -496,6 +496,7 @@ class Estate(ProcessDeletedModel):
     broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
     #attachments
     files = GenericRelation('EstateFile')
+    links = GenericRelation('GenericLink')
     def check_contact(self):
         return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
     def check_validity(self):
@@ -741,6 +742,22 @@ class EstateFile(OrderedModel):
         import imghdr        
         return imghdr.what(self.file.path) is not None 
 
+class GenericLink(models.Model):
+    '''
+    Ссылки
+    '''
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
+    url = models.CharField(_('Url'), max_length=100, blank=True, null=True,)
+    note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)    
+    def __unicode__(self):
+        return u'%s' % (self.name or self.url)
+    class Meta:
+        verbose_name = _('GenericLink')
+        verbose_name_plural = _('GenericLinks')
+    
 class WallConstrucion(SimpleDict):
     '''
     Стены

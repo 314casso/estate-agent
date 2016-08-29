@@ -18,7 +18,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
-    BidEventForm, BidUpdateForm, EntranceEstateFormSet, FileUpdateForm
+    BidEventForm, BidUpdateForm, FileUpdateForm, EntranceEstateFormSet, GenericLinkFormset 
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -412,6 +412,7 @@ class EstateListDetailsView(EstateListView):
             'margin': '%s (~%s%%)' % (intcomma(r), int(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
             'files': self.estate and self.estate.files.all()[:6] or None,
+            'links': self.estate and self.estate.links.all()[:6] or None,
             'estate': self.estate,
         })                
         return context        
@@ -479,6 +480,9 @@ class GenericFilesView(TemplateView):
             'model_key': model_key,
         })        
         return context
+
+class GenericLinksView(GenericFilesView): 
+    template_name = 'generic_links.html'    
 
 class ClientUpdateEstateView(DetailView):   
     model = Client
@@ -1468,4 +1472,27 @@ class ManageEstateM2MEntrance(ManageEstateM2M):
     formset = EntranceEstateFormSet       
     reverse_name = "manage_entrances"
     def get_dialig_title(self):
-        return u'Виды и выходы для "%s"' % self.instance  
+        return u'Виды и выходы для "%s"' % self.instance    
+
+class ManageEstateM2MLinks(ManageM2M):
+    template = "estate_dialog/manage_m2m_estate.html"
+    formset = GenericLinkFormset       
+    reverse_name = "manage_links"
+    def dispatch(self, *args, **kwargs):         
+        self.model_key = kwargs['model_key']  
+        self.instance = get_files_content_object(self.model_key, kwargs['object_pk'])     
+        return super(ManageM2M, self).dispatch(*args, **kwargs)
+    def get_dialig_title(self):
+        return u'Ссылки для "%s"' % self.instance
+    def get(self, request, *args, **kwargs):        
+        formset = self.formset(instance = self.instance)
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse(self.reverse_name, args=[self.model_key, self.instance.id]), safe_next_link(next_url))
+        return next_url
+
+    

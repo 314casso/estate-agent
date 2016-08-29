@@ -21,7 +21,8 @@ from estatebase.views import ClientListView, \
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
-    FileDeleteView, FileUpdateView, GenericFilesView
+    FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks
+    
 
 urlpatterns = patterns('',   
     url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
@@ -60,6 +61,7 @@ urlpatterns += patterns('',
     url (r'^estateparamsupdate/(?P<pk>\d+)$', view=EstateParamUpdateView.as_view(), name='estate_params_update'),
     url (r'^estateimages/(?P<estate>\d+)$', view=EstateImagesView.as_view(), name='estate_images'),
     url (r'^genericfiles/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=GenericFilesView.as_view(), name='generic_files'),
+    url (r'^genericlinks/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=ManageEstateM2MLinks.as_view(), name='manage_links'),
     url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
     
 )

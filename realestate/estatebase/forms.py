@@ -26,8 +26,8 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     DealStatusLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
-    EstateType, EstateClient, BidEvent, EstateTypeCategory, EntranceEstate,\
-    EstateFile
+    EstateType, EstateClient, BidEvent, EntranceEstate,\
+    EstateFile, GenericLink
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -44,6 +44,7 @@ from exportdata.utils import EstateTypeMapper
 from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
     ExperienceLookup, QualityLookup, DevProfileIdLookup 
 from wp_helper.models import EstateWordpressMeta
+from django.contrib.contenttypes.generic import generic_inlineformset_factory
 
 class EstateForm(BetterModelForm):             
     agency_price = LocalIntegerField(label=_('Agency price'))
@@ -1007,3 +1008,5 @@ class EntranceEstateInlineForm(ModelForm):
 
 
 EntranceEstateFormSet = inlineformset_factory(Estate, EntranceEstate, extra=1, form=EntranceEstateInlineForm)
+
+GenericLinkFormset = generic_inlineformset_factory(GenericLink, extra=1,)
