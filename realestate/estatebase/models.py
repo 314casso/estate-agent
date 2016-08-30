@@ -442,6 +442,15 @@ class Estate(ProcessDeletedModel):
     '''
     Базовая модель объектов недвижимости
     '''
+    #Состояния адреса    
+    NO_STREET = 1
+    NO_NUMBER = 2
+    NO_ADDRESS = 3
+    ADDRESS_CHOICES = (
+        (NO_STREET, u'Нет улицы'),
+        (NO_NUMBER, u'Нет номера'),        
+        (NO_ADDRESS, u'Нет адреса'),       
+    )
     #Состояния
     FREE = 1
     NEW = 2
@@ -459,7 +468,7 @@ class Estate(ProcessDeletedModel):
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)
     microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.PROTECT)
     street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)
-    no_address_yet = models.BooleanField(verbose_name=_('No address yet'), default=False)    
+    address_state = models.PositiveIntegerField(verbose_name=_('Address state'), blank=True, null=True, choices=ADDRESS_CHOICES)    
     estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates', through=EstateClient)
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
@@ -498,7 +507,7 @@ class Estate(ProcessDeletedModel):
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
     def check_contact(self):
-        return self.contact and self.contact.contact_state_id == Contact.AVAILABLE
+        return self.contact and self.contact.contact_state_id in (Contact.AVAILABLE, Contact.NOTRESPONDED, Contact.NONAVAILABLE) 
     def check_validity(self):
         report = OrderedDict([(self.NOTFREE, False), (self.NOCONACT, False), (self.DRAFT, [])])
         report[self.NOCONACT] = not self.check_contact() 

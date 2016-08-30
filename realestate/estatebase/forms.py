@@ -52,7 +52,7 @@ class EstateForm(BetterModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EstateForm, self).__init__(*args, **kwargs)        
-        exclude = ['no_address_yet',]
+        exclude = ['address_state',]
         _user = self.initial.get('_user')
         su = _user and _user.is_superuser
         if not su:         
@@ -62,7 +62,7 @@ class EstateForm(BetterModelForm):
     class Meta:                
         model = Estate
         fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
-                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status', 'no_address_yet')
+                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status', 'address_state')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),            
             'region': AutoComboboxSelectWidget(RegionLookup),
@@ -87,7 +87,7 @@ class EstateCreateForm(EstateForm):
         )
     class Meta(EstateForm.Meta):        
         fields = ('estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'no_address_yet')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
 
 class EstateCreateClientForm(EstateCreateForm):
     client_status = AutoComboboxSelectField(lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
@@ -103,7 +103,7 @@ class EstateCreateClientForm(EstateCreateForm):
 class EstateCreateWizardForm(EstateCreateClientForm):
     class Meta(EstateCreateClientForm.Meta):        
         fields = ('client', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'no_address_yet')
+                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
 
 class EstateCommunicationForm(ModelForm):
     class Meta:                

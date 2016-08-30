@@ -39,6 +39,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
 from devrep.models import Partner
+from datetime import datetime
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -1240,7 +1241,9 @@ class BidEventMixin(ModelFormMixin):
 class BidEventCreateView(BidEventMixin, CreateView):
     def get_initial(self):        
         initial = super(BidEventCreateView, self).get_initial()
-        initial['bid'] = self.kwargs['bid']#Bid.objects.get(pk=self.kwargs['bid'])
+        initial['bid'] = self.kwargs['bid']
+        initial['date'] = datetime.now()
+        
         return initial
 
 class BidEventUpdateView(BidEventMixin, UpdateView):
