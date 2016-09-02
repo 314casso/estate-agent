@@ -8,10 +8,10 @@ class Command(BaseCommand):
         
     def do_job(self):        
 #         estate_number=u'0',
-        q = Estate.objects.filter(street__name=u'не присвоено', address_state__isnull=True)
+        q = Estate.objects.filter(estate_number=u'0', address_state__isnull=True)
         print len(q)
         for item in q:            
-            item.street = None 
-#             item.estate_number = None
-            item.address_state = Estate.NO_STREET
+#             item.street = None 
+            item.estate_number = None
+            item.address_state = Estate.NO_NUMBER
             item.save()
