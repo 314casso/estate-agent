@@ -7,8 +7,6 @@ class Command(BaseCommand):
         self.do_job()
         
     def do_job(self):        
-#         EntranceEstate.objects.all().delete()
         q = Estate.objects.filter(street__name=u'не присвоено', estate_number=u'0', address_state__isnull=True)
-#         q = q.exclude(beside__isnull=True)
-        for e in q:            
-            print e.id
+        for item in q:            
+            print item.id
