@@ -471,6 +471,7 @@ class EstateFilterForm(BetterForm):
     client_description = forms.CharField(required=False, label=_('Client description'))
     wp_status = forms.ChoiceField(required=False, label=u'Статус на сайте', initial='')
     layout_area = DecimalRangeField(required=False, label=_('Area'))
+    address_state = forms.ChoiceField(label=_('Address state'), choices=(('','------'),) + Estate.ADDRESS_CHOICES, required=False,)
     def __init__(self, *args, **kwargs):
         super(EstateFilterForm, self).__init__(*args, **kwargs)
         self.fields['next'].label = ''         
@@ -533,7 +534,7 @@ class EstateFilterForm(BetterForm):
                          'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
                          'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
                          'client_description__icontains': 'client_description',
-                         'wp_meta__status':'wp_status',                        
+                         'wp_meta__status':'wp_status', 'address_state__in': 'address_state'                       
                          }
         
         for key, value in simple_filter.iteritems():
@@ -587,7 +588,7 @@ class EstateFilterForm(BetterForm):
         fieldsets = [('left', {'fields': [
                                          'validity', 'estate_status', 'estates', 'estate_category', 'estate_type',
                                          'com_status', 'region', 'locality', 'street', 'estate_number', 'room_number', 
-                                         'microdistrict', 'beside_type', 'beside', 'agency_price', 'wp_choice','wp_status',
+                                         'microdistrict', 'address_state', 'beside_type', 'beside', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
                                             'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
