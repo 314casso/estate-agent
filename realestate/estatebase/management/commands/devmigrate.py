@@ -7,9 +7,11 @@ class Command(BaseCommand):
         self.do_job()
         
     def do_job(self):        
-        q = Estate.objects.filter(street__name=u'не присвоено', estate_number=u'0', address_state__isnull=True)
+#         estate_number=u'0',
+        q = Estate.objects.filter(street__name=u'не присвоено', address_state__isnull=True)
+        print len(q)
         for item in q:            
             item.street = None 
-            item.estate_number = None
-            item.address_state = Estate.NO_ADDRESS
+#             item.estate_number = None
+            item.address_state = Estate.NO_STREET
             item.save()
