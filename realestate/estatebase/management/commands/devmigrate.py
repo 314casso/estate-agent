@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
-from estatebase.models import Estate, EntranceEstate
+from estatebase.models import Estate
 
 class Command(BaseCommand):    
     def handle(self, *args, **options):
@@ -8,7 +8,7 @@ class Command(BaseCommand):
         
     def do_job(self):        
 #         EntranceEstate.objects.all().delete()
-        q = Estate.objects.filter(entrances__isnull=True)
-        q = q.exclude(beside__isnull=True)
+        q = Estate.objects.filter(street__name=u'не присвоено', estate_number=u'0', address_state__isnull=True)
+#         q = q.exclude(beside__isnull=True)
         for e in q:            
-            EntranceEstate.objects.create(estate=e,type=3,basic=True,beside=e.beside,distance=e.beside_distance)
+            print e.id

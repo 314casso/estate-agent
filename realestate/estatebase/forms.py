@@ -46,6 +46,7 @@ from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
 from wp_helper.models import EstateWordpressMeta
 from django.contrib.contenttypes.generic import generic_inlineformset_factory
 
+
 class EstateForm(BetterModelForm):             
     agency_price = LocalIntegerField(label=_('Agency price'))
     saler_price = LocalIntegerField(label=_('Saler price'))
@@ -57,7 +58,20 @@ class EstateForm(BetterModelForm):
         su = _user and _user.is_superuser
         if not su:         
             for field in exclude:
-                del self.fields[field] 
+                del self.fields[field]
+        
+    def clean_estate_number(self):
+        data = self.cleaned_data['estate_number']
+        data = data.strip()            
+        if data == '0':
+            raise forms.ValidationError(u'"0" не является верным номером лота')
+        return data 
+    
+    def clean_street(self):
+        data = self.cleaned_data['street']                            
+        if data is not None and data.name.lower() == u'не присвоено':
+            raise forms.ValidationError(u'"не присвоено" не является верной улицей')
+        return data
                 
     class Meta:                
         model = Estate
