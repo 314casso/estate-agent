@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.conf import settings
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _

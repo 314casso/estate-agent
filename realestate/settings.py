@@ -139,7 +139,7 @@ MIDDLEWARE_CLASSES = (
 
 PROFILE_LOG_BASE = MEDIA_ROOT
 
-ROOT_URLCONF = 'realestate.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT,'templates'),
@@ -162,8 +162,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',    
-    'django.contrib.admin',
-    'south',
+    'django.contrib.admin',    
     'estatebase',
     'sitetree',
     'orderedmodel',

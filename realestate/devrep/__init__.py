@@ -1,2 +1,2 @@
-from devrep.signals import connect_signals       
-connect_signals()
+# from devrep.signals import connect_signals       
+# connect_signals()

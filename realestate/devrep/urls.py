@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url, include
 from devrep.views import PartnerListView, PartnerCreateView, PartnerDetailView,\
     PartnerDeleteView, PartnerUpdateView, ClientPartnerUpdateView,\
     ClientPartnerRemoveView, ClientPartnerSelectView,\

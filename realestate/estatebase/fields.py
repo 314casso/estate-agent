@@ -4,7 +4,7 @@ from selectable.forms.widgets import AutoComboboxSelectWidget
 from django.forms.widgets import TextInput, DateInput
 from django.forms.fields import MultiValueField, CharField, IntegerField, \
     DateField, DecimalField
-from selectable.forms.fields import  AutoComboboxSelectField
+from selectable.forms.fields import  AutoCompleteSelectField
 from django.utils.translation import ugettext_lazy as _
 
 class ComplexFieldWidget(forms.MultiWidget):
@@ -21,7 +21,8 @@ class ComplexField(MultiValueField):
     def __init__(self, lookup_class, *args, **kwargs):
         self.widget = ComplexFieldWidget(lookup_class=lookup_class, attrs={'title':self.help_text})        
         fields = []
-        fields.append(AutoComboboxSelectField(
+#TODO:         Use AutoCompleteSelectField with a AutoComboboxSelectWidget instead.
+        fields.append(AutoCompleteSelectField(
             lookup_class=lookup_class,
             required=False,
             )
