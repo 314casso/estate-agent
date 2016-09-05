@@ -25,6 +25,7 @@ class ComplexField(MultiValueField):
         fields.append(AutoCompleteSelectField(
             lookup_class=lookup_class,
             required=False,
+            #widget=AutoComboboxSelectWidget
             )
          )        
         fields.append(CharField())        
