@@ -32,7 +32,6 @@ from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
 from selectable.forms.fields import AutoCompleteSelectMultipleField, \
-    AutoComboboxSelectMultipleField, AutoComboboxSelectField, \
     AutoCompleteSelectField
 from selectable.forms.widgets import AutoComboboxSelectWidget,\
     AutoComboboxSelectMultipleWidget
@@ -90,12 +89,12 @@ class EstateForm(BetterModelForm):
         }
 
 class EstateCreateForm(EstateForm):
-    estate_category_filter = AutoComboboxSelectField(
+    estate_category_filter = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=EstateTypeCategoryLookup,
             label=_('EstateTypeCategory'),
             required=False
         )
-    estate_type = AutoComboboxSelectField(
+    estate_type = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=EstateTypeLookup,
             label=_('Estate type')
         )
@@ -104,7 +103,7 @@ class EstateCreateForm(EstateForm):
                   'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
 
 class EstateCreateClientForm(EstateCreateForm):
-    client_status = AutoComboboxSelectField(lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
+    client_status = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
     client = AutoCompleteSelectField(
             lookup_class=ClientLookup,
             label=_('Client'),
@@ -144,7 +143,7 @@ class EstateParamForm(ModelForm):
         }
 
 class ClientForm(ModelForm):   
-    origin = AutoComboboxSelectField(
+    origin = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
@@ -168,15 +167,15 @@ class ClientFilterForm(BetterForm):
             required=False            
         )
     created = DateRangeField(required=False, label=_('Created'))
-    created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
+    created_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
     updated = DateRangeField(required=False, label=_('Updated'))
-    updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
-    origin = AutoComboboxSelectMultipleField(
+    updated_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
+    origin = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
         )
-    client_type = AutoComboboxSelectMultipleField(
+    client_type = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ClientTypeLookup,
             label=_('ClientType'),
             required=False,
@@ -196,19 +195,19 @@ class ClientFilterForm(BetterForm):
     fio = forms.CharField(required=False, label=u'Ф.И.О.')
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     
-    work_types = AutoComboboxSelectMultipleField(
+    work_types = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=WorkTypeLookup,
             label=_('WorkType'),
             required=False,
         )
     
-    goods = AutoComboboxSelectMultipleField(
+    goods = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=GoodsLookup,
             label=_('Goods'),
             required=False,
         )
     
-    partners = AutoComboboxSelectMultipleField(
+    partners = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=PartnerLookup,
             label=_('Partners'),
             required=False,
@@ -216,25 +215,25 @@ class ClientFilterForm(BetterForm):
     
     birthday = DateRangeField(required=False, label=_('Birthday'))
     
-    experience = AutoComboboxSelectMultipleField(
+    experience = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ExperienceLookup,
             label=_('Experience'),
             required=False,
         )
     
-    quality = AutoComboboxSelectMultipleField(
+    quality = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=QualityLookup,
             label=_('Quality'),
             required=False,
         )
     
-    coverage_regions = AutoComboboxSelectMultipleField(
+    coverage_regions = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=RegionLookup,
             label=_('Regions'),
             required=False,
         )
     
-    coverage_localities = AutoComboboxSelectMultipleField(
+    coverage_localities = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=LocalityLookup,
             label=_('Localities'),
             required=False,
@@ -336,7 +335,7 @@ class ClientFilterForm(BetterForm):
                
 class EstateFilterForm(BetterForm):
     _filter_by_pk = True    
-    validity = AutoComboboxSelectMultipleField(
+    validity = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ValidityLookup,
             label=_('Validity'),
             required=False,
@@ -346,7 +345,7 @@ class EstateFilterForm(BetterForm):
             label=_('ID'),
             required=False,
         )
-    estate_category = AutoComboboxSelectMultipleField(
+    estate_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=EstateTypeCategoryLookup,
             label=_('EstateTypeCategory'),
             required=False,
@@ -361,17 +360,17 @@ class EstateFilterForm(BetterForm):
             label=_('Outbuildings'),
             required=False,
         ) 
-    com_status = AutoComboboxSelectMultipleField(
+    com_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ComChoiceLookup,
             label=_('Commerce'),
             required=False,
         ) 
-    region = AutoComboboxSelectMultipleField(
+    region = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=RegionLookup,
             label=_('Region'),
             required=False,
         )    
-    locality = AutoComboboxSelectMultipleField(
+    locality = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=LocalityLookup,
             label=_('Locality'),
             required=False,
@@ -388,7 +387,7 @@ class EstateFilterForm(BetterForm):
         )    
     estate_number = forms.CharField(required=False, label=_('Estate number'))
     room_number = forms.CharField(required=False, label=_('Room number'))    
-    estate_status = AutoComboboxSelectMultipleField(
+    estate_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=EstateStatusLookup,
             label=_('Estate status'),
             required=False,
@@ -407,7 +406,7 @@ class EstateFilterForm(BetterForm):
     year_built = IntegerRangeField(required=False, label=_('Year built'))
     floor = IntegerRangeField(required=False, label=_('Floor'))        
     floor_count = IntegerRangeField(required=False, label=_('Floor count'))
-    wall_construcion = AutoComboboxSelectMultipleField(
+    wall_construcion = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=WallConstrucionLookup,
             label=_('Wall Construcion'),
             required=False,
@@ -418,28 +417,28 @@ class EstateFilterForm(BetterForm):
     stead_area = DecimalRangeField(required=False, label=_('Stead area'))
     
     created = DateRangeField(required=False, label=_('Created'))
-    created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)        
+    created_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем создано', required=False)        
     updated = DateRangeField(required=False, label=_('Updated'))
-    updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
-    origin = AutoComboboxSelectMultipleField(
+    updated_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
+    origin = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
         )  
     beside = ComplexField(required=False, label=_('Beside'), lookup_class=BesideLookup)
     beside_type = forms.ChoiceField(label=u'Тип выхода/вида', choices=(('','------'),) + EntranceEstate.TYPE_CHOICES, required=False, initial='')
-    interior = AutoComboboxSelectMultipleField(
+    interior = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=InteriorLookup,
             label=_('Interior'),
             required=False,
         )
-    exterior_finish = AutoComboboxSelectMultipleField(
+    exterior_finish = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ExteriorFinishLookup,
             label=_('Exterior finish'),
             required=False,
         )    
     face_area = DecimalRangeField(required=False, label=_('Face area'))
-    shape = AutoComboboxSelectMultipleField(
+    shape = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=ShapeLookup,
             label=_('Shape'),
             required=False,
@@ -450,7 +449,7 @@ class EstateFilterForm(BetterForm):
     sewerage = ComplexField(required=False, label=_('Sewerage'), lookup_class=SewerageLookup)
     driveway = ComplexField(required=False, label=_('Driveway'), lookup_class=DrivewayLookup)
     
-    marks = AutoComboboxSelectMultipleField(
+    marks = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=EstateParamLookup,
             label=_('Estate params'),
             required=False,
@@ -462,10 +461,10 @@ class EstateFilterForm(BetterForm):
     wp_choice = forms.ChoiceField(label=u'Сайт', widget=forms.RadioSelect, choices=WP_CHOICES, initial=3, required=False,)
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
-    broker = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
-    purposes = AutoComboboxSelectMultipleField(lookup_class=PurposeLookup, label=_('Purpose'), required=False)
-    layouts = AutoComboboxSelectMultipleField(lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
-    heating = AutoComboboxSelectMultipleField(lookup_class=HeatingLookup, label=_('Heating'), required=False)
+    broker = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
+    purposes = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=PurposeLookup, label=_('Purpose'), required=False)
+    layouts = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
+    heating = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=HeatingLookup, label=_('Heating'), required=False)
     next = forms.CharField(required=False, widget=forms.HiddenInput())
     cadastral_number = forms.CharField(required=False, label=_('Cadastral number'))
     client_description = forms.CharField(required=False, label=_('Client description'))
@@ -752,8 +751,8 @@ class FileUpdateForm(ModelForm):
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')    
-    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлторы')
-    bid_status = AutoComboboxSelectMultipleField(
+    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы')
+    bid_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
             required=True,
@@ -769,8 +768,8 @@ class BidForm(ModelForm):
         }                         
 
 class BidUpdateForm(ModelForm):
-    brokers = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Риэлторы')
-    bid_status = AutoComboboxSelectMultipleField(
+    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы')
+    bid_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
             required=True,
@@ -794,12 +793,12 @@ class BidFilterForm(BetterForm):
             label=_('Estate type'),
             required=False,
         )
-    region = AutoComboboxSelectMultipleField(
+    region = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=RegionLookup,
             label=_('Region'),
             required=False,
         )    
-    locality = AutoComboboxSelectMultipleField(
+    locality = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=LocalityLookup,
             label=_('Locality'),
             required=False,
@@ -811,9 +810,9 @@ class BidFilterForm(BetterForm):
         )
     created = DateRangeField(required=False, label=_('Created'))        
     updated = DateRangeField(required=False, label=_('Updated'))    
-    created_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)
-    updated_by = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
-    broker = AutoComboboxSelectField(lookup_class=ExUserLookup, label=u'Риэлтор', required=False)    
+    created_by = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, lookup_class=ExUserLookup, label=u'Кем создано', required=False)
+    updated_by = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
+    broker = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, lookup_class=ExUserLookup, label=u'Риэлтор', required=False)    
     clients = AutoCompleteSelectMultipleField(
             lookup_class=ClientLookup,
             label=_('Client'),
@@ -824,18 +823,18 @@ class BidFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
-    origin = AutoComboboxSelectField(
+    origin = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=OriginLookup,
             label=_('Origin'),
             required=False,
         )      
-    bid_status = AutoComboboxSelectMultipleField(
+    bid_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
             required=False,
         )    
     agency_price = IntegerRangeField(label=_('Price'), required=False)
-    bid_event_category = AutoComboboxSelectMultipleField(lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
+    bid_event_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
     date_event = DateRangeField(required=False, label=_('Event date'))
     note = forms.CharField(required=False, label=_('Note'))
     next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
@@ -911,7 +910,7 @@ class EstateRegisterFilterForm(BidFilterForm):
             required=False,
         )
     name = forms.CharField(required=False, label=_('Name'))
-    register_category = AutoComboboxSelectMultipleField(
+    register_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=RegisterCategoryLookup,
             label=_('Register category'),
             required=False,
@@ -981,7 +980,7 @@ class BidPicleForm(EstateFilterForm):
                      ]
 
 class EstateRegisterForm(BetterModelForm):      
-    register_category = AutoComboboxSelectField(
+    register_category = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=RegisterCategoryLookup,
             label=_('Register category'),
             required=False,
@@ -1000,7 +999,7 @@ class ClientStatusUpdateForm(ModelForm):
         fields = ['estate_client_status']
 
 class BidEventForm(ModelForm):
-    bid_event_category = AutoComboboxSelectField(
+    bid_event_category = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=BidEventCategoryLookup,
             label = _('Event')
         )  
