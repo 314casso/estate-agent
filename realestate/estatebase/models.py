@@ -34,11 +34,15 @@ class ExUser(User):
         ordering = ['first_name','last_name']
         proxy = True
 
+def get_profile_upload_to(instance, filename):    
+    return os.path.join(u'userimages', force_unicode(instance.user), force_unicode(instance.id),  force_unicode(filename))
+
 class UserProfile(models.Model):    
     user = models.OneToOneField(User)    
     geo_groups = models.ManyToManyField('GeoGroup', verbose_name=_('Geo group'),)
     office = models.ForeignKey('Office', blank=True, null=True, verbose_name=_('Office'), on_delete=models.PROTECT)
-    phone = models.CharField(_('Phone'), max_length=255, blank=True, null=True,)                
+    phone = models.CharField(_('Phone'), max_length=255, blank=True, null=True,)
+    image = ImageField(verbose_name=_('File'), upload_to=get_profile_upload_to, blank=True, null=True,)                
 
 class SimpleDict(models.Model):
     #objects = caching.base.CachingManager()

@@ -125,13 +125,18 @@ class EstateCommunicationForm(ModelForm):
                   'gassupply', 'gassupply_distance', 'sewerage', 'sewerage_distance', 'telephony',
                   'internet', 'driveway', 'driveway_distance',)
         widgets = {
-                   'electricity':AutoComboboxSelectWidget(ElectricityLookup),
-                   'gassupply':AutoComboboxSelectWidget(GassupplyLookup),
-                   'watersupply':AutoComboboxSelectWidget(WatersupplyLookup),
-                   'sewerage':AutoComboboxSelectWidget(SewerageLookup),
-                   'internet':AutoComboboxSelectWidget(InternetLookup),
-                   'telephony':AutoComboboxSelectWidget(TelephonyLookup),
-                   'driveway':AutoComboboxSelectWidget(DrivewayLookup),
+                    'electricity':AutoComboboxSelectWidget(ElectricityLookup),
+                    'gassupply':AutoComboboxSelectWidget(GassupplyLookup),
+                    'watersupply':AutoComboboxSelectWidget(WatersupplyLookup),
+                    'sewerage':AutoComboboxSelectWidget(SewerageLookup),
+                    'internet':AutoComboboxSelectWidget(InternetLookup),
+                    'telephony':AutoComboboxSelectWidget(TelephonyLookup),
+                    'driveway':AutoComboboxSelectWidget(DrivewayLookup),
+                    'electricity_distance':TextInput(attrs={'class':'local-int'}), 
+                    'watersupply_distance':TextInput(attrs={'class':'local-int'}),
+                    'gassupply_distance':TextInput(attrs={'class':'local-int'}),
+                    'sewerage_distance':TextInput(attrs={'class':'local-int'}),
+                    'driveway_distance':TextInput(attrs={'class':'local-int'}),
                   }
 
 class EstateParamForm(ModelForm):
@@ -1023,7 +1028,8 @@ class EntranceEstateInlineForm(ModelForm):
         model = EntranceEstate
         fields = ['beside', 'type', 'distance', 'basic']
         widgets = {
-                  'beside':AutoComboboxSelectWidget(BesideLookup), 
+                  'beside':AutoComboboxSelectWidget(BesideLookup),
+                  'distance':TextInput(attrs={'class':'local-int'}), 
                    }
 
 

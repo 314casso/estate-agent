@@ -358,3 +358,54 @@ Traceback (most recent call last):
   File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/http/request.py", line 386, in __delitem__
     super(QueryDict, self).__delitem__(key)
 KeyError: u''
+[09/Sep/2016 23:23:20] ERROR [django.request:256] Internal Server Error: /admin/auth/user/34/
+Traceback (most recent call last):
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/options.py", line 618, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/utils/decorators.py", line 110, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/sites.py", line 233, in inner
+    return view(request, *args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/options.py", line 1521, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/utils/decorators.py", line 110, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/utils/decorators.py", line 145, in inner
+    return func(*args, **kwargs)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/options.py", line 1470, in changeform_view
+    self.save_related(request, form, formsets, not add)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/options.py", line 1104, in save_related
+    self.save_formset(request, form, formset, change=change)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/contrib/admin/options.py", line 1092, in save_formset
+    formset.save()
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/forms/models.py", line 636, in save
+    return self.save_existing_objects(commit) + self.save_new_objects(commit)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/forms/models.py", line 753, in save_existing_objects
+    saved_instances.append(self.save_existing(form, obj, commit=commit))
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/forms/models.py", line 623, in save_existing
+    return form.save(commit=commit)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/forms/models.py", line 459, in save
+    construct=False)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/forms/models.py", line 105, in save_instance
+    instance.save()
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/db/models/base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/db/models/base.py", line 762, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/db/models/base.py", line 824, in _save_table
+    for f in non_pks]
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/db/models/fields/files.py", line 314, in pre_save
+    file.save(file.name, file, save=False)
+  File "/home/picasso/coding/venv/neorealty/local/lib/python2.7/site-packages/django/db/models/fields/files.py", line 90, in save
+    name = self.field.generate_filename(self.instance, name)
+  File "/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/models.py", line 38, in get_profile_upload_to
+    return os.path.join(u'userimages', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
+AttributeError: 'UserProfile' object has no attribute 'content_type'
