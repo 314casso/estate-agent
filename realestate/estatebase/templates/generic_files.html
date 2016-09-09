@@ -42,7 +42,7 @@
 	 	{% endif %}
                          
         <p><span style="padding: 1px 2px; margin: 2px" class="ui-widget-content ui-corner-all new-state">{{ file.file.size|filesizeformat }}</span></p>
-        <a href="{% url file_update file.pk %}?{{ next_url }}">Правка</a> | <a href="{% url file_delete file.pk %}?{{ next_url }}">Удалить</a>
+        <a href="{% url 'file_update' file.pk %}?{{ next_url }}">Правка</a> | <a href="{% url 'file_delete' file.pk %}?{{ next_url }}">Удалить</a>
           
     </div>
 

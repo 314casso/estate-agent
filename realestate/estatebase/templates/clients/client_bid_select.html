@@ -2,5 +2,5 @@
 {% load link_helper %}
 {% block linkback %}{% endblock %}
 {% block lastcol %}
-<a href="{% url client_bid_bind client.pk bid.pk %}?next={{ request.GET.next|urlencode }}"> Привязать</a> [{{ bid.pk }}]
+<a href="{% url 'client_bid_bind' client.pk bid.pk %}?next={{ request.GET.next|urlencode }}"> Привязать</a> [{{ bid.pk }}]
 {% endblock %}

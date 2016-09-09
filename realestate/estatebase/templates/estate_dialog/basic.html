@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load link_helper %}
 {% block title_left %}
-<a href="{% url estate_update estate.pk %}?{{ next_url }}">Основная информация</a>
+<a href="{% url 'estate_update' estate.pk %}?{{ next_url }}">Основная информация</a>
 {% endblock %}
 {% block content %}
 

@@ -25,7 +25,7 @@
 		$('#id_microdistrict_0').djselectable('option', 'prepareQuery', localityParam);
 		$('#id_estate_type_0').djselectable('option', 'prepareQuery', categoryParam);
 		
-		$('#id_client_0').addAnother({url : '{% url client_create_popup %}', width: 650, height: 600, object_id: 'id_client', hint:'Добавить нового заказчика'});
+		$('#id_client_0').addAnother({url : '{% url 'client_create_popup' %}', width: 650, height: 600, object_id: 'id_client', hint:'Добавить нового заказчика'});
 			});			
 </script>
 {% endblock js %}

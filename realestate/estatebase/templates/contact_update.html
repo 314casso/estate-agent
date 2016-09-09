@@ -27,7 +27,7 @@
 				<td colspan="100%">
 				<table>
 					<tr>
-						<th>Заказчик:</th><td><a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a></td>
+						<th>Заказчик:</th><td><a href="{% url 'client_update' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a></td>
 					</tr>
 					<tr>
 						<th>Вид:</th><td>{{ contact.client.client_type }}</td>
@@ -81,7 +81,7 @@
 	<tbody>
 		{% for item in contact.client.contacts.all %}
 		<tr>
-			<td id="contact-list-{{ item.pk }}"><a href="{% url contact_update item.pk %}?next={{ request.GET.next|urlencode }}">{{ item }}</a></td>
+			<td id="contact-list-{{ item.pk }}"><a href="{% url 'contact_update' item.pk %}?next={{ request.GET.next|urlencode }}">{{ item }}</a></td>
 		</tr>
 		{% endfor %}
 	</tbody>

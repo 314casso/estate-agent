@@ -1,7 +1,7 @@
 {% extends "dialog_block.html" %}
 {% load link_helper %}
 {% block title_left %}
-<a title="Изменение открывающегося вида и/или направления выхода" href="{% url manage_entrances estate.pk %}?{{ next_url }}">Вид и/или выход</a>
+<a title="Изменение открывающегося вида и/или направления выхода" href="{% url 'manage_entrances' estate.pk %}?{{ next_url }}">Вид и/или выход</a>
 {% endblock %}
 {% block content %}
 {% for item in estate.entranceestate_set.all %}

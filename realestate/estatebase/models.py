@@ -24,7 +24,7 @@ import re
 from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
     LayoutFeatureMapper
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey,\
+from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation
 
 class ExUser(User):
@@ -474,7 +474,7 @@ class Estate(ProcessDeletedModel):
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.PROTECT)
     beside_distance = models.PositiveIntegerField(_('Beside distance'), blank=True, null=True)
-    entrances = models.ManyToManyField('Beside', verbose_name=_('Entrances'), blank=True, null=True, through=EntranceEstate, related_name='estates')
+    entrances = models.ManyToManyField('Beside', verbose_name=_('Entrances'), blank=True, through=EntranceEstate, related_name='estates')
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
     agency_price = models.PositiveIntegerField(_('Agency price'), blank=True, null=True)
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
@@ -493,7 +493,7 @@ class Estate(ProcessDeletedModel):
     driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.PROTECT)
     driveway_distance = models.PositiveIntegerField(_('Driveway distance'), blank=True, null=True)
     #Дополнительно    
-    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, null=True, related_name='estates')    
+    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, related_name='estates')    
     description = models.TextField(_('Description'), blank=True, null=True)
     client_description = models.TextField(_('Client description'), blank=True, null=True)
     comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)
@@ -936,13 +936,13 @@ class Bidg(models.Model):
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area = models.DecimalField(_('Total area'), blank=True, null=True, max_digits=10, decimal_places=2)
     used_area = models.DecimalField(_('Used area'), blank=True, null=True, max_digits=10, decimal_places=2)
-    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True)
     #Внутренняя отделка    
     wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True, on_delete=models.PROTECT)
     flooring = models.ForeignKey(Flooring, verbose_name=_('Flooring'), blank=True, null=True, on_delete=models.PROTECT)
     ceiling = models.ForeignKey(Ceiling, verbose_name=_('Ceiling'), blank=True, null=True, on_delete=models.PROTECT)
     interior = models.ForeignKey(Interior, verbose_name=_('Interior'), blank=True, null=True, on_delete=models.PROTECT)
-    appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True,null=True)
+    appliances = models.ManyToManyField(Appliance,verbose_name=_('Appliance'),blank=True)
     #Новостройка
     yandex_building = models.ForeignKey('YandexBuilding', verbose_name=_('YandexBuilding'), blank=True, null=True, on_delete=models.PROTECT)
     #param
@@ -1089,7 +1089,7 @@ class Stead(models.Model):
     shape = models.ForeignKey(Shape, verbose_name=_('Shape'), blank=True, null=True, on_delete=models.PROTECT)
     land_type = models.ForeignKey(LandType, verbose_name=_('LandType'), blank=True, null=True, on_delete=models.PROTECT)
     purpose = models.ForeignKey(Purpose, verbose_name=_('Purpose'), blank=True, null=True, on_delete=models.PROTECT)
-    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True, null=True)
+    documents = models.ManyToManyField(Document, verbose_name=_('Documents'), blank=True)
     cadastral_number = models.CharField(_('Cadastral number'), max_length=150, blank=True, null=True)    
     class Meta:
         verbose_name = _('stead')
@@ -1150,7 +1150,7 @@ class ContactState(SimpleDict):
         verbose_name_plural = _('contact states')
 
 class ContactHistory(models.Model):
-    event_date = models.DateTimeField(_('Event Date'), default=datetime.datetime.now())
+    event_date = models.DateTimeField(_('Event Date'), auto_now_add=True)
     user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True, on_delete=models.PROTECT)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), on_delete=models.PROTECT) 
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
@@ -1240,24 +1240,24 @@ class Bid(ProcessDeletedModel):
     Заявка
     '''      
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids', blank=True, null=True, on_delete=models.SET_NULL)
-    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, null=True, through='BidClient')
+    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, through='BidClient')
     estate_filter = PickledObjectField(blank=True, null=True)
     cleaned_filter = PickledObjectField(blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     broker = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='broker_list', blank=True, null=True, on_delete=models.PROTECT)
-    brokers = models.ManyToManyField(ExUser, verbose_name=_('User'), blank=True, null=True)
+    brokers = models.ManyToManyField(ExUser, verbose_name=_('User'), blank=True)
     geo_groups = models.ManyToManyField(GeoGroup, verbose_name=_('GeoGroups'))    
     #Для поиска из пикле
-    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)    
-    estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), blank=True, null=True)
-    estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True, null=True)
-    regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True, null=True)
-    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True)
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True)    
+    estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), blank=True)
+    estate_types = models.ManyToManyField(EstateType, verbose_name=_('Estates types'), blank=True)
+    regions = models.ManyToManyField(Region, verbose_name=_('Regions'), blank=True)
+    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True)
     agency_price_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     #Конец из пикле    
     note = models.TextField(_('Note'), blank=True, null=True)
-    bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True,null=True)
+    bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True)
     #attachments
     files = GenericRelation('EstateFile')
     @property
@@ -1301,7 +1301,7 @@ class BidEvent(models.Model):
     bid = models.ForeignKey(Bid,verbose_name=_('Bid'), related_name='bid_events')
     bid_event_category = models.ForeignKey(BidEventCategory,verbose_name=_('BidEventCategory'))
     date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)
-    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True)
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     note = models.TextField(_('Note'), blank=True, null=True)
     def __unicode__(self):
@@ -1325,8 +1325,8 @@ class EstateRegister(ProcessDeletedModel):
     '''    
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
-    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, null=True, related_name='estate_registers')    
-    bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, null=True, related_name='estate_registers')
+    estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True, related_name='estate_registers')    
+    bids = models.ManyToManyField(Bid, verbose_name=_('EstateRegisters'), blank=True, related_name='estate_registers')
     register_category = models.ForeignKey(RegisterCategory,verbose_name=_('RegisterCategory'),blank=True,null=True)
     def __unicode__(self):
         return u'%s' % self.pk                          

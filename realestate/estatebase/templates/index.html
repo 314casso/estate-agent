@@ -27,7 +27,7 @@ $(document).ready(function() {
 				<table>
 					<td><a href="#">{{ estate_type.name }} </a></td><td>
 					<div>
-						<a class="inline-button icon-plus" href="{% url estate_create estate_type.pk  %}?{{ next_url }}">Add</a>
+						<a class="inline-button icon-plus" href="{% url 'estate_create' estate_type.pk  %}?{{ next_url }}">Add</a>
 					</div></td>
 				</table>
 			</li>

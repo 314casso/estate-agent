@@ -10,10 +10,13 @@ def safe_next_link(full_path):
     next_query = iri_to_uri(urlparse(full_path).query)
     next_query_dict = None   
     if next_query:       
+        deleted_keys = []
         next_query_dict = QueryDict(next_query).copy()
         for k,v in next_query_dict.iteritems():          
             if not v:
-                del(next_query_dict[k])
+                deleted_keys.append(k)
+        for key in deleted_keys:
+            del[next_query_dict[key]]                
     params =  '?%s' % next_query_dict.urlencode() if next_query_dict else ''
     q['next'] = '%s%s' % (next_url, params)            
     return q.urlencode()

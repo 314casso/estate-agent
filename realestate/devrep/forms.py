@@ -15,8 +15,7 @@ from estatebase.lookups import RegionLookup, LocalityLookup, MicrodistrictLookup
 from django.forms.widgets import Textarea, DateTimeInput, TextInput
 from django.core.exceptions import ValidationError
 from django import forms
-from selectable.forms.fields import AutoCompleteSelectMultipleField,\
-    AutoComboboxSelectMultipleField
+from selectable.forms.fields import AutoCompleteSelectMultipleField
 from django.forms.forms import Form
 from estatebase.field_utils import history_filter
 from estatebase.fields import DateRangeField, LocalIntegerField
@@ -40,10 +39,11 @@ class PartnerForm(ModelForm):
 class ClientPartnerThroughUpdateForm(ModelForm):
     class Meta:
         model = ClientPartner 
-        fields = ['partner_client_status']
+        fields = ('partner_client_status',)
         
 class AddressForm(ModelForm):
     class Meta:
+        fields = '__all__'
         textWidget = TextInput(attrs={'class':'long-input'})
         model = Address
         widgets = {
@@ -99,6 +99,7 @@ class WorkTypeProfileFormInlineForm(ModelForm):
     price_min = LocalIntegerField(label=_('Price min'))
     price_max = LocalIntegerField(label=_('Price max'))
     class Meta:
+        fields = '__all__'
         model = WorkTypeProfile
         widgets = {                   
                     'quality':AutoComboboxSelectWidget(QualityLookup),                                      
@@ -115,6 +116,7 @@ WorkTypeProfileFormSet = inlineformset_factory(DevProfile, WorkTypeProfile, extr
 class GoodsProfileM2MInlineForm(ModelForm):
     price = LocalIntegerField(label=_('Price min'))    
     class Meta:
+        fields = '__all__'
         model = GoodsProfileM2M
         widgets = {
                    'goods':AutoComboboxSelectWidget(GoodsLookup), 
@@ -132,10 +134,10 @@ class PartnerFilterForm(Form):
             required=False            
         )
     created = DateRangeField(required=False, label=_('Created'))
-    created_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
+    created_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем создано', required=False)       
     updated = DateRangeField(required=False, label=_('Updated'))
-    updated_by = AutoComboboxSelectMultipleField(lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
-    partner_types = AutoComboboxSelectMultipleField(
+    updated_by = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Кем обновлено', required=False)
+    partner_types = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=PartnerTypeLookup,
             label=_('Partner type'),
             required=False,

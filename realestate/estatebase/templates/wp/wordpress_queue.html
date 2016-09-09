@@ -38,10 +38,10 @@
 
 {% if request.user.is_superuser %}
 <h2>Настройки</h2>
-<a href="{% url wordpress_queue %}?meta_report=meta_localities">Населённые пункты</a> |
-<a href="{% url wordpress_queue %}?meta_report=meta_estate_types">Виды недвижимости</a> |
-<a href="{% url wordpress_queue %}?meta_report=meta_regions">Районы</a> |
-<a href="{% url wordpress_queue %}?meta_report=meta_statuses">Статусы</a>
+<a href="{% url 'wordpress_queue' %}?meta_report=meta_localities">Населённые пункты</a> |
+<a href="{% url 'wordpress_queue' %}?meta_report=meta_estate_types">Виды недвижимости</a> |
+<a href="{% url 'wordpress_queue' %}?meta_report=meta_regions">Районы</a> |
+<a href="{% url 'wordpress_queue' %}?meta_report=meta_statuses">Статусы</a>
 
 {% if meta_queryset %}
 <h3>{{ meta_title }}</h3>

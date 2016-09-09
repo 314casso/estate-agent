@@ -18,7 +18,7 @@
 		<ul>				
 				{% for node in object.nodes.all %}
 					<li>
-						<a title="XML feed node - {{ node }}" href="{% url type_detail object.id node.id  %}">{{ node.xml_node }}</a>
+						<a title="XML feed node - {{ node }}" href="{% url 'type_detail' object.id node.id  %}">{{ node.xml_node }}</a>
 					</li>
 				{% endfor %}	
 			

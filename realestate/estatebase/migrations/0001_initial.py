@@ -1,1185 +1,1412 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+import sorl.thumbnail.fields
 import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-
-
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        # Adding model 'UserProfile'
-        db.create_table('estatebase_userprofile', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-        ))
-        db.send_create_signal('estatebase', ['UserProfile'])
-
-        # Adding M2M table for field geo_groups on 'UserProfile'
-        db.create_table('estatebase_userprofile_geo_groups', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('userprofile', models.ForeignKey(orm['estatebase.userprofile'], null=False)),
-            ('geogroup', models.ForeignKey(orm['estatebase.geogroup'], null=False))
-        ))
-        db.create_unique('estatebase_userprofile_geo_groups', ['userprofile_id', 'geogroup_id'])
-
-        # Adding model 'GeoGroup'
-        db.create_table('estatebase_geogroup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['GeoGroup'])
-
-        # Adding model 'Region'
-        db.create_table('estatebase_region', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-            ('geo_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.GeoGroup'], on_delete=models.PROTECT)),
-        ))
-        db.send_create_signal('estatebase', ['Region'])
-
-        # Adding model 'Locality'
-        db.create_table('estatebase_locality', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
-            ('region', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Region'], null=True, on_delete=models.PROTECT, blank=True)),
-        ))
-        db.send_create_signal('estatebase', ['Locality'])
-
-        # Adding unique constraint on 'Locality', fields ['name', 'region']
-        db.create_unique('estatebase_locality', ['name', 'region_id'])
-
-        # Adding model 'Microdistrict'
-        db.create_table('estatebase_microdistrict', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-            ('locality', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Locality'], on_delete=models.PROTECT)),
-        ))
-        db.send_create_signal('estatebase', ['Microdistrict'])
-
-        # Adding model 'Street'
-        db.create_table('estatebase_street', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-            ('locality', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Locality'], on_delete=models.PROTECT)),
-        ))
-        db.send_create_signal('estatebase', ['Street'])
-
-        # Adding model 'Beside'
-        db.create_table('estatebase_beside', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Beside'])
-
-        # Adding model 'Electricity'
-        db.create_table('estatebase_electricity', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Electricity'])
-
-        # Adding model 'Watersupply'
-        db.create_table('estatebase_watersupply', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Watersupply'])
-
-        # Adding model 'Gassupply'
-        db.create_table('estatebase_gassupply', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Gassupply'])
-
-        # Adding model 'Sewerage'
-        db.create_table('estatebase_sewerage', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Sewerage'])
-
-        # Adding model 'Telephony'
-        db.create_table('estatebase_telephony', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Telephony'])
-
-        # Adding model 'Internet'
-        db.create_table('estatebase_internet', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Internet'])
-
-        # Adding model 'Driveway'
-        db.create_table('estatebase_driveway', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Driveway'])
-
-        # Adding model 'Document'
-        db.create_table('estatebase_document', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Document'])
-
-        # Adding M2M table for field estate_type on 'Document'
-        db.create_table('estatebase_document_estate_type', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('document', models.ForeignKey(orm['estatebase.document'], null=False)),
-            ('estatetype', models.ForeignKey(orm['estatebase.estatetype'], null=False))
-        ))
-        db.create_unique('estatebase_document_estate_type', ['document_id', 'estatetype_id'])
-
-        # Adding model 'EstateParam'
-        db.create_table('estatebase_estateparam', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.PositiveIntegerField')(unique=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('estatebase', ['EstateParam'])
-
-        # Adding model 'EstateStatus'
-        db.create_table('estatebase_estatestatus', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['EstateStatus'])
-
-        # Adding model 'EstateClientStatus'
-        db.create_table('estatebase_estateclientstatus', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['EstateClientStatus'])
-
-        # Adding model 'EstateTypeCategory'
-        db.create_table('estatebase_estatetypecategory', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.PositiveIntegerField')(unique=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('estatebase', ['EstateTypeCategory'])
-
-        # Adding model 'EstateType'
-        db.create_table('estatebase_estatetype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.PositiveIntegerField')(unique=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('estate_type_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.EstateTypeCategory'], on_delete=models.PROTECT)),
-            ('object_type', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('note', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('placeable', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('estatebase', ['EstateType'])
-
-        # Adding model 'HistoryMeta'
-        db.create_table('estatebase_historymeta', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')()),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='creators', on_delete=models.PROTECT, to=orm['auth.User'])),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='updators', null=True, on_delete=models.PROTECT, to=orm['auth.User'])),
-            ('modificated', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal('estatebase', ['HistoryMeta'])
-
-        # Adding model 'EstateClient'
-        db.create_table('estatebase_estateclient', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('client', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Client'])),
-            ('estate', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Estate'])),
-            ('estate_client_status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.EstateClientStatus'])),
-        ))
-        db.send_create_signal('estatebase', ['EstateClient'])
-
-        # Adding model 'Estate'
-        db.create_table('estatebase_estate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('estate_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.EstateType'], on_delete=models.PROTECT)),
-            ('region', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Region'], on_delete=models.PROTECT)),
-            ('locality', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Locality'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('microdistrict', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Microdistrict'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('street', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Street'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('estate_number', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('origin', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Origin'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('beside', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Beside'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('beside_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('saler_price', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('agency_price', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('estate_status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.EstateStatus'], on_delete=models.PROTECT)),
-            ('electricity', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Electricity'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('electricity_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('watersupply', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Watersupply'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('watersupply_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('gassupply', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Gassupply'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('gassupply_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('sewerage', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Sewerage'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('sewerage_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('telephony', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Telephony'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('internet', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Internet'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('driveway', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Driveway'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('driveway_distance', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('comment', self.gf('django.db.models.fields.TextField')(max_length=255, null=True, blank=True)),
-            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['estatebase.HistoryMeta'], unique=True, null=True, blank=True)),
-            ('contact', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Contact'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('valid', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('estatebase', ['Estate'])
-
-        # Adding M2M table for field estate_params on 'Estate'
-        db.create_table('estatebase_estate_estate_params', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('estate', models.ForeignKey(orm['estatebase.estate'], null=False)),
-            ('estateparam', models.ForeignKey(orm['estatebase.estateparam'], null=False))
-        ))
-        db.create_unique('estatebase_estate_estate_params', ['estate_id', 'estateparam_id'])
-
-        # Adding model 'EstatePhoto'
-        db.create_table('estatebase_estatephoto', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.PositiveIntegerField')(unique=True, blank=True)),
-            ('estate', self.gf('django.db.models.fields.related.ForeignKey')(related_name='images', to=orm['estatebase.Estate'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('note', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('image', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100)),
-        ))
-        db.send_create_signal('estatebase', ['EstatePhoto'])
-
-        # Adding model 'WallConstrucion'
-        db.create_table('estatebase_wallconstrucion', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['WallConstrucion'])
-
-        # Adding model 'ExteriorFinish'
-        db.create_table('estatebase_exteriorfinish', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['ExteriorFinish'])
-
-        # Adding model 'WindowType'
-        db.create_table('estatebase_windowtype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['WindowType'])
-
-        # Adding model 'Roof'
-        db.create_table('estatebase_roof', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Roof'])
-
-        # Adding model 'Heating'
-        db.create_table('estatebase_heating', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Heating'])
-
-        # Adding model 'WallFinish'
-        db.create_table('estatebase_wallfinish', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['WallFinish'])
-
-        # Adding model 'Flooring'
-        db.create_table('estatebase_flooring', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Flooring'])
-
-        # Adding model 'Ceiling'
-        db.create_table('estatebase_ceiling', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Ceiling'])
-
-        # Adding model 'Interior'
-        db.create_table('estatebase_interior', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Interior'])
-
-        # Adding model 'LevelName'
-        db.create_table('estatebase_levelname', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['LevelName'])
-
-        # Adding model 'Level'
-        db.create_table('estatebase_level', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('level_name', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.LevelName'])),
-            ('bidg', self.gf('django.db.models.fields.related.ForeignKey')(related_name='levels', to=orm['estatebase.Bidg'])),
-        ))
-        db.send_create_signal('estatebase', ['Level'])
-
-        # Adding model 'LayoutType'
-        db.create_table('estatebase_layouttype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['LayoutType'])
-
-        # Adding model 'Furniture'
-        db.create_table('estatebase_furniture', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Furniture'])
-
-        # Adding model 'LayoutFeature'
-        db.create_table('estatebase_layoutfeature', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['LayoutFeature'])
-
-        # Adding model 'Layout'
-        db.create_table('estatebase_layout', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('level', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Level'])),
-            ('layout_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.LayoutType'], on_delete=models.PROTECT)),
-            ('area', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=7, decimal_places=2, blank=True)),
-            ('furniture', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Furniture'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('layout_feature', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.LayoutFeature'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('note', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-        ))
-        db.send_create_signal('estatebase', ['Layout'])
-
-        # Adding model 'Bidg'
-        db.create_table('estatebase_bidg', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('estate', self.gf('django.db.models.fields.related.ForeignKey')(related_name='bidgs', to=orm['estatebase.Estate'])),
-            ('estate_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.EstateType'], on_delete=models.PROTECT)),
-            ('room_number', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('year_built', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('floor', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('floor_count', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('elevator', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('wall_construcion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.WallConstrucion'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('exterior_finish', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.ExteriorFinish'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('window_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.WindowType'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('roof', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Roof'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('heating', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Heating'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('ceiling_height', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=5, decimal_places=2, blank=True)),
-            ('room_count', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('total_area', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=7, decimal_places=2, blank=True)),
-            ('used_area', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=7, decimal_places=2, blank=True)),
-            ('wall_finish', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.WallFinish'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('flooring', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Flooring'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('ceiling', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Ceiling'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('interior', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Interior'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('basic', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('estatebase', ['Bidg'])
-
-        # Adding M2M table for field documents on 'Bidg'
-        db.create_table('estatebase_bidg_documents', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('bidg', models.ForeignKey(orm['estatebase.bidg'], null=False)),
-            ('document', models.ForeignKey(orm['estatebase.document'], null=False))
-        ))
-        db.create_unique('estatebase_bidg_documents', ['bidg_id', 'document_id'])
-
-        # Adding model 'Shape'
-        db.create_table('estatebase_shape', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Shape'])
-
-        # Adding model 'LandType'
-        db.create_table('estatebase_landtype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['LandType'])
-
-        # Adding model 'Purpose'
-        db.create_table('estatebase_purpose', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Purpose'])
-
-        # Adding model 'Stead'
-        db.create_table('estatebase_stead', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('estate', self.gf('django.db.models.fields.related.OneToOneField')(related_name='stead', unique=True, to=orm['estatebase.Estate'])),
-            ('total_area', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=7, decimal_places=2, blank=True)),
-            ('face_area', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=7, decimal_places=2, blank=True)),
-            ('shape', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Shape'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('land_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.LandType'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('purpose', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Purpose'], null=True, on_delete=models.PROTECT, blank=True)),
-        ))
-        db.send_create_signal('estatebase', ['Stead'])
-
-        # Adding model 'ClientType'
-        db.create_table('estatebase_clienttype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['ClientType'])
-
-        # Adding model 'Origin'
-        db.create_table('estatebase_origin', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['Origin'])
-
-        # Adding model 'Client'
-        db.create_table('estatebase_client', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('client_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.ClientType'], on_delete=models.PROTECT)),
-            ('origin', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Origin'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('note', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['estatebase.HistoryMeta'], unique=True, null=True, blank=True)),
-            ('broker', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='clientbrokers', null=True, on_delete=models.PROTECT, to=orm['auth.User'])),
-        ))
-        db.send_create_signal('estatebase', ['Client'])
-
-        # Adding model 'ContactType'
-        db.create_table('estatebase_contacttype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['ContactType'])
-
-        # Adding model 'ContactState'
-        db.create_table('estatebase_contactstate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('estatebase', ['ContactState'])
-
-        # Adding model 'ContactHistory'
-        db.create_table('estatebase_contacthistory', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2012, 10, 1, 0, 0))),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, on_delete=models.PROTECT, blank=True)),
-            ('contact_state', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.ContactState'], on_delete=models.PROTECT)),
-            ('contact', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.Contact'])),
-        ))
-        db.send_create_signal('estatebase', ['ContactHistory'])
-
-        # Adding model 'Contact'
-        db.create_table('estatebase_contact', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('client', self.gf('django.db.models.fields.related.ForeignKey')(related_name='contacts', to=orm['estatebase.Client'])),
-            ('contact_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['estatebase.ContactType'], on_delete=models.PROTECT)),
-            ('contact', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('contact_state', self.gf('django.db.models.fields.related.ForeignKey')(default=5, to=orm['estatebase.ContactState'], on_delete=models.PROTECT)),
-        ))
-        db.send_create_signal('estatebase', ['Contact'])
-
-        # Adding model 'Bid'
-        db.create_table('estatebase_bid', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('client', self.gf('django.db.models.fields.related.ForeignKey')(related_name='bids', to=orm['estatebase.Client'])),
-            ('estate_filter', self.gf('picklefield.fields.PickledObjectField')(null=True, blank=True)),
-            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['estatebase.HistoryMeta'], unique=True, null=True, blank=True)),
-            ('broker', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='brokers', null=True, on_delete=models.PROTECT, to=orm['auth.User'])),
-            ('agency_price_min', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('agency_price_max', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('estatebase', ['Bid'])
-
-        # Adding M2M table for field estates on 'Bid'
-        db.create_table('estatebase_bid_estates', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('bid', models.ForeignKey(orm['estatebase.bid'], null=False)),
-            ('estate', models.ForeignKey(orm['estatebase.estate'], null=False))
-        ))
-        db.create_unique('estatebase_bid_estates', ['bid_id', 'estate_id'])
-
-        # Adding M2M table for field estate_types on 'Bid'
-        db.create_table('estatebase_bid_estate_types', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('bid', models.ForeignKey(orm['estatebase.bid'], null=False)),
-            ('estatetype', models.ForeignKey(orm['estatebase.estatetype'], null=False))
-        ))
-        db.create_unique('estatebase_bid_estate_types', ['bid_id', 'estatetype_id'])
-
-        # Adding M2M table for field regions on 'Bid'
-        db.create_table('estatebase_bid_regions', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('bid', models.ForeignKey(orm['estatebase.bid'], null=False)),
-            ('region', models.ForeignKey(orm['estatebase.region'], null=False))
-        ))
-        db.create_unique('estatebase_bid_regions', ['bid_id', 'region_id'])
-
-        # Adding M2M table for field localities on 'Bid'
-        db.create_table('estatebase_bid_localities', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('bid', models.ForeignKey(orm['estatebase.bid'], null=False)),
-            ('locality', models.ForeignKey(orm['estatebase.locality'], null=False))
-        ))
-        db.create_unique('estatebase_bid_localities', ['bid_id', 'locality_id'])
-
-        # Adding model 'EstateRegister'
-        db.create_table('estatebase_estateregister', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
-            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['estatebase.HistoryMeta'], unique=True, null=True, blank=True)),
-            ('broker', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='estate_registers', null=True, on_delete=models.PROTECT, to=orm['auth.User'])),
-        ))
-        db.send_create_signal('estatebase', ['EstateRegister'])
-
-        # Adding M2M table for field estates on 'EstateRegister'
-        db.create_table('estatebase_estateregister_estates', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('estateregister', models.ForeignKey(orm['estatebase.estateregister'], null=False)),
-            ('estate', models.ForeignKey(orm['estatebase.estate'], null=False))
-        ))
-        db.create_unique('estatebase_estateregister_estates', ['estateregister_id', 'estate_id'])
-
-        # Adding M2M table for field bids on 'EstateRegister'
-        db.create_table('estatebase_estateregister_bids', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('estateregister', models.ForeignKey(orm['estatebase.estateregister'], null=False)),
-            ('bid', models.ForeignKey(orm['estatebase.bid'], null=False))
-        ))
-        db.create_unique('estatebase_estateregister_bids', ['estateregister_id', 'bid_id'])
-
-
-    def backwards(self, orm):
-        # Removing unique constraint on 'Locality', fields ['name', 'region']
-        db.delete_unique('estatebase_locality', ['name', 'region_id'])
-
-        # Deleting model 'UserProfile'
-        db.delete_table('estatebase_userprofile')
-
-        # Removing M2M table for field geo_groups on 'UserProfile'
-        db.delete_table('estatebase_userprofile_geo_groups')
-
-        # Deleting model 'GeoGroup'
-        db.delete_table('estatebase_geogroup')
-
-        # Deleting model 'Region'
-        db.delete_table('estatebase_region')
-
-        # Deleting model 'Locality'
-        db.delete_table('estatebase_locality')
-
-        # Deleting model 'Microdistrict'
-        db.delete_table('estatebase_microdistrict')
-
-        # Deleting model 'Street'
-        db.delete_table('estatebase_street')
-
-        # Deleting model 'Beside'
-        db.delete_table('estatebase_beside')
-
-        # Deleting model 'Electricity'
-        db.delete_table('estatebase_electricity')
-
-        # Deleting model 'Watersupply'
-        db.delete_table('estatebase_watersupply')
-
-        # Deleting model 'Gassupply'
-        db.delete_table('estatebase_gassupply')
-
-        # Deleting model 'Sewerage'
-        db.delete_table('estatebase_sewerage')
-
-        # Deleting model 'Telephony'
-        db.delete_table('estatebase_telephony')
-
-        # Deleting model 'Internet'
-        db.delete_table('estatebase_internet')
-
-        # Deleting model 'Driveway'
-        db.delete_table('estatebase_driveway')
-
-        # Deleting model 'Document'
-        db.delete_table('estatebase_document')
-
-        # Removing M2M table for field estate_type on 'Document'
-        db.delete_table('estatebase_document_estate_type')
-
-        # Deleting model 'EstateParam'
-        db.delete_table('estatebase_estateparam')
-
-        # Deleting model 'EstateStatus'
-        db.delete_table('estatebase_estatestatus')
-
-        # Deleting model 'EstateClientStatus'
-        db.delete_table('estatebase_estateclientstatus')
-
-        # Deleting model 'EstateTypeCategory'
-        db.delete_table('estatebase_estatetypecategory')
-
-        # Deleting model 'EstateType'
-        db.delete_table('estatebase_estatetype')
-
-        # Deleting model 'HistoryMeta'
-        db.delete_table('estatebase_historymeta')
-
-        # Deleting model 'EstateClient'
-        db.delete_table('estatebase_estateclient')
-
-        # Deleting model 'Estate'
-        db.delete_table('estatebase_estate')
-
-        # Removing M2M table for field estate_params on 'Estate'
-        db.delete_table('estatebase_estate_estate_params')
-
-        # Deleting model 'EstatePhoto'
-        db.delete_table('estatebase_estatephoto')
-
-        # Deleting model 'WallConstrucion'
-        db.delete_table('estatebase_wallconstrucion')
-
-        # Deleting model 'ExteriorFinish'
-        db.delete_table('estatebase_exteriorfinish')
-
-        # Deleting model 'WindowType'
-        db.delete_table('estatebase_windowtype')
-
-        # Deleting model 'Roof'
-        db.delete_table('estatebase_roof')
-
-        # Deleting model 'Heating'
-        db.delete_table('estatebase_heating')
-
-        # Deleting model 'WallFinish'
-        db.delete_table('estatebase_wallfinish')
-
-        # Deleting model 'Flooring'
-        db.delete_table('estatebase_flooring')
-
-        # Deleting model 'Ceiling'
-        db.delete_table('estatebase_ceiling')
-
-        # Deleting model 'Interior'
-        db.delete_table('estatebase_interior')
-
-        # Deleting model 'LevelName'
-        db.delete_table('estatebase_levelname')
-
-        # Deleting model 'Level'
-        db.delete_table('estatebase_level')
-
-        # Deleting model 'LayoutType'
-        db.delete_table('estatebase_layouttype')
-
-        # Deleting model 'Furniture'
-        db.delete_table('estatebase_furniture')
-
-        # Deleting model 'LayoutFeature'
-        db.delete_table('estatebase_layoutfeature')
-
-        # Deleting model 'Layout'
-        db.delete_table('estatebase_layout')
-
-        # Deleting model 'Bidg'
-        db.delete_table('estatebase_bidg')
-
-        # Removing M2M table for field documents on 'Bidg'
-        db.delete_table('estatebase_bidg_documents')
-
-        # Deleting model 'Shape'
-        db.delete_table('estatebase_shape')
-
-        # Deleting model 'LandType'
-        db.delete_table('estatebase_landtype')
-
-        # Deleting model 'Purpose'
-        db.delete_table('estatebase_purpose')
-
-        # Deleting model 'Stead'
-        db.delete_table('estatebase_stead')
-
-        # Deleting model 'ClientType'
-        db.delete_table('estatebase_clienttype')
-
-        # Deleting model 'Origin'
-        db.delete_table('estatebase_origin')
-
-        # Deleting model 'Client'
-        db.delete_table('estatebase_client')
-
-        # Deleting model 'ContactType'
-        db.delete_table('estatebase_contacttype')
-
-        # Deleting model 'ContactState'
-        db.delete_table('estatebase_contactstate')
-
-        # Deleting model 'ContactHistory'
-        db.delete_table('estatebase_contacthistory')
-
-        # Deleting model 'Contact'
-        db.delete_table('estatebase_contact')
-
-        # Deleting model 'Bid'
-        db.delete_table('estatebase_bid')
-
-        # Removing M2M table for field estates on 'Bid'
-        db.delete_table('estatebase_bid_estates')
-
-        # Removing M2M table for field estate_types on 'Bid'
-        db.delete_table('estatebase_bid_estate_types')
-
-        # Removing M2M table for field regions on 'Bid'
-        db.delete_table('estatebase_bid_regions')
-
-        # Removing M2M table for field localities on 'Bid'
-        db.delete_table('estatebase_bid_localities')
-
-        # Deleting model 'EstateRegister'
-        db.delete_table('estatebase_estateregister')
-
-        # Removing M2M table for field estates on 'EstateRegister'
-        db.delete_table('estatebase_estateregister_estates')
-
-        # Removing M2M table for field bids on 'EstateRegister'
-        db.delete_table('estatebase_estateregister_bids')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'estatebase.beside': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Beside'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.bid': {
-            'Meta': {'ordering': "['-id']", 'object_name': 'Bid'},
-            'agency_price_max': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'agency_price_min': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'broker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'brokers'", 'null': 'True', 'on_delete': 'models.PROTECT', 'to': "orm['auth.User']"}),
-            'client': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'bids'", 'to': "orm['estatebase.Client']"}),
-            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'estate_filter': ('picklefield.fields.PickledObjectField', [], {'null': 'True', 'blank': 'True'}),
-            'estate_types': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.EstateType']", 'null': 'True', 'blank': 'True'}),
-            'estates': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.Estate']", 'null': 'True', 'blank': 'True'}),
-            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['estatebase.HistoryMeta']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'localities': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.Locality']", 'null': 'True', 'blank': 'True'}),
-            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.Region']", 'null': 'True', 'blank': 'True'})
-        },
-        'estatebase.bidg': {
-            'Meta': {'ordering': "['id']", 'object_name': 'Bidg'},
-            'basic': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'ceiling': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Ceiling']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'ceiling_height': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '5', 'decimal_places': '2', 'blank': 'True'}),
-            'documents': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.Document']", 'null': 'True', 'blank': 'True'}),
-            'elevator': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'estate': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'bidgs'", 'to': "orm['estatebase.Estate']"}),
-            'estate_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateType']", 'on_delete': 'models.PROTECT'}),
-            'exterior_finish': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.ExteriorFinish']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'floor': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'floor_count': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'flooring': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Flooring']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'heating': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Heating']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'interior': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Interior']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'roof': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Roof']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'room_count': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'room_number': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'total_area': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
-            'used_area': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
-            'wall_construcion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.WallConstrucion']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'wall_finish': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.WallFinish']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'window_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.WindowType']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'year_built': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'estatebase.ceiling': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Ceiling'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.client': {
-            'Meta': {'ordering': "['-id']", 'object_name': 'Client'},
-            'address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'broker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'clientbrokers'", 'null': 'True', 'on_delete': 'models.PROTECT', 'to': "orm['auth.User']"}),
-            'client_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.ClientType']", 'on_delete': 'models.PROTECT'}),
-            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['estatebase.HistoryMeta']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'origin': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Origin']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'})
-        },
-        'estatebase.clienttype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'ClientType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.contact': {
-            'Meta': {'ordering': "['contact_state__id', 'contact_type__id']", 'object_name': 'Contact'},
-            'client': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'contacts'", 'to': "orm['estatebase.Client']"}),
-            'contact': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
-            'contact_state': ('django.db.models.fields.related.ForeignKey', [], {'default': '5', 'to': "orm['estatebase.ContactState']", 'on_delete': 'models.PROTECT'}),
-            'contact_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.ContactType']", 'on_delete': 'models.PROTECT'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'estatebase.contacthistory': {
-            'Meta': {'object_name': 'ContactHistory'},
-            'contact': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Contact']"}),
-            'contact_state': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.ContactState']", 'on_delete': 'models.PROTECT'}),
-            'event_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 10, 1, 0, 0)'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'})
-        },
-        'estatebase.contactstate': {
-            'Meta': {'ordering': "['name']", 'object_name': 'ContactState'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.contacttype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'ContactType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.document': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Document'},
-            'estate_type': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['estatebase.EstateType']", 'symmetrical': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.driveway': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Driveway'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.electricity': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Electricity'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.estate': {
-            'Meta': {'ordering': "['-id']", 'object_name': 'Estate'},
-            'agency_price': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'beside': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Beside']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'beside_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'clients': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'estates'", 'symmetrical': 'False', 'through': "orm['estatebase.EstateClient']", 'to': "orm['estatebase.Client']"}),
-            'comment': ('django.db.models.fields.TextField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'contact': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Contact']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'driveway': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Driveway']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'driveway_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'electricity': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Electricity']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'electricity_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'estate_number': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'estate_params': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.EstateParam']", 'null': 'True', 'blank': 'True'}),
-            'estate_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateStatus']", 'on_delete': 'models.PROTECT'}),
-            'estate_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateType']", 'on_delete': 'models.PROTECT'}),
-            'gassupply': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Gassupply']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'gassupply_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['estatebase.HistoryMeta']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'internet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Internet']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'locality': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Locality']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'microdistrict': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Microdistrict']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'origin': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Origin']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Region']", 'on_delete': 'models.PROTECT'}),
-            'saler_price': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'sewerage': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Sewerage']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'sewerage_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'street': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Street']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'telephony': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Telephony']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'valid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'watersupply': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Watersupply']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'watersupply_distance': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'estatebase.estateclient': {
-            'Meta': {'object_name': 'EstateClient'},
-            'client': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Client']"}),
-            'estate': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Estate']"}),
-            'estate_client_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateClientStatus']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'estatebase.estateclientstatus': {
-            'Meta': {'ordering': "['name']", 'object_name': 'EstateClientStatus'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.estateparam': {
-            'Meta': {'ordering': "['order']", 'object_name': 'EstateParam'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'})
-        },
-        'estatebase.estatephoto': {
-            'Meta': {'ordering': "['order']", 'object_name': 'EstatePhoto'},
-            'estate': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['estatebase.Estate']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'})
-        },
-        'estatebase.estateregister': {
-            'Meta': {'ordering': "['-id']", 'object_name': 'EstateRegister'},
-            'bids': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'estate_registers'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['estatebase.Bid']"}),
-            'broker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'estate_registers'", 'null': 'True', 'on_delete': 'models.PROTECT', 'to': "orm['auth.User']"}),
-            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'estates': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['estatebase.Estate']", 'null': 'True', 'blank': 'True'}),
-            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['estatebase.HistoryMeta']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.estatestatus': {
-            'Meta': {'ordering': "['name']", 'object_name': 'EstateStatus'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.estatetype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'EstateType'},
-            'estate_type_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.EstateTypeCategory']", 'on_delete': 'models.PROTECT'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'object_type': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'}),
-            'placeable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'template': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'estatebase.estatetypecategory': {
-            'Meta': {'ordering': "['order']", 'object_name': 'EstateTypeCategory'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True', 'blank': 'True'})
-        },
-        'estatebase.exteriorfinish': {
-            'Meta': {'ordering': "['name']", 'object_name': 'ExteriorFinish'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.flooring': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Flooring'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.furniture': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Furniture'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.gassupply': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Gassupply'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.geogroup': {
-            'Meta': {'ordering': "['name']", 'object_name': 'GeoGroup'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.heating': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Heating'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.historymeta': {
-            'Meta': {'object_name': 'HistoryMeta'},
-            'created': ('django.db.models.fields.DateTimeField', [], {}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'creators'", 'on_delete': 'models.PROTECT', 'to': "orm['auth.User']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modificated': ('django.db.models.fields.DateTimeField', [], {}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'updators'", 'null': 'True', 'on_delete': 'models.PROTECT', 'to': "orm['auth.User']"})
-        },
-        'estatebase.interior': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Interior'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.internet': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Internet'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.landtype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'LandType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.layout': {
-            'Meta': {'object_name': 'Layout'},
-            'area': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
-            'furniture': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Furniture']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'layout_feature': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.LayoutFeature']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'layout_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.LayoutType']", 'on_delete': 'models.PROTECT'}),
-            'level': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Level']"}),
-            'note': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
-        },
-        'estatebase.layoutfeature': {
-            'Meta': {'ordering': "['name']", 'object_name': 'LayoutFeature'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.layouttype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'LayoutType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.level': {
-            'Meta': {'ordering': "['level_name']", 'object_name': 'Level'},
-            'bidg': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'levels'", 'to': "orm['estatebase.Bidg']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'level_name': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.LevelName']"})
-        },
-        'estatebase.levelname': {
-            'Meta': {'ordering': "['name']", 'object_name': 'LevelName'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.locality': {
-            'Meta': {'ordering': "['name']", 'unique_together': "(('name', 'region'),)", 'object_name': 'Locality'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Region']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'})
-        },
-        'estatebase.microdistrict': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Microdistrict'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'locality': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Locality']", 'on_delete': 'models.PROTECT'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.origin': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Origin'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.purpose': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Purpose'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.region': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Region'},
-            'geo_group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.GeoGroup']", 'on_delete': 'models.PROTECT'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.roof': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Roof'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.sewerage': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Sewerage'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.shape': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Shape'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.stead': {
-            'Meta': {'object_name': 'Stead'},
-            'estate': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'stead'", 'unique': 'True', 'to': "orm['estatebase.Estate']"}),
-            'face_area': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'land_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.LandType']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'purpose': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Purpose']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'shape': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Shape']", 'null': 'True', 'on_delete': 'models.PROTECT', 'blank': 'True'}),
-            'total_area': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'})
-        },
-        'estatebase.street': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Street'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'locality': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['estatebase.Locality']", 'on_delete': 'models.PROTECT'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.telephony': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Telephony'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            'geo_groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['estatebase.GeoGroup']", 'symmetrical': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
-        },
-        'estatebase.wallconstrucion': {
-            'Meta': {'ordering': "['name']", 'object_name': 'WallConstrucion'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.wallfinish': {
-            'Meta': {'ordering': "['name']", 'object_name': 'WallFinish'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.watersupply': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Watersupply'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        },
-        'estatebase.windowtype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'WindowType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'})
-        }
-    }
-
-    complete_apps = ['estatebase']
+import django.contrib.auth.models
+import django.db.models.deletion
+from django.conf import settings
+import estatebase.models
+import picklefield.fields
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('contenttypes', '0002_remove_content_type_name'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0009_auto_20160907_2122'),
+        ('devrep', '__first__'),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Appliance',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Appliance',
+                'verbose_name_plural': 'Appliances',
+            },
+        ),
+        migrations.CreateModel(
+            name='Beside',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('name_gent', models.CharField(max_length=255, null=True, verbose_name='Gent', blank=True)),
+                ('name_loct', models.CharField(max_length=255, null=True, verbose_name='Loct', blank=True)),
+                ('name_dativ', models.CharField(max_length=255, null=True, verbose_name='Dativ', blank=True)),
+                ('name_accus', models.CharField(max_length=255, null=True, verbose_name='Accus', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'beside',
+                'verbose_name_plural': 'besides',
+            },
+        ),
+        migrations.CreateModel(
+            name='Bid',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('deleted', models.BooleanField(default=False)),
+                ('estate_filter', picklefield.fields.PickledObjectField(null=True, editable=False, blank=True)),
+                ('cleaned_filter', picklefield.fields.PickledObjectField(null=True, editable=False, blank=True)),
+                ('agency_price_min', models.IntegerField(null=True, verbose_name='Price min', blank=True)),
+                ('agency_price_max', models.IntegerField(null=True, verbose_name='Price max', blank=True)),
+                ('note', models.TextField(null=True, verbose_name='Note', blank=True)),
+            ],
+            options={
+                'ordering': ['-history__created'],
+                'verbose_name': 'Bid',
+                'verbose_name_plural': 'Bids',
+            },
+        ),
+        migrations.CreateModel(
+            name='BidClient',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('bid', models.ForeignKey(to='estatebase.Bid')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='BidEvent',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date', models.DateTimeField(null=True, verbose_name='Event date', blank=True)),
+                ('note', models.TextField(null=True, verbose_name='Note', blank=True)),
+                ('bid', models.ForeignKey(related_name='bid_events', verbose_name='Bid', to='estatebase.Bid')),
+            ],
+            options={
+                'ordering': ['-date'],
+                'verbose_name': 'bid event',
+                'verbose_name_plural': 'bid events',
+            },
+        ),
+        migrations.CreateModel(
+            name='BidEventCategory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'BidEventCategory',
+                'verbose_name_plural': 'BidEventCategories',
+            },
+        ),
+        migrations.CreateModel(
+            name='Bidg',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('room_number', models.CharField(max_length=10, null=True, verbose_name='Room number', blank=True)),
+                ('year_built', models.PositiveIntegerField(blank=True, null=True, verbose_name='Year built', validators=[estatebase.models.validate_year])),
+                ('floor', models.PositiveIntegerField(null=True, verbose_name='Floor', blank=True)),
+                ('floor_count', models.DecimalField(null=True, verbose_name='Floor count', max_digits=3, decimal_places=1, blank=True)),
+                ('elevator', models.BooleanField(default=False, verbose_name='Elevator')),
+                ('ceiling_height', models.DecimalField(null=True, verbose_name='Ceiling height', max_digits=5, decimal_places=2, blank=True)),
+                ('room_count', models.PositiveIntegerField(null=True, verbose_name='Room count', blank=True)),
+                ('total_area', models.DecimalField(null=True, verbose_name='Total area', max_digits=10, decimal_places=2, blank=True)),
+                ('used_area', models.DecimalField(null=True, verbose_name='Used area', max_digits=10, decimal_places=2, blank=True)),
+                ('basic', models.BooleanField(default=False, verbose_name='Basic')),
+                ('description', models.TextField(null=True, verbose_name='Description', blank=True)),
+                ('appliances', models.ManyToManyField(to='estatebase.Appliance', null=True, verbose_name='Appliance', blank=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'verbose_name': 'bidg',
+                'verbose_name_plural': 'bidgs',
+            },
+        ),
+        migrations.CreateModel(
+            name='BidStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Bid status',
+                'verbose_name_plural': 'Bid statuss',
+            },
+        ),
+        migrations.CreateModel(
+            name='Ceiling',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Ceiling',
+                'verbose_name_plural': 'Ceilings',
+            },
+        ),
+        migrations.CreateModel(
+            name='Client',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('deleted', models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('address', models.CharField(max_length=255, null=True, verbose_name='Address', blank=True)),
+                ('note', models.TextField(null=True, verbose_name='Note', blank=True)),
+                ('has_dev_profile', models.BooleanField(default=False, verbose_name='HasDevProfile')),
+            ],
+            options={
+                'ordering': ['-id'],
+                'verbose_name': 'client',
+                'verbose_name_plural': 'clients',
+            },
+        ),
+        migrations.CreateModel(
+            name='ClientType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'client type',
+                'verbose_name_plural': 'client types',
+            },
+        ),
+        migrations.CreateModel(
+            name='ComStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('status', models.IntegerField(verbose_name='Status', choices=[(1, '\u0414\u0430'), (0, '\u041d\u0435\u0442'), (2, '\u0412\u043e\u0437\u043c\u043e\u0436\u043d\u043e')])),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Com status',
+                'verbose_name_plural': 'Com statuses',
+            },
+        ),
+        migrations.CreateModel(
+            name='Contact',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('contact', models.CharField(unique=True, max_length=255, verbose_name='Contact', db_index=True)),
+                ('updated', models.DateTimeField(null=True, verbose_name='Updated', blank=True)),
+                ('client', models.ForeignKey(related_name='contacts', verbose_name='Client', to='estatebase.Client')),
+            ],
+            options={
+                'ordering': ['contact_state__id', 'contact_type__id'],
+                'verbose_name': 'contact',
+                'verbose_name_plural': 'contacts',
+            },
+        ),
+        migrations.CreateModel(
+            name='ContactHistory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('event_date', models.DateTimeField(default=datetime.datetime(2016, 9, 7, 21, 46, 34, 922107), verbose_name='Event Date')),
+                ('contact', models.ForeignKey(verbose_name='Contact', to='estatebase.Contact')),
+            ],
+            options={
+                'verbose_name': 'contact history',
+                'verbose_name_plural': 'contact history',
+            },
+        ),
+        migrations.CreateModel(
+            name='ContactState',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'contact state',
+                'verbose_name_plural': 'contact states',
+            },
+        ),
+        migrations.CreateModel(
+            name='ContactType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'contact type',
+                'verbose_name_plural': 'contact types',
+            },
+        ),
+        migrations.CreateModel(
+            name='DealStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'DealStatus',
+                'verbose_name_plural': 'DealStatuses',
+            },
+        ),
+        migrations.CreateModel(
+            name='Document',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'document',
+                'verbose_name_plural': 'documents',
+            },
+        ),
+        migrations.CreateModel(
+            name='Driveway',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'driveway',
+                'verbose_name_plural': 'driveways',
+            },
+        ),
+        migrations.CreateModel(
+            name='Electricity',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'electricity',
+                'verbose_name_plural': 'electricities',
+            },
+        ),
+        migrations.CreateModel(
+            name='EntranceEstate',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.IntegerField(verbose_name='Type', choices=[(1, '\u0412\u044b\u0445\u043e\u0434'), (2, '\u0412\u0438\u0434'), (3, '\u0420\u0430\u0441\u0441\u0442\u043e\u044f\u043d\u0438\u0435'), (4, '\u0412\u0438\u0434 \u0438\u0437 \u043e\u043a\u043d\u0430')])),
+                ('distance', models.IntegerField(null=True, verbose_name='Distance', blank=True)),
+                ('basic', models.BooleanField(default=False, verbose_name='Basic')),
+                ('beside', models.ForeignKey(verbose_name='Object', to='estatebase.Beside')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Estate',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('deleted', models.BooleanField(default=False)),
+                ('address_state', models.PositiveIntegerField(blank=True, null=True, verbose_name='Address state', choices=[(1, '\u041d\u0435\u0442 \u0443\u043b\u0438\u0446\u044b'), (2, '\u041d\u0435\u0442 \u043d\u043e\u043c\u0435\u0440\u0430'), (3, '\u041d\u0435\u0442 \u0430\u0434\u0440\u0435\u0441\u0430')])),
+                ('estate_number', models.CharField(max_length=10, null=True, verbose_name='Estate number', blank=True)),
+                ('beside_distance', models.PositiveIntegerField(null=True, verbose_name='Beside distance', blank=True)),
+                ('saler_price', models.PositiveIntegerField(null=True, verbose_name='Saler price', blank=True)),
+                ('agency_price', models.PositiveIntegerField(null=True, verbose_name='Agency price', blank=True)),
+                ('electricity_distance', models.PositiveIntegerField(null=True, verbose_name=b'Electricity distance', blank=True)),
+                ('watersupply_distance', models.PositiveIntegerField(null=True, verbose_name='Watersupply distance', blank=True)),
+                ('gassupply_distance', models.PositiveIntegerField(null=True, verbose_name='Gassupply distance', blank=True)),
+                ('sewerage_distance', models.PositiveIntegerField(null=True, verbose_name='Sewerage distance', blank=True)),
+                ('driveway_distance', models.PositiveIntegerField(null=True, verbose_name='Driveway distance', blank=True)),
+                ('description', models.TextField(null=True, verbose_name='Description', blank=True)),
+                ('client_description', models.TextField(null=True, verbose_name='Client description', blank=True)),
+                ('comment', models.TextField(max_length=255, null=True, verbose_name='Comment', blank=True)),
+                ('beside', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Beside', blank=True, to='estatebase.Beside', null=True)),
+            ],
+            options={
+                'ordering': ['-id'],
+                'verbose_name': 'estate',
+                'verbose_name_plural': 'estate',
+                'permissions': (('view_private', '\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440 \u0446\u0435\u043d\u044b, \u043f\u043e\u043b\u043d\u043e\u0433\u043e \u0430\u0434\u0440\u0435\u0441\u0430 \u0438 \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u043e\u0432'),),
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateClient',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('client', models.ForeignKey(to='estatebase.Client')),
+                ('estate', models.ForeignKey(to='estatebase.Estate')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='EstateClientStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Estate client status',
+                'verbose_name_plural': 'Estate client statuss',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateFile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(unique=True, verbose_name='Order', blank=True)),
+                ('object_id', models.PositiveIntegerField()),
+                ('name', models.CharField(max_length=100, null=True, verbose_name='Name', blank=True)),
+                ('note', models.CharField(max_length=255, null=True, verbose_name='Note', blank=True)),
+                ('file', models.FileField(upload_to=estatebase.models.get_file_upload_to, verbose_name='File')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+            ],
+            options={
+                'ordering': ['order'],
+                'abstract': False,
+                'verbose_name': 'EstateFile',
+                'verbose_name_plural': 'EstateFiles',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateParam',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(unique=True, verbose_name='Order', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+            ],
+            options={
+                'ordering': ['order'],
+                'abstract': False,
+                'verbose_name': 'estate param',
+                'verbose_name_plural': 'estate params',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstatePhoto',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(unique=True, verbose_name='Order', blank=True)),
+                ('name', models.CharField(max_length=100, null=True, verbose_name='Name', blank=True)),
+                ('note', models.CharField(max_length=255, null=True, verbose_name='Note', blank=True)),
+                ('image', sorl.thumbnail.fields.ImageField(upload_to=estatebase.models.get_upload_to)),
+                ('estate', models.ForeignKey(related_name='images', verbose_name='Estate', to='estatebase.Estate')),
+            ],
+            options={
+                'ordering': ['order'],
+                'abstract': False,
+                'verbose_name': 'EstatePhoto',
+                'verbose_name_plural': 'EstatePhotos',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateRegister',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('deleted', models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=255, verbose_name='Name', db_index=True)),
+                ('bids', models.ManyToManyField(related_name='estate_registers', null=True, verbose_name='EstateRegisters', to='estatebase.Bid', blank=True)),
+                ('estates', models.ManyToManyField(related_name='estate_registers', null=True, verbose_name='Estate', to='estatebase.Estate', blank=True)),
+            ],
+            options={
+                'ordering': ['-id'],
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'estate status',
+                'verbose_name_plural': 'estate statuses',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(unique=True, verbose_name='Order', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+                ('name_accs', models.CharField(max_length=100, null=True, verbose_name='Accs', blank=True)),
+                ('template', models.IntegerField(verbose_name='Template', choices=[(0, '\u041a\u0432\u0430\u0440\u0442\u0438\u0440\u0430'), (1, '\u041d\u043e\u0432\u043e\u0441\u0442\u0440\u043e\u0439\u043a\u0430'), (2, '\u0414\u043e\u043c'), (3, '\u0423\u0447\u0430\u0441\u0442\u043e\u043a'), (4, '\u041f\u043e\u0441\u0442\u0440\u043e\u0439\u043a\u0430'), (5, '\u0421\u0435\u043b\u044c\u0445\u043e\u0437. \u0443\u0447\u0430\u0441\u0442\u043e\u043a'), (6, '\u041a\u0432\u0430\u0440\u0442\u0438\u0440\u0430 \u0441 \u0443\u0447\u0430\u0441\u0442\u043a\u043e\u043c'), (7, '\u0421\u043e\u043e\u0440\u0443\u0436\u0435\u043d\u0438\u0435'), (8, '\u0411\u043b\u0430\u0433\u043e\u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e'), (9, '\u0413\u0430\u0440\u0430\u0436')])),
+                ('note', models.CharField(max_length=255, null=True, verbose_name='Note', blank=True)),
+                ('placeable', models.BooleanField(default=True, verbose_name='Placeable')),
+            ],
+            options={
+                'ordering': ['estate_type_category__order', 'name'],
+                'abstract': False,
+                'verbose_name': 'estate type',
+                'verbose_name_plural': 'estate types',
+            },
+        ),
+        migrations.CreateModel(
+            name='EstateTypeCategory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(unique=True, verbose_name='Order', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+                ('independent', models.BooleanField(default=True, verbose_name='Independent')),
+                ('has_bidg', models.IntegerField(verbose_name='HasBidg', choices=[(1, '\u0414\u0430'), (0, '\u041d\u0435\u0442'), (2, '\u0412\u043e\u0437\u043c\u043e\u0436\u043d\u043e')])),
+                ('has_stead', models.IntegerField(verbose_name='HasStead', choices=[(1, '\u0414\u0430'), (0, '\u041d\u0435\u0442'), (2, '\u0412\u043e\u0437\u043c\u043e\u0436\u043d\u043e')])),
+                ('is_commerce', models.BooleanField(default=False, verbose_name='Commerce')),
+            ],
+            options={
+                'ordering': ['order'],
+                'abstract': False,
+                'verbose_name': 'estate type category',
+                'verbose_name_plural': 'estate type categories',
+            },
+        ),
+        migrations.CreateModel(
+            name='ExteriorFinish',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'exterior finish',
+                'verbose_name_plural': 'exterior finishs',
+            },
+        ),
+        migrations.CreateModel(
+            name='Flooring',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Flooring',
+                'verbose_name_plural': 'Floorings',
+            },
+        ),
+        migrations.CreateModel(
+            name='Furniture',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Furniture',
+                'verbose_name_plural': 'Furnitures',
+            },
+        ),
+        migrations.CreateModel(
+            name='Gassupply',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'gassupply',
+                'verbose_name_plural': 'gassupplies',
+            },
+        ),
+        migrations.CreateModel(
+            name='GenericLink',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('object_id', models.PositiveIntegerField()),
+                ('name', models.CharField(max_length=100, null=True, verbose_name='Name', blank=True)),
+                ('url', models.CharField(max_length=100, null=True, verbose_name='Url', blank=True)),
+                ('note', models.CharField(max_length=255, null=True, verbose_name='Note', blank=True)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+            ],
+            options={
+                'verbose_name': 'GenericLink',
+                'verbose_name_plural': 'GenericLinks',
+            },
+        ),
+        migrations.CreateModel(
+            name='GeoGroup',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Geo group',
+                'verbose_name_plural': 'Geo groups',
+            },
+        ),
+        migrations.CreateModel(
+            name='Heating',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'heating',
+                'verbose_name_plural': 'heatings',
+            },
+        ),
+        migrations.CreateModel(
+            name='HistoryMeta',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(verbose_name='Created', db_index=True)),
+                ('updated', models.DateTimeField(db_index=True, null=True, verbose_name='Updated', blank=True)),
+                ('modificated', models.DateTimeField(verbose_name='Modificated', db_index=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Interior',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Interior',
+                'verbose_name_plural': 'Interiors',
+            },
+        ),
+        migrations.CreateModel(
+            name='Internet',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'internet',
+                'verbose_name_plural': 'internets',
+            },
+        ),
+        migrations.CreateModel(
+            name='LandType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Land type',
+                'verbose_name_plural': 'Land types',
+            },
+        ),
+        migrations.CreateModel(
+            name='Layout',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('area', models.DecimalField(null=True, verbose_name='Area', max_digits=7, decimal_places=2, blank=True)),
+                ('note', models.CharField(max_length=255, null=True, verbose_name='Note', blank=True)),
+                ('furniture', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Furniture', blank=True, to='estatebase.Furniture', null=True)),
+                ('interior', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Interior', blank=True, to='estatebase.Interior', null=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'verbose_name': 'layout',
+                'verbose_name_plural': 'layouts',
+            },
+        ),
+        migrations.CreateModel(
+            name='LayoutFeature',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Layout feature',
+                'verbose_name_plural': 'Layout features',
+            },
+        ),
+        migrations.CreateModel(
+            name='LayoutType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('layout_category', models.IntegerField(blank=True, null=True, verbose_name='Category', choices=[(1, '\u0416\u0438\u043b\u0430\u044f \u043f\u043b\u043e\u0449\u0430\u0434\u044c'), (2, '\u041a\u0443\u0445\u043d\u044f')])),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Layout type',
+                'verbose_name_plural': 'Layout types',
+            },
+        ),
+        migrations.CreateModel(
+            name='Level',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('bidg', models.ForeignKey(related_name='levels', verbose_name='Level', to='estatebase.Bidg')),
+            ],
+            options={
+                'ordering': ['level_name'],
+                'verbose_name': 'Level',
+                'verbose_name_plural': 'Levels',
+            },
+        ),
+        migrations.CreateModel(
+            name='LevelName',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Level name',
+                'verbose_name_plural': 'Level names',
+            },
+        ),
+        migrations.CreateModel(
+            name='Locality',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name', db_index=True)),
+                ('name_gent', models.CharField(max_length=255, null=True, verbose_name='Gent', blank=True)),
+                ('name_loct', models.CharField(max_length=255, null=True, verbose_name='Loct', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'locality',
+                'verbose_name_plural': 'localities',
+            },
+        ),
+        migrations.CreateModel(
+            name='LocalityType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('sort_name', models.CharField(max_length=50, verbose_name='Short name', db_index=True)),
+                ('prep_name', models.CharField(max_length=255, verbose_name='Prepositional Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'LocalityType',
+                'verbose_name_plural': 'LocalityTypes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Microdistrict',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name', db_index=True)),
+                ('locality', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Locality', to='estatebase.Locality')),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'microdistrict',
+                'verbose_name_plural': 'microdistricts',
+            },
+        ),
+        migrations.CreateModel(
+            name='Office',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('address', models.TextField(verbose_name='Address')),
+                ('address_short', models.TextField(verbose_name='Short address')),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Office',
+                'verbose_name_plural': 'Offices',
+            },
+        ),
+        migrations.CreateModel(
+            name='Origin',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'origin',
+                'verbose_name_plural': 'origins',
+            },
+        ),
+        migrations.CreateModel(
+            name='Purpose',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Purpose',
+                'verbose_name_plural': 'Purposes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Region',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('regular_name', models.CharField(max_length=100, null=True, verbose_name='Region', blank=True)),
+                ('regular_name_gent', models.CharField(max_length=100, null=True, verbose_name='Gent', blank=True)),
+                ('geo_group', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='GeoGroup', to='estatebase.GeoGroup')),
+                ('metropolis', models.ForeignKey(related_name='metropolis_region', on_delete=django.db.models.deletion.PROTECT, verbose_name='\u0420\u0430\u0439\u0446\u0435\u043d\u0442\u0440', blank=True, to='estatebase.Locality', null=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'region',
+                'verbose_name_plural': 'regions',
+            },
+        ),
+        migrations.CreateModel(
+            name='RegisterCategory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Register category',
+                'verbose_name_plural': 'Register categorys',
+            },
+        ),
+        migrations.CreateModel(
+            name='Roof',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Roof',
+                'verbose_name_plural': 'Roofs',
+            },
+        ),
+        migrations.CreateModel(
+            name='Sewerage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'sewerage',
+                'verbose_name_plural': 'sewerages',
+            },
+        ),
+        migrations.CreateModel(
+            name='Shape',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Shape',
+                'verbose_name_plural': 'Shapes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Stead',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('total_area', models.DecimalField(null=True, verbose_name='Total area', max_digits=10, decimal_places=2, blank=True)),
+                ('face_area', models.DecimalField(null=True, verbose_name='Face area', max_digits=10, decimal_places=2, blank=True)),
+                ('cadastral_number', models.CharField(max_length=150, null=True, verbose_name='Cadastral number', blank=True)),
+                ('documents', models.ManyToManyField(to='estatebase.Document', null=True, verbose_name='Documents', blank=True)),
+                ('estate', models.OneToOneField(related_name='stead', verbose_name='Estate', to='estatebase.Estate')),
+                ('estate_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, default=15, verbose_name='EstateType', to='estatebase.EstateType')),
+                ('land_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='LandType', blank=True, to='estatebase.LandType', null=True)),
+                ('purpose', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Purpose', blank=True, to='estatebase.Purpose', null=True)),
+                ('shape', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Shape', blank=True, to='estatebase.Shape', null=True)),
+            ],
+            options={
+                'verbose_name': 'stead',
+                'verbose_name_plural': 'steads',
+            },
+        ),
+        migrations.CreateModel(
+            name='Street',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name', db_index=True)),
+                ('locality', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Locality', to='estatebase.Locality')),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'street',
+                'verbose_name_plural': 'streets',
+            },
+        ),
+        migrations.CreateModel(
+            name='StreetType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('sort_name', models.CharField(max_length=50, verbose_name='Short name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'StreetType',
+                'verbose_name_plural': 'StreetTypes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Telephony',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'telephony',
+                'verbose_name_plural': 'telephonies',
+            },
+        ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('phone', models.CharField(max_length=255, null=True, verbose_name='Phone', blank=True)),
+                ('geo_groups', models.ManyToManyField(to='estatebase.GeoGroup', verbose_name='Geo group')),
+                ('office', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Office', blank=True, to='estatebase.Office', null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Validity',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Validity',
+                'verbose_name_plural': 'Validitys',
+            },
+        ),
+        migrations.CreateModel(
+            name='WallConstrucion',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'wall construcion',
+                'verbose_name_plural': 'wall construcions',
+            },
+        ),
+        migrations.CreateModel(
+            name='WallFinish',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'Wall finish',
+                'verbose_name_plural': 'Wall finishs',
+            },
+        ),
+        migrations.CreateModel(
+            name='Watersupply',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'watersupply',
+                'verbose_name_plural': 'watersupplies',
+            },
+        ),
+        migrations.CreateModel(
+            name='WindowType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'window type',
+                'verbose_name_plural': 'window types',
+            },
+        ),
+        migrations.CreateModel(
+            name='YandexBuilding',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=255, verbose_name='Name', db_index=True)),
+                ('building_id', models.CharField(max_length=50, verbose_name='Yandex building id', db_index=True)),
+                ('ready_quarter', models.IntegerField(verbose_name='Quarter', choices=[(1, '1-\u0439 \u043a\u0432\u0430\u0440\u0442\u0430\u043b'), (2, '2-\u0439 \u043a\u0432\u0430\u0440\u0442\u0430\u043b'), (3, '3-\u0439 \u043a\u0432\u0430\u0440\u0442\u0430\u043b'), (4, '4-\u0439 \u043a\u0432\u0430\u0440\u0442\u0430\u043b')])),
+                ('building_state', models.CharField(max_length=15, verbose_name='Building state', choices=[(b'unfinished', '\u0441\u0442\u0440\u043e\u0438\u0442\u0441\u044f'), (b'built', '\u0434\u043e\u043c \u043f\u043e\u0441\u0442\u0440\u043e\u0435\u043d, \u043d\u043e \u043d\u0435 \u0441\u0434\u0430\u043d'), (b'hand-over', '\u0441\u0434\u0430\u043d \u0432 \u044d\u043a\u0441\u043f\u043b\u0443\u0430\u0442\u0430\u0446\u0438\u044e')])),
+                ('locality', models.ForeignKey(verbose_name='Locality', blank=True, to='estatebase.Locality', null=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
+                'verbose_name': 'YandexBuilding',
+                'verbose_name_plural': 'YandexBuildings',
+            },
+        ),
+        migrations.CreateModel(
+            name='ExUser',
+            fields=[
+            ],
+            options={
+                'ordering': ['first_name', 'last_name'],
+                'proxy': True,
+            },
+            bases=('auth.user',),
+            managers=[
+                ('objects', django.contrib.auth.models.UserManager()),
+            ],
+        ),
+        migrations.AddField(
+            model_name='userprofile',
+            name='user',
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='street',
+            name='street_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='StreetType', to='estatebase.StreetType'),
+        ),
+        migrations.AddField(
+            model_name='office',
+            name='head',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Head', blank=True, to='estatebase.ExUser', null=True),
+        ),
+        migrations.AddField(
+            model_name='office',
+            name='regions',
+            field=models.ManyToManyField(to='estatebase.Region', verbose_name='Region'),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='locality_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='LocalityType', blank=True, to='estatebase.LocalityType', null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='region',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Region', blank=True, to='estatebase.Region', null=True),
+        ),
+        migrations.AddField(
+            model_name='level',
+            name='level_name',
+            field=models.ForeignKey(verbose_name='Level name', to='estatebase.LevelName'),
+        ),
+        migrations.AddField(
+            model_name='layout',
+            name='layout_feature',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='LayoutFeature', blank=True, to='estatebase.LayoutFeature', null=True),
+        ),
+        migrations.AddField(
+            model_name='layout',
+            name='layout_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='LayoutType', to='estatebase.LayoutType'),
+        ),
+        migrations.AddField(
+            model_name='layout',
+            name='level',
+            field=models.ForeignKey(verbose_name='Level', to='estatebase.Level'),
+        ),
+        migrations.AddField(
+            model_name='historymeta',
+            name='created_by',
+            field=models.ForeignKey(related_name='creators', on_delete=django.db.models.deletion.PROTECT, verbose_name='User', to='estatebase.ExUser'),
+        ),
+        migrations.AddField(
+            model_name='historymeta',
+            name='updated_by',
+            field=models.ForeignKey(related_name='updators', on_delete=django.db.models.deletion.PROTECT, verbose_name='Updated by', blank=True, to='estatebase.ExUser', null=True),
+        ),
+        migrations.AddField(
+            model_name='estatetype',
+            name='estate_type_category',
+            field=models.ForeignKey(related_name='types', on_delete=django.db.models.deletion.PROTECT, verbose_name='EstateTypeCategory', to='estatebase.EstateTypeCategory'),
+        ),
+        migrations.AddField(
+            model_name='estateregister',
+            name='history',
+            field=models.OneToOneField(null=True, blank=True, editable=False, to='estatebase.HistoryMeta'),
+        ),
+        migrations.AddField(
+            model_name='estateregister',
+            name='register_category',
+            field=models.ForeignKey(verbose_name='RegisterCategory', blank=True, to='estatebase.RegisterCategory', null=True),
+        ),
+        migrations.AddField(
+            model_name='estateclient',
+            name='estate_client_status',
+            field=models.ForeignKey(verbose_name='EstateClientStatus', to='estatebase.EstateClientStatus'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='broker',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Broker', blank=True, to='estatebase.ExUser', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='clients',
+            field=models.ManyToManyField(related_name='estates', verbose_name='Clients', through='estatebase.EstateClient', to='estatebase.Client'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='com_status',
+            field=models.ForeignKey(verbose_name='ComStatus', blank=True, to='estatebase.ComStatus', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='contact',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Contact', blank=True, to='estatebase.Contact', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='deal_status',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='DealStatus', blank=True, to='estatebase.DealStatus', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='driveway',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Driveway', blank=True, to='estatebase.Driveway', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='electricity',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Electricity', blank=True, to='estatebase.Electricity', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='entrances',
+            field=models.ManyToManyField(related_name='estates', to='estatebase.Beside', through='estatebase.EntranceEstate', blank=True, null=True, verbose_name='Entrances'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='estate_category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='EstateCategory', to='estatebase.EstateTypeCategory'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='estate_params',
+            field=models.ManyToManyField(related_name='estates', null=True, verbose_name='Estate params', to='estatebase.EstateParam', blank=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='estate_status',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Estate status', to='estatebase.EstateStatus'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='gassupply',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Gassupply', blank=True, to='estatebase.Gassupply', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='history',
+            field=models.OneToOneField(null=True, blank=True, to='estatebase.HistoryMeta'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='internet',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Internet', blank=True, to='estatebase.Internet', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='locality',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Locality', blank=True, to='estatebase.Locality', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='microdistrict',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Microdistrict', blank=True, to='estatebase.Microdistrict', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='origin',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Origin', blank=True, to='estatebase.Origin', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='region',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Region', to='estatebase.Region'),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='sewerage',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Sewerage', blank=True, to='estatebase.Sewerage', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='street',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Street', blank=True, to='estatebase.Street', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='telephony',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Telephony', blank=True, to='estatebase.Telephony', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='validity',
+            field=models.ForeignKey(verbose_name='Validity', blank=True, to='estatebase.Validity', null=True),
+        ),
+        migrations.AddField(
+            model_name='estate',
+            name='watersupply',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Watersupply', blank=True, to='estatebase.Watersupply', null=True),
+        ),
+        migrations.AddField(
+            model_name='entranceestate',
+            name='estate',
+            field=models.ForeignKey(related_name='entranceestate_set', to='estatebase.Estate'),
+        ),
+        migrations.AddField(
+            model_name='document',
+            name='estate_type_category',
+            field=models.ManyToManyField(to='estatebase.EstateTypeCategory', verbose_name='EstateTypeCategory'),
+        ),
+        migrations.AddField(
+            model_name='contacthistory',
+            name='contact_state',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Contact State', to='estatebase.ContactState'),
+        ),
+        migrations.AddField(
+            model_name='contacthistory',
+            name='user',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='User', blank=True, to='estatebase.ExUser', null=True),
+        ),
+        migrations.AddField(
+            model_name='contact',
+            name='contact_state',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, default=5, verbose_name='Contact State', to='estatebase.ContactState'),
+        ),
+        migrations.AddField(
+            model_name='contact',
+            name='contact_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='ContactType', to='estatebase.ContactType'),
+        ),
+        migrations.AddField(
+            model_name='client',
+            name='client_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='ClientType', to='estatebase.ClientType'),
+        ),
+        migrations.AddField(
+            model_name='client',
+            name='dev_profile',
+            field=models.OneToOneField(related_name='client', null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='devrep.DevProfile', verbose_name='DevProfile'),
+        ),
+        migrations.AddField(
+            model_name='client',
+            name='extra_profile',
+            field=models.OneToOneField(related_name='client', null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='devrep.ExtraProfile', verbose_name='ExtraProfile'),
+        ),
+        migrations.AddField(
+            model_name='client',
+            name='history',
+            field=models.OneToOneField(null=True, blank=True, editable=False, to='estatebase.HistoryMeta'),
+        ),
+        migrations.AddField(
+            model_name='client',
+            name='origin',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Origin', blank=True, to='estatebase.Origin', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='ceiling',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Ceiling', blank=True, to='estatebase.Ceiling', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='documents',
+            field=models.ManyToManyField(to='estatebase.Document', null=True, verbose_name='Documents', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='estate',
+            field=models.ForeignKey(related_name='bidgs', verbose_name='Estate', to='estatebase.Estate'),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='estate_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='EstateType', to='estatebase.EstateType'),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='exterior_finish',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Exterior finish', blank=True, to='estatebase.ExteriorFinish', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='flooring',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Flooring', blank=True, to='estatebase.Flooring', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='heating',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Heating', blank=True, to='estatebase.Heating', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='interior',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Interior', blank=True, to='estatebase.Interior', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='roof',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Roof', blank=True, to='estatebase.Roof', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='wall_construcion',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Wall construcion', blank=True, to='estatebase.WallConstrucion', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='wall_finish',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='WallFinish', blank=True, to='estatebase.WallFinish', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='window_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Window type', blank=True, to='estatebase.WindowType', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidg',
+            name='yandex_building',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='YandexBuilding', blank=True, to='estatebase.YandexBuilding', null=True),
+        ),
+        migrations.AddField(
+            model_name='bidevent',
+            name='bid_event_category',
+            field=models.ForeignKey(verbose_name='BidEventCategory', to='estatebase.BidEventCategory'),
+        ),
+        migrations.AddField(
+            model_name='bidevent',
+            name='estates',
+            field=models.ManyToManyField(to='estatebase.Estate', null=True, verbose_name='Estate', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bidevent',
+            name='history',
+            field=models.OneToOneField(null=True, blank=True, editable=False, to='estatebase.HistoryMeta'),
+        ),
+        migrations.AddField(
+            model_name='bidclient',
+            name='client',
+            field=models.ForeignKey(to='estatebase.Client'),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='bid_status',
+            field=models.ManyToManyField(to='estatebase.BidStatus', null=True, verbose_name='BidStatus', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='broker',
+            field=models.ForeignKey(related_name='broker_list', on_delete=django.db.models.deletion.PROTECT, verbose_name='User', blank=True, to='estatebase.ExUser', null=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='brokers',
+            field=models.ManyToManyField(to='estatebase.ExUser', null=True, verbose_name='User', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='client',
+            field=models.ForeignKey(related_name='bids', on_delete=django.db.models.deletion.SET_NULL, verbose_name='Client', blank=True, to='estatebase.Client', null=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='clients',
+            field=models.ManyToManyField(related_name='bids_m2m', to='estatebase.Client', through='estatebase.BidClient', blank=True, null=True, verbose_name='Clients'),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='estate_categories',
+            field=models.ManyToManyField(to='estatebase.EstateTypeCategory', null=True, verbose_name='EstateTypeCategory', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='estate_types',
+            field=models.ManyToManyField(to='estatebase.EstateType', null=True, verbose_name='Estates types', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='estates',
+            field=models.ManyToManyField(to='estatebase.Estate', null=True, verbose_name='Estate', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='geo_groups',
+            field=models.ManyToManyField(to='estatebase.GeoGroup', verbose_name='GeoGroups'),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='history',
+            field=models.OneToOneField(null=True, blank=True, editable=False, to='estatebase.HistoryMeta'),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='localities',
+            field=models.ManyToManyField(to='estatebase.Locality', null=True, verbose_name='Locality', blank=True),
+        ),
+        migrations.AddField(
+            model_name='bid',
+            name='regions',
+            field=models.ManyToManyField(to='estatebase.Region', null=True, verbose_name='Regions', blank=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='street',
+            unique_together=set([('name', 'locality', 'street_type')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='microdistrict',
+            unique_together=set([('name', 'locality')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='locality',
+            unique_together=set([('name', 'region')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='estateclient',
+            unique_together=set([('client', 'estate')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='entranceestate',
+            unique_together=set([('beside', 'estate')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='bidclient',
+            unique_together=set([('client', 'bid')]),
+        ),
+    ]

@@ -113,7 +113,7 @@
             <td colspan="2">
             <div style="min-width: 170px" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix dialog-title">
                <span class="ui-icon ui-icon-plus" style="float: left; margin-right: .3em;"> </span> 
-               <a href="{% url level_create bidg.id %}?next={{ request.GET.next }}">Новый уровнь</a> 
+               <a href="{% url 'level_create' bidg.id %}?next={{ request.GET.next }}">Новый уровнь</a> 
             </div></td>
         </tr>
     </thead>
@@ -122,10 +122,10 @@
         {% for level in bidg.levels.all %}
         <tr>
             <td class="level-list-{{ level.pk }}">
-            	<a href="{% url level_update level.pk %}?next={{ request.GET.next }}">{{ level }}</a> 
+            	<a href="{% url 'level_update' level.pk %}?next={{ request.GET.next }}">{{ level }}</a> 
             </td>
             <td class="level-list-{{ level.pk }}">
-            	<a href="{% url level_delete level.pk %}?next={{ request.GET.next }}">Удалить</a>
+            	<a href="{% url 'level_delete' level.pk %}?next={{ request.GET.next }}">Удалить</a>
             </td>
         </tr>
         {% endfor %}

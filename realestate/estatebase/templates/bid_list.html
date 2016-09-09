@@ -31,7 +31,7 @@
 {% block left %}
 
 <div class="topbar button">
-    <a title="Добавление новой заявки..." class="btn-add" href="{% url bid_create %}?{{ next_url }}">Добавить</a>
+    <a title="Добавление новой заявки..." class="btn-add" href="{% url 'bid_create' %}?{{ next_url }}">Добавить</a>
     <button class="btn-filter-add" onclick="showFilter('#filter')">
         Показать фильтр
     </button>
@@ -41,8 +41,8 @@
     {% include 'prev_view.html' %}
     {% if request.user.is_superuser %}
         <span style="padding: 5px; color: #ccc"> </span>
-        <a class="btn-phone" href="{% url bid_list_contacts 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
-        <a class="btn-email" href="{% url bid_list_contacts 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
+        <a class="btn-phone" href="{% url 'bid_list_contacts' 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
+        <a class="btn-email" href="{% url 'bid_list_contacts' 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
     {% endif %}
 </div>
 <div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin: 3px 0">
@@ -69,7 +69,7 @@
     <tbody>
         {% for bid_item in bid_list %}
         <tr class="ui-widget-content">
-            <td><a title="Редактирование заявки" href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td><a title="Редактирование заявки" href="{% url 'bid_update' bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
             <td style="white-space: nowrap">{{ bid_item.history.modificated|date:"d M Y" }} </td>
             <td>{% for broker in bid_item.brokers.all %}
             	{{ broker }}
@@ -77,7 +77,7 @@
         	</td>
         	<td>{% comma_list bid_item.bid_status %}</td>
             <td>
-            	<a title="Просмотр заявки" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">
+            	<a title="Просмотр заявки" href="{% url 'bid_detail' bid_item.pk %}?{{ next_url }}">
             	{{ bid_item.mixed_estate_types }}
             	</a>
             </td>            
@@ -88,13 +88,13 @@
                 
                  
                 {% for client in bid_item.clients.all %}
-                    <a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>                           
+                    <a title="Просмотр карточки заказчика" href="{% url 'client_detail' client.pk %}?{{ next_url }}">{{ client.name }}</a>                           
                     <small>{% contact_list client next_url 1 %}</small>
                 {% endfor %}
                 
                                                 
             </td>            
-            <td><a class="btn-delete-inline" href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
+            <td><a class="btn-delete-inline" href="{% url 'bid_remove' bid_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% endfor %}
     </tbody>

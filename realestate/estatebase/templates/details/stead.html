@@ -5,7 +5,7 @@
 
 {% block title_left %}
 
-<a href="{% url stead_update stead.pk estate.pk %}?{{ next_url }}">Участок</a>
+<a href="{% url 'stead_update' stead.pk estate.pk %}?{{ next_url }}">Участок</a>
 
 {% endblock %}
 {% block content %}

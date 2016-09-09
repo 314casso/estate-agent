@@ -20,7 +20,7 @@
 <table>
 	<tr>
 		<th>Код:</th>
-		<td style="font-weight: bold"><a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
+		<td style="font-weight: bold"><a title="Редактирование заявки" href="{% url 'bid_update' bid.pk %}?{{ next_url }}">{{ bid.pk }}</a></td>
 	</tr>
 	<tr>
         <th>Статус:</th>
@@ -30,19 +30,19 @@
         
         <td colspan="100%">
             <table class="inline-formset ui-widget ui-widget-content ui-corner-all">
-            <th><a title="Привязать заказчиков к заявке" href="{% url client_bid_select bid.pk %}?{{ next_url }}">Заказчики:</a></th>                             
+            <th><a title="Привязать заказчиков к заявке" href="{% url 'client_bid_select' bid.pk %}?{{ next_url }}">Заказчики:</a></th>                             
             {% for client in bid.clients.all %}
             <tr>    
-                    <td><a title="Редактирование заказчика" href="{% url client_update client.pk %}?{{ next_url }}">[{{ client.pk }}]</a></td>         
-                    <td><a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>                           
+                    <td><a title="Редактирование заказчика" href="{% url 'client_update' client.pk %}?{{ next_url }}">[{{ client.pk }}]</a></td>         
+                    <td><a title="Просмотр карточки заказчика" href="{% url 'client_detail' client.pk %}?{{ next_url }}">{{ client.name }}</a></td>                           
                     <td>{% contact_list client next_url %}</td>                    
                     <td>{% if bid.client == client%} 
                         <span title="Основной заказчик" class="ui-icon ui-icon-check">Основной заказчик</span> 
                         {% else%}
-                            <a title="Установить основным заказчиком" class="ui-icon ui-icon-circle-triangle-e" href="{% url set_bid_basic_client client.pk bid.pk %}?{{ next_url }}">Основной</a>                             
+                            <a title="Установить основным заказчиком" class="ui-icon ui-icon-circle-triangle-e" href="{% url 'set_bid_basic_client' client.pk bid.pk %}?{{ next_url }}">Основной</a>                             
                         {% endif %}
                     </td>
-                    <td><a class="btn-unbind-inline" href="{% url client_bid_unbind client.pk bid.pk %}?{{ next_url }}">Отвязать</a></td>
+                    <td><a class="btn-unbind-inline" href="{% url 'client_bid_unbind' client.pk bid.pk %}?{{ next_url }}">Отвязать</a></td>
             </tr>
             {% endfor %}
             </table>            
@@ -57,7 +57,7 @@
 	<tr>
 		<th>Виды недвижимости:</th>
 		<td>
-			<a title="Редактирование заявки" href="{% url bid_update bid.pk %}?{{ next_url }}">
+			<a title="Редактирование заявки" href="{% url 'bid_update' bid.pk %}?{{ next_url }}">
 				{{ bid.mixed_estate_types }}
 			</a>
         </td>
@@ -97,9 +97,9 @@
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Подборки</legend>    
 <div class="topbar button">
-    <a title="Создать пустую подборку для ручного заполнения" href="{% url register_create bid.pk %}?{{ next_url }}&type=empty">Cоздать вручную</a>          
-    <a title="Создать подборку согласно данной заявке" href="{% url register_create bid.pk %}?{{ next_url }}&type=based">Cоздать автоматически</a>
-    <a class="btn-bind" title="Привязать уже созданную ранее подборку к этой заявке" href="{% url register_select bid.pk %}?{{ next_url }}">Добавить подборку</a>
+    <a title="Создать пустую подборку для ручного заполнения" href="{% url 'register_create' bid.pk %}?{{ next_url }}&type=empty">Cоздать вручную</a>          
+    <a title="Создать подборку согласно данной заявке" href="{% url 'register_create' bid.pk %}?{{ next_url }}&type=based">Cоздать автоматически</a>
+    <a class="btn-bind" title="Привязать уже созданную ранее подборку к этой заявке" href="{% url 'register_select' bid.pk %}?{{ next_url }}">Добавить подборку</a>
 </div>
 {% include 'registers/register_table.html' %}
 </fieldset>
@@ -107,7 +107,7 @@
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">История заявки</legend>    
 <div class="topbar button">
-    <a class="btn-add" title="Добавить новое событие" href="{% url bid_event_create bid.pk %}?{{ next_url }}">Добавить событие</a>          
+    <a class="btn-add" title="Добавить новое событие" href="{% url 'bid_event_create' bid.pk %}?{{ next_url }}">Добавить событие</a>          
 </div>
 {% include 'bid/bid_event_table.html' %}
 </fieldset>

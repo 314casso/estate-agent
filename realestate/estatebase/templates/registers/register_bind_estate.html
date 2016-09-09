@@ -10,8 +10,8 @@
 {% block extra_button %}
 {% load link_helper %}
 {% if request.user.is_superuser %}
-    <a class="btn-bind-all" href="{% url register_multi_bind estate.pk 1 %}?next={{ request.get_full_path|urlencode }}">Добавить лот [{{ estate.pk }}] во все отобранные подборки</a>
-    <a class="btn-unbind-all" href="{% url register_multi_bind estate.pk 0 %}?next={{ request.get_full_path|urlencode }}">Отвязать лот [{{ estate.pk }}] от всех отобранных подборок</a>
+    <a class="btn-bind-all" href="{% url 'register_multi_bind' estate.pk 1 %}?next={{ request.get_full_path|urlencode }}">Добавить лот [{{ estate.pk }}] во все отобранные подборки</a>
+    <a class="btn-unbind-all" href="{% url 'register_multi_bind' estate.pk 0 %}?next={{ request.get_full_path|urlencode }}">Отвязать лот [{{ estate.pk }}] от всех отобранных подборок</a>
 {% endif %}
 {% endblock extra_button %}
 

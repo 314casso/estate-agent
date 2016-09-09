@@ -491,8 +491,9 @@ fieldset .topbar {
 	font-size: 22px !important;
 }
 
-input[type=text] {
-	height: 1.4em;
+.filter-table input[type=text] {
+	/*height: 1.4em;*/
+	margin-right: 2px;
 }
 
 #nav {

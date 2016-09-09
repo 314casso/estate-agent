@@ -1,7 +1,7 @@
 {% extends "dialog_block.html" %}
 {% load thumbnail %}
 {% block title_left %}
-<a href="{% url estate_images estate.pk %}?{{ next_url }}">Редактирование фотографий</a>
+<a href="{% url 'estate_images' estate.pk %}?{{ next_url }}">Редактирование фотографий</a>
 {% endblock %}
 {% block content %}
 

@@ -6,10 +6,12 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FILE_UPLOAD_PERMISSIONS = 0777
 
 DEBUG = socket.gethostname() == 'picasso-kubuntu'
-#DEBUG = False
+# DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 PUBLIC_MEDIA_URL = "http://copy.domnatamani.ru"
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'db.domnatamani.ru', 'copy.domnatamani.ru']
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ADMINS = (
      ('Picasso', 'picasso75@yandex.ru'),
@@ -223,7 +225,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['logfile'],
             'level': 'ERROR',
             'propagate': True,
         },

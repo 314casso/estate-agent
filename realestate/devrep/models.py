@@ -6,7 +6,7 @@ from estatebase.models import ProcessDeletedModel, Region, Locality,\
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from django.core.validators import RegexValidator
-from django.contrib.contenttypes.generic import GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Address(models.Model):
@@ -168,13 +168,13 @@ class ClientPartner(models.Model):
 
 
 class DevProfile(models.Model):    
-    coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage', blank=True, null=True)
-    coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage', blank=True, null=True)
+    coverage_regions = models.ManyToManyField(Region, verbose_name=_('Regions'), related_name='person_coverage', blank=True)
+    coverage_localities = models.ManyToManyField(Locality, verbose_name=_('Localities'), related_name='person_coverage', blank=True)
     quality = models.ForeignKey(Quality, verbose_name=_('Quality'), blank=True, null=True)
     experience = models.ForeignKey(Experience, verbose_name=_('Experience'), blank=True, null=True)
     note = models.TextField(_('Note'), blank=True, null=True)
-    work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, null=True, through=WorkTypeProfile)
-    goods = models.ManyToManyField(Goods, verbose_name=_('Goods'), blank=True, null=True, through=GoodsProfileM2M)
+    work_types = models.ManyToManyField(WorkType, verbose_name=_('WorkTypes'), blank=True, through=WorkTypeProfile)
+    goods = models.ManyToManyField(Goods, verbose_name=_('Goods'), blank=True, through=GoodsProfileM2M)
     gears = models.IntegerField(_('Gears'), choices=AVAILABILITY_CHOICES, blank=True, null=True)
     transport = models.IntegerField(_('HasTransport'), choices=AVAILABILITY_CHOICES, blank=True, null=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -230,7 +230,7 @@ class ExtraProfile(models.Model):
 class Partner(ProcessDeletedModel):
     partner_type = models.ForeignKey(PartnerType, verbose_name=_('Partner type'), related_name='partner')     
     name = models.CharField(_('Name'), max_length=255)
-    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, null=True, through=ClientPartner)     
+    clients = models.ManyToManyField(Client, verbose_name=_('Clients'), blank=True, through=ClientPartner)     
     address = models.OneToOneField(Address, verbose_name=_('Address'), blank=True, null=True, related_name='partner')  
     person_count = models.IntegerField(_('Persons'), default=0)                  
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
@@ -256,3 +256,6 @@ class Partner(ProcessDeletedModel):
     def get_staff(self):
         return ', '.join([item.name for item in self.clients.all()])
     
+
+from devrep.signals import connect_signals       
+connect_signals()

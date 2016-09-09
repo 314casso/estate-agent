@@ -13,18 +13,18 @@
     <tbody>
         {% for register_item in register_list %}
         <tr class="ui-widget-content">          
-            <td><a title="Переименовать подборку" href="{% url register_update register_item.pk %}?{{ next_url }}">{{ register_item.pk }}</a></td>            
+            <td><a title="Переименовать подборку" href="{% url 'register_update' register_item.pk %}?{{ next_url }}">{{ register_item.pk }}</a></td>            
             <td>{{ register_item.history.modificated|date:"d M Y" }}</td>
             <td>{{ register_item.history.created_by }} </td>
-            <td><a title="Состав и детали подборки" href="{% url register_detail register_item.pk %}?{{ next_url }}">{{ register_item.name }}</a></td>
+            <td><a title="Состав и детали подборки" href="{% url 'register_detail' register_item.pk %}?{{ next_url }}">{{ register_item.name }}</a></td>
             <td>            	
                 {% for bid_item in register_item.bids.all %}
                 {% if bid.pk != bid_item.pk %}                
-                    <a title="Подробная информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">{{ bid_item }}</a> 
+                    <a title="Подробная информация о заявке" href="{% url 'bid_detail' bid_item.pk %}?{{ next_url }}">{{ bid_item }}</a> 
                     <small>
                     (
                     {% for client in bid_item.clients.all %}
-                    	<a title="Просмотр карточки заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a>{% include 'comma.html' %}
+                    	<a title="Просмотр карточки заказчика" href="{% url 'client_detail' client.pk %}?{{ next_url }}">{{ client.name }}</a>{% include 'comma.html' %}
                     {% endfor %}
                     )
                     </small> {% include 'comma.html' %}
@@ -34,9 +34,9 @@
                 {% endfor %}
             </td>                      
             <td>
-            	{% block lastcol %}<a href="{% url register_delete register_item.pk %}?{{ next_url }}">Удалить</a>
+            	{% block lastcol %}<a href="{% url 'register_delete' register_item.pk %}?{{ next_url }}">Удалить</a>
             	{% if bid.pk  %}
-            	<a href="{% url register_remove_bid register_item.pk bid.pk %}?{{ next_url }}">Отвязать</a>
+            	<a href="{% url 'register_remove_bid' register_item.pk bid.pk %}?{{ next_url }}">Отвязать</a>
             	{% endif %}
             	{% endblock lastcol %}
             </td>

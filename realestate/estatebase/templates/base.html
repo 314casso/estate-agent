@@ -28,7 +28,7 @@
                         {% sitetree_menu from "maintree" include "trunk,topmenu" %}
                     </div>
                     <div class="ui-widget ui-widget-content ui-corner-all user-info">
-                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> / <a href="{% url logout %}">Выйти</a>.
+                    Добро пожаловать, <strong>{{ request.user.get_full_name }}</strong> / <a href="{% url 'logout' %}">Выйти</a>.
                     <span style="color: #FFCCCC; background: #777; padding: 0 3px; border-radius: 4px">Коммерческая тайна</span> 
                     </div>
                     {% endif %}

@@ -81,7 +81,7 @@
 {% block topbar %}
 <div class="topbar button">
     <div>
-        <a data-width="450" title="Добавление нового лота..." href="{% url select_estate_type %}?{{ next_url }}" class="btn-add ajax-dialog">Добавить новый лот</a>
+        <a data-width="450" title="Добавление нового лота..." href="{% url 'select_estate_type' %}?{{ next_url }}" class="btn-add ajax-dialog">Добавить новый лот</a>
         <button class="btn-filter-add" onclick="showFilter()">Показать фильтр</button>
         {% if filtered %}
         <a class="btn-filter-remove" href="{{ filter_action }}">Сбросить фильтр</a>
@@ -89,16 +89,16 @@
         {% include 'prev_view.html' %}
         {% if request.user.is_superuser %}
             <span style="padding: 5px; color: #ccc"> </span>
-            <a class="btn-phone" href="{% url estate_list_contacts 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
-            <a class="btn-email" href="{% url estate_list_contacts 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
+            <a class="btn-phone" href="{% url 'estate_list_contacts' 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
+            <a class="btn-email" href="{% url 'estate_list_contacts' 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
         {% endif %}
         <div style="float: right">
         {% block extra_button %}{% endblock %}        
         {% if estate %}       
         
     	{% block lastcol %}
-    	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url estate_delete estate.pk %}?{{ next_url }}">Удалить</a>
-    	<a title="Групповое  добавление лота [{{ estate.id }}] в подборки" class="btn-bind-all" href="{% url register_bind estate.pk %}?{{ next_url }}">Добавить в подборки</a>
+    	<a title="Удалить лот [{{ estate.id }}] в корзину" class="btn-delete" href="{% url 'estate_delete' estate.pk %}?{{ next_url }}">Удалить</a>
+    	<a title="Групповое  добавление лота [{{ estate.id }}] в подборки" class="btn-bind-all" href="{% url 'register_bind' estate.pk %}?{{ next_url }}">Добавить в подборки</a>
     	{% endblock lastcol %}            
         
         {% endif %}
@@ -123,13 +123,13 @@
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
     <legend style="font-size: 12px;">
         [{{ estate_item.pk }}]
-        <a title="{{ estate_item.estate_type }}" href="{% block navlink  %}{% url estate_list_details estate_item.pk %}{% endblock navlink  %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:16|default:'---------' }}</a>
+        <a title="{{ estate_item.estate_type }}" href="{% block navlink  %}{% url 'estate_list_details' estate_item.pk %}{% endblock navlink  %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:16|default:'---------' }}</a>
         <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M Y" }} </span>
         {% if estate_item.agency_price %}
         <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price|default_if_none:''|intcomma }} р. </span>
         {% endif %}
 
-        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url estate_update estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
+        {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} <a href="{% url 'estate_update' estate_item.pk %}?{{ next_url }}"> <span style="display: inline-block" class="ui-icon ui-icon-wrench" > </span> </a>
     </legend>
     <div style="border-bottom: 0px solid #ddd; font-style: italic">
         {% address estate_item %}
@@ -139,8 +139,8 @@
         {% with contact=estate_item.basic_contact  %}
         {% if contact %}
         {{ contact.client.client_type }}
-        <a href="{% url client_detail contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
-        <span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+        <a href="{% url 'client_detail' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a>
+        <span class="contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url 'contact_update' contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
         {% endif %}
         {% endwith %}
     </div>
@@ -199,12 +199,12 @@
             {% include "details/stead.html" with stead=estate.basic_stead %}
             {% if estate.estate_category.maybe_stead %}
             <div class="button" style="text-align: right; margin: 10px 0">
-                <a title="Удаление участка из лота..." href="{% url stead_remove estate.basic_stead.pk %}?{{ next_url }}">Удалить участок</a>
+                <a title="Удаление участка из лота..." href="{% url 'stead_remove' estate.basic_stead.pk %}?{{ next_url }}">Удалить участок</a>
             </div>
             {% endif %}
             {% elif estate.estate_category.can_has_stead %}
             <div class="button" style="text-align: right; margin: 10px 0">
-                <a title="Добавление участка к лоту..." href="{% url stead_append estate.pk %}?{{ next_url }}">Добавить участок</a>
+                <a title="Добавление участка к лоту..." href="{% url 'stead_append' estate.pk %}?{{ next_url }}">Добавить участок</a>
             </div>
             {% endif %}
             {% include "estate_dialog/comm.html" %}            
@@ -218,7 +218,7 @@
         </div>
         {% if estate.stead and estate.is_commerce %}
         <div class="button" style="text-align: right; margin: 10px 0">
-            <a data-width="450" title="Добавление объекта на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=commerce" class="ajax-dialog">Добавить ком. недвижимость</a>
+            <a data-width="450" title="Добавление объекта на участок..." href="{% url 'select_placeable_type' estate.pk %}?{{ next_url }}&category=commerce" class="ajax-dialog">Добавить ком. недвижимость</a>
         </div>
         {% endif %}
     </div>
@@ -229,7 +229,7 @@
             {% include 'object_type/mix.html' with bidgs=estate.bidg_outbuildings %}
         </div>
         <div class="button" style="text-align: right; margin: 10px 0">
-            <a data-width="450" title="Добавление постройки на участок..." href="{% url select_placeable_type estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить строение или сооружение</a>
+            <a data-width="450" title="Добавление постройки на участок..." href="{% url 'select_placeable_type' estate.pk %}?{{ next_url }}&category=independent" class="ajax-dialog">Добавить строение или сооружение</a>
         </div>
     </div>
     {% endif %}

@@ -20,9 +20,9 @@
         {% for estate_item in estate_list %}
         <tr class="ui-widget-content">
             <td> {% if estate_item.correct %} <span title="Корректно" style="display: inline-block" class="ui-icon ui-icon-check"> </span> {% endif %} </td>
-            <td><a title="Редактирование лота" href="{% url estate_update estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a></td>
+            <td><a title="Редактирование лота" href="{% url 'estate_update' estate_item.pk %}?{{ next_url }}">[{{ estate_item.pk }}]</a></td>
             <td><span title="{{ estate_item.estate_status }}" class="inline-span ui-corner-all ui-widget-content {{ estate_item.state_css }}"> {{ estate_item.history.modificated|date:"d M Y" }} </span></td>
-            <td><a title="Просмотр лота" href="{% url estate_list_details estate_item.pk %}?{{ next_url }}&estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}"> {{ estate_item.estate_type }} </a></td>
+            <td><a title="Просмотр лота" href="{% url 'estate_list_details' estate_item.pk %}?{{ next_url }}&estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}"> {{ estate_item.estate_type }} </a></td>
             {% block custom_cols_data %}{% endblock custom_cols_data %}
             <td><span class="inline-span"> <small> {% with estate_item=estate_item %}
                     {% address estate_item %}
@@ -31,10 +31,10 @@
             <td> {{ estate_item.agency_price|default_if_none:''|intcomma }}</td>
 
             <td> {% with contact=estate_item.basic_contact  %}
-            {% if contact %} <span class="inline-span ui-corner-all ui-widget-content"> <small>{{ contact.client.client_type }}</small> <a href="{% url client_update contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> </span><span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url contact_update contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span> {% endif %}
+            {% if contact %} <span class="inline-span ui-corner-all ui-widget-content"> <small>{{ contact.client.client_type }}</small> <a href="{% url 'client_update' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> </span><span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url 'contact_update' contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span> {% endif %}
             {% endwith %} </td>
 
-            <td>{% block lastcol %}<a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить</a>{% endblock lastcol %}</td>
+            <td>{% block lastcol %}<a href="{% url 'estate_delete' estate_item.pk %}?{{ next_url }}">Удалить</a>{% endblock lastcol %}</td>
         </tr>
         {% endfor %}
     </tbody>

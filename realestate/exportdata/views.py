@@ -42,7 +42,7 @@ class FeedContentTypeDetailView(DetailView):
         })
         return context    
 
-@transaction.commit_on_success    
+@transaction.atomic    
 def save_data(request):    
     response_data = {}
     if request.is_ajax():

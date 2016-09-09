@@ -11,7 +11,7 @@
     <br style="clear: both" />
     {% if not bidg.basic %}
     <div class="button" style="float: left">
-        <a href="{% url bidg_remove bidg.pk %}?{{ next_url }}"><strong>Удалить "{{ bidg.estate_type }}"</strong></a>
+        <a href="{% url 'bidg_remove' bidg.pk %}?{{ next_url }}"><strong>Удалить "{{ bidg.estate_type }}"</strong></a>
     </div>
     {% endif %}
 </div>

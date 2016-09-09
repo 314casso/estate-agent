@@ -1,4 +1,4 @@
 {% extends 'ajax/estate_type_select.html' %}
 {% block action %}
-<a href="{% url bidg_append estate estate_type.pk  %}?next={{ request.GET.next|urlencode }}">{{ estate_type.name }}</a>
+<a href="{% url 'bidg_append' estate estate_type.pk  %}?next={{ request.GET.next|urlencode }}">{{ estate_type.name }}</a>
 {% endblock action %}

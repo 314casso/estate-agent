@@ -33,7 +33,7 @@
     <div class="ui-widget-content ui-corner-all thumb">
 
         <div>
-            <a href="{% url image_swap estate.pk image.pk 'up' %}?{{ next_url }}">Вверх</a> | <a href="{% url image_swap estate.pk image.pk 'down' %}?{{ next_url }}">Вниз</a>
+            <a href="{% url 'image_swap' estate.pk image.pk 'up' %}?{{ next_url }}">Вверх</a> | <a href="{% url 'image_swap' estate.pk image.pk 'down' %}?{{ next_url }}">Вниз</a>
         </div>
 
         {% thumbnail image.image "110x80" crop="center" as im %}        
@@ -42,7 +42,7 @@
         {% endthumbnail %}
         {% endthumbnail %}
         <div>
-            <a href="{% url image_update image.pk %}?{{ next_url }}">Правка</a> | <a href="{% url image_delete image.pk %}?{{ next_url }}">Удалить</a>
+            <a href="{% url 'image_update' image.pk %}?{{ next_url }}">Правка</a> | <a href="{% url 'image_delete' image.pk %}?{{ next_url }}">Удалить</a>
         </div>
     </div>
 

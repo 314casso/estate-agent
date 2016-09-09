@@ -32,28 +32,28 @@ class WordpressMeta(WordpressMetaAbstract):
         verbose_name_plural = u'Населенные пункты'
         
 class WordpressMetaEstateType(WordpressMetaAbstract): 
-    estate_types = models.ManyToManyField(EstateType, verbose_name=_('EstateType'), blank=True, null=True, related_name='wp_taxons')   
+    estate_types = models.ManyToManyField(EstateType, verbose_name=_('EstateType'), blank=True, related_name='wp_taxons')   
     class Meta:
         ordering = ['name']
         verbose_name = u'Вид недвижимости'
         verbose_name_plural = u'Виды недвижимости'        
 
 class WordpressMetaRegion(WordpressMetaAbstract): 
-    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True, related_name='wp_taxons')   
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, related_name='wp_taxons')   
     class Meta:
         ordering = ['name']
         verbose_name = u'Район'
         verbose_name_plural = u'Районы'   
     
 class WordpressMetaStatus(WordpressMetaAbstract): 
-    estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, null=True, related_name='wp_taxons')   
+    estate_statuses = models.ManyToManyField(EstateStatus, verbose_name=_('EstateStatus'), blank=True, related_name='wp_taxons')   
     class Meta:
         ordering = ['name']
         verbose_name = u'Статус'
         verbose_name_plural = u'Статусы'    
 
 class WordpressMetaEstateParam(models.Model): 
-    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True, related_name='wp_taxons') 
+    estate_params = models.ManyToManyField(EstateParam, verbose_name=_('EstateParam'), blank=True, related_name='wp_taxons') 
     taxonomy_tree = models.ForeignKey('WordpressTaxonomyTree', blank=True, null=True,)
     wp_postmeta_key = models.CharField('Postmeta key', max_length=150, blank=True, null=True,)
     wp_postmeta_value = models.CharField('Postmeta value', max_length=150, blank=True, null=True,)
@@ -68,8 +68,8 @@ class WordpressTaxonomyTree(MPTTModel):
     wp_parent_id = models.CharField('WP parent Id', max_length=10, null=True, blank=True,) 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     up_to_date = models.BooleanField()
-    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True, null=True,)    
-    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, null=True, related_name='wp_taxons')    
+    regions = models.ManyToManyField(Region, verbose_name=_('Region'), blank=True,)    
+    localities = models.ManyToManyField(Locality, verbose_name=_('Locality'), blank=True, related_name='wp_taxons')    
     wp_meta_locality = models.ForeignKey('WordpressMeta', verbose_name = u'Жесткое поле', blank=True, null=True, related_name='wp_taxon')       
     def __unicode__(self):
         return u'%s' % (self.name,)

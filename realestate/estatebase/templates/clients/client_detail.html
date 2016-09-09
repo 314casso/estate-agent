@@ -11,7 +11,7 @@
 
 {% block topbar %}
 <div class="topbar button">       
-	<a title="Удалить заказчика [{{ client.id }}] в корзину" class="btn-delete" href="{% url client_delete client.pk %}?next={{ request.GET.next }}">Удалить</a> 
+	<a title="Удалить заказчика [{{ client.id }}] в корзину" class="btn-delete" href="{% url 'client_delete' client.pk %}?next={{ request.GET.next }}">Удалить</a> 
     {% include 'prev_view.html' %}    
 </div>
 {% endblock %}
@@ -22,7 +22,7 @@
 <table>
 	<tr>
         <th>Код:</th>
-        <td title="Редактировать заказчика" style="font-weight: bold"><a href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
+        <td title="Редактировать заказчика" style="font-weight: bold"><a href="{% url 'client_update' client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
     </tr>
     {% history client.history %}
     <tr>
@@ -35,14 +35,14 @@
     </tr>
 	<tr>
 		<th>Название:</th>
-		<td style="font-weight: bold"><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+		<td style="font-weight: bold"><a title="Редактировать заказчика" href="{% url 'client_update' client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
 	</tr>
 	<tr>
 		<th>Место жительства:</th>
 		<td>
 		<span title="Адрес заказчика из карточки">{{ client.address }}</span>
 		{% if client.extra_profile %}
-			<br><span title="Адрес из анкеты"><small><a href="{% url extra_profile_update client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile.address }}</a></small></span>
+			<br><span title="Адрес из анкеты"><small><a href="{% url 'extra_profile_update' client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile.address }}</a></small></span>
 		{% endif %}
 		
 		</td>
@@ -56,10 +56,10 @@
 		<th>Профиль строителя:</th>
 		<td>
 		{% if client.dev_profile %}		
-			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">Просмотр</a>			
-			<a title="Редактирование строительного профиля" href="{% url dev_profile_update client.dev_profile_id %}?{{ next_url }}">Правка</a>
+			<a title="Просмотр строительного профиля" href="{% url 'dev_profile_detail' client.dev_profile_id %}?{{ next_url }}">Просмотр</a>			
+			<a title="Редактирование строительного профиля" href="{% url 'dev_profile_update' client.dev_profile_id %}?{{ next_url }}">Правка</a>
 		{% else %}
-			<a title="Создать профиль строителя" href="{% url dev_profile_create client.pk %}?{{ next_url }}">
+			<a title="Создать профиль строителя" href="{% url 'dev_profile_create' client.pk %}?{{ next_url }}">
 				Создать
 			</a>
 		{% endif %}
@@ -70,9 +70,9 @@
 		<th>Анкета:</th>
 		<td>
 		{% if client.extra_profile %}		
-			<a href="{% url extra_profile_update client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile }}</a>			
+			<a href="{% url 'extra_profile_update' client.extra_profile_id %}?{{ next_url }}">{{ client.extra_profile }}</a>			
 		{% else %}
-			<a title="Заполнить дополнительные данные" href="{% url extra_profile_create client.pk %}?{{ next_url }}">Заполнить</a>
+			<a title="Заполнить дополнительные данные" href="{% url 'extra_profile_create' client.pk %}?{{ next_url }}">Заполнить</a>
 		{% endif %}
 		</td>
 	</tr>
@@ -92,7 +92,7 @@
     <legend style="font-size: 14px;">Заявки на покупку и обмен</legend>    
 
 <div class="topbar button">
-    <a class="btn-add" href="{% url bid_create client.pk %}?{{ next_url }}">Добавить новую заявку</a>          
+    <a class="btn-add" href="{% url 'bid_create' client.pk %}?{{ next_url }}">Добавить новую заявку</a>          
 </div>
 
 {% with bid_list=client.bids_m2m.all  %}
@@ -112,11 +112,11 @@
     <tbody>
         {% for bid_item in bid_list %}
         <tr class="ui-widget-content">
-            <td><a title="Редактировать заявку" href="{% url bid_update bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
+            <td><a title="Редактировать заявку" href="{% url 'bid_update' bid_item.pk %}?{{ next_url }}">{{ bid_item.pk }}</a></td>
             <td>{{ bid_item.history.modificated|date:"d M Y" }} </td>
             <td>{% for broker in bid_item.brokers.all %}{{ broker }}{% endfor %}</td>
             <td>
-                <a title="Реестры и другая информация о заявке" href="{% url bid_detail bid_item.pk %}?{{ next_url }}">
+                <a title="Реестры и другая информация о заявке" href="{% url 'bid_detail' bid_item.pk %}?{{ next_url }}">
                 	{{ bid_item.mixed_estate_types }}
                 </a>
             </td>
@@ -124,7 +124,7 @@
             <td> {% comma_list bid_item.localities %} </td>
             <td>{% two_num bid_item.agency_price_min bid_item.agency_price_max %}</td>
                                   
-            <td><a href="{% url bid_remove bid_item.pk %}?{{ next_url }}">Удалить</a></td>
+            <td><a href="{% url 'bid_remove' bid_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% empty %}
         <tr>
@@ -143,7 +143,7 @@
     <legend style="font-size: 14px;">Лоты на продажу</legend>
     
 <div class="topbar button">
-    <a class="btn-add" href="{% url estate_create_client client.pk %}?{{ next_url }}">Добавить лот на продажу</a>        
+    <a class="btn-add" href="{% url 'estate_create_client' client.pk %}?{{ next_url }}">Добавить лот на продажу</a>        
 </div>    
     
 {% with estate_list=client.estates.all  %}
@@ -162,9 +162,9 @@
         {% for estate_item in estate_list %}
         <tr class="ui-widget-content">
         	{% load l10n %}
-            <td><a href="{% url estate_list_details estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.pk }}</a></td>
+            <td><a href="{% url 'estate_list_details' estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.pk }}</a></td>
             <td>
-            	<a href="{% url estate_list_details estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.estate_type }}</a>
+            	<a href="{% url 'estate_list_details' estate_item.pk %}?estates_1={% localize off %}{{ estate_item.pk }}{% endlocalize %}&{{ next_url }}">{{ estate_item.estate_type }}</a>
             	<div style="font-size: 90%; font-style: italic">{% address estate_item %}</div>
             </td>
             <td>{{ estate_item.history.modificated|date:"d M Y" }} </td>
@@ -174,7 +174,7 @@
             	{{ estate_item.agency_price|default_if_none:''|intcomma }}
             	<div class="ui-state-disabled" style="font-size: 90%; font-style: italic">{{ estate_item.saler_price|default_if_none:''|intcomma }}</div>
             </td>            
-            <td><a href="{% url estate_delete estate_item.pk %}?{{ next_url }}">Удалить</a></td>
+            <td><a href="{% url 'estate_delete' estate_item.pk %}?{{ next_url }}">Удалить</a></td>
         </tr>
         {% empty %}
         <tr>

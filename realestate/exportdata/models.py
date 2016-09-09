@@ -2,9 +2,10 @@ from django.db import models
 from estatebase.models import Locality, EstateTypeCategory, EstateParam, Estate,\
     EstateType
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey
 import datetime
 from django.db.models.query_utils import Q
+import django
       
 
 class FeedLocality(models.Model):    
@@ -48,7 +49,7 @@ class MappedNode(models.Model):
 
 class MarketingCampaign(models.Model):
     name = models.CharField(db_index=True, max_length=15)
-    start_date = models.DateTimeField(default=datetime.datetime.now())
+    start_date = models.DateTimeField(default=django.utils.timezone.now)
     end_date = models.DateTimeField(blank=True, null=True,)
     phone = models.CharField(max_length=50, blank=True, null=True,)
     email = models.EmailField(blank=True, null=True,)
@@ -70,7 +71,7 @@ class BaseFeed(models.Model):
     name = models.CharField(db_index=True, max_length=15)
     active = models.BooleanField()    
     estate_categories = models.ManyToManyField(EstateTypeCategory)
-    estate_types = models.ManyToManyField(EstateType, blank=True, null=True,)
+    estate_types = models.ManyToManyField(EstateType, blank=True)
     estate_param = models.ForeignKey(EstateParam, blank=True, null=True,)
     valid_days = models.IntegerField()
     feed_engine = models.ForeignKey(FeedEngine, )        

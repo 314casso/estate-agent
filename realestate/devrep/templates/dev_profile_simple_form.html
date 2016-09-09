@@ -10,7 +10,7 @@
 {{ form.media.js }}
 <script type="text/javascript">       
     $(document).ready(function() {
-        $('#id_gears_0').addAnother({url : '{% url gear_create_popup %}', width: 350, height: 200, object_id: 'id_gears', hint:'Добавить новый инструмент' });
+        $('#id_gears_0').addAnother({url : '{% url 'gear_create_popup' %}', width: 350, height: 200, object_id: 'id_gears', hint:'Добавить новый инструмент' });
     });
 </script>
 {% endblock js %}

@@ -1,5 +1,5 @@
 {% extends "partner_list.html" %}
 {% load link_helper %}
 {% block lastcol %}
-<a href="{% url client_partner_bind client.pk object_item.pk %}?next={{ request.GET.next|urlencode }}"> Привязать</a> [{{ client }}]
+<a href="{% url 'client_partner_bind' client.pk object_item.pk %}?next={{ request.GET.next|urlencode }}"> Привязать</a> [{{ client }}]
 {% endblock %}

@@ -6,14 +6,14 @@
 {% for level in bidg.levels.all %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all">
 	<legend>
-		<span title="Редактировать планировку уровня '{{ level }}'" class="item"><a href="{% url level_update level.pk %}?{{ next_url }}">{{ level }}</a></span>
+		<span title="Редактировать планировку уровня '{{ level }}'" class="item"><a href="{% url 'level_update' level.pk %}?{{ next_url }}">{{ level }}</a></span>
 	</legend>
 	{% bidg_layout level %}	
 </fieldset>
 {% endfor %}
 
 <div class="button" style="text-align: right">
-<a href="{% url level_create bidg.id %}?{{ next_url }}">Добавить планировку</a>
+<a href="{% url 'level_create' bidg.id %}?{{ next_url }}">Добавить планировку</a>
 </div>
 {% endblock content %}
 

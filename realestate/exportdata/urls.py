@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url, include
 from exportdata.views import FeedContentTypeListView, FeedContentTypeDetailView, save_data
 
 urlpatterns = patterns('',

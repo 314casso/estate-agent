@@ -9,7 +9,7 @@
 {{ estate_filter_form.media.js }}
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_client_0').addAnother({url : '{% url client_create_popup %}', width: 650, height: 600, object_id: 'id_client', hint:'Добавить нового заказчика' });
+        $('#id_client_0').addAnother({url : '{% url 'client_create_popup' %}', width: 650, height: 600, object_id: 'id_client', hint:'Добавить нового заказчика' });
     });         
 </script>
 {% endblock js %}
@@ -25,7 +25,7 @@
 					{% csrf_token %}
 					Заявка заказчика [
 					{% if bid.id  %}					
-					   <a title="Перейти в режим просмотра заявки" href="{% url bid_detail bid.pk %}?{{ next_url }}">{{ bid.pk }}</a>					
+					   <a title="Перейти в режим просмотра заявки" href="{% url 'bid_detail' bid.pk %}?{{ next_url }}">{{ bid.pk }}</a>					
 					{% else %}
 					'Новая...'
 					{% endif %}					

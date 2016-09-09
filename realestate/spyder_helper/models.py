@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from estatebase.models import Estate
-import datetime
+import django
 
 class SpiderMeta(models.Model):
     NEW = 0
@@ -27,7 +27,7 @@ class SpiderMeta(models.Model):
     phone_filename = models.CharField(max_length=250, blank=True, null=True)
     estate = models.ForeignKey(Estate, related_name='spider_meta', blank=True, null=True)
     phone_guess = models.DecimalField(blank=True, null=True, max_digits=3, decimal_places=2)
-    event_date = models.DateTimeField(default=datetime.datetime.now())
+    event_date = models.DateTimeField(default=django.utils.timezone.now)
     class Meta:
         unique_together = ('spider', 'url')
     

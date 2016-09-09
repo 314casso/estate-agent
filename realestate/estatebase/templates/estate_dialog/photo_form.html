@@ -4,7 +4,7 @@
 
 {% localize off %}
 <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px; margin: 3px 0">
-<form class="button" method="post" action="{% url upload_images %}" enctype="multipart/form-data">
+<form class="button" method="post" action="{% url 'upload_images' %}" enctype="multipart/form-data">
     {% csrf_token %}
     <input required type="file" name="form_file" id="form_file" multiple="multiple"/>
     <input type="hidden" name="next" id="next_after" value="{{ request.get_full_path }}"/>

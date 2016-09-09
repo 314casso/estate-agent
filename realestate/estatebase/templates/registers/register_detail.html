@@ -20,7 +20,7 @@
 <table>
 	<tr>
 		<th>Код:</th>
-		<td style="font-weight: bold"><a title="Переименовать подборку" href="{% url register_update estateregister.pk %}?{{ next_url }}">{{ estateregister.pk }}</a></td>
+		<td style="font-weight: bold"><a title="Переименовать подборку" href="{% url 'register_update' estateregister.pk %}?{{ next_url }}">{{ estateregister.pk }}</a></td>
 	</tr>
 	<tr>
 		<th>Название:</th>
@@ -31,27 +31,27 @@
 <div class="button">
 	<fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
 		<legend style="font-size: 14px;">Кратко для своих</legend>
-	    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}">Корректные</a>
-	    <a target="_blank" href="{% url private_short_report estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
+	    <a target="_blank" href="{% url 'private_short_report' estateregister.pk %}?{{ next_url }}">Корректные</a>
+	    <a target="_blank" href="{% url 'private_short_report' estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
     </fieldset>
     
     <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
 		<legend style="font-size: 14px;">Для своих без фото</legend>
-	    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}">Корректные</a>    	
-    	<a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
+	    <a target="_blank" href="{% url 'private_detail_report' estateregister.pk %}?{{ next_url }}">Корректные</a>    	
+    	<a target="_blank" href="{% url 'private_detail_report' estateregister.pk %}?{{ next_url }}&outdated=true">Все</a>
     </fieldset>
     
     <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
 		<legend style="font-size: 14px;">Для своих с фото</legend>
-	    <a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true">Корректные</a>
-    	<a target="_blank" href="{% url private_detail_report estateregister.pk %}?{{ next_url }}&foto=true&outdated=true">Все</a>
+	    <a target="_blank" href="{% url 'private_detail_report' estateregister.pk %}?{{ next_url }}&foto=true">Корректные</a>
+    	<a target="_blank" href="{% url 'private_detail_report' estateregister.pk %}?{{ next_url }}&foto=true&outdated=true">Все</a>
     </fieldset>    
     <br />
     <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
 		<legend style="font-size: 14px;">Для покупателей</legend>
-	    <a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}">Без фото</a>
-    	<a target="_blank" href="{% url public_report estateregister.pk %}?{{ next_url }}&foto=true">С фото</a>
-    	<a target="_blank" href="{% url orbita_report estateregister.pk %}?{{ next_url }}">Орбита</a>
+	    <a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}">Без фото</a>
+    	<a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}&foto=true">С фото</a>
+    	<a target="_blank" href="{% url 'orbita_report' estateregister.pk %}?{{ next_url }}">Орбита</a>
     </fieldset>
     
 </div>  
@@ -62,8 +62,8 @@
     <legend style="font-size: 14px;">Лоты в подборке</legend>
 
 <div class="topbar button">
-    <a href="{% url estate_select_list estateregister.pk %}?r_filter=outregister&{{ next_url }}">Добавление в подборку</a>    	
-    <a href="{% url estate_select_list estateregister.pk %}?r_filter=inregister&{{ next_url }}">Просмотр подборки</a>
+    <a href="{% url 'estate_select_list' estateregister.pk %}?r_filter=outregister&{{ next_url }}">Добавление в подборку</a>    	
+    <a href="{% url 'estate_select_list' estateregister.pk %}?r_filter=inregister&{{ next_url }}">Просмотр подборки</a>
 </div>
     
 {% include 'registers/estate_table_register.html' with estate_list=object_list %}

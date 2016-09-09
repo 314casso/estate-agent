@@ -1,7 +1,7 @@
 {% extends "dialog_block.html" %}
 {% load thumbnail %}
 {% block title_left %}
-<a title="Управление ссылками" href="{% url manage_links 'estate' estate.pk %}?{{ next_url }}">Ссылки</a>
+<a title="Управление ссылками" href="{% url 'manage_links' 'estate' estate.pk %}?{{ next_url }}">Ссылки</a>
 {% endblock %}
 {% block content %}
 

@@ -1,7 +1,7 @@
 {% extends "dialog_block.html" %}
 {% load link_helper %}
 {% block title_left %}
-<a title="Привязать продавцов" href="{% url client_select estate.pk %}?{{ next_url }}">Продавцы</a>
+<a title="Привязать продавцов" href="{% url 'client_select' estate.pk %}?{{ next_url }}">Продавцы</a>
 {% endblock %}
 {% block content %}
 {% client_list estate next_url %}

@@ -28,14 +28,14 @@
 {% endblock %}
 {% block topbar %}
 <div class="topbar button">
-    <a class="btn-add" href="{% url client_create %}?{{ next_url }}">Добавить нового заказчика</a>
+    <a class="btn-add" href="{% url 'client_create' %}?{{ next_url }}">Добавить нового заказчика</a>
     <button class="btn-filter-add" onclick="showFilter('#filter')">Показать фильтр</button>    
     {% include 'prev_view.html' %}
     {% include 'cancel_filter.html' %}
     {% if request.user.is_superuser %}
         <span style="padding: 5px; color: #ccc"> </span>
-        <a class="btn-phone" href="{% url client_list_contacts 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
-        <a class="btn-email" href="{% url client_list_contacts 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
+        <a class="btn-phone" href="{% url 'client_list_contacts' 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
+        <a class="btn-email" href="{% url 'client_list_contacts' 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
     {% endif %}
 </div>
 {% endblock %}
@@ -57,15 +57,15 @@
     <tbody>
         {% for client in clients %}
         <tr class="ui-widget-content">
-            <td><a title="Редактировать заказчика" href="{% url client_update client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
+            <td><a title="Редактировать заказчика" href="{% url 'client_update' client.pk %}?{{ next_url }}">{{ client.pk }}</a></td>
             <td><span title='Источник: {{ client.origin|default_if_none:"----" }}'>{{ client.client_type }}</span></td>
-            <td><a title="Показать карточку заказчика" href="{% url client_detail client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
+            <td><a title="Показать карточку заказчика" href="{% url 'client_detail' client.pk %}?{{ next_url }}">{{ client.name }}</a></td>
             <td>{{ client.address|default_if_none:"" }}</td>
             <td> {% contact_list client next_url %} </td>
             <td>
             	{% if client.has_dev_profile  %}
             		{% if client.dev_profile  %}
-            			<a title="Просмотр строительного профиля" href="{% url dev_profile_detail client.dev_profile_id %}?{{ next_url }}">
+            			<a title="Просмотр строительного профиля" href="{% url 'dev_profile_detail' client.dev_profile_id %}?{{ next_url }}">
             			<span class="btn ui-icon ui-icon-check"></span>
             			</a>
             		{% else %}
@@ -73,7 +73,7 @@
             		{% endif %}            	
             	{% endif %}
             </td>            
-            <td> {% block lastcol %} <a class="btn-delete-inline" href="{% url client_delete client.pk %}?{{ next_url }}">Удалить</a> {% endblock %} </td>
+            <td> {% block lastcol %} <a class="btn-delete-inline" href="{% url 'client_delete' client.pk %}?{{ next_url }}">Удалить</a> {% endblock %} </td>
         </tr>
         {% endfor %}
     </tbody>

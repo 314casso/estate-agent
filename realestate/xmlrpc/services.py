@@ -42,7 +42,7 @@ class SpiderStoreService(object):
     ERROR = 2
     NOPHONE = 3
     EXISTSPHONE = 4  
-    @transaction.commit_on_success
+    @transaction.atomic
     def add_lot(self, item_dict):
         try:                
             result = {}            
