@@ -1187,9 +1187,15 @@ class Contact(models.Model):
     def state_css(self):
         css = {self.AVAILABLE:'available-state', self.NONAVAILABLE:'non-available-state', self.BAN:'ban-state', self.NOTRESPONDED:'not-responded-state', self.NOTCHECKED:'not-checked-state'}                             
         return self.contact_state.pk in css and css[self.contact_state.pk] or ''                
-    def clean(self):
-        self.contact = self.contact.strip()   
-        if self.contact_type.id == self.PHONE:
+    def clean(self):        
+        self.contact = self.contact.strip()
+        contact_type = None
+        try: 
+            contact_type = self.contact_type
+        except ContactType.DoesNotExist:
+            pass        
+               
+        if contact_type and contact_type.id == self.PHONE:
             self.contact = re.sub(r'\D', '', self.contact)            
             
         q = Contact.objects.filter(contact__iexact=self.contact)
@@ -1200,16 +1206,16 @@ class Contact(models.Model):
             extra = ''
             t = None
             if not client.deleted:
-                t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url client_detail pk %}">[{{ pk }}] {{ name }}</a>')
+                t = Template(u'<a title="Показать карточку клиента в оттельном окне..." target="_blank" href="{% url "client_detail" pk %}">[{{ pk }}] {{ name }}</a>')
                 t = t.render(Context({ 'name': client.name, 'pk': client.pk }))
             else:
                 t = '"[%s] %s"' % (client.pk, client.name)                
                 extra = u' - находится в корзине! %s'
-                restore = Template(u'<a target="_blank" href="{% url client_restore pk %}">Восстановить</a>')
+                restore = Template(u'<a target="_blank" href="{% url "client_restore" pk %}">Восстановить</a>')
                 extra = extra % restore.render(Context({ 'pk': client.pk }))
             raise ValidationError(mark_safe(u'Данный контакт уже создан и принадлежит %s %s' % (t, extra)))
                      
-        if not self.contact_type_id:
+        if not contact_type:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
         validate_url = URLValidator()
         validate_phone = RegexValidator(regex=r'^8\d{8,}$')        
