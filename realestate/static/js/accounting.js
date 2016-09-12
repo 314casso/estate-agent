@@ -1,1 +1,1 @@
-/home/realty/src/estate-agent/realestate/estatebase/static/js/accounting.js
+/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/static/js/accounting.js

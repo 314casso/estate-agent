@@ -1,1 +1,1 @@
-/home/realty/src/estate-agent/realestate/estatebase/static/js/ajax_dialog.js
+/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/static/js/ajax_dialog.js

@@ -1,1 +1,1 @@
-/home/realty/src/estate-agent/realestate/estatebase/static/js/autoNumeric-1.7.5.js
+/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/static/js/autoNumeric-1.7.5.js

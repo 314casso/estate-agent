@@ -1,1 +1,1 @@
-/home/realty/src/estate-agent/realestate/estatebase/static/js/lightbox.js
+/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/static/js/lightbox.js

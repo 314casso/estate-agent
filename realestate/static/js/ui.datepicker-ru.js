@@ -1,1 +1,1 @@
-/home/realty/src/estate-agent/realestate/estatebase/static/js/ui.datepicker-ru.js
+/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/static/js/ui.datepicker-ru.js
