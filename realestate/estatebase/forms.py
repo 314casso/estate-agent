@@ -132,11 +132,11 @@ class EstateCommunicationForm(ModelForm):
                     'internet':AutoComboboxSelectWidget(InternetLookup),
                     'telephony':AutoComboboxSelectWidget(TelephonyLookup),
                     'driveway':AutoComboboxSelectWidget(DrivewayLookup),
-                    'electricity_distance':TextInput(attrs={'class':'local-int'}), 
-                    'watersupply_distance':TextInput(attrs={'class':'local-int'}),
-                    'gassupply_distance':TextInput(attrs={'class':'local-int'}),
-                    'sewerage_distance':TextInput(attrs={'class':'local-int'}),
-                    'driveway_distance':TextInput(attrs={'class':'local-int'}),
+                    'electricity_distance':TextInput(attrs={'class':'local-int-f'}), 
+                    'watersupply_distance':TextInput(attrs={'class':'local-int-f'}),
+                    'gassupply_distance':TextInput(attrs={'class':'local-int-f'}),
+                    'sewerage_distance':TextInput(attrs={'class':'local-int-f'}),
+                    'driveway_distance':TextInput(attrs={'class':'local-int-f'}),
                   }
 
 class EstateParamForm(ModelForm):
@@ -1029,7 +1029,7 @@ class EntranceEstateInlineForm(ModelForm):
         fields = ['beside', 'type', 'distance', 'basic']
         widgets = {
                   'beside':AutoComboboxSelectWidget(BesideLookup),
-                  'distance':TextInput(attrs={'class':'local-int'}), 
+                  'distance':TextInput(attrs={'class':'local-int-f'}), 
                    }
 
 

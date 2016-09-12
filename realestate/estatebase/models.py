@@ -1210,7 +1210,7 @@ class Contact(models.Model):
                      
         if not self.contact_type_id:
             raise ValidationError(u'Вид контакта не может оставаться пустым!')
-        validate_url = URLValidator(verify_exists=False)
+        validate_url = URLValidator()
         validate_phone = RegexValidator(regex=r'^8\d{8,}$')        
         if self.contact_type.id == self.PHONE:            
             validate_phone(self.contact)

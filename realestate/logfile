@@ -409,3 +409,201 @@ Traceback (most recent call last):
   File "/home/picasso/Documents/DjangoSpace/estate-agent/realestate/estatebase/models.py", line 38, in get_profile_upload_to
     return os.path.join(u'userimages', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
 AttributeError: 'UserProfile' object has no attribute 'content_type'
+[12/Sep/2016 08:13:44] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
+[12/Sep/2016 08:15:12] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
+[12/Sep/2016 08:20:19] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
+[12/Sep/2016 08:20:32] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
+[12/Sep/2016 08:20:38] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
+[12/Sep/2016 08:20:45] ERROR [django.request:256] Internal Server Error: /estatebase/clientcreate/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py", line 215, in post
+    return self.form_valid(form)
+  File "./estatebase/views.py", line 631, in form_valid
+    if contact_form.is_valid():
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py", line 394, in full_clean
+    self._post_clean()
+  File "/usr/local/lib/python2.7/dist-packages/django/forms/models.py", line 426, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 1156, in full_clean
+    self.clean()
+  File "./estatebase/models.py", line 1213, in clean
+    validate_url = URLValidator(verify_exists=False)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/validators.py", line 98, in __init__
+    super(URLValidator, self).__init__(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'verify_exists'
