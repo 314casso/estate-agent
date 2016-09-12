@@ -371,8 +371,9 @@ class EstateClient(models.Model):
         unique_together = ('client', 'estate')       
 
 class BaseModelManager(models.Manager):
-    def get_query_set(self):
-        return super(BaseModelManager, self).get_query_set().filter(deleted=False)
+    use_for_related_fields = True
+    def get_queryset(self):
+        return super(BaseModelManager, self).get_queryset().filter(deleted=False)
 
 class ProcessDeletedModel(models.Model):
     objects = BaseModelManager()
