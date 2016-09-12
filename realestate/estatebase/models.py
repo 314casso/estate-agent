@@ -707,7 +707,13 @@ class Estate(ProcessDeletedModel):
             return False
     @property
     def modificated(self):
-        return self.history.modificated    
+        return self.history.modificated
+    
+    @property 
+    def agency_price_1000(self):
+        if self.agency_price:
+            return int(self.agency_price / 1000)
+            
                         
     class Meta:
         verbose_name = _('estate')
