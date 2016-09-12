@@ -1,1 +1,0 @@
-/usr/local/lib/python2.7/dist-packages/session_security/static/session_security/script.js
