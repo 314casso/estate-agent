@@ -6,8 +6,6 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FILE_UPLOAD_PERMISSIONS = 0777
 
 DEBUG = socket.gethostname() == 'picasso-kubuntu'
-# DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 PUBLIC_MEDIA_URL = "http://copy.domnatamani.ru"
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'db.domnatamani.ru', 'copy.domnatamani.ru']
@@ -106,24 +104,30 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'd3lqzns@0$bz89skq@eroql^_1zx4prshdle^(aly!z^zwq5o('
 
-# List of callables that know how to import templates from various sources.
-#TEMPLATE_LOADERS = (
-#    'django.template.loaders.filesystem.Loader',
-#    'django.template.loaders.app_directories.Loader',
-##    'django.template.loaders.eggs.Loader',
-#)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [os.path.join(SITE_ROOT, 'templates')],    
+    'OPTIONS': {
+        'loaders': [
+            ('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]),
+        ],
+        'context_processors': [                
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.request',
+         ],
+        'debug': DEBUG,
+    },
+}]
 
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
-
-from django.conf import global_settings
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    'django.core.context_processors.request',    
-)
 
 MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',                  
@@ -142,13 +146,6 @@ MIDDLEWARE_CLASSES = (
 PROFILE_LOG_BASE = MEDIA_ROOT
 
 ROOT_URLCONF = 'urls'
-
-TEMPLATE_DIRS = (
-    os.path.join(SITE_ROOT,'templates'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
 
 CACHES = {
     'default': dict(
