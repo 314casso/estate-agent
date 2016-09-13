@@ -364,3 +364,51 @@ Traceback (most recent call last):
   File "/usr/local/lib/python2.7/dist-packages/django/template/base.py", line 613, in __init__
     token[start:]))
 TemplateSyntaxError: Could not parse some characters: estate_item.agency_price|/1000||default_if_none:''|intcomma
+[13/Sep/2016 20:38:37] ERROR [django.request:256] Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 164, in get_response
+    response = response.render()
+  File "/usr/local/lib/python2.7/dist-packages/django/template/response.py", line 158, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python2.7/dist-packages/django/template/response.py", line 133, in rendered_content
+    template = self._resolve_template(self.template_name)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/response.py", line 88, in _resolve_template
+    new_template = self.resolve_template(template)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/response.py", line 80, in resolve_template
+    return loader.get_template(template, using=self.using)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/loader.py", line 29, in get_template
+    engines = _engine_list(using)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/loader.py", line 143, in _engine_list
+    return engines.all() if using is None else [engines[using]]
+  File "/usr/local/lib/python2.7/dist-packages/django/template/utils.py", line 110, in all
+    return [self[alias] for alias in self]
+  File "/usr/local/lib/python2.7/dist-packages/django/template/utils.py", line 101, in __getitem__
+    engine = engine_cls(params)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/backends/django.py", line 24, in __init__
+    self.engine = Engine(self.dirs, self.app_dirs, **options)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/engine.py", line 36, in __init__
+    "app_dirs must not be set when loaders is defined.")
+ImproperlyConfigured: app_dirs must not be set when loaders is defined.
+[13/Sep/2016 20:38:38] ERROR [django.request:256] Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "/usr/local/lib/python2.7/dist-packages/debug_toolbar/middleware.py", line 122, in process_response
+    bits[-2] += toolbar.render_toolbar()
+  File "/usr/local/lib/python2.7/dist-packages/debug_toolbar/toolbar.py", line 64, in render_toolbar
+    return render_to_string('debug_toolbar/base.html', context)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/loader.py", line 98, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/loader.py", line 29, in get_template
+    engines = _engine_list(using)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/loader.py", line 143, in _engine_list
+    return engines.all() if using is None else [engines[using]]
+  File "/usr/local/lib/python2.7/dist-packages/django/template/utils.py", line 110, in all
+    return [self[alias] for alias in self]
+  File "/usr/local/lib/python2.7/dist-packages/django/template/utils.py", line 101, in __getitem__
+    engine = engine_cls(params)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/backends/django.py", line 24, in __init__
+    self.engine = Engine(self.dirs, self.app_dirs, **options)
+  File "/usr/local/lib/python2.7/dist-packages/django/template/engine.py", line 36, in __init__
+    "app_dirs must not be set when loaders is defined.")
+ImproperlyConfigured: app_dirs must not be set when loaders is defined.
