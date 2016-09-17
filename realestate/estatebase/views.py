@@ -1252,6 +1252,9 @@ class BidEventUpdateView(BidEventMixin, UpdateView):
     pass
 
 class BidEventDeleteView(BidEventMixin, DeleteView):
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, *args, **kwargs):
+        return super(BidEventDeleteView, self).dispatch(*args, **kwargs)
     template_name = 'confirm.html'
     def get_context_data(self, **kwargs):
         context = super(BidEventDeleteView, self).get_context_data(**kwargs)

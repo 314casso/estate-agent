@@ -20,7 +20,9 @@
             <td>{{ bid_event.date|date:"d M Y H:i" }}</td>                      
             <td>{{ bid_event.note }}</td>
             <td>
+            {% if request.user.is_superuser %}
                 <a href="{% url 'bid_event_delete' bid_event.pk %}?{{ next_url }}">Удалить</a>
+           	{% endif %}    
             </td>
         </tr>
         {% endfor %}
