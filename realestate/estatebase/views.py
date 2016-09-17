@@ -4,7 +4,7 @@ from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, QueryDict
-from django.shortcuts import get_object_or_404 
+from django.shortcuts import get_object_or_404 , redirect
 import json
 from django.views.generic import TemplateView
 from django.views.generic.base import View
@@ -24,7 +24,7 @@ from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
     ExUser, Bidg, BidEvent, BidClient, EstateFile
 from models import EstateTypeCategory
-from settings import CORRECT_DELTA, PUBLIC_MEDIA_URL
+from settings import CORRECT_DELTA, PUBLIC_MEDIA_URL, LOGIN_REDIRECT_URL
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
 import urlparse
@@ -40,7 +40,7 @@ from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
 from devrep.models import Partner
 from datetime import datetime
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponseForbidden
 import re
 
 class BaseMixin(object):
@@ -1519,4 +1519,12 @@ def global_search(request):
     result['estate_pk'] = estate_pk
     result['contact_str'] = contact_str    
     return render(request, 'globalsearch/result.html', result)
+
+def csrf_failure(request, reason=""):
+    if request.user.is_authenticated:
+        next_url = request.REQUEST.get('next', '')
+        if not next_url:
+            next_url = LOGIN_REDIRECT_URL       
+        return redirect(next_url)
+    return HttpResponseForbidden()
     

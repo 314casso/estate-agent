@@ -145,6 +145,8 @@ MIDDLEWARE_CLASSES = (
 
 PROFILE_LOG_BASE = MEDIA_ROOT
 
+CSRF_FAILURE_VIEW = 'estatebase.views.csrf_failure'
+
 ROOT_URLCONF = 'urls'
 
 CACHES = {
