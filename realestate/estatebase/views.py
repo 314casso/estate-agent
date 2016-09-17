@@ -40,6 +40,8 @@ from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
 from devrep.models import Partner
 from datetime import datetime
+from django.http.response import JsonResponse
+import re
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -1498,4 +1500,23 @@ class ManageEstateM2MLinks(ManageM2M):
             return '%s?%s' % (reverse(self.reverse_name, args=[self.model_key, self.instance.id]), safe_next_link(next_url))
         return next_url
 
+def global_search(request):    
+    q = request.GET.get('q') 
+    estate_pk = re.sub(r'\D', '', q)   
+    contact_str = re.sub(r'\s', '', q)
+    result = {'estates':[], 'contacts':[], 'query': q, 'not_found': True}       
+    if estate_pk:
+        estates = Estate.objects.filter(pk=estate_pk)
+        for estate in estates:
+            result['estates'].append(estate)
+            result['not_found'] = False
+    if contact_str:      
+        contacts = Contact.objects.filter(contact=contact_str)
+        for contact in contacts:
+            result['contacts'].append(contact)
+            result['not_found'] = False
+    result['next_url'] = request.REQUEST.get('next', '')
+    result['estate_pk'] = estate_pk
+    result['contact_str'] = contact_str    
+    return render(request, 'globalsearch/result.html', result)
     

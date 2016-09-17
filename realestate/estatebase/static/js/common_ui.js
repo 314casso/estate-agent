@@ -81,8 +81,8 @@ $(document).ready(function() {
 
 	$(".errorlist a").click(function() {
 		$(this).parent().fadeOut();
-	});
-
+	});	
+	
 });
 
 function localDecimal() {

@@ -67,8 +67,7 @@ def save_data(request):
                 response_data['result'] = 1
             except Exception, e:          
                 response_data['error'] = str(e)
-                response_data['result'] = 0
-                if transaction.is_dirty():
-                    transaction.rollback()                    
+                response_data['result'] = 0                
+                transaction.rollback()                    
     response_json = json.dumps(response_data)                   
     return HttpResponse(response_json, content_type="application/json")    

@@ -75,6 +75,8 @@
 {% block page_header %}
 {% if estate %}
 Просмотр лота «{{ estate.estate_type }}» [{{ estate.pk }}]
+{% else %}
+Список лотов
 {% endif %}
 {% endblock %}
 

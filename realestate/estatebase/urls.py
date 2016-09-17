@@ -21,7 +21,8 @@ from estatebase.views import ClientListView, \
     estate_list_contacts, bid_list_contacts, client_list_contacts, incorrect_contacts,\
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
-    FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks
+    FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
+    global_search
     
 
 urlpatterns = patterns('',   
@@ -150,4 +151,8 @@ urlpatterns += patterns('',
     url (r'^bidlistcontacts/(?P<contact_type_pk>\d+)$', view=bid_list_contacts, name='bid_list_contacts'),
     url (r'^clientlistcontacts/(?P<contact_type_pk>\d+)$', view=client_list_contacts, name='client_list_contacts'),
     url (r'^incorrectcontacts/$', view=incorrect_contacts, name='incorrect_contacts'),
+)
+
+urlpatterns += patterns('',    
+    url (r'^globalsearch/$', global_search, name='global_search'),
 )

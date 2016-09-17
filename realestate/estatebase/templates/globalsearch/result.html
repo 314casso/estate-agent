@@ -1,0 +1,25 @@
+{% load l10n %}
+{% load humanize %}
+{% if estates %}
+	<p>Найденные лоты по коду <strong>{{ estate_pk }}</strong> из цифр строки запроса:</p>
+ {% else %}
+{% endif %}
+{% for estate in estates %}
+	<a title="{{ estate.estate_type }}" href="{% block navlink  %}{% url 'estate_list_details' estate.pk %}{% endblock navlink  %}?{{ next_url }}&estates_1={% localize off %}{{ estate.pk }}{% endlocalize %}">{{ estate.pk }}</a>	
+        {{ estate.estate_type|truncatechars:16|default:'---------' }}
+        <span title="{{ estate.estate_status }}" class="ui-corner-all ui-widget-content {{ estate.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate.history.modificated|date:"d M y" }} </span>
+        {% if estate.agency_price %}
+        	<span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate.agency_price_1000|default_if_none:''|intcomma }} т.р. </span>
+        {% endif %}        	
+{% endfor %}
+
+{% if contacts %}
+	<p>Найденные контакты по строке запроса <strong>{{ contact_str }}</strong>:</p> 
+{% endif %}
+{% for contact in contacts %}	
+	<span class="inline-span ui-corner-all ui-widget-content"> <small>{{ contact.client.client_type }}</small> <a href="{% url 'client_update' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> </span><span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url 'contact_update' contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+{% endfor %}
+
+{% if not_found %}
+	Поиск по вашему запросу <strong>{{ query }}</strong> не дал результатов. 
+{% endif %}
