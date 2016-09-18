@@ -21,7 +21,7 @@ def rpc_handler(request):
 
         if len(request.POST):
                 response = HttpResponse(mimetype="application/xml")
-                response.write(dispatcher._marshaled_dispatch(request.raw_post_data))
+                response.write(dispatcher._marshaled_dispatch(request.body))
         else:
                 response = HttpResponse()
                 response.write("<b>This is an XML-RPC Service.</b><br>")
