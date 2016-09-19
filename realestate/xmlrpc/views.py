@@ -19,7 +19,7 @@ def rpc_handler(request):
         Empty post assumes you're viewing from a browser and tells you about the service.
         """
 
-        if len(request.POST):
+        if len(request.method == 'POST'):
                 response = HttpResponse(mimetype="application/xml")
                 response.write(dispatcher._marshaled_dispatch(request.body))
         else:
