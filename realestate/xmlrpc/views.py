@@ -20,7 +20,8 @@ def rpc_handler(request):
         """
 
         if request.method == 'POST':
-                response = HttpResponse(mimetype="application/xml")
+                response = HttpResponse()
+                response['content_type'] = "application/xml"
                 response.write(dispatcher._marshaled_dispatch(request.body))
         else:
                 response = HttpResponse()
