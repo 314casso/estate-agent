@@ -15,6 +15,7 @@ td, th {
 
 .report-table, .report-table table, .newspaper-report-table {
 	border-collapse: collapse;
+	page-break-inside:avoid;
 }
 
 .report-table {
@@ -47,17 +48,17 @@ td, th {
 	border-bottom: 0;
 }
 
-.report-table thead td {
+.report-table .headline td {
 	/*background: #eee;*/
 	border: 1px solid #ccc;
 }
 
-.report-table thead td:first-child, .report-table thead td:last-child {
+.report-table .headline td:first-child, .report-table .headline td:last-child {
 	background: #eee;
 }
 
 .report-table {
-	border: 1px solid #ccc;
+	border: 1px solid #ccc;	
 }
 
 .separator {
@@ -101,8 +102,7 @@ td, th {
 	font-size: 115%;
 }
 
-.public-thead th {
-	padding-top: 15px;
+.public-thead th {	
 	border: 1px solid #ccc;
 	background: #eee;
 }

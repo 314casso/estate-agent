@@ -10,15 +10,12 @@
     </head>
     <body>
         {% block content %}{% endblock content %}
-        <table class="report-table">
-            {% for estate_item in estate_list %}
-            <thead class='public-thead'>
-                <tr>
+        {% for estate_item in estate_list %}       
+        <table class="report-table">            
+                <tr class='public-thead'>
                     <th style="width: 100px; background-color:#FFE45C"><span class="list-title">Код: {{ estate_item.id }}</span></th>
                     <th><span class="list-title">{{ estate_item.estate_type }}. {% no_street_address estate_item %}. Цена {{ estate_item.agency_price|rubble }} </span></th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr>
                     <td colspan="2">
                     <div>
@@ -79,10 +76,9 @@
                     {% endif %} </td>
                 </tr>
                 {% endblock foto %}
-            </tbody>
-            {% endfor %}
         </table>
-
+        <br />
+		{% endfor %}
     </body>
 </html>
 

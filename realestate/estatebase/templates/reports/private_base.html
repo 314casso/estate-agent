@@ -10,25 +10,21 @@
 	</head>
 	<body>
 		{% block content %}{% endblock content %}
+		{% for estate_item in estate_list %}
 		<table class="report-table">
 			<col width="70" />
    			<col width="120" />
    			<col />
-   			<col width="120" />
-			{% for estate_item in estate_list %}			
-			<thead>				
-				<tr>
+   			<col width="120" />					
+				<tr class="headline">
 					<td><strong>{{ estate_item.id }}</strong></td>
 					<td>{{ estate_item.history.modificated|date:"d M Y H:s" }}</td> 
 					<td><strong>{{ estate_item.estate_type }}</strong></td>
 					<td><strong>{{ estate_item.estate_status }}</strong></td>
 				</tr>
-			</thead>
-			<tbody>
 				{% block tbody %}{% endblock tbody %}
-			</tbody>
-			{% endfor %}
 		</table>
-
+		<br />
+		{% endfor %}
 	</body>
 </html>
