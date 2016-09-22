@@ -370,8 +370,7 @@ class EstateClient(models.Model):
     class Meta:
         unique_together = ('client', 'estate')       
 
-class BaseModelManager(models.Manager):
-    use_for_related_fields = True
+class BaseModelManager(models.Manager):    
     def get_queryset(self):
         return super(BaseModelManager, self).get_queryset().filter(deleted=False)
 

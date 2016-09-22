@@ -51,16 +51,16 @@ class EstateAdmin(admin.ModelAdmin):
     fields = ['estate_category', 'deleted']
     inlines = [BidgInline, SteadInline]
     list_filter = ('deleted',)
-    def queryset(self, request):                
-        return Estate.all_objects
+    def get_queryset(self, request):                
+        return Estate.all_objects.all()
 
 class ClientAdmin(admin.ModelAdmin):
     search_fields = ['id',]
     fields = ['name', 'deleted']
     list_display = ('id', '__unicode__')
     list_filter = ('deleted',)
-    def queryset(self, request):                
-        return Client.all_objects    
+    def get_queryset(self, request):                
+        return Client.all_objects.all()    
 
 class BidgAdmin(admin.ModelAdmin):
     search_fields = ['estate__id']

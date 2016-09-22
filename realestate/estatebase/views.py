@@ -59,7 +59,7 @@ class DeleteMixin(SingleObjectMixin):
         self.object.deleted = True
         self.object.save() 
         return HttpResponseRedirect(self.get_success_url())
-
+    
 class AjaxMixin(ModelFormMixin):
     def serializer_json(self, data):
         """Returns json format"""
