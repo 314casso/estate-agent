@@ -17,7 +17,7 @@
 	<p>Найденные контакты по строке запроса <strong>{{ contact_str }}</strong>:</p> 
 {% endif %}
 {% for contact in contacts %}	
-	<span class="inline-span ui-corner-all ui-widget-content"> <small>{{ contact.client.client_type }}</small> <a href="{% url 'client_update' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> </span><span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url 'contact_update' contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
+	<span class="inline-span ui-corner-all ui-widget-content"> <small>{{ contact.client.client_type }}</small> <a href="{% url 'client_detail' contact.client.pk %}?{{ next_url }}">{{ contact.client.name }}</a> </span><span  class="inline-span contact-inline {{ contact.state_css }}" title="{{ contact.contact_state }} ({{ contact.updated }})"> <a href="{% url 'contact_update' contact.pk %}?{{ next_url }}">{{ contact.contact }}</a></span>
 {% endfor %}
 
 {% if not_found %}
