@@ -1,5 +1,5 @@
 from settings import * #@UnusedWildImport
-SITE_ID = 1
+SITE_ID = 2
 ROOT_URLCONF = 'domanayuge.urls'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'beta.domanayuge.ru', 'domanayuge.ru']
