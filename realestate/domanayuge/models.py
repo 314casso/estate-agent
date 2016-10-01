@@ -18,6 +18,7 @@ class Category(CategoryBase):
     description = models.TextField(blank=True, null=True)
     alternate_url = models.CharField(blank=True, max_length=200,)
     order = models.IntegerField(default=0)
+    menu = models.BooleanField(default=True)
     
     def active_entries(self):
         return self.entries.filter(active=True)

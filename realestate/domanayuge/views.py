@@ -18,7 +18,7 @@ class HomePage(TemplateView):
         categiries = None        
         try:
             domanayuge = Category.objects.get(slug='domanayuge')
-            categiries = domanayuge.get_children()
+            categiries = domanayuge.get_children().filter(menu=True)
         except Category.DoesNotExist:  # @UndefinedVariable
             pass
              
