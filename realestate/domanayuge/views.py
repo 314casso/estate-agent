@@ -15,8 +15,15 @@ class HomePage(TemplateView):
     template_name = 'domanayuge/base.html'        
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)
+        categiries = None        
+        try:
+            domanayuge = Category.objects.get(slug='domanayuge')
+            categiries = domanayuge.get_children()
+        except Category.DoesNotExist:  # @UndefinedVariable
+            pass
+             
         context.update({            
-            'categiries': Category.objects.get(slug='domanayuge',).get_children(),                       
+            'categiries': categiries,                       
         })               
         return context
 
