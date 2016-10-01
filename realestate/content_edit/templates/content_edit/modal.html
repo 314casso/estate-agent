@@ -1,0 +1,20 @@
+<!-- Modal -->
+<div class="modal fade" id="content-edit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <label for="editable-content" class="control-label">Content:</label>
+        <textarea class="form-control" id="editable-content"></textarea>
+        <input type="hidden" id="editable-tagname">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="save_cms_content()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
