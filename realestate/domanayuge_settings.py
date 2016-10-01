@@ -43,3 +43,5 @@ INSTALLED_APPS = (
     'devrep',
     'domanayuge',
 )
+
+LOGGING = {}
