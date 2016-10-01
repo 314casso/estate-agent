@@ -19,7 +19,7 @@ class HomePage(TemplateView):
         try:
             domanayuge = Category.objects.get(slug='domanayuge')
             categiries = domanayuge.get_children()
-        except:  # @UndefinedVariable
+        except Category.DoesNotExist:  # @UndefinedVariable
             pass
              
         context.update({            
