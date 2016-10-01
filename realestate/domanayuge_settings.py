@@ -1,6 +1,7 @@
 from settings import * #@UnusedWildImport
 SITE_ID = 1
 ROOT_URLCONF = 'domanayuge.urls'
+DEBUG = True
 
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
