@@ -122,7 +122,7 @@
                             </div>
                         </div>                        
                         {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
-						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">		    
+						<img class="img-responsive" src="{{ im.url }}">		    
 						{% endthumbnail %}                      
                     </a>
                     <div class="portfolio-caption">
@@ -152,7 +152,7 @@
                     	<li {% if forloop.counter|divisibleby:2 %}class="timeline-inverted"{% else %}{% endif %}>
                             <div class="timeline-image">
                             	{% thumbnail entry.baseimage.image "170x170" crop="center" as im %}		    
-								<img class="img-circle img-responsive" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">		    
+								<img class="img-circle img-responsive" src="{{ im.url }}">		    
 								{% endthumbnail %}                                
                             </div>
                             <div class="timeline-panel">
@@ -192,7 +192,7 @@
             	<div class="col-sm-4">
                     <div class="team-member">
                     	{% thumbnail entry.baseimage.image "239x239" crop="center" as im %}		    
-						<img class="img-responsive img-circle" alt="" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">		    
+						<img class="img-responsive img-circle" alt="" src="{{ im.url }}">		    
 						{% endthumbnail %}
                         <h4>{{ entry.title }}</h4>
                         <p class="text-muted">{{ entry.summary }}</p>
@@ -224,7 +224,7 @@
                 <div class="col-md-3 col-sm-6">
                     <a href="{{ entry.baseimage.url }}">
                     	{% thumbnail entry.baseimage.image "260x150" crop="center" as im %}		    
-						<img class="img-responsive img-centered" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">		    
+						<img class="img-responsive img-centered" src="{{ im.url }}">		    
 						{% endthumbnail %}
                     </a>
                 </div>
