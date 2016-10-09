@@ -169,7 +169,7 @@ def bid_dict(bid):
 #    add_to_result(result, u'Сводный тип', bid.mixed_estate_types)    
     add_to_result(base, u'Статус', comma_set(bid.bid_status.all()))
     add_to_result(base, u'Риэлторы', u', '.join(set([broker.get_full_name() for broker in bid.brokers.all()])))    
-    add_to_result(base, u'Источник', u', '.join(set([client.origin.name for client in bid.clients.all()])))
+    add_to_result(base, u'Источник', u', '.join(set([client.origin.name for client in bid.clients.all() if client.origin])))
     add_to_result(base, u'Цена', int_range_fieled_to_string(cleaned_data.get('agency_price')))
     add_to_result(base, u'Примечание', bid.note)
     
