@@ -8,7 +8,7 @@ LEADING_PAGE_RANGE = TRAILING_PAGE_RANGE = 8
 NUM_PAGES_OUTSIDE_RANGE = 2 
 ADJACENT_PAGES = 4
 
-def digg_paginator(context):
+def base_paginator(context):
     paginator = context['paginator']
     page_obj = context['page_obj']
     pages = paginator.num_pages
@@ -53,5 +53,18 @@ def digg_paginator(context):
         'pages_outside_trailing_range': pages_outside_trailing_range,
         'get_params': get_params,
     }
+
+def digg_paginator(context):
+    base_result = base_paginator(context)
+    base_result['ul_class'] = 'ui-widget-content no-border'    
+    return base_result
+    
+
+def bootstrap_paginator(context):
+    base_result = base_paginator(context)
+    base_result['ul_class'] = 'pagination'    
+    return base_result
+
  
 register.inclusion_tag("inclusion/digg_paginator.html", takes_context=True)(digg_paginator)
+register.inclusion_tag("inclusion/digg_paginator.html", takes_context=True)(bootstrap_paginator)

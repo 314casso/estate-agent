@@ -4,8 +4,10 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from estatebase.wrapper import get_wrapper
 from collections import OrderedDict
 from copy import deepcopy
-from estatebase.models import MAYBE
+from estatebase.models import MAYBE, EntranceEstate
 from decimal import Decimal
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_unicode
 
 register = template.Library()
 
@@ -158,10 +160,90 @@ def area_compact(bidg):
         result = u'%s/%s' % (result or '---', bidg.used_area)
     return u'%s %s кв.м,' % (pref, result)
     
+@register.assignment_tag
+def bid_dict(bid):    
+    cleaned_data = bid.cleaned_filter
+    base = OrderedDict()
+    result = OrderedDict()
+#     add_to_result(result, u'Код', bid.pk)
+#    add_to_result(result, u'Сводный тип', bid.mixed_estate_types)    
+    add_to_result(base, u'Статус', comma_set(bid.bid_status.all()))
+    add_to_result(base, u'Риэлторы', u', '.join(set([broker.get_full_name() for broker in bid.brokers.all()])))    
+    add_to_result(base, u'Источник', u', '.join(set([client.origin.name for client in bid.clients.all()])))
+    add_to_result(base, u'Цена', int_range_fieled_to_string(cleaned_data.get('agency_price')))
+    add_to_result(base, u'Примечание', bid.note)
     
+       
+    add_to_result(base, u'Коды на осмотр', comma_set(bid.estates.all()))
+    add_to_result(base, u'Категории лотов', comma_set(cleaned_data.get('estate_category')))
+    add_to_result(base, u'Виды лотов', comma_set(cleaned_data.get('estate_type')))    
+    add_to_result(base, u'Ком. статус', cleaned_data.get('com_status'))
+    add_to_result(base, u'Районы', comma_set(cleaned_data.get('region')))
+    add_to_result(base, u'Населенные пункты', comma_set(cleaned_data.get('locality')))
+    add_to_result(base, u'Микрорайоны', comma_set(cleaned_data.get('microdistrict')))
+    add_to_result(base, u'Улицы', comma_set(cleaned_data.get('street')))    
+    beside = []
+    beside_type = cleaned_data.get('beside_type')
+    if beside_type:        
+        beside.append(dict(EntranceEstate.TYPE_CHOICES).get(int(beside_type)))       
+    beside_complex = cleaned_data.get('beside')
+    if beside_complex:
+        beside.extend(beside_complex)
+    beside = [force_unicode(b) for b in beside if b]         
+    add_to_result(base, u'Вид/выход', u' '.join(beside))
             
-#@register.simple_tag            
-#def office_address(region):
-            
-        
-                            
+    add_to_result(result, u'Год постройки', int_range_fieled_to_string(cleaned_data.get('year_built')))
+    add_to_result(result, u'Этаж', int_range_fieled_to_string(cleaned_data.get('floor')))
+    add_to_result(result, u'Этажность', int_range_fieled_to_string(cleaned_data.get('floor_count')))    
+    add_to_result(result, u'Материал стен', comma_set(cleaned_data.get('wall_construcion')))
+    add_to_result(result, u'Внешняя отделка', comma_set(cleaned_data.get('exterior_finish')))
+    add_to_result(result, u'Общая площадь, кв. м', int_range_fieled_to_string(cleaned_data.get('total_area')))
+    add_to_result(result, u'Жилая площадь, кв. м', int_range_fieled_to_string(cleaned_data.get('used_area')))
+    add_to_result(result, u'Кол-во комнат', int_range_fieled_to_string(cleaned_data.get('room_count')))
+    add_to_result(result, u'Состояние', comma_set(cleaned_data.get('interior')))
+    add_to_result(result, u'Объекты планировки', comma_set(cleaned_data.get('layouts'), True))
+    add_to_result(result, u'Площадь планировки', int_range_fieled_to_string(cleaned_data.get('layout_area')))
+    add_to_result(result, u'Постройки', comma_set(cleaned_data.get('outbuildings'), True))
+    
+    add_to_result(result, u'Площадь уч., кв. м', int_range_fieled_to_string(cleaned_data.get('stead_area')))
+    add_to_result(result, u'Фасад, м', int_range_fieled_to_string(cleaned_data.get('face_area')))    
+    add_to_result(result, u'Форма', comma_set(cleaned_data.get('shape')))
+    add_to_result(result, u'Назначение уч.', comma_set(cleaned_data.get('purposes')))
+    
+    add_to_result_range = create_range_f(u'%s', u'%s')
+    add_to_result_range(result, u'Электричество', cleaned_data.get('electricity'))
+    add_to_result_range(result, u'Водоснабжение', cleaned_data.get('watersupply'))
+    add_to_result_range(result, u'Газоснабжение', cleaned_data.get('gassupply'))
+    add_to_result_range(result, u'Канализация', cleaned_data.get('sewerage'))
+    add_to_result_range(result, u'Подъезд', cleaned_data.get('driveway'))        
+    return {'base':base, 'details': result}
+
+def create_range_f(v0_t, v1_t):
+    def range_f(result, key, value):
+        add_to_result(result, key, int_range_fieled_to_string(value, v0_t, v1_t))
+    return range_f
+    
+def add_to_result(result, key, value):
+    if value:
+        result[key] = value
+
+def int_range_fieled_to_string(values, v0_t=u'от %s', v1_t=u'до %s', splitter=u' ', f=intcomma):
+    if not values:
+        return    
+    result = []  
+    if values[0]:
+        v0 = f(values[0]) if f else values[0]                                 
+        result.append(v0_t % v0) 
+    if values[1]:            
+        v1 = f(values[1]) if f else values[1] 
+        result.append(v1_t % v1)
+    if result:
+        return  splitter.join(result)
+                
+def comma_set(values, force_lowcase=False):
+    if not values:
+        return
+    result = u', '.join(set([force_unicode(cat) for cat in values]))
+    if force_lowcase:
+        result = result.lower()
+    return result                            

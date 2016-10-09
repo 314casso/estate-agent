@@ -22,7 +22,7 @@ from estatebase.views import ClientListView, \
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
-    global_search
+    global_search, BidReportView
     
 
 urlpatterns = patterns('',   
@@ -99,7 +99,7 @@ urlpatterns += patterns('',
     url (r'^selectestatetype/$', EstateTypeViewAjax.as_view(), name='select_estate_type'),
     url (r'^selectplaceabletype/(?P<estate>\d+)$', PlaceableTypeViewAjax.as_view(), name='select_placeable_type'),    
     url (r'^bidgappend/(?P<estate>\d+)/(?P<estate_type>\d+)$', BidgAppendView.as_view(), name='bidg_append'),    
-    url (r'^bidgremove/(?P<pk>\d+)$', BidgRemoveView.as_view(), name='bidg_remove'),     
+    url (r'^bidgremove/(?P<pk>\d+)$', BidgRemoveView.as_view(), name='bidg_remove'),             
 )
 
 urlpatterns += patterns('',
@@ -132,6 +132,7 @@ urlpatterns += patterns('',
     url (r'^clientbid/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientUpdateBidView.as_view(), name='client_bid_bind'),
     url (r'^clientbidunbind/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientPartnerRemoveView.as_view(), name='client_bid_unbind'),
     url (r'^setbidbasicclient/(?P<client_pk>\d+)/(?P<bid_pk>\d+)$', view=set_bid_basic_client, name='set_bid_basic_client'),
+    url (r'^bidreport/$', BidReportView.as_view(), name='bidreport'),
     
 )
 

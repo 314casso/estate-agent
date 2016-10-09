@@ -38,6 +38,9 @@ $(document).ready(function() {
 	$('.btn-email').button("option", "icons", {
 		primary : "ui-icon-mail-closed"
 	});
+	$('.btn-print').button("option", "icons", {
+		primary : "ui-icon-print"
+	});
 	$('.btn-unbind-inline').each(function() {
 		setAnchor(this, 'ui-icon ui-icon-circle-minus');
 	});

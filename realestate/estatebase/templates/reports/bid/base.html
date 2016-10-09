@@ -1,0 +1,95 @@
+{% load report %}
+{% load paginator %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>  	
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Реестр заявок</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]--> 
+    <link href="{{ STATIC_URL }}/css/print.css?1.0.0" rel="stylesheet">   
+  </head>
+  <body>    
+    <div class="container">
+    
+    	<div class="page-header">
+  			<h1>Реестр заявок <small>{% now "d.m.Y" %}</small></h1>
+		</div>   
+       	  
+		{% for bid_item in bid_list %}
+		
+		  <div class="row">		  		  	
+		  	<div class="col-md-11"><h3>Заявка {{ bid_item.pk }} <small>{{ bid_item.mixed_estate_types }}</small></h3></div>		  	
+		  </div>	  	  
+		  {% bid_dict bid_item as bid_dict %}
+		  
+			<div class="row">  	
+			  	<div class="col-md-12">
+			  		<dl class="dl-horizontal">
+			  			{% for k,v in bid_dict.base.items %}  	
+				    	<dt>{{ k }}</dt>
+				    	<dd>{{ v }}</dd>
+				    	{% endfor %}    	
+			  			{% for k,v in bid_dict.details.items %}  	
+				    	<dt>{{ k }}</dt>
+				    	<dd>{{ v }}</dd>
+				    	{% endfor %}		    	
+					</dl>
+			  	</div>	  	
+			</div>		
+				
+			{% if bid_item.bid_events.all %}	
+			<div class="row">				
+				<div class="col-md-12">
+					  <table class="table table-condensed">
+					  <thead>
+					    <tr>		    
+					    	<th>Обновлено</th>
+					    	<th>Пользователь</th>
+					    	<th>Событие</th>
+					    	<th>Запланировано</th>
+					    	<th>Примечание</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  {% for bid_event in bid_item.bid_events.all %}
+					    <tr>
+				            <td title="{{ bid_event.history.modificated|date:'d M Y H:i' }}">{{ bid_event.history.modificated|date:"d.m.Y" }}</td>
+				            <td>{{ bid_event.history.created_by.get_full_name }} </td>
+				            <td>{{ bid_event.bid_event_category }}</td>
+				            <td>{{ bid_event.date|date:"d M Y H:i" }}</td>                      
+				            <td>{{ bid_event.note }}</td>
+					    </tr>
+					  {% endfor %}
+					  </tbody>
+					  </table>
+				</div>
+			</div>
+		    {% endif %}
+		  
+		<hr>
+		{% endfor %} 
+		  
+		
+		
+		{% if is_paginated %}
+		<nav aria-label="Page navigation">
+		    {% bootstrap_paginator %}
+		</nav>
+		{% endif %}
+	
+	</div>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>    	
+  </body>
+</html>

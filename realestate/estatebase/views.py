@@ -963,15 +963,18 @@ class BidListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
         bid_filter_form = BidFilterForm(self.request.GET)
-        params = self.request.GET.copy()      
-        get_params = params.urlencode()                                                                    
+        params = self.request.GET.copy()    
+        params_no_page = self.request.GET.copy()
+        if 'page' in params_no_page:
+            del(params_no_page['page'])                                                                               
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'bid_count': Bid.objects.count(),
             'bid_filter_form': bid_filter_form,
             'filtered': self.filtered,            
             'filter_count' : self.get_queryset().count(),
-            'get_params' : get_params,
+            'get_params' : params.urlencode(),
+            'params_no_page': params_no_page.urlencode(),
         })        
         return context    
 
@@ -1530,4 +1533,11 @@ def csrf_failure(request, reason=""):
             next_url = LOGIN_REDIRECT_URL       
         return redirect(next_url)
     return HttpResponseForbidden()
+
+
+class BidReportView(BidListView):
+    paginate_by = 100
+    template_name = 'reports/bid/base.html'
+    
+
     

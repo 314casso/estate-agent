@@ -1,0 +1,9 @@
+@media print {
+	thead {
+		display: table-row-group;
+	}
+
+	table {
+		page-break-inside: avoid;
+	}
+}

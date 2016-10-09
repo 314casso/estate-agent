@@ -1,7 +1,7 @@
 {% load l10n %}
 {% localize off %}
 {% spaceless %}
-<ul class="ui-widget-content no-border">
+<ul class="{{ ul_class }}">
   {% if has_previous %}
     <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ previous }}">&laquo; Сюда</a></li>
   {% endif %}
@@ -13,7 +13,7 @@
   {% endif %}
   {% for p in page_range %}
     {% if p == page %}
-      <li><span class="active">{{ p }}</span></li>
+      <li class="active"><span>{{ p }}</span></li>
     {% else %}
       <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
     {% endif %}
