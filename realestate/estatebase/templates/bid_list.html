@@ -38,12 +38,12 @@
     {% if filtered %}
     <a class="btn-filter-remove" href="{{ request.path }}?next={{ request.GET.next|urlencode }}">Сбросить фильтр</a>
     {% endif %}
-    {% include 'prev_view.html' %}
-    <a class="btn-print" href="{% url 'bidreport' %}?{{ params_no_page }}">Реестр заявок</a>
+    {% include 'prev_view.html' %}    
     {% if request.user.is_superuser %}
         <span style="padding: 5px; color: #ccc"> </span>
         <a class="btn-phone" href="{% url 'bid_list_contacts' 1 %}?{{ get_params }}">Экспорт телефонных номеров</a>
-        <a class="btn-email" href="{% url 'bid_list_contacts' 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>        
+        <a class="btn-email" href="{% url 'bid_list_contacts' 2 %}?{{ get_params }}">Экспорт адресов электронной почты</a>
+        <a class="btn-print" href="{% url 'bidreport' %}?{{ params_no_page }}">Реестр заявок</a>        
     {% endif %}
 </div>
 <div class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left; margin: 3px 0">
