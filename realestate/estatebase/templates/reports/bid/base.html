@@ -34,7 +34,7 @@
 		  {% bid_dict bid_item as bid_dict %}
 		  
 			<div class="row">  	
-			  	<div class="col-md-12">
+			  	<div class="col-md-8">
 			  		<dl class="dl-horizontal">
 			  			{% for k,v in bid_dict.base.items %}  	
 				    	<dt>{{ k }}</dt>
@@ -45,6 +45,22 @@
 				    	<dd>{{ v }}</dd>
 				    	{% endfor %}		    	
 					</dl>
+			  	</div>
+			  	<div class="col-md-4">
+			  		<ul class="list-unstyled">
+			  			{% for client in bid_item.clients.all %}  	
+				    	<li><strong>{{ client.name }}</strong>
+					    	<ul class="list-unstyled">
+					    	{% for contact in client.contacts.all %}
+					    	<li>{{ contact.contact }} <abbr class="text-lowercase small text-muted" title="{{ contact.updated }}">
+					    		{{ contact.contact_state }}
+					    		</abbr>
+					    	</li>					    	
+					    	{% endfor %}
+					    	</ul>
+				    	</li>
+				    	{% endfor %}   	
+					</ul>
 			  	</div>	  	
 			</div>		
 				
