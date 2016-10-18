@@ -62,9 +62,14 @@ class ClientAdmin(admin.ModelAdmin):
     def get_queryset(self, request):                
         return Client.all_objects.all()    
 
+class ContactAdmin(admin.ModelAdmin):
+    raw_id_fields = ('client',)
+    search_fields = ['contact',]
+    list_filter = ('contact_type',) 
+
 class BidgAdmin(admin.ModelAdmin):
     search_fields = ['estate__id']
-    fields = ['estate_type', 'basic']    
+    fields = ['estate_type', 'basic']
 
 admin.site.unregister(User)
 
@@ -102,7 +107,7 @@ admin.site.register(EstateTypeCategory,EstateTypeCategoryAdmin)
 admin.site.register(ClientType)
 admin.site.register(ContactType)
 admin.site.register(Origin)
-admin.site.register(Contact)
+admin.site.register(Contact, ContactAdmin)
 admin.site.register(ContactState)
 admin.site.register(ContactHistory)
 admin.site.register(Bidg, BidgAdmin)
