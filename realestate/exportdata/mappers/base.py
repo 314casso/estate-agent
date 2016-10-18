@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from estatebase.models import EstateTypeCategory, EstateType, Locality,\
-    WallConstrucion, EstateParam, EntranceEstate, Beside, Interior
+    WallConstrucion, EstateParam, EntranceEstate, Interior
 from exportdata.models import ValueMapper
 import re
 from django.core.cache import cache
@@ -140,6 +140,7 @@ class BaseMapper(object):
         _bld_number = None
         _distance_to_city = None 
         _metropolis = None
+        _restricted_street = None
         
         def __init__(self, estate, parent):
             self._estate = estate
@@ -170,6 +171,13 @@ class BaseMapper(object):
             if not self._street:
                 self._street = u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
             return self._street
+        
+        def restricted_street(self):            
+            if not self._restricted_street:
+                if self._estate.street:                                
+                    if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:               
+                        self._restricted_street = u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
+            return self._restricted_street
         
         @property
         def bld_number(self):
@@ -305,6 +313,10 @@ class AvitoMapper(BaseMapper):
             if not self._city:
                 self._city = self._parent.get_value_mapper(Locality, self._estate.locality_id, 'City')
             return self._city
+        
+        @property                  
+        def street(self):            
+            return self.restricted_street()
     
     @property
     def title(self):
@@ -472,8 +484,9 @@ class YandexMapper(BaseMapper):
                     self._microdistrict = u'%s' % self._estate.microdistrict
             return self._microdistrict
         
-        @property
-        def street(self):
+        @property                  
+        def street_base(self):
+            # base function according schema
             if not self._street:
                 if self._estate.street:
                     bld_number = ''            
@@ -481,6 +494,10 @@ class YandexMapper(BaseMapper):
                         bld_number = u", %s" % self._estate.estate_number
                     self._street = u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
             return self._street
+     
+        @property                  
+        def street(self):            
+            return self.restricted_street()
      
     class Contact(BaseMapper.Contact):
         _category = None

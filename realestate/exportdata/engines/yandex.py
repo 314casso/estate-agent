@@ -47,7 +47,7 @@ class YandexEngine(BaseEngine):
         el_location("district", address.district)
         el_location("locality-name", address.locality)
         el_location("sub-locality-name", address.sub_locality, False)
-        el_location("address", address.street, not mapper.suburban)
+        el_location("address", address.street, not mapper.suburban if self.CHECK_STREET else False)
         
         contact = mapper.contact  
         sales_agent = etree.SubElement(offer, 'sales-agent') 
