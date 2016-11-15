@@ -584,7 +584,7 @@ class Estate(ProcessDeletedModel):
         return '; '.join(result).lower()
     @property
     def validity_state(self):        
-        if not self.correct and self.validity == self.VALID:
+        if not self.correct and self.validity_id == self.VALID:
             return u'Устарело'
         else:
             return self.validity
