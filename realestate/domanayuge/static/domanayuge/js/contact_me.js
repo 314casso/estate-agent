@@ -16,7 +16,7 @@ function getCookie(name) {
 }
 
 $(function() {
-	var csrftoken = getCookie('csrftoken');
+
     $("#contactForm input,#contactForm textarea").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function($form, event, errors) {
@@ -29,7 +29,8 @@ $(function() {
             var email = $("input#email").val();
             var phone = $("input#phone").val();
             var message = $("textarea#message").val();
-            var firstName = name; // For Success/Failure Message             
+            var firstName = name; // For Success/Failure Message
+            var csrf_token = getCookie('csrftoken');
             // Check for white space in name for Success/Fail message
             if (firstName.indexOf(' ') >= 0) {
                 firstName = name.split(' ').slice(0, -1).join(' ');
@@ -42,7 +43,7 @@ $(function() {
                     phone: phone,
                     email: email,
                     message: message,
-                    csrfmiddlewaretoken: csrftoken,
+                    csrfmiddlewaretoken: csrf_token
                 },
                 cache: false,
                 success: function() {
