@@ -16,7 +16,7 @@ function getCookie(name) {
 }
 
 $(function() {
-
+	var csrftoken = getCookie('csrftoken');
     $("#contactForm input,#contactForm textarea").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function($form, event, errors) {
@@ -42,7 +42,7 @@ $(function() {
                     phone: phone,
                     email: email,
                     message: message,
-                    csrfmiddlewaretoken: getCookie('csrftoken'),
+                    csrfmiddlewaretoken: csrftoken,
                 },
                 cache: false,
                 success: function() {
