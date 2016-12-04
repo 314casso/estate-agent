@@ -48,12 +48,17 @@
     </fieldset>    
     <br />
     <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
-		<legend style="font-size: 14px;">Для покупателей</legend>
+		<legend style="font-size: 14px;">Для покупателей корректные</legend>
 	    <a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}">Без фото</a>
     	<a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}&foto=true">С фото</a>
     	<a target="_blank" href="{% url 'orbita_report' estateregister.pk %}?{{ next_url }}">Орбита</a>
-    </fieldset>
-    
+    </fieldset>    
+    <fieldset class="ui-widget ui-widget-content ui-corner-all" style="float:left">
+		<legend style="font-size: 14px;">Для покупателей все</legend>
+	    <a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}&outdated=true">Без фото</a>
+    	<a target="_blank" href="{% url 'public_report' estateregister.pk %}?{{ next_url }}&foto=true&outdated=true">С фото</a>
+    	<a target="_blank" href="{% url 'orbita_report' estateregister.pk %}?{{ next_url }}&outdated=true">Орбита</a>
+    </fieldset>    
 </div>  
 </fieldset>
 <!-- -->
