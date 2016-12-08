@@ -10,11 +10,12 @@ from django.contrib.sites.shortcuts import get_current_site
 from local_settings import EMAIL_SETTINGS
 from django.views.generic.list import ListView
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic.detail import DetailView
 
 # Create your views here.
 
-class BaseContextMixin(ContextMixin):
-    blog_slug = 'blog'    
+class BaseContextMixin(ContextMixin): 
+    blog_slug = 'blog'     
     def get_context_data(self, **kwargs):
         context = super(BaseContextMixin, self).get_context_data(**kwargs)
         categiries = None        
@@ -25,22 +26,35 @@ class BaseContextMixin(ContextMixin):
             pass
                                     
         context.update({            
-            'categiries': categiries,                       
-            'blog_slug': self.blog_slug,
+            'categiries': categiries,                      
         })               
         return context
     
 
 class HomePage(BaseContextMixin, TemplateView):    
-    template_name = 'domanayuge/base.html'        
+    template_name = 'domanayuge/base.html'  
+    def get_context_data(self, **kwargs):
+        context = super(HomePage, self).get_context_data(**kwargs)
+        context.update({           
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+        })                  
+        return context          
     
 
-class Blog(BaseContextMixin, ListView):    
+class Blog(BaseContextMixin, ListView):
     template_name = 'domanayuge/blog.html'
-    paginate_by = 2
-    def get_queryset(self):                
-        #categories__slug=self.blog_slug
-        return ContentEntry.objects.filter()
+    paginate_by = 10
+    def get_queryset(self):           
+        return ContentEntry.objects.filter(categories__slug=self.blog_slug)
+
+class Article(BaseContextMixin, DetailView):    
+    template_name = 'domanayuge/page.html'
+    model = ContentEntry
+    context_object_name = 'article'
+    def get_context_data(self, **kwargs):
+        context = super(Article, self).get_context_data(**kwargs)        
+        return context    
+           
        
     
 @require_http_methods(["POST"])

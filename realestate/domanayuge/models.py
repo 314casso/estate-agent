@@ -22,7 +22,7 @@ class Category(CategoryBase):
     
     def active_entries(self):
         return self.entries.filter(active=True)
-    
+           
     def __str__(self):
         ancestors = self.get_ancestors()
         return ' > '.join([force_text(i.name) for i in ancestors] + [self.name, ])

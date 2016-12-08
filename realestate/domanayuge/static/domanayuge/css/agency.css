@@ -755,3 +755,51 @@ body {
 .carousel {
 	margin-bottom: 20px;
 }
+
+#blog h2, #blog h3 {
+	text-transform: none;
+}
+
+#blog h3 a, #blog .card-caption a{
+	color: #333;
+}
+
+#blog h3 a:hover, #blog .card-caption a:hover{
+	color: #777;
+	text-decoration: none;
+}
+
+#blog a {
+	color: maroon;
+}
+
+#blog a:hover {
+	color: red;
+}
+
+#blog .post-date {
+	color: #555;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover { 
+    background-color: #222;
+    border-color: #222;
+    color: #fed136;
+}
+
+.pagination>li>a, .pagination>li>span {
+	color: #222222; 	
+}
+
+.pagination>li>a:hover, .pagination>li>span:hover {
+	color: black; 	
+}
+
+#blog .card-caption {
+	/* padding: 0 10px; */
+	/* border-bottom: 1px solid #fed136; */
+}
+
+#blog .card-body {
+	/* padding: 10px;*/	
+}
