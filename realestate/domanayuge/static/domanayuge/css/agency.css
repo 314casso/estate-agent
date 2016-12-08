@@ -803,3 +803,7 @@ body {
 #blog .card-body {
 	/* padding: 10px;*/	
 }
+
+#blog {
+	background: white;
+}
