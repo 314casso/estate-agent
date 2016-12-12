@@ -1389,6 +1389,7 @@ class YandexBuilding(SimpleDict):
     ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
     building_state = models.CharField(_('Building state'), choices=STATE_CHOICES, max_length=15)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), blank=True, null=True)
+    files = GenericRelation('EstateFile')
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.locality)   
     class Meta(SimpleDict.Meta):

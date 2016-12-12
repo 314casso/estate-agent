@@ -10,9 +10,11 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     WallConstrucion, ExteriorFinish, Interior, WallFinish, EstateClientStatus,\
     BidEvent, BidStatus, LayoutFeature, Furniture, LayoutType,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
-    Validity, EstateRegister, StreetType, LandType, YandexBuilding, DealStatus
+    Validity, EstateRegister, StreetType, LandType, YandexBuilding, DealStatus,\
+    EstateFile
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.contenttypes.admin import GenericTabularInline
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -92,6 +94,14 @@ class LocalityAdmin(admin.ModelAdmin):
     
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['regular_name', 'regular_name_gent']    
+
+class FileInline(GenericTabularInline):
+    model = EstateFile
+    
+class YandexBuildingAdmin(admin.ModelAdmin):
+    inlines = [
+        FileInline,
+    ]    
     
 admin.site.register(User, UserProfileAdmin)
 
@@ -154,5 +164,5 @@ admin.site.register(Purpose)
 admin.site.register(LocalityType)
 admin.site.register(StreetType)
 admin.site.register(Validity)
-admin.site.register(YandexBuilding)
+admin.site.register(YandexBuilding, YandexBuildingAdmin)
 admin.site.register(DealStatus)
