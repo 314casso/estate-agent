@@ -42,6 +42,7 @@ from devrep.models import Partner
 from datetime import datetime
 from django.http.response import JsonResponse, HttpResponseForbidden
 import re
+from django.db.models import Q
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -943,13 +944,18 @@ class BidListView(ListView):
     template_name = 'bid_list.html'
     paginate_by = 7   
     def get_queryset(self):
+        user = self.request.user
         q = Bid.objects.prefetch_related('history', 'brokers', 'clients', 'geo_groups')          
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
-        geo_list = set(self.request.user.userprofile.geo_groups.values_list('id', flat=True))                            
+        geo_list = set(user.userprofile.geo_groups.values_list('id', flat=True))                            
         q = q.filter(geo_groups__id__in=geo_list)
+        
+        if not user.has_perm('estatebase.view_other_bid'):
+            q = q.filter(Q(brokers=user) | Q(history__created_by=user))
+        
         if len(filter_dict):
             if 'Q' in filter_dict:
                 q = q.filter(filter_dict.pop('Q'))                

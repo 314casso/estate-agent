@@ -1289,6 +1289,9 @@ class Bid(ProcessDeletedModel):
     def __unicode__(self):
         return u'%s' % self.pk                                  
     class Meta:      
+        permissions = (
+                ("view_other_bid", u'Просмотр чужих заявок'),
+            )
         ordering = ['-history__created']
         verbose_name = _('Bid')
         verbose_name_plural = _('Bids')    
