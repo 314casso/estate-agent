@@ -103,11 +103,14 @@ class YandexBuildingAdmin(admin.ModelAdmin):
         FileInline,
     ]    
     
+class MicrodistrictAdmin(admin.ModelAdmin):
+    search_fields = ['name',]    
+    
 admin.site.register(User, UserProfileAdmin)
 
 admin.site.register(Region, RegionAdmin)
 admin.site.register(Locality, LocalityAdmin)
-admin.site.register(Microdistrict)
+admin.site.register(Microdistrict, MicrodistrictAdmin)
 admin.site.register(Street, StreetAdmin)
 admin.site.register(ContentType)
 admin.site.register(Estate, EstateAdmin)

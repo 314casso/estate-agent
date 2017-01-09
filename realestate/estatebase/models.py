@@ -470,7 +470,7 @@ class Estate(ProcessDeletedModel):
     estate_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateCategory'), on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name=_('Region'), on_delete=models.PROTECT) 
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)
-    microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.PROTECT)
+    microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.SET_NULL)
     street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)
     address_state = models.PositiveIntegerField(verbose_name=_('Address state'), blank=True, null=True, choices=ADDRESS_CHOICES)    
     estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)
