@@ -8,11 +8,17 @@ class Command(BaseCommand):
         
     def do_job(self):        
 #         estate_number=u'0',
-        q = Estate.objects.filter(microdistrict__name__startswith=u'неправ')
+        q = Estate.objects.filter(microdistrict__name__startswith=u'неправиль')
         print len(q)
         for item in q:
+            if not item.locality:
+                item.microdistrict = None
+                item.save()
+                continue            
             try:
                 m = Microdistrict.objects.get(name=u'жилой район', locality=item.locality)
+                item.microdistrict = m
+                item.save()
 #                 print m 
             except:
                 print  item.locality
