@@ -720,6 +720,7 @@ class Estate(ProcessDeletedModel):
         ordering = ['-id']    
         permissions = (
             ("view_private", u'Просмотр цены, полного адреса и контактов'),
+            ("change_broker", u'Может назначать риэлтора'),
         )
 
 def get_upload_to(instance, filename):    

@@ -58,6 +58,10 @@ class EstateForm(BetterModelForm):
         if not su:         
             for field in exclude:
                 del self.fields[field]
+        manager_fields = ['broker',]
+        if not _user or not _user.has_perm('estatebase.change_broker'):
+            for field in manager_fields:
+                self.fields[field].widget = forms.widgets.HiddenInput()
         
     def clean_estate_number(self):
         data = self.cleaned_data['estate_number']
