@@ -858,7 +858,16 @@ class SteadRemoveView(BidgAppendView):
 class BidMixin(ModelFormMixin):
     template_name = 'bid_update.html'
     form_class = BidForm
-    model = Bid    
+    model = Bid  
+    
+    def get(self, request, *args, **kwargs):        
+        self.object = self.get_object()
+        user = request.user                 
+        if not user.has_perm('estatebase.view_other_bid'):            
+            if not (self.object.brokers.filter(id=request.user.pk) or self.object.history.created_by==user):           
+                return HttpResponseForbidden()
+        return super(BidMixin, self).get(self, request, *args, **kwargs)
+      
     def get_context_data(self, **kwargs):
         client = None
         if 'client' in self.kwargs:
@@ -926,8 +935,10 @@ class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
         })
         return context    
 
+
 class BidDetailView(BidMixin, DetailView):
     template_name = 'bid_detail.html'
+           
     def get_context_data(self, **kwargs):
         context = super(BidDetailView, self).get_context_data(**kwargs)
         q = self.object.estate_registers.all()
