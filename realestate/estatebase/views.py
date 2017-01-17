@@ -863,7 +863,7 @@ class BidMixin(ModelFormMixin):
     def get(self, request, *args, **kwargs):        
         self.object = self.get_object()
         user = request.user                 
-        if not user.has_perm('estatebase.view_other_bid'):            
+        if self.object and user and not user.has_perm('estatebase.view_other_bid'):            
             if not (self.object.brokers.filter(id=request.user.pk) or self.object.history.created_by==user):           
                 return HttpResponseForbidden()
         return super(BidMixin, self).get(self, request, *args, **kwargs)
@@ -905,6 +905,9 @@ class BidMixin(ModelFormMixin):
             return self.render_to_response(self.get_context_data(form=form))    
 
 class BidCreateView(BidMixin, CreateView):
+    def get(self, request, *args, **kwargs):
+        return super(CreateView, self).get(self, request, *args, **kwargs)
+	
     def get_initial(self):        
         initial = super(BidCreateView, self).get_initial()
         if 'client' in self.kwargs:
