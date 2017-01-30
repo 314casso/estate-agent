@@ -907,7 +907,7 @@ class BidMixin(ModelFormMixin):
 class BidCreateView(BidMixin, CreateView):
     def get(self, request, *args, **kwargs):
         return super(CreateView, self).get(self, request, *args, **kwargs)
-	
+
     def get_initial(self):        
         initial = super(BidCreateView, self).get_initial()
         if 'client' in self.kwargs:

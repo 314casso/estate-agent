@@ -698,7 +698,11 @@ class BidgForm(ObjectForm):
         
 class SteadForm(ObjectForm):    
     total_area = LocalDecimalField(label=_('Total area'))
-    face_area = LocalDecimalField(label=_('Face area'))    
+    face_area = LocalDecimalField(label=_('Face area'))
+    def __init__(self, *args, **kwargs):
+        super(SteadForm, self).__init__(*args, **kwargs)
+        if self.instance.pk and 'estate_type' in self.fields:            
+            self.fields['estate_type'].queryset = EstateType.objects.filter(estate_type_category__id=self.instance.estate_type.estate_type_category_id)         
     def clean_total_area(self):        
         data = self.cleaned_data['total_area']
         if self.user is None:

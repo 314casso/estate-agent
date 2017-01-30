@@ -142,7 +142,7 @@ class LandscapingWrapper(FacilitiesWrapper):
 class SteadWrapper(BaseWrapper):
     #    land_type = u'Земля ТЕСТ'    
     def __init__(self):        
-        self._field_set = ['total_area', 'face_area', 'shape', 'land_type', 'purpose', 'cadastral_number']
+        self._field_set = ['total_area', 'face_area', 'shape', 'land_type', 'purpose', 'cadastral_number', 'estate_type']
         self.extra_set = ['documents',]
         self.exterior_set = deepcopy(self._field_set)   
     @property
@@ -150,7 +150,7 @@ class SteadWrapper(BaseWrapper):
         return self._field_set
     @property
     def field_report_set(self):
-        exclude = ('cadastral_number',)
+        exclude = ('cadastral_number', 'estate_type')
         return [x for x in self.field_set if x not in exclude]
             
 def get_polymorph_label(template, field):            
