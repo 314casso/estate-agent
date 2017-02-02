@@ -778,6 +778,39 @@ class GenericLink(models.Model):
     class Meta:
         verbose_name = _('GenericLink')
         verbose_name_plural = _('GenericLinks')
+
+class Supply(SimpleDict):
+    '''
+    Перечень коммуникаций    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Supply')
+        verbose_name_plural = _('Supply')
+
+class SupplyState(SimpleDict):
+    '''
+    Сотояние коммуникаций    
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Supply state')
+        verbose_name_plural = _('Supply states')
+
+class GenericSupply(models.Model):
+    '''
+    Коммуникации
+    '''
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    supply = models.ForeignKey(Supply, verbose_name=_('Supply'))
+    supply_state = models.ForeignKey(SupplyState, verbose_name=_('Supply state'), blank=True, null=True,)
+    distance = models.PositiveIntegerField(verbose_name=_('Distance'))
+        
+    def __unicode__(self):
+        return u'%s' % (self.supply)
+    class Meta:
+        verbose_name = _('Supply')
+        verbose_name_plural = _('Supply')        
     
 class WallConstrucion(SimpleDict):
     '''
@@ -1378,7 +1411,7 @@ class BidClient(models.Model):
 class YandexBuilding(SimpleDict):
     '''
     YandexBuilding
-    '''        
+    '''       
     QUARTER_CHOICES = (
         (1, u'1-й квартал'),
         (2, u'2-й квартал'),        
@@ -1392,9 +1425,21 @@ class YandexBuilding(SimpleDict):
     )
     building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50) 
     ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
+    ready_year = models.IntegerField(_('Ready year'), blank=True, null=True)
     building_state = models.CharField(_('Building state'), choices=STATE_CHOICES, max_length=15)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), blank=True, null=True)
+    discount = models.TextField(verbose_name=_('Discount'), blank=True, null=True)
+    dummy_address = models.CharField(_('Dummy address'), max_length=255, blank=True, null=True)
+    
+    wall_construcion = models.ForeignKey(WallConstrucion, verbose_name=_('Wall construcion'), blank=True, null=True, on_delete=models.PROTECT)
+    exterior_finish = models.ForeignKey(ExteriorFinish, verbose_name=_('Exterior finish'), blank=True, null=True, on_delete=models.PROTECT)   
+    wall_finish = models.ForeignKey(WallFinish, verbose_name=_('WallFinish'), blank=True, null=True, on_delete=models.PROTECT)
+    price_per_sqm_min = models.IntegerField(verbose_name=_('Price per sq. m. min'), blank=True, null=True)
+    price_per_sqm_max = models.IntegerField(verbose_name=_('Price per sq. m. max'), blank=True, null=True)
+    
+    supplies = GenericRelation('GenericSupply')
     files = GenericRelation('EstateFile')
+    links = GenericRelation('GenericLink')
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.locality)   
     class Meta(SimpleDict.Meta):

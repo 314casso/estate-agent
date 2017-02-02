@@ -11,7 +11,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     BidEvent, BidStatus, LayoutFeature, Furniture, LayoutType,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
     Validity, EstateRegister, StreetType, LandType, YandexBuilding, DealStatus,\
-    EstateFile
+    EstateFile, GenericLink, GenericSupply, Supply, SupplyState
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
@@ -98,9 +98,15 @@ class RegionAdmin(admin.ModelAdmin):
 class FileInline(GenericTabularInline):
     model = EstateFile
     
+class LinkInline(GenericTabularInline):
+    model = GenericLink    
+    
+class SupplyInline(GenericTabularInline):
+    model = GenericSupply    
+    
 class YandexBuildingAdmin(admin.ModelAdmin):
     inlines = [
-        FileInline,
+        SupplyInline, FileInline, LinkInline
     ]    
     
 class MicrodistrictAdmin(admin.ModelAdmin):
@@ -169,3 +175,5 @@ admin.site.register(StreetType)
 admin.site.register(Validity)
 admin.site.register(YandexBuilding, YandexBuildingAdmin)
 admin.site.register(DealStatus)
+admin.site.register(Supply)
+admin.site.register(SupplyState)
