@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-02 22:40+0300\n"
+"POT-Creation-Date: 2017-02-02 23:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -145,7 +145,7 @@ msgid "Region"
 msgstr "Район"
 
 #: forms.py:384 forms.py:822 models.py:115 models.py:131 models.py:472
-#: models.py:1306 models.py:1430
+#: models.py:1306 models.py:1445
 msgid "Locality"
 msgstr "Населенный пункт"
 
@@ -199,7 +199,7 @@ msgstr "Общая площадь, кв. м"
 msgid "Used area"
 msgstr "Жилая площадь, кв. м"
 
-#: forms.py:425 forms.py:661 models.py:547 models.py:981
+#: forms.py:425 forms.py:661 models.py:547 models.py:981 models.py:1413
 msgid "Room count"
 msgstr "Кол-во комнат"
 
@@ -216,7 +216,7 @@ msgstr "Расстояние до, м"
 msgid "Interior"
 msgstr "Состояние"
 
-#: forms.py:446 models.py:976 models.py:1435
+#: forms.py:446 models.py:976 models.py:1450
 msgid "Exterior finish"
 msgstr "Внешняя отделка"
 
@@ -644,7 +644,7 @@ msgstr "Интернет"
 msgid "Driveway distance"
 msgstr "Подъезд"
 
-#: models.py:504 models.py:1454
+#: models.py:504 models.py:1469
 msgid "DealStatus"
 msgstr "Статус сделки"
 
@@ -652,7 +652,7 @@ msgstr "Статус сделки"
 msgid "Broker"
 msgstr "Риэлтор"
 
-#: models.py:545 models.py:975 models.py:1434
+#: models.py:545 models.py:975 models.py:1449
 msgid "Wall construcion"
 msgstr "Материал стен"
 
@@ -849,11 +849,11 @@ msgstr "Тип окон"
 msgid "Documents"
 msgstr "Документы"
 
-#: models.py:986 models.py:1436
+#: models.py:986 models.py:1451
 msgid "WallFinish"
 msgstr "Отделка стен"
 
-#: models.py:992 models.py:1446
+#: models.py:992 models.py:1461
 msgid "YandexBuilding"
 msgstr ""
 
@@ -1025,43 +1025,67 @@ msgstr ""
 msgid "LocalityTypes"
 msgstr "Тип населенного пункта"
 
-#: models.py:1426
-msgid "Yandex building id"
-msgstr "Идентификатор ЖК Яндекса"
+#: models.py:1414
+msgid "Total area min"
+msgstr "Общая площадь мин., кв. м"
 
-#: models.py:1427
-msgid "Quarter"
-msgstr "Квартал"
+#: models.py:1415
+msgid "Total area max"
+msgstr "Общая площадь макс., кв. м"
 
-#: models.py:1428
-msgid "Ready year"
-msgstr "Год сдачи"
+#: models.py:1416
+msgid "Used area min"
+msgstr "Жилая площадь мин., кв. м"
 
-#: models.py:1429
-msgid "Building state"
-msgstr "Стадия строительства дома"
+#: models.py:1417
+msgid "Used area max"
+msgstr "Жилая площадь макс., кв. м"
 
-#: models.py:1431
-msgid "Discount"
-msgstr "Скидки и акции"
-
-#: models.py:1432
-msgid "Dummy address"
-msgstr "Адрес строительства"
-
-#: models.py:1437
+#: models.py:1418 models.py:1452
 msgid "Price per sq. m. min"
 msgstr "Мин. цена за кв.м., руб."
 
-#: models.py:1438
+#: models.py:1419 models.py:1453
 msgid "Price per sq. m. max"
 msgstr "Макс. цена за кв.м., руб."
 
+#: models.py:1423
+msgid "BuildingItem"
+msgstr "Элемент"
+
+#: models.py:1424
+msgid "BuildingItems"
+msgstr "Состав"
+
+#: models.py:1441
+msgid "Yandex building id"
+msgstr "Идентификатор ЖК Яндекса"
+
+#: models.py:1442
+msgid "Quarter"
+msgstr "Квартал"
+
+#: models.py:1443
+msgid "Ready year"
+msgstr "Год сдачи"
+
+#: models.py:1444
+msgid "Building state"
+msgstr "Стадия строительства дома"
+
+#: models.py:1446
+msgid "Discount"
+msgstr "Скидки и акции"
+
 #: models.py:1447
+msgid "Dummy address"
+msgstr "Адрес строительства"
+
+#: models.py:1462
 msgid "YandexBuildings"
 msgstr "Идентификаторы ЖК Яндекса"
 
-#: models.py:1455
+#: models.py:1470
 msgid "DealStatuses"
 msgstr "Типы сделки"
 

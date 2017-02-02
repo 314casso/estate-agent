@@ -1407,6 +1407,21 @@ class BidClient(models.Model):
     bid = models.ForeignKey('Bid')   
     class Meta:
         unique_together = ('client', 'bid')
+
+class BuildingItem(SimpleDict):      
+    yandex_building = models.ForeignKey('YandexBuilding', related_name='items', blank=True, null=True)
+    room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
+    total_area_min = models.DecimalField(_('Total area min'), blank=True, null=True, max_digits=10, decimal_places=2)
+    total_area_max = models.DecimalField(_('Total area max'), blank=True, null=True, max_digits=10, decimal_places=2)
+    used_area_min = models.DecimalField(_('Used area min'), blank=True, null=True, max_digits=10, decimal_places=2)
+    used_area_max = models.DecimalField(_('Used area max'), blank=True, null=True, max_digits=10, decimal_places=2)
+    price_per_sqm_min = models.IntegerField(verbose_name=_('Price per sq. m. min'), blank=True, null=True)
+    price_per_sqm_max = models.IntegerField(verbose_name=_('Price per sq. m. max'), blank=True, null=True)
+    def __unicode__(self):
+        return u'%s, %s' % (self.name)   
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('BuildingItem')
+        verbose_name_plural = _('BuildingItems')    
    
 class YandexBuilding(SimpleDict):
     '''
@@ -1439,7 +1454,7 @@ class YandexBuilding(SimpleDict):
     
     supplies = GenericRelation('GenericSupply')
     files = GenericRelation('EstateFile')
-    links = GenericRelation('GenericLink')
+    links = GenericRelation('GenericLink')    
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.locality)   
     class Meta(SimpleDict.Meta):
