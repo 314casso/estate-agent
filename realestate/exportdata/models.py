@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 import datetime
 from django.db.models.query_utils import Q
-import django
       
 
 class FeedLocality(models.Model):    
@@ -49,7 +48,7 @@ class MappedNode(models.Model):
 
 class MarketingCampaign(models.Model):
     name = models.CharField(db_index=True, max_length=15)
-    start_date = models.DateTimeField(default=django.utils.timezone.now)
+    start_date = models.DateTimeField(auto_now_add=True, blank=True)
     end_date = models.DateTimeField(blank=True, null=True,)
     phone = models.CharField(max_length=50, blank=True, null=True,)
     email = models.EmailField(blank=True, null=True,)
@@ -77,7 +76,7 @@ class BaseFeed(models.Model):
     feed_engine = models.ForeignKey(FeedEngine, )        
     campaign = models.ForeignKey(MarketingCampaign, blank=True, null=True,)    
     note = models.CharField(max_length=255, blank=True, null=True,)        
-    
+    use_broker = models.BooleanField(default=False)
           
     def __unicode__(self):
         return u'%s' % self.name        

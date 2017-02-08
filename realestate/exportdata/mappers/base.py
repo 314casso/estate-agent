@@ -44,7 +44,7 @@ class BaseMapper(object):
         self._layout = None
         self._price = self.Price(estate)      
         self._address = self.Address(estate, self)
-        self._contact = self.Contact(estate, feed.campaign)
+        self._contact = self.Contact(estate, feed)
         self._feed = feed
         self._domain = 'http://%s' % 'feed.domnatamani.ru'
         if self._basic_bidg:
@@ -66,13 +66,15 @@ class BaseMapper(object):
                 self._object_type = self.get_value_mapper(EstateType, self._estate_type_id, 'ObjectType')
         return self._object_type
     
+    
     class Contact:
         _office = None
-        
-        def __init__(self, estate, campaign):
-            self._campaign = campaign
-            self._estate = estate           
-        
+                
+        def __init__(self, estate, feed):
+            self._feed = feed
+            self._campaign = feed.campaign
+            self._estate = estate          
+                    
         @property
         def office(self):
             if not self._office:
@@ -81,6 +83,8 @@ class BaseMapper(object):
     
         @property
         def manager_name(self):    
+            if self._feed.use_broker and self._estate.broker.first_name:
+                return u'%s' % self._estate.broker.first_name          
             if self._campaign and self._campaign.valid and self._campaign.person:
                 return u'%s' % self._campaign.person     
             return u'%s' % self.office.head.first_name
@@ -89,13 +93,16 @@ class BaseMapper(object):
         def email(self):    
             if self._campaign and self._campaign.valid and self._campaign.email:
                 return u'%s' % self._campaign.email     
-            return u'pochta@domanayuge.ru'
+            return u'pochta@domana_lot_manageryuge.ru'
          
         @property
-        def phone(self):    
+        def phone(self):
+            if self._feed.use_broker and self._estate.broker.userprofile.phone:
+                return u'%s' % self._estate.broker.userprofile.phone            
             if self._campaign and self._campaign.valid and self._campaign.phone:
                 return u'%s' % self._campaign.phone     
             return u'%s' % self._office.head.userprofile.phone
+
         
     def get_value_mapper(self, model_class, object_id, xml_node):
         cache_key = hashlib.md5(("%s%s%s%s" % (model_class, object_id, xml_node, self._feed.feed_engine))).hexdigest()                                               
