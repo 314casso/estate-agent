@@ -791,7 +791,7 @@ msgstr "Уровни"
 
 #: models.py:922 models.py:1346
 msgid "Category"
-msgstr "Категория планировки"
+msgstr "Категория"
 
 #: models.py:925
 msgid "Layout types"
