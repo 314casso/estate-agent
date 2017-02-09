@@ -1331,11 +1331,19 @@ class Bid(ProcessDeletedModel):
         verbose_name = _('Bid')
         verbose_name_plural = _('Bids')    
 
+class BidStatusCategory(SimpleDict):
+    '''
+    Категория статусов заявки 
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Bid status category')
+        verbose_name_plural = _('Bid status categories')
+
 class BidStatus(SimpleDict):
     '''
-    BidStatus
-    ./manage.py loaddata bidstatus.json
+    BidStatus    
     '''
+    category = models.ForeignKey(BidStatusCategory,verbose_name=_('Category'), related_name='statuses', blank=True, null=True)
     class Meta(SimpleDict.Meta):
         verbose_name = _('Bid status')
         verbose_name_plural = _('Bid statuss')

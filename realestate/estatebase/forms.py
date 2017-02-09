@@ -23,11 +23,11 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
     OutbuildingLookup, PurposeLookup, HeatingLookup, YandexBuildingLookup,\
-    DealStatusLookup
+    DealStatusLookup, BidStatusCategoryLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EntranceEstate,\
-    EstateFile, GenericLink
+    EstateFile, GenericLink, BidStatusCategory
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -851,11 +851,18 @@ class BidFilterForm(BetterForm):
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
             required=False,
-        )    
+        )
+    
+    category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
+            lookup_class=BidStatusCategoryLookup,
+            label=_('BidStatusCategory'),
+            required=False,
+        )
+        
     agency_price = IntegerRangeField(label=_('Price'), required=False)
     bid_event_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
     date_event = DateRangeField(required=False, label=_('Event date'))
-    note = forms.CharField(required=False, label=_('Note'))
+    note = forms.CharField(required=False, label=_('Note'))    
     next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
     def get_filter(self):
         f = {}
@@ -886,7 +893,11 @@ class BidFilterForm(BetterForm):
         if self['clients'].value():
             f['clients__id__in'] = self['clients'].value()    
         if self['contacts'].value():
-            f['clients__contacts__id__in'] = self['contacts'].value()        
+            f['clients__contacts__id__in'] = self['contacts'].value()
+        
+        if self['category'].value():
+            f['bid_status__category__id__in'] = self['category'].value()
+                            
         if self['bid_status'].value():
             f['bid_status__id__in'] = self['bid_status'].value()         
         if self['estates'].value():
@@ -910,10 +921,10 @@ class BidFilterForm(BetterForm):
         return f
     class Meta:
         fieldsets = [
-                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'updated_by', 'broker', 'bid_status', 
+                     ('main', {'fields': ['pk','created', 'updated', 'created_by', 'updated_by', 'broker', 'category', 'bid_status', 
                                           'origin', 'estate_type', 'estates', 
                                           'region', 'locality', 'agency_price', 'clients', 'contacts' ,
-                                          'bid_event_category', 'date_event', 'note', 
+                                          'bid_event_category', 'date_event', 'note',
                                           'next' ], 'legend': ''}),                    
                     ]
 

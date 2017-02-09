@@ -11,7 +11,8 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     BidEvent, BidStatus, LayoutFeature, Furniture, LayoutType,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
     Validity, EstateRegister, StreetType, LandType, YandexBuilding, DealStatus,\
-    EstateFile, GenericLink, GenericSupply, Supply, SupplyState, BuildingItem
+    EstateFile, GenericLink, GenericSupply, Supply, SupplyState, BuildingItem,\
+    BidStatusCategory
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
@@ -114,6 +115,9 @@ class YandexBuildingAdmin(admin.ModelAdmin):
     
 class MicrodistrictAdmin(admin.ModelAdmin):
     search_fields = ['name',]    
+   
+class BidStatusAdmin(admin.ModelAdmin):
+    list_filter = ('category',)    
     
 admin.site.register(User, UserProfileAdmin)
 
@@ -161,7 +165,7 @@ admin.site.register(Interior)
 admin.site.register(WallFinish)
 admin.site.register(EstateClientStatus)
 admin.site.register(BidEvent)
-admin.site.register(BidStatus)
+admin.site.register(BidStatus, BidStatusAdmin)
 admin.site.register(LayoutType)
 admin.site.register(LayoutFeature)
 admin.site.register(Furniture)
@@ -181,3 +185,4 @@ admin.site.register(DealStatus)
 admin.site.register(Supply)
 admin.site.register(SupplyState)
 admin.site.register(BuildingItem)
+admin.site.register(BidStatusCategory)
