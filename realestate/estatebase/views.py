@@ -972,7 +972,9 @@ class BidListView(ListView):
         
         if len(filter_dict):
             if 'Q' in filter_dict:
-                q = q.filter(filter_dict.pop('Q'))                
+                q = q.filter(filter_dict.pop('Q'))
+            if 'E' in filter_dict:                
+                q = q.exclude(**filter_dict.pop('E'))
             q = q.filter(**filter_dict)            
         order_by = self.request.fields 
         if order_by:      
