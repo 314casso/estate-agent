@@ -865,8 +865,7 @@ class BidFilterForm(BetterForm):
     note = forms.CharField(required=False, label=_('Note'))    
     next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
     def get_filter(self):
-        f = {}
-        f['E'] = {}
+        f = {}        
         if self['pk'].value():
             f['id__in'] = self['pk'].value()
         if self['region'].value():
@@ -899,7 +898,7 @@ class BidFilterForm(BetterForm):
         if self['category'].value():
             f['bid_status__category__id__in'] = self['category'].value()            
             rest_category = list(BidStatusCategory.objects.exclude(id__in=list(self['category'].value())))
-            f['E']['bid_status__category__in'] = rest_category 
+            f['E'] = {'bid_status__category__in': rest_category}
                             
         if self['bid_status'].value():
             f['bid_status__id__in'] = self['bid_status'].value()         
