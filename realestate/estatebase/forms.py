@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from estatebase.field_utils import from_to_values, split_string, \
     complex_field_parser, check_value_list, history_filter, from_to
 from estatebase.fields import ComplexField, LocalIntegerField, DateRangeField, \
-    IntegerRangeField, DecimalRangeField, LocalDecimalField
+    IntegerRangeField, DecimalRangeField, LocalDecimalField, LookupRangeField
 from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup, \
     EstateTypeLookup, EstateLookup, RegionLookup, EstateStatusLookup, \
     WallConstrucionLookup, OriginLookup, BesideLookup, InteriorLookup, \
@@ -853,14 +853,16 @@ class BidFilterForm(BetterForm):
             required=False,
         )
     
-    category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
-            lookup_class=BidStatusCategoryLookup,
-            label=_('BidStatusCategory'),
-            required=False,
-        )
+#     category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
+#             lookup_class=BidStatusCategoryLookup,
+#             label=_('BidStatusCategory'),
+#             required=False,
+#         )
+
+    category = LookupRangeField(lookup_class=BidStatusCategoryLookup, label=_('BidStatusCategory'), required=False)
         
     agency_price = IntegerRangeField(label=_('Price'), required=False)
-    bid_event_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)
+    bid_event_category = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=BidEventCategoryLookup, label=_('BidEventCategory'), required=False)    
     date_event = DateRangeField(required=False, label=_('Event date'))
     note = forms.CharField(required=False, label=_('Note'))    
     next = forms.CharField(required=False, widget=forms.HiddenInput(),label='')
@@ -896,9 +898,10 @@ class BidFilterForm(BetterForm):
             f['clients__contacts__id__in'] = self['contacts'].value()
         
         if self['category'].value():
-            f['bid_status__category__id__in'] = self['category'].value()            
-            rest_category = list(BidStatusCategory.objects.exclude(id__in=list(self['category'].value())))
-            f['E'] = {'bid_status__category__in': rest_category}
+            if self['category'].value()[0]:             
+                f['bid_status__category__id__in'] = self['category'].value()[0]
+            if self['category'].value()[1]:           
+                f['E'] = {'bid_status__category__id__in': self['category'].value()[1]}
                             
         if self['bid_status'].value():
             f['bid_status__id__in'] = self['bid_status'].value()         

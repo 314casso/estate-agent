@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from selectable.forms.widgets import AutoComboboxSelectWidget
+from selectable.forms.widgets import AutoComboboxSelectWidget,\
+    AutoComboboxSelectMultipleWidget
 from django.forms.widgets import TextInput, DateInput
 from django.forms.fields import MultiValueField, CharField, IntegerField, \
     DateField, DecimalField
 from django.utils.translation import ugettext_lazy as _
-from selectable.forms.fields import AutoCompleteSelectField
+from selectable.forms.fields import AutoCompleteSelectField,\
+    AutoCompleteSelectMultipleField
 
 class ComplexFieldWidget(forms.MultiWidget):
     def __init__(self, lookup_class, attrs=None):                
@@ -115,3 +117,31 @@ class IntegerRangeField(MultiValueField):
         if data_list:                        
             return data_list
         return [None, None]   
+    
+
+class LookupRangeWidget(forms.MultiWidget):    
+    def __init__(self, lookup_class=None, attrs=None):
+        widget = AutoComboboxSelectMultipleWidget(lookup_class=lookup_class)
+        widgets = (widget, widget)
+        super(LookupRangeWidget, self).__init__(widgets, attrs)
+    def decompress(self, value):
+        if value:            
+            return value
+        return [None, None]   
+    
+    
+class LookupRangeField(MultiValueField):
+    help_text = u'Первое поле содержит то, что нужно включить, а второе то, что исключить из фильтра'       
+    def __init__(self, lookup_class=None, *args, **kwargs):
+        self.widget = LookupRangeWidget(lookup_class=lookup_class, attrs={'title':self.help_text})
+        errors = AutoCompleteSelectMultipleField.default_error_messages.copy()
+        if 'error_messages' in kwargs:
+            errors.update(kwargs['error_messages'])
+                
+        field = AutoCompleteSelectMultipleField(lookup_class=lookup_class)
+        fields = (field, field,)
+        super(LookupRangeField, self).__init__(fields, *args, **kwargs)
+    def compress(self, data_list):
+        if data_list:                        
+            return data_list
+        return [None, None]    
