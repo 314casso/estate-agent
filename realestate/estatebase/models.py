@@ -804,7 +804,7 @@ class GenericSupply(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     supply = models.ForeignKey(Supply, verbose_name=_('Supply'))
     supply_state = models.ForeignKey(SupplyState, verbose_name=_('Supply state'), blank=True, null=True,)
-    distance = models.PositiveIntegerField(verbose_name=_('Distance'))
+    distance = models.PositiveIntegerField(verbose_name=_('Distance'), blank=True, null=True,)
         
     def __unicode__(self):
         return u'%s' % (self.supply)
@@ -1423,8 +1423,8 @@ class BuildingItem(SimpleDict):
     total_area_max = models.DecimalField(_('Total area max'), blank=True, null=True, max_digits=10, decimal_places=2)
     used_area_min = models.DecimalField(_('Used area min'), blank=True, null=True, max_digits=10, decimal_places=2)
     used_area_max = models.DecimalField(_('Used area max'), blank=True, null=True, max_digits=10, decimal_places=2)
-    price_per_sqm_min = models.IntegerField(verbose_name=_('Price per sq. m. min'), blank=True, null=True)
-    price_per_sqm_max = models.IntegerField(verbose_name=_('Price per sq. m. max'), blank=True, null=True)
+    price_per_sqm_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
+    price_per_sqm_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     def __unicode__(self):
         return u'%s, %s' % (self.name)   
     class Meta(SimpleDict.Meta):
