@@ -182,7 +182,7 @@ class BaseMapper(object):
         
         def restricted_street(self):            
             if not self._restricted_street:
-                if self._estate.street:                                
+                if self._estate.locality and self._estate.street:                                
                     if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:               
                         self._restricted_street = u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
             return self._restricted_street
