@@ -484,7 +484,8 @@ class YandexMapper(BaseMapper):
         @property
         def locality(self):
             if not self._city:
-                self._city = u'%s' % (self._estate.locality.name)
+                if self._estate.locality:
+                    self._city = u'%s' % (self._estate.locality.name)
             return self._city
         
         @property
