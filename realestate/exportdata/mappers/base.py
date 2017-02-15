@@ -43,7 +43,7 @@ class BaseMapper(object):
         self._basic_stead = self._estate.basic_stead                
         self._layout = None
         self._price = self.Price(estate)      
-        self._address = self.Address(estate, self)
+        self._address = self.Address(estate, self, feed)
         self._contact = self.Contact(estate, feed)
         self._feed = feed
         self._domain = 'http://%s' % 'feed.domnatamani.ru'
@@ -149,9 +149,10 @@ class BaseMapper(object):
         _metropolis = None
         _restricted_street = None
         
-        def __init__(self, estate, parent):
+        def __init__(self, estate, parent, feed):
             self._estate = estate
             self._parent = parent
+            self._feed = feed
                 
         @property
         def locality(self):
@@ -170,9 +171,8 @@ class BaseMapper(object):
             if not self._district:
                 self._district = self._estate.region.regular_name
             return self._district
-            
-        @property
-        def street(self):
+        
+        def possible_street(self):
             if not self._estate.street:
                 return ''
             if not self._street:
@@ -185,6 +185,12 @@ class BaseMapper(object):
                     if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:               
                         self._restricted_street = u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
             return self._restricted_street
+        
+        @property
+        def street(self):
+            if self._feed.use_possible_street:
+                return self.possible_street()
+            return self.restricted_street()
         
         @property
         def bld_number(self):
@@ -320,10 +326,7 @@ class AvitoMapper(BaseMapper):
             if not self._city:
                 self._city = self._parent.get_value_mapper(Locality, self._estate.locality_id, 'City')
             return self._city
-        
-        @property                  
-        def street(self):            
-            return self.restricted_street()
+
     
     @property
     def title(self):
@@ -490,21 +493,17 @@ class YandexMapper(BaseMapper):
                 if microdistrict is not None:          
                     self._microdistrict = u'%s' % self._estate.microdistrict
             return self._microdistrict
-        
-        @property                  
-        def street_base(self):
+                         
+        def possible_street(self):
             # base function according schema
             if not self._street:
                 if self._estate.street:
                     bld_number = ''            
-                    if self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
+                    if self._feed.show_bld_number and self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
                         bld_number = u", %s" % self._estate.estate_number
                     self._street = u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
             return self._street
-     
-        @property                  
-        def street(self):            
-            return self.restricted_street()
+
      
     class Contact(BaseMapper.Contact):
         _category = None

@@ -5,8 +5,7 @@ from exportdata.mappers.base import AvitoMapper
 
 
 class AvitoEngine(BaseEngine): 
-    VERSION = '3'  
-    SHOW_BLD_NUMBER = False
+    VERSION = '3' 
     def get_XHTML(self, lots, use_cache):
         self._use_cache = use_cache     
         xhtml = etree.Element('Ads')
@@ -42,12 +41,12 @@ class AvitoEngine(BaseEngine):
             el_maker("City", address.metropolis, False)
             street.append(address.district)
             street.append(address.locality)
-        if self.CHECK_STREET and mapper.category in [u'Квартиры', u'Комнаты', u'Дома, дачи, коттеджи', u'Коммерческая недвижимость'] and not address.street:
+        if mapper._feed.use_possible_street and mapper.category in [u'Квартиры', u'Комнаты', u'Дома, дачи, коттеджи', u'Коммерческая недвижимость'] and not address.street:
             empty_nodes.append("Street")
         if address.street:
             street.append(address.street)    
         
-        if self.SHOW_BLD_NUMBER:
+        if mapper._feed.use_possible_street and mapper._feed.show_bld_number:
             if mapper.category in [u'Квартиры', u'Комнаты']:
                 if address.bld_number:
                     street.append(address.bld_number)

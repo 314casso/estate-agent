@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 import datetime
 from django.db.models.query_utils import Q
+from django.utils.translation import ugettext_lazy as _
       
 
 class FeedLocality(models.Model):    
@@ -67,16 +68,18 @@ class MarketingCampaign(models.Model):
     
 
 class BaseFeed(models.Model):
-    name = models.CharField(db_index=True, max_length=15)
-    active = models.BooleanField()    
-    estate_categories = models.ManyToManyField(EstateTypeCategory)
-    estate_types = models.ManyToManyField(EstateType, blank=True)
-    estate_param = models.ForeignKey(EstateParam, blank=True, null=True,)
-    valid_days = models.IntegerField()
-    feed_engine = models.ForeignKey(FeedEngine, )        
-    campaign = models.ForeignKey(MarketingCampaign, blank=True, null=True,)    
-    note = models.CharField(max_length=255, blank=True, null=True,)        
-    use_broker = models.BooleanField(default=False)
+    name = models.CharField(verbose_name=_('Name'), db_index=True, max_length=15)
+    active = models.BooleanField(verbose_name=_('Active'), )    
+    estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
+    estate_types = models.ManyToManyField(EstateType, verbose_name=_('EstateType'), blank=True)
+    estate_param = models.ForeignKey(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True,)
+    valid_days = models.IntegerField(verbose_name=_('ValidDays'), )
+    feed_engine = models.ForeignKey(FeedEngine, verbose_name=_('FeedEngine'), )        
+    campaign = models.ForeignKey(MarketingCampaign, verbose_name=_('Campaign'), blank=True, null=True,)    
+    note = models.CharField(verbose_name=_('Note'), max_length=255, blank=True, null=True,)        
+    use_broker = models.BooleanField(verbose_name=_('UseBroker'), default=False)
+    use_possible_street = models.BooleanField(verbose_name=_('UsePossibleStreet'), default=False)
+    show_bld_number = models.BooleanField(verbose_name=_('ShowBldNumber'), default=False)    
           
     def __unicode__(self):
         return u'%s' % self.name        

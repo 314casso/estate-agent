@@ -8,8 +8,7 @@ logger = logging.getLogger('estate')
 import abc
 
 class BaseEngine(object):
-    encoding = 'UTF-8'    
-    CHECK_STREET = False
+    encoding = 'UTF-8'   
     CACHE_TIME = 3600 * 24 * 3
     def __init__(self, feed):              
         self._use_cache = True          
