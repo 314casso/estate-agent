@@ -230,6 +230,8 @@ class BaseMapper(object):
         return re.sub(r"\s+"," ", rendered).strip()
     
     def render_post_description(self, estate):
+        if not estate.locality:
+            return
         region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
         location = u'%s %s' % (estate.locality.name_loct, region)
         result = u'Продается %s в %s' % (estate.estate_type.lower(), location)             
