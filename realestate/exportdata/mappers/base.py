@@ -157,7 +157,8 @@ class BaseMapper(object):
         @property
         def locality(self):
             if not self._city:
-                self._city = u'%s %s' % (self._estate.locality.name, self._estate.locality.locality_type.sort_name)
+                if self._estate.locality:
+                    self._city = u'%s %s' % (self._estate.locality.name, self._estate.locality.locality_type.sort_name)
             return self._city
         
         @property
