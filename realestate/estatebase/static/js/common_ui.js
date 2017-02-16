@@ -299,3 +299,19 @@ function showFilter(id) {
 	$(id).dialog('open');
 }
 
+$(document).ready(function() {
+	$(".btn-unbind-ajax").on( "click", function(event) {
+		event.preventDefault();
+		var row = $( this ).parent().parent();		
+		var url = $( this ).data('url');
+		$.get( url, function( data ) {
+			if (data.result == 'success') {
+				row.fadeOut(200, function() { $(this).remove(); });
+			}
+		});
+	});
+});
+
+
+
+

@@ -1125,6 +1125,10 @@ class AddEstateToRegisterView(BaseUpdateView):
 class RemoveEstateFromRegisterView(AddEstateToRegisterView):
     def action(self, register, estate_pk):                
         register.estates.remove(estate_pk)
+    def get(self, request, *args, **kwargs):
+        register = self.model.objects.get(pk=self.kwargs['pk'])         
+        self.action(register, self.kwargs['estate_pk'])              
+        return JsonResponse({'result':'success'})
         
 class  EstateRegisterListView(ListView):
     context_object_name = 'register_list'

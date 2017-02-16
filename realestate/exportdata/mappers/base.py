@@ -148,6 +148,7 @@ class BaseMapper(object):
         _distance_to_city = None 
         _metropolis = None
         _restricted_street = None
+        _microdistrict = None
         
         def __init__(self, estate, parent, feed):
             self._estate = estate
@@ -173,9 +174,17 @@ class BaseMapper(object):
                 self._district = self._estate.region.regular_name
             return self._district
         
+        @property    
+        def microdistrict(self):
+            if not self._microdistrict:
+                microdistrict = self._estate.microdistrict
+                if microdistrict:
+                    self._microdistrict = microdistrict.name
+            return self._microdistrict
+                
         def possible_street(self):
-            if not self._estate.street:
-                return ''
+            if not self._estate.street:                
+                return self.microdistrict or ''
             if not self._street:
                 self._street = u'%s %s' % (self._estate.street.name, self._estate.street.street_type or '')
             return self._street
