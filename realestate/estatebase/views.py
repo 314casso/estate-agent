@@ -1120,7 +1120,7 @@ class AddEstateToRegisterView(BaseUpdateView):
     def get(self, request, *args, **kwargs):
         register = self.model.objects.get(pk=self.kwargs['pk'])         
         self.action(register, self.kwargs['estate_pk'])              
-        return HttpResponseRedirect(self.request.REQUEST.get('next', ''))
+        return JsonResponse({'result':'success'})
 
 class RemoveEstateFromRegisterView(AddEstateToRegisterView):
     def action(self, register, estate_pk):                

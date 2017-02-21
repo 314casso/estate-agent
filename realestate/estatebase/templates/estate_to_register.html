@@ -9,15 +9,14 @@
 {% endblock %}
 
 {% block lastcol %}
-{% if not in_register %}
-<span class="ui-corner-all{% if request.GET.r_filter == 'inregister' %} just-added {% endif %}">
-<a class="btn-bind" href="{% url 'register_add_estate' selected estate.pk %}?{{ next_url }}">Добавить лот [{{ estate.pk }}] в подборку [{{ selected }}]</a>
+<span class="bind {% if in_register %}hidden{% endif %} ui-corner-all">
+<a class="btn-bind btn-bind-ajax" href="#" data-action="bind" data-url="{% url 'register_add_estate' selected estate.pk %}">Добавить лот [{{ estate.pk }}] в подборку [{{ selected }}]</a>
 </span>
-{% else %}
-<span class="ui-corner-all{% if request.GET.r_filter != 'inregister' %} just-added {% endif %}">
-<a class="btn-unbind" href="{% url 'register_remove_estate' selected estate.pk %}?{{ next_url }}">Отвязать лот [{{ estate.pk }}] от подборки [{{ selected }}]</a>
+
+<span class="unbind {% if not in_register %}hidden{% endif %} ui-corner-all">
+<a class="btn-unbind btn-unbind-ajax" href="#" data-action="unbind" data-url="{% url 'register_remove_estate' selected estate.pk %}">Отвязать лот [{{ estate.pk }}] от подборки [{{ selected }}]</a>
+
 </span>
-{% endif %}
 {% endblock lastcol %}
 
 {% block navlink  %}

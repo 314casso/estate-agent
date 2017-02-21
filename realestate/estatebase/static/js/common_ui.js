@@ -300,13 +300,26 @@ function showFilter(id) {
 }
 
 $(document).ready(function() {
-	$(".btn-unbind-ajax").on( "click", function(event) {
+	$(".btn-unbind-ajax, .btn-bind-ajax").on( "click", function(event) {
 		event.preventDefault();
 		var row = $( this ).parent().parent();		
 		var url = $( this ).data('url');
+		var action = $( this ).data('action');
 		$.get( url, function( data ) {
-			if (data.result == 'success') {
-				row.fadeOut(200, function() { $(this).remove(); });
+			if (data.result == 'success') {				
+				switch (action) {
+				  case 'unbind':
+					$( ".unbind").fadeOut(200, function() { $( ".bind" ).addClass('just-removed'); $( ".bind" ).fadeIn(200);  });
+				    break;
+				  case 'bind':
+					$( ".bind").fadeOut(200, function() { $( ".unbind" ).addClass('just-added'); $( ".unbind" ).fadeIn(200); });
+					break;
+				  case 'delete-row':
+					row.fadeOut(200, function() { $(this).remove(); });
+				    break;				  
+				  default:
+				    console.log("Unknown action: " + action);
+				}			
 			}
 		});
 	});

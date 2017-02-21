@@ -1,5 +1,5 @@
 {% extends "estate_table.html" %}
-{% block lastcol %}<a class="btn-unbind-inline btn-unbind-ajax" data-url="{% url 'register_remove_estate' estateregister.pk estate_item.pk %}" href="#">Отвязать</a>{% endblock lastcol %}
+{% block lastcol %}<a class="btn-unbind-inline btn-unbind-ajax" data-action="delete-row" data-url="{% url 'register_remove_estate' estateregister.pk estate_item.pk %}" href="#">Отвязать</a>{% endblock lastcol %}
 {% block custom_cols_title %}
 <th>Состояние</th>
 {% endblock custom_cols_title %}

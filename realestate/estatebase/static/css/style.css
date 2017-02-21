@@ -419,7 +419,7 @@ legend {
 	padding-top: 3px;
 }
 
-#filter {
+#filter, span.hidden {
 	display: none;
 }
 
@@ -593,10 +593,12 @@ fieldset .topbar {
 	/*border-bottom: 1px solid white;*/
 }
 
-.just-added {
-	display: inline-block;
-	background: #cfed7e;
-	padding: 0 3px;	
+.just-added {	
+	box-shadow: 0px 0px 10px 5px #33ff00;	
+}	
+
+.just-removed {	
+	box-shadow: 0px 0px 10px 5px #fce94f;	
 }
 
 .small-button a{
