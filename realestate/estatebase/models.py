@@ -1426,7 +1426,7 @@ class BuildingItem(SimpleDict):
     price_per_sqm_min = models.IntegerField(verbose_name=_('Price min'), blank=True, null=True)
     price_per_sqm_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     def __unicode__(self):
-        return u'%s, %s' % (self.name)   
+        return u'%s' % self.name   
     class Meta(SimpleDict.Meta):
         verbose_name = _('BuildingItem')
         verbose_name_plural = _('BuildingItems')    
