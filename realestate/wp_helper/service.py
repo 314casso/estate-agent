@@ -18,6 +18,7 @@ from urlparse import urljoin
 from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import xmlrpclib
+from collections import OrderedDict
         
 class GetPostID(AnonymousMethod):
         method_name = 'picassometa.getPostID'
@@ -201,11 +202,11 @@ class WPService(object):
         from sorl.thumbnail import get_thumbnail        
         images = estate.images.all()[:4]
         if images:
-            result = {}
+            result = OrderedDict()
             for img in images:               
                 im = get_thumbnail(img.image.file, '800x600')
                 head, tail = os.path.split(im.name)  # @UnusedVariable                                
-                result[os.path.join(im.storage.location,im.name)] = tail                  
+                result[os.path.join(im.storage.location,im.name)] = {'name': tail}                  
             return result
         
     def get_filtered_post_images(self, estate, post_id):
@@ -215,39 +216,34 @@ class WPService(object):
         if not post_id:
             return {'estate_images' : estate_images}
         fltr = {'parent_id' : post_id}                
-        media_items = self.client.call(GetMediaLibrary(fltr))        
-        keys = set()
-        same_items = set()               
-        for key, image in estate_images.items():
+        media_items = self.client.call(GetMediaLibrary(fltr))       
+        for key, image_data in estate_images.items():  # @UnusedVariable
+            image_name = image_data['name']
             for item in media_items:                
                 if type(item.metadata) == 'dict' and item.metadata.get('file'):
                     wp_image_name_no_ext = item.metadata.get['file']
-                    estate_image_no_ext = os.path.splitext(image)[0][:-1]
+                    estate_image_no_ext = os.path.splitext(image_name)[0][:-1]
                     if wp_image_name_no_ext.find(estate_image_no_ext) != -1:
-                        keys.add(key)
-                        same_items.add(item)
-                        break                        
-        for key in keys:
-            del estate_images[key]
+                        image_data['wp_image'] = item                         
+                        break                       
         ######
         #import logging
         #log = logging.getLogger('estate')
         #log.debug({'estate_images' : estate_images, 'same_items': same_items})
         ######
-        return {'estate_images' : estate_images, 'same_items': same_items}     
+        return estate_images     
 
     def get_media_items(self, estate, post_id):
         data = {'type':'image/jpg', 'overwrite':False}
-        filtered_post_images = self.get_filtered_post_images(estate, post_id)        
-        estate_images = filtered_post_images.get('estate_images')
+        estate_images = self.get_filtered_post_images(estate, post_id)       
         result = []
         if estate_images:
-            for filepath, name in estate_images.items(): 
-                data['name'] = name        
-                result.append(self.upload_image(filepath, data))
-        same_items = filtered_post_images.get('same_items')
-        if same_items:                 
-            result.extend(same_items)
+            for filepath, image_data in estate_images.items():
+                if 'wp_image' in image_data:
+                    result.append(image_data['wp_image'])
+                else:
+                    data['name'] = image_data["name"]                        
+                    result.append(self.upload_image(filepath, data))
         return result
         
     def render_post_images(self, estate, post_id):        
@@ -296,7 +292,7 @@ class WPService(object):
         """
         # read the binary file and let the XMLRPC library encode it into base64
         with open(filename, 'rb') as img:
-            data['bits'] = xmlrpc_client.Binary(img.read())
+            data['bits'] = xmlrpc_client.Binary(img.read())  # @UndefinedVariable
 
         response = self.client.call(media.UploadFile(data))
         return self.client.call(GetMediaItem(response['id']))
