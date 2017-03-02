@@ -27,7 +27,8 @@ def xml_date(date):
 class BaseMapper(object):
     _id = None
     _description = None  
-    _living_space = None  
+    _living_space = None
+    _kitchen_space = None  
     _area = None
     _land_area = None
     _floor = None
@@ -262,6 +263,13 @@ class BaseMapper(object):
         return self._living_space       
     
     @property
+    def kitchen_space(self):
+        if not self._kitchen_space:
+            if self._basic_bidg:       
+                self._kitchen_space = number2xml(self._basic_bidg.get_kuhnya_area())
+        return self._kitchen_space    
+    
+    @property
     def area(self):
         # общая площадь
         if not self._area:
@@ -393,8 +401,7 @@ class YandexMapper(BaseMapper):
     _creation_date = None
     _last_update_date = None
     _mortgage = None
-    _rooms_space = None
-    _kitchen_space = None
+    _rooms_space = None    
     _renovation = None
     _quality = None
     _lot_type = None
@@ -568,13 +575,6 @@ class YandexMapper(BaseMapper):
             if self._basic_bidg:
                 self._rooms_space = [number2xml(x) for x in self._basic_bidg.get_rooms_area()]
         return self._rooms_space  
-    
-    @property
-    def kitchen_space(self):
-        if not self._kitchen_space:
-            if self._basic_bidg:       
-                self._kitchen_space = number2xml(self._basic_bidg.get_kuhnya_area())
-        return self._kitchen_space
     
     @property
     def renovation(self):

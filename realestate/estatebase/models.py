@@ -475,8 +475,8 @@ class Estate(ProcessDeletedModel):
     address_state = models.PositiveIntegerField(verbose_name=_('Address state'), blank=True, null=True, choices=ADDRESS_CHOICES)    
     estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates', through=EstateClient)
-    origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.PROTECT)
-    beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.PROTECT)
+    origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.SET_NULL)
+    beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.SET_NULL)
     beside_distance = models.PositiveIntegerField(_('Beside distance'), blank=True, null=True)
     entrances = models.ManyToManyField('Beside', verbose_name=_('Entrances'), blank=True, through=EntranceEstate, related_name='estates')
     saler_price = models.PositiveIntegerField(_('Saler price'), blank=True, null=True)
@@ -484,34 +484,40 @@ class Estate(ProcessDeletedModel):
     estate_status = models.ForeignKey('EstateStatus', verbose_name=_('Estate status'), on_delete=models.PROTECT)
     com_status = models.ForeignKey(ComStatus, verbose_name=_('ComStatus'), blank=True, null=True)         
     #Коммуникации    
-    electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.PROTECT)
+    electricity = models.ForeignKey('Electricity', verbose_name=_('Electricity'), blank=True, null=True, on_delete=models.SET_NULL)
     electricity_distance = models.PositiveIntegerField('Electricity distance', blank=True, null=True)
-    watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True, on_delete=models.PROTECT) 
+    watersupply = models.ForeignKey('Watersupply', verbose_name=_('Watersupply'), blank=True, null=True, on_delete=models.SET_NULL) 
     watersupply_distance = models.PositiveIntegerField(_('Watersupply distance'), blank=True, null=True)
-    gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True, on_delete=models.PROTECT)
+    gassupply = models.ForeignKey('Gassupply', verbose_name=_('Gassupply'), blank=True, null=True, on_delete=models.SET_NULL)
     gassupply_distance = models.PositiveIntegerField(_('Gassupply distance'), blank=True, null=True)
-    sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True, on_delete=models.PROTECT)
+    sewerage = models.ForeignKey('Sewerage', verbose_name=_('Sewerage'), blank=True, null=True, on_delete=models.SET_NULL)
     sewerage_distance = models.PositiveIntegerField(_('Sewerage distance'), blank=True, null=True)
-    telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True, on_delete=models.PROTECT)
-    internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True, on_delete=models.PROTECT)
-    driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.PROTECT)
+    telephony = models.ForeignKey('Telephony', verbose_name=_('Telephony'), blank=True, null=True, on_delete=models.SET_NULL)
+    internet = models.ForeignKey('Internet', verbose_name=_('Internet'), blank=True, null=True, on_delete=models.SET_NULL)
+    driveway = models.ForeignKey('Driveway', verbose_name=_('Driveway'), blank=True, null=True, on_delete=models.SET_NULL)
     driveway_distance = models.PositiveIntegerField(_('Driveway distance'), blank=True, null=True)
     #Дополнительно    
     estate_params = models.ManyToManyField(EstateParam, verbose_name=_('Estate params'), blank=True, related_name='estates')    
     description = models.TextField(_('Description'), blank=True, null=True)
     client_description = models.TextField(_('Client description'), blank=True, null=True)
     comment = models.TextField (_('Comment'), blank=True, null=True, max_length=255)
-    deal_status = models.ForeignKey('DealStatus', verbose_name=_('DealStatus'), blank=True, null=True, on_delete=models.PROTECT)  
+    deal_status = models.ForeignKey('DealStatus', verbose_name=_('DealStatus'), blank=True, null=True, on_delete=models.SET_NULL)  
     #Изменения
-    history = models.OneToOneField(HistoryMeta, blank=True, null=True)
-    contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.PROTECT)  
-    validity = models.ForeignKey(Validity, verbose_name=_('Validity'), blank=True, null=True)
-    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.PROTECT)
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, on_delete=models.SET_NULL)
+    contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.SET_NULL)  
+    validity = models.ForeignKey(Validity, verbose_name=_('Validity'), blank=True, null=True, on_delete=models.SET_NULL)
+    broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.SET_NULL)
     #attachments
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
+    
+    def delete(self):
+        self.deleted = True
+        self.save()
+            
     def check_contact(self):
-        return self.contact and self.contact.contact_state_id in (Contact.AVAILABLE, Contact.NOTRESPONDED, Contact.NONAVAILABLE) 
+        return self.contact and self.contact.contact_state_id in (Contact.AVAILABLE, Contact.NOTRESPONDED, Contact.NONAVAILABLE)
+     
     def check_validity(self):        
         AGRICULTURAL_STEAD = self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL
         report = OrderedDict([(self.NOTFREE, False), (self.NOCONACT, False), (self.DRAFT, [])])
@@ -1431,7 +1437,7 @@ class BuildingItem(SimpleDict):
         verbose_name = _('BuildingItem')
         verbose_name_plural = _('BuildingItems')    
    
-class YandexBuilding(SimpleDict):
+class YandexBuilding(models.Model):
     '''
     YandexBuilding
     '''       
@@ -1446,6 +1452,7 @@ class YandexBuilding(SimpleDict):
         ('built', u'дом построен, но не сдан'),        
         ('hand-over', u'сдан в эксплуатацию'),
     )
+    name = models.CharField(_('Name'), db_index=True, max_length=255)
     building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50) 
     ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
     ready_year = models.IntegerField(_('Ready year'), blank=True, null=True)
@@ -1466,8 +1473,11 @@ class YandexBuilding(SimpleDict):
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.locality)   
     class Meta(SimpleDict.Meta):
+        unique_together = ('name', 'locality')
         verbose_name = _('YandexBuilding')
-        verbose_name_plural = _('YandexBuildings')   
+        verbose_name_plural = _('YandexBuildings')    
+        ordering = ['name']           
+           
 
 class DealStatus(SimpleDict):
     '''
