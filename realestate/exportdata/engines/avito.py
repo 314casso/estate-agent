@@ -53,7 +53,7 @@ class AvitoEngine(BaseEngine):
                 else:
                     empty_nodes.append("BldNumber")               
         
-        el_maker("Street", u', '.join([s for s in street if not None]), False)
+        el_maker("Street", u', '.join([s for s in street if s is not None]), False)
         if mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки']:
             el_maker("DistanceToCity", address.distance_to_city, mapper.category in [u'Дома, дачи, коттеджи', u'Земельные участки'])
         el_maker("Description", mapper.description)
