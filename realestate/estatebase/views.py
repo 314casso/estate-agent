@@ -635,12 +635,12 @@ class ClientMixin(ModelFormMixin):
             self.object = form.save(commit=False)             
             self.object.history = prepare_history(self.object.history, self.request.user.pk)
             self.object.save()            
-            if contact_form.has_changed():
+            if contact_form.has_changed():                
                 contact_form.instance = self.object
                 contacts = contact_form.save(commit=False)
                 for contact in contacts:
-                    contact.user_id = self.request.user.pk
-                    contact.save()
+                    contact.user_id = self.request.user.pk                    
+                contact_form.save()
             if  '_popup' in self.request.POST:            
                 return HttpResponse(
                 '<!DOCTYPE html><html><head><title></title></head><body>'

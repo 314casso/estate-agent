@@ -1204,7 +1204,7 @@ class ContactHistory(models.Model):
     event_date = models.DateTimeField(_('Event Date'), auto_now_add=True)
     user = models.ForeignKey(ExUser, verbose_name=_('User'), blank=True, null=True, on_delete=models.PROTECT)
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), on_delete=models.PROTECT) 
-    contact = models.ForeignKey('Contact', verbose_name=_('Contact'),)
+    contact = models.ForeignKey('Contact', verbose_name=_('Contact'), on_delete=models.CASCADE)
     def __unicode__(self):
         return u'%s: %s' % (self.event_date, self.contact_state.name)
     class Meta:
@@ -1422,7 +1422,9 @@ class BidClient(models.Model):
     class Meta:
         unique_together = ('client', 'bid')
 
-class BuildingItem(SimpleDict):      
+
+class BuildingItem(models.Model):
+    name = models.CharField(_('Name'), db_index=True, max_length=255)      
     yandex_building = models.ForeignKey('YandexBuilding', related_name='items', blank=True, null=True)
     room_count = models.PositiveIntegerField(_('Room count'), blank=True, null=True)
     total_area_min = models.DecimalField(_('Total area min'), blank=True, null=True, max_digits=10, decimal_places=2)
@@ -1436,6 +1438,7 @@ class BuildingItem(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('BuildingItem')
         verbose_name_plural = _('BuildingItems')    
+   
    
 class YandexBuilding(models.Model):
     '''
@@ -1453,7 +1456,7 @@ class YandexBuilding(models.Model):
         ('hand-over', u'сдан в эксплуатацию'),
     )
     name = models.CharField(_('Name'), db_index=True, max_length=255)
-    building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50) 
+    building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50, blank=True, null=True) 
     ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
     ready_year = models.IntegerField(_('Ready year'), blank=True, null=True)
     building_state = models.CharField(_('Building state'), choices=STATE_CHOICES, max_length=15)
