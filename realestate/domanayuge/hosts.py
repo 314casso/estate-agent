@@ -4,6 +4,7 @@ from domanayuge.models import LocalityDomain
 
 
 def locality_callback(request, domain):
+    request.domain_pattern = domain 
     try:
         domain = LocalityDomain.objects.get(domain=domain)
     except LocalityDomain.DoesNotExist:
