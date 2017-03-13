@@ -14,6 +14,6 @@ def locality_callback(request, domain):
 
 host_patterns = patterns('',
     host(r'^$', settings.ROOT_URLCONF, name='home'),
-    host(r'www', settings.ROOT_URLCONF, name='www'),
+    host(r'(domanayuge|www)', settings.ROOT_URLCONF, name='www'),
     host(r'(?P<domain>\w+)', 'domanayuge.wildcard_urls', name='wildcard', callback='domanayuge.hosts.locality_callback'),
 )
