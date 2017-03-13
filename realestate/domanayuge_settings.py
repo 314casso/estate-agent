@@ -12,7 +12,7 @@ STATIC_URL = '/static/'
 WATERMARK_FORCE = None
 
 ROOT_HOSTCONF = 'domanayuge.hosts'
-DEFAULT_HOST = 'www'
+DEFAULT_HOST = 'home'
 
 MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsRequestMiddleware',
