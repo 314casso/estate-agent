@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.base import TemplateView, ContextMixin
-from domanayuge.models import Category, ContentEntry
+from domanayuge.models import Category, ContentEntry, LocalityDomain
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 from django.utils.encoding import force_unicode
@@ -50,7 +50,8 @@ class DevPage(BaseContextMixin, TemplateView):
         })                                   
         context.update({          
             'domain': self.request.domain,
-            'test': u'Строительство в {{ locality_loct }}. Для {{ locality_gent }} это хорошо! {{ locality }} лидер!',               
+            'test': u'Строительство в {{ locality_loct }}. Для {{ locality_gent }} это хорошо! {{ locality }} лидер!',
+            'locdoms': LocalityDomain.objects.filter(active=True)               
         })             
         return context
     

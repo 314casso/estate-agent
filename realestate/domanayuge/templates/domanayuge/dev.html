@@ -5,6 +5,7 @@
 {% load markup %}
 {% load thumbnail %}
 {% load paginator %}
+{% load hosts %}
 
 <!-- Navigation -->
     {% block navigation %}
@@ -45,7 +46,15 @@
 		
 		<h1>{{ test|parser:domain }}</h1>         
 		
-		<h2>{{ request.domain_pattern }}</h2>
+		<h2>Домен: {{ request.domain_pattern }}</h2>
+          
+         <ul>
+         	{% for locdom in locdoms %} 
+         	<li>
+         		<a href="http://{{locdom.domain}}.domanayuge.ru">{{ locdom.locality }}</a>
+         	</li>
+         	{% endfor %}
+         </ul> 
             
             
         </div>
