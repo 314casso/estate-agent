@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation
 import os
+from estatebase.models import Locality
 
 
 @python_2_unicode_compatible
@@ -104,4 +105,14 @@ class MediaLink(OrderedModel):
         return force_unicode(self.title)
     class Meta(OrderedModel.Meta):
         verbose_name = _('MediaLink')
-        verbose_name_plural = _('MediaLinks')            
+        verbose_name_plural = _('MediaLinks')  
+        
+        
+@python_2_unicode_compatible        
+class LocalityDomain(models.Model):
+    locality = models.ForeignKey(Locality)
+    domain = models.CharField(blank=True, max_length=150, db_index=True, )
+    active = models.BooleanField(default=True, verbose_name=_('active'))
+    in_title = models.BooleanField(default=False, verbose_name=_('in_title')) 
+    def __str__(self):        
+        return '%s %s' % (force_text(self.locality), force_text(self.domain))    

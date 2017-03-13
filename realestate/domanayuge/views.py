@@ -34,11 +34,25 @@ class BaseContextMixin(ContextMixin):
 class HomePage(BaseContextMixin, TemplateView):    
     template_name = 'domanayuge/base.html'  
     def get_context_data(self, **kwargs):
-        context = super(HomePage, self).get_context_data(**kwargs)
+        context = super(HomePage, self).get_context_data(**kwargs)         
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
-        })                  
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],            
+        })                          
         return context          
+    
+
+class DevPage(BaseContextMixin, TemplateView):    
+    template_name = 'domanayuge/dev.html'  
+    def get_context_data(self, **kwargs):
+        context = super(DevPage, self).get_context_data(**kwargs)         
+        context.update({           
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],            
+        })                                   
+        context.update({          
+            'domain': self.request.domain,
+            'test': u'Строительство в {{ locality_loct }}. Для {{ locality_gent }} это хорошо! {{ locality }} лидер!',               
+        })             
+        return context
     
 
 class Blog(BaseContextMixin, ListView):
@@ -54,7 +68,6 @@ class Article(BaseContextMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(Article, self).get_context_data(**kwargs)        
         return context    
-           
        
     
 @require_http_methods(["POST"])

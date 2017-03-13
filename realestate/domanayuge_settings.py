@@ -11,7 +11,11 @@ STATIC_URL = '/static/'
 
 WATERMARK_FORCE = None
 
+ROOT_HOSTCONF = 'domanayuge.hosts'
+DEFAULT_HOST = 'www'
+
 MIDDLEWARE_CLASSES = (
+    'django_hosts.middleware.HostsRequestMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',                  
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -19,7 +23,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.FilterPersistMiddleware',
-    'django_sorting.middleware.SortingMiddleware',      
+    'django_sorting.middleware.SortingMiddleware', 
+    'django_hosts.middleware.HostsResponseMiddleware',     
 )
 
 INSTALLED_APPS = (
@@ -31,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',    
     'django.contrib.admin',   
     'django.contrib.humanize',
+    'django_hosts',
     'django_markwhat',
     'orderedmodel',    
     'categories.editor',
