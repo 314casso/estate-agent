@@ -84,7 +84,7 @@ class BaseMapper(object):
     
         @property
         def manager_name(self):    
-            if self._feed.use_broker and self._estate.broker and self._estate.broker.first_name:
+            if self._feed.use_broker and self._estate.broker and self._estate.broker.is_active and self._estate.broker.first_name:
                 return u'%s' % self._estate.broker.first_name          
             if self._campaign and self._campaign.valid and self._campaign.person:
                 return u'%s' % self._campaign.person     
@@ -98,7 +98,7 @@ class BaseMapper(object):
          
         @property
         def phone(self):
-            if self._feed.use_broker and self._estate.broker and self._estate.broker.userprofile.phone:
+            if self._feed.use_broker and self._estate.broker and self._estate.broker.is_active and  self._estate.broker.userprofile.phone:
                 return u'%s' % self._estate.broker.userprofile.phone            
             if self._campaign and self._campaign.valid and self._campaign.phone:
                 return u'%s' % self._campaign.phone     

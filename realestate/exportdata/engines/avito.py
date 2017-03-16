@@ -80,7 +80,11 @@ class AvitoEngine(BaseEngine):
         el_maker("Floors", mapper.floors, required=(mapper.category in [u'Квартиры', u'Комнаты', u'Дома, дачи, коттеджи']))
         
         if mapper.category in [u'Квартиры', u'Комнаты']:
-            el_maker("HouseType", mapper.house_type)
+            el_maker("HouseType", mapper.house_type)            
+            if mapper.living_space:             
+                el_maker("LivingSpace", mapper.living_space, False)            
+            if mapper.kitchen_space:
+                el_maker("KitchenSpace", mapper.kitchen_space, False)
             
         if mapper.category in [u'Дома, дачи, коттеджи']:
             el_maker("WallsType", mapper.walls_type)
@@ -90,12 +94,6 @@ class AvitoEngine(BaseEngine):
             
         if mapper.category not in [u'Квартиры', u'Комнаты']:
             el_maker("ObjectType", mapper.object_type)        
-        
-        if mapper.living_space:             
-            el_maker("LivingSpace", mapper.living_space, False)
-            
-        if mapper.kitchen_space:
-            el_maker("KitchenSpace", mapper.kitchen_space, False)
              
         max_images = {     
             u"Квартиры" : 20,
