@@ -146,7 +146,7 @@ def unique_locality(sender, instance, **kwargs):
     localities = kwargs.get('pk_set', None)
     if action == 'pre_add':
         for locality in localities:
-            same_taxonomy = list(WordpressTaxonomyTree.objects.filter(localities=locality, wp_meta_locality__isnull=True))
+            same_taxonomy = list(WordpressTaxonomyTree.objects.filter(localities=locality, wp_meta_locality__isnull=False))
             if same_taxonomy:                
                 raise IntegrityError(u'Населенный пункт c кодом [%s] уже привязан к рубрике "%s" с кодом [%s]' % (locality, same_taxonomy[0].name, same_taxonomy[0].id))
             
