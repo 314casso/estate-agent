@@ -386,5 +386,5 @@ class WPService(object):
         
 def prepare_err_msg(err):    
     s =  u"%s" % err
-    print s
+    print u'error %s' % s
     return s[:255]
