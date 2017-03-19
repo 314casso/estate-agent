@@ -384,7 +384,8 @@ class WPService(object):
             wp_meta.status = EstateWordpressMeta.OUT
             wp_meta.save()           
         
-def prepare_err_msg(err):    
+def prepare_err_msg(err):
+    print type(err)    
     s =  u"%s" % err
     print u'error %s' % s
     return s[:255]
