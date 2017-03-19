@@ -393,5 +393,6 @@ def prepare_err_msg(err):
     exc_type, exc_value, exc_traceback = sys.exc_info()
     lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
     exc_info_output =  u'; '.join(lines)    
-    s =  u"%s; %s" % (err, exc_info_output)     
+    s =  u"%s; %s" % (err, lines[-1])
+    print exc_info_output     
     return s[:255]
