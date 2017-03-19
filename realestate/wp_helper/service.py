@@ -220,9 +220,7 @@ class WPService(object):
             return {'estate_images' : estate_images}
         fltr = {'parent_id' : post_id}                
         media_items = self.client.call(GetMediaLibrary(fltr))       
-        for key, image_data in estate_images.items():  # @UnusedVariable
-            if 'name' not in image_data:
-                continue  
+        for key, image_data in estate_images.items():  # @UnusedVariable              
             image_name = image_data['name']
             for item in media_items:                
                 if type(item.metadata) == 'dict' and item.metadata.get('file'):
