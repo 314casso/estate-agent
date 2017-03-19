@@ -217,7 +217,7 @@ class WPService(object):
         if not estate_images:
             return {}
         if not post_id:
-            return {'estate_images' : estate_images}
+            return estate_images
         fltr = {'parent_id' : post_id}                
         media_items = self.client.call(GetMediaLibrary(fltr))       
         for key, image_data in estate_images.items():  # @UnusedVariable              
@@ -391,8 +391,6 @@ class WPService(object):
         
 def prepare_err_msg(err):    
     exc_type, exc_value, exc_traceback = sys.exc_info()
-    lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-    exc_info_output =  u'; '.join(lines)    
-    s =  u"%s; %s" % (err, lines[-1])
-    print exc_info_output     
+    lines = traceback.format_exception(exc_type, exc_value, exc_traceback)        
+    s =  u"%s; %s" % (err, u'; '.join(lines[-2:]))         
     return s[:255]
