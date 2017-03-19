@@ -364,8 +364,7 @@ class WPService(object):
             wp_meta.save()
         return False
         
-    def sync_status(self, estate):    
-        import logging     
+    def sync_status(self, estate):  
         print('Processing %s' % estate)
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
         post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
@@ -380,12 +379,10 @@ class WPService(object):
             except xmlrpclib.ProtocolError as err:            
                 wp_meta.error_message = prepare_err_msg(err)                
                 wp_meta.save()   
-                logging.exception('')             
             except Exception, err:            
                 wp_meta.error_message = prepare_err_msg(err.errmsg)
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
-                logging.exception('')
         else:
             wp_meta.status = EstateWordpressMeta.OUT
             wp_meta.save()           
@@ -393,7 +390,6 @@ class WPService(object):
 def prepare_err_msg(err):    
     exc_type, exc_value, exc_traceback = sys.exc_info()
     lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-    print ''.join('!! ' + line for line in lines)  # Log it or whatever here    
-    s =  u"%s" % err
-    print u'error %s' % s
+    exc_info_output =  u';'.join(lines)    
+    s =  u"%s\n%s" % (err, exc_info_output)     
     return s[:255]
