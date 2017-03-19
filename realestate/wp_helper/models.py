@@ -142,14 +142,13 @@ def check_localities():
 
 @receiver(m2m_changed, sender=WordpressTaxonomyTree.localities.through)
 def unique_locality(sender, instance, **kwargs):    
-    pass
-#     action = kwargs.get('action', None)
-#     localities = kwargs.get('pk_set', None)
-#     if action == 'pre_add':
-#         for locality in localities:
-#             same_taxonomy = list(WordpressTaxonomyTree.objects.filter(localities=locality, wp_meta_locality__isnull=False))
-#             if same_taxonomy:                
-#                 raise IntegrityError(u'Населенный пункт c кодом [%s] уже привязан к рубрике "%s" с кодом [%s]' % (locality, same_taxonomy[0].name, same_taxonomy[0].id))
+    action = kwargs.get('action', None)
+    localities = kwargs.get('pk_set', None)
+    if action == 'pre_add':
+        for locality in localities:
+            same_taxonomy = list(WordpressTaxonomyTree.objects.filter(localities=locality))
+            if same_taxonomy:                
+                raise IntegrityError(u'Населенный пункт c кодом [%s] уже привязан к рубрике "%s" с кодом [%s]' % (locality, same_taxonomy[0].name, same_taxonomy[0].id))
             
 # @receiver(pre_save, sender=WordpressMeta)
 # def sync_wp_taxonomy(sender, instance, **kwargs):
