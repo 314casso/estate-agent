@@ -238,14 +238,14 @@ class WPService(object):
 
     def get_media_items(self, estate, post_id):
         data = {'type':'image/jpg', 'overwrite':False}
-        estate_images = self.get_filtered_post_images(estate, post_id)  
-        print estate_images    
+        estate_images = self.get_filtered_post_images(estate, post_id) 
         result = []
         if estate_images:
             for filepath, image_data in estate_images.items():
                 if 'wp_image' in image_data:
                     result.append(image_data['wp_image'])
                 else:
+                    print image_data
                     data['name'] = image_data["name"]                        
                     result.append(self.upload_image(filepath, data))
         return result
