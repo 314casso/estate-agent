@@ -244,9 +244,7 @@ class WPService(object):
             for filepath, image_data in estate_images.items():
                 if 'wp_image' in image_data:
                     result.append(image_data['wp_image'])
-                else:
-                    print image_data
-                    print filepath
+                else:                    
                     data['name'] = image_data["name"]                        
                     result.append(self.upload_image(filepath, data))
         return result
@@ -366,11 +364,9 @@ class WPService(object):
             wp_meta.save()
         return False
         
-    def sync_status(self, estate):  
-        print('Processing %s' % estate)
+    def sync_status(self, estate): 
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
-        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
-        print('Wordpress id %s' % post_id)        
+        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))       
         if post_id:                  
             wp_meta.post_id = post_id       
             try:            
@@ -382,7 +378,7 @@ class WPService(object):
                 wp_meta.error_message = prepare_err_msg(err)                
                 wp_meta.save()   
             except Exception, err:            
-                wp_meta.error_message = prepare_err_msg(err.errmsg)
+                wp_meta.error_message = prepare_err_msg(err)
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
         else:
