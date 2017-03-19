@@ -19,7 +19,7 @@ from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import xmlrpclib
 from collections import OrderedDict
-import sys
+
         
 class GetPostID(AnonymousMethod):
         method_name = 'picassometa.getPostID'
@@ -362,7 +362,8 @@ class WPService(object):
             wp_meta.save()
         return False
         
-    def sync_status(self, estate):        
+    def sync_status(self, estate):    
+        import logging     
         print('Processing %s' % estate)
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
         post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))        
@@ -376,17 +377,18 @@ class WPService(object):
                 wp_meta.save()                
             except xmlrpclib.ProtocolError as err:            
                 wp_meta.error_message = prepare_err_msg(err)                
-                wp_meta.save()                
+                wp_meta.save()   
+                logging.exception('')             
             except Exception, err:            
                 wp_meta.error_message = prepare_err_msg(err.errmsg)
                 wp_meta.status = EstateWordpressMeta.STATUS_ERROR
                 wp_meta.save()
+                logging.exception('')
         else:
             wp_meta.status = EstateWordpressMeta.OUT
             wp_meta.save()           
         
-def prepare_err_msg(err):
-    print sys.stderr
+def prepare_err_msg(err):    
     print type(err)    
     s =  u"%s" % err
     print u'error %s' % s
