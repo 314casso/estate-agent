@@ -53,7 +53,7 @@ class TaxonomyAdminForm(forms.ModelForm):
         widgets = {            
             'localities': AutoCompleteSelectMultipleWidget(lookup_class=LocalityLookup),
         }
-        fields = ['name', 'localities', 'wp_meta_locality', 'regions', 'wp_id']
+        fields = ['name', 'localities', 'wp_meta_locality', 'regions', 'wp_id', 'up_to_date']
 
 class MetaAdminForm(forms.ModelForm):    
     class Meta(object):        
