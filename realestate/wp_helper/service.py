@@ -388,5 +388,5 @@ class WPService(object):
 def prepare_err_msg(err):    
     exc_type, exc_value, exc_traceback = sys.exc_info()
     lines = traceback.format_exception(exc_type, exc_value, exc_traceback)        
-    s =  u"%s; %s" % (err, u'; '.join(lines[-2:]))         
+    s =  u"%s; %s" % (err, lines[-1])         
     return s[:255]
