@@ -19,6 +19,8 @@ from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import xmlrpclib
 from collections import OrderedDict
+import traceback
+import sys
 
         
 class GetPostID(AnonymousMethod):
@@ -389,7 +391,9 @@ class WPService(object):
             wp_meta.save()           
         
 def prepare_err_msg(err):    
-    print type(err)    
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+    print ''.join('!! ' + line for line in lines)  # Log it or whatever here    
     s =  u"%s" % err
     print u'error %s' % s
     return s[:255]
