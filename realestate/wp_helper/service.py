@@ -246,6 +246,7 @@ class WPService(object):
                     result.append(image_data['wp_image'])
                 else:
                     print image_data
+                    print filepath
                     data['name'] = image_data["name"]                        
                     result.append(self.upload_image(filepath, data))
         return result
