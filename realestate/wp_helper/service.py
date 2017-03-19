@@ -19,6 +19,7 @@ from wordpress_xmlrpc.methods.posts import NewPost, EditPost, GetPost
 import datetime
 import xmlrpclib
 from collections import OrderedDict
+import sys
         
 class GetPostID(AnonymousMethod):
         method_name = 'picassometa.getPostID'
@@ -385,6 +386,7 @@ class WPService(object):
             wp_meta.save()           
         
 def prepare_err_msg(err):
+    print sys.stderr
     print type(err)    
     s =  u"%s" % err
     print u'error %s' % s
