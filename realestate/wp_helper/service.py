@@ -353,7 +353,7 @@ class WPService(object):
             wp_meta.save()
             return True
         except xmlrpclib.ProtocolError as err:
-            wp_meta.error_message = prepare_err_msg(err.errmsg)
+            wp_meta.error_message = prepare_err_msg(err)
             wp_meta.save()            
         except Exception, err:                       
             wp_meta.error_message = prepare_err_msg(err)
