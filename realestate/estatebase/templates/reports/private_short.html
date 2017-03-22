@@ -42,6 +42,10 @@
 			<th>Комментарий</th>
 			<td>{{ estate_item.comment|default:'' }}</td>
 		</tr>
+		<tr>
+			<th>Описание</th>
+			<td>{{ estate_item.description|default:'' }}</td>
+		</tr>		
 		{% block foto %}{% endblock foto %}
 	</table></td>
 </tr>
