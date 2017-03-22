@@ -92,6 +92,7 @@ def upload_images(request):
             estate_photo = EstatePhoto(estate_id=request.REQUEST.get('estate', None)) 
             file_content = ContentFile(upfile.read()) 
             estate_photo.image.save(upfile.name, file_content)
+            estate_photo.user = request.user
             estate_photo.save()  
             next_url = request.REQUEST.get('next', '')            
     return HttpResponseRedirect(next_url)         
@@ -1473,6 +1474,9 @@ class ManageM2M(View):
     def post(self, request, *args, **kwargs):                 
         formset = self.formset(self.request.POST, instance=self.instance)
         if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.user = request.user
             formset.save()                             
             return HttpResponseRedirect(self.get_success_url())        
         context = self.get_context(request)

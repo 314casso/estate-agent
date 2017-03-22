@@ -49,7 +49,8 @@ def update_estate(sender, instance, created, **kwargs):
             prepare_history(estate.history, instance.user_id)                                
 
 def update_estate_m2m(sender, instance, created, **kwargs):
-    prepare_history(instance.estate.history, instance.estate.history.updated_by)
+    user = instance.user if hasattr(instance, 'user') else instance.estate.history.updated_by 
+    prepare_history(instance.estate.history, user)
     estate_wp_meta_base(instance.estate) 
 
 def bid_event_history(sender, instance, created, **kwargs):
