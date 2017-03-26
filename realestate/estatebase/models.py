@@ -101,6 +101,9 @@ class Locality(models.Model):
         return u'%s' % self.name
     def natural_key(self):
         return self.__unicode__()
+    @property
+    def office(self):
+        return self.region.office_set.first()
     class Meta:
         verbose_name = _('locality')
         verbose_name_plural = _('localities')
