@@ -13,6 +13,12 @@ import os
 from estatebase.models import Locality
 
 
+def get_file_upload_to(instance, filename): 
+    if hasattr(instance, 'content_type'):   
+        return os.path.join('files', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
+    return os.path.join('images', force_unicode(instance.id), force_unicode(filename))
+
+
 @python_2_unicode_compatible
 class Category(CategoryBase):
     alternate_title = models.CharField(blank=True, default="", max_length=100)  
@@ -20,6 +26,8 @@ class Category(CategoryBase):
     alternate_url = models.CharField(blank=True, max_length=200,)
     order = models.IntegerField(default=0)
     menu = models.BooleanField(default=True)
+    key = models.CharField(max_length=50, unique=True, db_index=True)
+    image = models.ImageField(verbose_name=_('Image'), upload_to=get_file_upload_to, blank=True, null=True,) 
     
     def active_entries(self):
         return self.entries.filter(active=True)
@@ -28,7 +36,7 @@ class Category(CategoryBase):
         ancestors = self.get_ancestors()
         return ' > '.join([force_text(i.name) for i in ancestors] + [self.name, ])
     
-    class Meta(CategoryBase.Meta):
+    class Meta(CategoryBase.Meta):        
         verbose_name = _('category')
         verbose_name_plural = _('categories')
 
@@ -72,10 +80,6 @@ class ContentEntry(models.Model):
         verbose_name = _('entry')
         verbose_name_plural = _('entries')
         index_together = [['slug', 'publication_date']]
-
-
-def get_file_upload_to(instance, filename):    
-    return os.path.join('files', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
 
 
 @python_2_unicode_compatible        

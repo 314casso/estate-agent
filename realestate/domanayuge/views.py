@@ -40,27 +40,59 @@ class HomePage(BaseContextMixin, TemplateView):
         })                          
         return context          
     
-
-class DevPage(BaseContextMixin, TemplateView):    
-    template_name = 'domanayuge/dev.html'  
+    
+class DevContextMixin(ContextMixin):
+    blog_slug = 'blog'
     def get_context_data(self, **kwargs):
-        context = super(DevPage, self).get_context_data(**kwargs)         
+        context = super(DevContextMixin, self).get_context_data(**kwargs)   
+        stroyka = Category.objects.get(slug='stroyka')
+        stroyka_categiries = list(stroyka.get_children().filter(menu=True))
+        
+        for idx, item in enumerate(stroyka_categiries):
+            item.idx = idx * 100
+            
+        blog = Category.objects.get(slug=self.blog_slug)        
+        blog.idx = 250      
+        stroyka_categiries.append(blog)
+        stroyka_categiries.sort(key=lambda x:x.idx)
+                  
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],            
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+            'stroyka_categiries': stroyka_categiries,            
         })                                   
         context.update({          
-            'domain': self.request.domain,
-            'test': u'Строительство в {{ locality_loct }}. Для {{ locality_gent }} это хорошо! {{ locality }} лидер!',
-            'locdoms': LocalityDomain.objects.filter(active=True)               
+            'domain': self.request.domain,           
         })             
-        return context
-    
+        return context    
+
+
+class DevPage(DevContextMixin, TemplateView):    
+    template_name = 'domanayuge/dev.html'  
+      
 
 class Blog(BaseContextMixin, ListView):
+    blog_slug = 'blog'
     template_name = 'domanayuge/blog.html'
     paginate_by = 10
     def get_queryset(self):           
         return ContentEntry.objects.filter(categories__slug=self.blog_slug)
+    
+    
+class ProjectList(DevContextMixin, ListView):
+    template_name = 'domanayuge/projects.html'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        key = self.kwargs['key']                   
+        return ContentEntry.objects.filter(categories__key=key)
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProjectList, self).get_context_data(**kwargs)
+        context.update({          
+            'category': Category.objects.get(key=self.kwargs['key'])                
+        })
+        return context     
+    
 
 class Article(BaseContextMixin, DetailView):    
     template_name = 'domanayuge/page.html'
@@ -70,6 +102,18 @@ class Article(BaseContextMixin, DetailView):
         context = super(Article, self).get_context_data(**kwargs)        
         return context    
        
+       
+class Project(DevContextMixin, DetailView):    
+    template_name = 'domanayuge/project.html'
+    model = ContentEntry
+    context_object_name = 'project'
+    def get_context_data(self, **kwargs):
+        context = super(Project, self).get_context_data(**kwargs)
+        context.update({          
+            'category': Category.objects.get(key=self.kwargs['key'])                
+        })        
+        return context       
+    
     
 @require_http_methods(["POST"])
 @ensure_csrf_cookie

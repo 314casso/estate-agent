@@ -14,6 +14,11 @@ WATERMARK_FORCE = None
 ROOT_HOSTCONF = 'domanayuge.hosts'
 DEFAULT_HOST = 'www'
 
+if DEBUG:
+    PARENT_HOST = 'localhost:8000'
+else:
+    PARENT_HOST = 'domanayuge.ru'
+
 MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsRequestMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',                  

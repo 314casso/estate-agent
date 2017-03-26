@@ -12,7 +12,6 @@ urlpatterns = patterns('',
     url(r'^sendemail/$', send_email, name='send_email'),
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
-    
 )
 
 if settings.DEBUG:

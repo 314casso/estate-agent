@@ -7,9 +7,9 @@ from django.template import Context, Template
 register = template.Library()
 
 @register.assignment_tag
-def category(slug):
+def category(key):
     try:
-        return Category.objects.get(slug=slug)
+        return Category.objects.get(key=key)
     except Category.DoesNotExist:  # @UndefinedVariable
         return None 
     

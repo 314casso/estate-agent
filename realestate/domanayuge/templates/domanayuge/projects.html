@@ -1,0 +1,70 @@
+{% extends "domanayuge/base.html" %}
+{% load mptt_tags %}
+{% load category_tags %}  
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+{% load paginator %}
+{% load hosts %}
+
+<!-- Navigation -->
+    {% block navigation %}
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top" style="background: #222222;">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="/#page-top">{{ domanayuge.name }}</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>                   
+                    {% recursetree stroyka_categiries %}                    
+                    	<li>                    	
+                        	<a class="page-scroll" href="/#{{ node.slug }}">{{ node.name }}</a>
+                    	</li>                  
+				    {% endrecursetree %}                    
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    {% endblock navigation %}
+    
+
+{% block content %}
+
+<section id="projects">
+        <div class="container">
+			
+			<div class = "page-header">            
+				<h1>{{ category.name }}</h1>
+			</div>
+			<ul class="list-unstyled">
+			{% for project in object_list %}
+			    <li>
+			    <h3><a href="{% url 'project' category.key project.slug %}">{{ project.title }}</a></h3>
+			    <p class="post-date"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ project.summary }}</p>
+			    </li>
+			{% empty %}
+			    <li>No projects yet.</li>
+			{% endfor %}
+			</ul>            
+			         
+			{% if is_paginated %}
+			<nav aria-label="Page navigation">
+			    {% bootstrap_paginator %}
+			</nav>
+			{% endif %}         
+            
+            
+        </div>
+    </section>
+
+{% endblock content %}

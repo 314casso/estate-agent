@@ -1,0 +1,29 @@
+{% extends "domanayuge/projects.html" %}
+{% load category_tags %}  
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+
+
+{% block content %}
+
+<section id="project">
+	<div class="container">
+
+		<div class = "page-header">            
+			<h1>{{ project.title }} <small>{{ project.summary }}</small></h1>						
+		</div>
+	<p>			
+		{{ project.content|safe }}
+	</p>			
+	
+	<ol class="breadcrumb">
+		<li><a href="{% url 'projects' category.key %}">{{ category.name }}</a></li>	 	  
+	    <li class="active">{{ project.title }}</li>
+	</ol>
+	
+			
+	</div>
+</section>
+
+{% endblock content %}

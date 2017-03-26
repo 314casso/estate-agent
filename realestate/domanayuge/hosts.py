@@ -4,16 +4,18 @@ from domanayuge.models import LocalityDomain
 
 
 def locality_callback(request, domain):
-    request.domain_pattern = domain 
+    request.domain_pattern = domain
     try:
-        domain = LocalityDomain.objects.get(domain=domain)
+        domain_obj = LocalityDomain.objects.get(domain=domain)
     except LocalityDomain.DoesNotExist:
-        domain = None
-    request.domain = domain
-    
+        domain_obj = None
+    request.domain = domain_obj
+
 
 host_patterns = patterns('',
-    host(r'^$', settings.ROOT_URLCONF, name='home'),
-    host(r'(domanayuge|www)', settings.ROOT_URLCONF, name='www'),
-    host(r'(?P<domain>\w+)', 'domanayuge.wildcard_urls', name='wildcard', callback='domanayuge.hosts.locality_callback'),
-)
+                         host(r'^$', settings.ROOT_URLCONF, name='home'),
+                         host(r'(domanayuge|www)',
+                              settings.ROOT_URLCONF, name='www'),
+                         host(r'(?P<domain>\w+)', 'domanayuge.wildcard_urls',
+                              name='wildcard', callback='domanayuge.hosts.locality_callback'),
+                        )
