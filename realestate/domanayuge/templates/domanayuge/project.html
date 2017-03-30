@@ -11,9 +11,12 @@
 	<div class="container">
 
 		<div class = "page-header">            
-			<h1>{{ project.title }} <small>{{ project.summary }}</small></h1>						
+			<h1>{{ project.title }}</h1>						
 		</div>
-	<p>			
+	<p>
+		{{ project.summary|parser:domain }}
+	</p>
+	<p>		
 		{{ project.content|safe }}
 	</p>			
 	

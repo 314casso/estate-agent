@@ -248,7 +248,7 @@
 							  {% for image in entry.images %}
 							    <div class="item {% if forloop.first %}active{% endif %}">
 							    
-							    	{% thumbnail image.image "720x300" crop="center" as im %}		    
+							    	{% thumbnail image.image "720x540" crop="center" as im %}		    
 									<img src="{{ im.url }}">		    
 									{% endthumbnail %} 
 							    								      

@@ -9,7 +9,7 @@ except ImportError:
 
 class CmsContent(models.Model):
     """ CMS like Content area """
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     objects = models.Manager()
     if site:
@@ -18,3 +18,6 @@ class CmsContent(models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    class Meta:
+        unique_together = ("name", "site")
