@@ -613,3 +613,15 @@ span.btn {
 	border: 1px solid #ddd;
 	border-radius: 4px;
 }
+
+.redbgtext {
+	background: #f14300;
+    font-weight: 700;
+    color: white;    
+}
+
+.greybgtext {
+	white-space: nowrap;
+    background: #363636;
+    color: white;
+}

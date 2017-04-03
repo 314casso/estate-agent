@@ -13,7 +13,13 @@
     <tbody>
     	{% for bid_event in bid.bid_events.all %}
         <tr class="ui-widget-content">          
-            <td><a title="Радактировать событие" href="{% url 'bid_event_update' bid_event.pk %}?{{ next_url }}">{{ bid_event.pk }}</a></td>            
+            <td>
+            	{% if request.user.is_superuser %}            	
+            	<a title="Радактировать событие" href="{% url 'bid_event_update' bid_event.pk %}?{{ next_url }}">{{ bid_event.pk }}</a>
+            	{% else %}
+            	{{ bid_event.pk }}
+            	{% endif %}            		
+            </td>            
             <td title="{{ bid_event.history.modificated|date:'d M Y H:i' }}">{{ bid_event.history.modificated|date:"d M Y" }}</td>
             <td>{{ bid_event.history.created_by }} </td>
             <td>{{ bid_event.bid_event_category }}</td>

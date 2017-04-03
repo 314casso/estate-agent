@@ -24,7 +24,7 @@
 		<td colspan="100%">{{ estate.origin|default:'--------' }}</td>
 	</tr>
 	{% history estate.history %}
-	<tr><th title="Риэлтор" style="white-space: nowrap">Риэлтор:</th> <td>{{ estate.broker|default:'--------' }}</td></tr>
+	<tr><th class="greybgtext" title="Риэлтор" style="white-space: nowrap">Риэлтор:</th> <td class="redbgtext">{{ estate.broker|default:'--------' }}</td></tr>
 	{% if estate.com_status.status %}
     <tr><th title="Коммерческое использование" style="white-space: nowrap">Ком. статус:</th> <td>{{ estate.com_status }}</td></tr>
     {% endif %}   

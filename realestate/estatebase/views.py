@@ -1279,7 +1279,9 @@ class BidEventCreateView(BidEventMixin, CreateView):
         return initial
 
 class BidEventUpdateView(BidEventMixin, UpdateView):
-    pass
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, *args, **kwargs):
+        return super(BidEventUpdateView, self).dispatch(*args, **kwargs)
 
 class BidEventDeleteView(BidEventMixin, DeleteView):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
