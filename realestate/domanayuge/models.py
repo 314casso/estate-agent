@@ -11,6 +11,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation
 import os
 from estatebase.models import Locality
+from django.core.urlresolvers import reverse
 
 
 def get_file_upload_to(instance, filename): 
@@ -61,6 +62,10 @@ class ContentEntry(models.Model):
     
     def __str__(self):        
         return force_text(self.title)
+    
+    def get_absolute_url(self):        
+        return reverse('page', args=[self.slug])
+        
         
     def baseimage(self):        
         return self.images().first()

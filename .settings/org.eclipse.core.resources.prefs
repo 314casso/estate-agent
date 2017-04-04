@@ -48,6 +48,7 @@ encoding//realestate/exportdata/management/commands/yaxml.py=utf-8
 encoding//realestate/exportdata/management/commands/yaxmlplus.py=utf-8
 encoding//realestate/exportdata/mappers/base.py=utf-8
 encoding//realestate/exportdata/mappers/services.py=utf-8
+encoding//realestate/exportdata/migrations/0004_auto_20170405_0012.py=utf-8
 encoding//realestate/exportdata/utils.py=utf-8
 encoding//realestate/exportdata/xml_makers.py=utf-8
 encoding//realestate/middleware.py=utf-8

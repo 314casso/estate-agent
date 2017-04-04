@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',    
     'django.contrib.admin',   
     'django.contrib.humanize',
+    'django.contrib.sitemaps',
+    'robots',
     'django_hosts',
     'django_markwhat',
     'orderedmodel',    
