@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.views.generic.base import TemplateView, ContextMixin
-from domanayuge.models import Category, ContentEntry, LocalityDomain
-from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
-from django.utils.encoding import force_unicode
-from django.core.mail import EmailMessage
-from django.template import loader, Context
 from django.contrib.sites.shortcuts import get_current_site
-from local_settings import EMAIL_SETTINGS
-from django.views.generic.list import ListView
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.template import loader, Context
+from django.utils.encoding import force_unicode
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
+from django.views.generic.base import TemplateView, ContextMixin
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+from domanayuge.models import Category, ContentEntry
+from local_settings import EMAIL_SETTINGS
 
 # Create your views here.
 
@@ -80,7 +80,7 @@ class Blog(BaseContextMixin, ListView):
     
 class ProjectList(DevContextMixin, ListView):
     template_name = 'domanayuge/projects.html'
-    paginate_by = 10
+    paginate_by = 9
     
     def get_queryset(self):
         key = self.kwargs['key']                   

@@ -12,6 +12,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey,\
 import os
 from estatebase.models import Locality
 from django.core.urlresolvers import reverse
+from django.contrib.postgres.fields import ArrayField
 
 
 def get_file_upload_to(instance, filename): 
@@ -58,7 +59,8 @@ class ContentEntry(models.Model):
     content = models.TextField(_('content'), blank=True)
     categories = models.ManyToManyField(Category, related_name='entries')
         
-    links = GenericRelation('MediaLink')    
+    links = GenericRelation('MediaLink')
+    tags = ArrayField(models.CharField(max_length=200), blank=True, null=True)    
     
     def __str__(self):        
         return force_text(self.title)
