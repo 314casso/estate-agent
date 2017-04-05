@@ -104,7 +104,7 @@ class EstateCreateForm(EstateForm):
         )
     class Meta(EstateForm.Meta):        
         fields = ('estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
+                  'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
 
 class EstateCreateClientForm(EstateCreateForm):
     client_status = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, lookup_class=EstateClientStatusLookup, label=_('Estate client status'))
@@ -120,7 +120,7 @@ class EstateCreateClientForm(EstateCreateForm):
 class EstateCreateWizardForm(EstateCreateClientForm):
     class Meta(EstateCreateClientForm.Meta):        
         fields = ('client', 'client_status', 'estate_category_filter', 'estate_type', 'origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number',
-                  'beside', 'beside_distance', 'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
+                  'saler_price', 'agency_price', 'estate_status', 'estate_type', 'broker', 'com_status', 'deal_status', 'address_state')
 
 class EstateCommunicationForm(ModelForm):
     class Meta:                
@@ -710,7 +710,9 @@ class SteadForm(ObjectForm):
         if self.user.is_superuser:
             return data            
         if not data:
-            raise forms.ValidationError(u'Значение не оставаться пустым!')
+            raise forms.ValidationError(u'Значение не оставаться пустым!')                
+        if 'estate_type' in self.changed_data:
+            return data
         validate_map = {
                             EstateTypeMapper.DOM: 101,
                             EstateTypeMapper.DACHA: 15,
