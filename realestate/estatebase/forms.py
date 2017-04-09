@@ -23,7 +23,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
     ValidityLookup, ApplianceLookup, BidEventCategoryLookup,\
     RegisterCategoryLookup, ExteriorFinishLookup, BidStatusLookup,\
     OutbuildingLookup, PurposeLookup, HeatingLookup, YandexBuildingLookup,\
-    DealStatusLookup, BidStatusCategoryLookup
+    DealStatusLookup, BidStatusCategoryLookup, ContactStateLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EntranceEstate,\
@@ -412,6 +412,13 @@ class EstateFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )    
+    
+    contact_state = AutoCompleteSelectMultipleField(
+            lookup_class=ContactStateLookup,
+            label=_('Contact State'),
+            required=False,
+        )
+    
     year_built = IntegerRangeField(required=False, label=_('Year built'))
     floor = IntegerRangeField(required=False, label=_('Floor'))        
     floor_count = IntegerRangeField(required=False, label=_('Floor count'))
@@ -542,7 +549,8 @@ class EstateFilterForm(BetterForm):
                          'history__created_by__in': 'created_by', 'history__updated_by__in': 'updated_by',
                          'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
                          'client_description__icontains': 'client_description',
-                         'wp_meta__status':'wp_status', 'address_state__in': 'address_state'                       
+                         'wp_meta__status':'wp_status', 'address_state__in': 'address_state',
+                         'clients__contacts__contact_state__in':'contact_state',                       
                          }
         
         for key, value in simple_filter.iteritems():
@@ -599,7 +607,8 @@ class EstateFilterForm(BetterForm):
                                          'microdistrict', 'address_state', 'beside_type', 'beside', 'agency_price', 'wp_choice','wp_status',
                                          ]}),
                      ('center', {'fields': [
-                                            'clients', 'client_description', 'contacts', 'created', 'created_by', 'updated', 'updated_by', 'year_built', 
+                                            'clients', 'client_description', 'contacts', 'contact_state', 'created', 'created_by', 
+                                            'updated', 'updated_by', 'year_built', 
                                             'floor', 'floor_count', 'wall_construcion', 'total_area', 'used_area', 
                                             'room_count', 'interior', 'heating', 'layouts', 'layout_area', 'outbuildings', 'broker'
                                            ]}),
