@@ -1,0 +1,50 @@
+{% extends "domanayuge/projects.html" %}
+{% load mptt_tags %}
+{% load category_tags %}  
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+{% load paginator %}
+{% load hosts %}
+
+
+{% block content %}
+<section id="projects">
+        <div class="container">
+			
+			<div class = "page-header">            
+				<h1>{{ category.name }}</h1>
+			</div>
+			 <div class="row">
+			{% for project in object_list %}				
+			    <div class="col-md-4 col-sm-6 portfolio-item">			    
+                <a href="{% url 'case' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-link fa-3x"></i>
+                        </div>
+                    </div>                       
+                    {% thumbnail project.baseimage.image "360x260" crop="center" as im %}		    
+					<img class="img-responsive" src="{{ im.url }}">		    
+					{% endthumbnail %}                      
+                </a>
+                <div class="portfolio-caption">
+                    <h4>{{ project.title }}</h4>
+                    <p class="text-muted">{{ project.summary|parser:domain }}</p>
+                </div>
+            </div>
+			{% empty %}
+			    <li>No projects yet.</li>			 
+			{% endfor %}			
+			</div>            
+			         
+			{% if is_paginated %}
+			<nav aria-label="Page navigation">
+			    {% bootstrap_paginator %}
+			</nav>
+			{% endif %}         
+            
+            
+        </div>
+    </section>
+{% endblock content %}
