@@ -79,12 +79,16 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h2 class="section-heading">{{ services.name }}</h2>
+                <h2 class="section-heading">
+                    <a href="{% url 'cases' services.key %}">
+                        {{ services.name }}
+                    </a>
+                </h2>
                 <h3 class="section-subheading text-muted">{{ services.alternate_title }}</h3>
             </div>
         </div>
         <div class="row">
-        	{% for entry in services.active_entries %}
+        	{% for entry in cases %}
         	<div class="col-md-4 col-sm-6 portfolio-item">
                 <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">

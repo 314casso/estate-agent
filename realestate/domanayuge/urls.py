@@ -18,14 +18,24 @@ urlpatterns = patterns('',
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
 )
 
-info_dict = {
+blog_dict = {
     'queryset': ContentEntry.objects.filter(categories__slug="blog"),
+    'date_field': 'publication_date',
+}
+
+portfolio_dict = {
+    'queryset': ContentEntry.objects.filter(categories__key="portfoliodev"),
     'date_field': 'publication_date',
 }
 
 urlpatterns += patterns('',
         url(r'^sitemap\.xml$', sitemap,
-        {'sitemaps': {'blog': GenericSitemap(info_dict, priority=0.6), 'static': StaticViewSitemap }},
+        {'sitemaps': {
+                        'blog': GenericSitemap(blog_dict, priority=0.6), 
+                        #'portfolio': GenericSitemap(portfolio_dict, priority=0.6),
+                        'static': StaticViewSitemap 
+                      }
+        },
         name='django.contrib.sitemaps.views.sitemap'),        
         url(r'^robots\.txt$', include('robots.urls')),
 )                       

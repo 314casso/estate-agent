@@ -769,11 +769,11 @@ body {
 	text-decoration: none;
 }
 
-#blog a {
+#blog a, #portfolio .section-heading a{
 	color: maroon;
 }
 
-#blog a:hover {
+#blog a:hover, #portfolio .section-heading a:hover {
 	color: red;
 }
 

@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from domanayuge.views import DevPage, ProjectList, Project, Blog, Article
+from domanayuge.views import DevPage, ProjectList, Project, Blog, Article, Case, CaseList
 import settings
 
 urlpatterns = patterns('',   
@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     url(r'^projects/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Project.as_view(), name='project'),
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
+    url(r'^cases/(?P<key>[-\w]+)/$', CaseList.as_view(), name='cases'),
+    url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Case.as_view(), name='case'),
 )
 
 if settings.DEBUG:

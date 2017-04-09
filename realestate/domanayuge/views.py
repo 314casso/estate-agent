@@ -58,6 +58,7 @@ class DevContextMixin(ContextMixin):
                   
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+            'cases': ContentEntry.objects.filter(categories__key='portfoliodev')[:9],
             'stroyka_categiries': stroyka_categiries,            
         })                                   
         context.update({          
@@ -77,21 +78,27 @@ class Blog(BaseContextMixin, ListView):
     def get_queryset(self):           
         return ContentEntry.objects.filter(categories__slug=self.blog_slug)
     
-    
-class ProjectList(DevContextMixin, ListView):
-    template_name = 'domanayuge/projects.html'
-    paginate_by = 9
-    
+
+class BaseList(DevContextMixin, ListView):    
+    paginate_by = 9    
     def get_queryset(self):
         key = self.kwargs['key']                   
         return ContentEntry.objects.filter(categories__key=key)
     
     def get_context_data(self, **kwargs):
-        context = super(ProjectList, self).get_context_data(**kwargs)
+        context = super(BaseList, self).get_context_data(**kwargs)
         context.update({          
             'category': Category.objects.get(key=self.kwargs['key'])                
         })
-        return context     
+        return context    
+    
+    
+class ProjectList(BaseList):
+    template_name = 'domanayuge/projects.html'
+
+
+class CaseList(BaseList):
+    template_name = 'domanayuge/cases.html'         
     
 
 class Article(BaseContextMixin, DetailView):    
@@ -102,17 +109,25 @@ class Article(BaseContextMixin, DetailView):
         context = super(Article, self).get_context_data(**kwargs)        
         return context    
        
-       
-class Project(DevContextMixin, DetailView):    
-    template_name = 'domanayuge/project.html'
-    model = ContentEntry
-    context_object_name = 'project'
+
+class BaseEntry(DevContextMixin, DetailView):    
+    model = ContentEntry    
     def get_context_data(self, **kwargs):
-        context = super(Project, self).get_context_data(**kwargs)
+        context = super(BaseEntry, self).get_context_data(**kwargs)
         context.update({          
             'category': Category.objects.get(key=self.kwargs['key'])                
         })        
-        return context       
+        return context
+       
+       
+class Project(BaseEntry):
+    template_name = 'domanayuge/project.html'
+    context_object_name = 'project'    
+
+
+class Case(BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
     
     
 @require_http_methods(["POST"])
