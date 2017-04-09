@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template import loader, Context
 from django.utils.encoding import force_unicode
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView, ContextMixin
 from django.views.generic.detail import DetailView
@@ -131,7 +131,7 @@ class Case(BaseEntry):
     
     
 @require_http_methods(["POST"])
-@ensure_csrf_cookie
+@csrf_exempt
 def send_email(request):
     mailto = EMAIL_SETTINGS['domanayuge']    
     t = loader.get_template('domanayuge/email.txt')
