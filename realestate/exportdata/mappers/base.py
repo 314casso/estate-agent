@@ -449,8 +449,8 @@ class YandexMapper(BaseMapper):
     
     @property
     def url(self):
-        if not self._url:
-            if self._estate.wp_meta:
+        if not self._url:            
+            if hasattr(self._estate, 'wp_meta') and self._estate.wp_meta:
                 self._url = u'http://www.domnatamani.ru/?p=%s' % self._estate.wp_meta.post_id
         return self._url
     
