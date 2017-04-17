@@ -11,7 +11,7 @@ from sorl.thumbnail.fields import ImageField
 import datetime
 import os
 from picklefield.fields import PickledObjectField
-from settings import CORRECT_DELTA, INTEREST_RATE, MAX_CREDIT_MONTHS, \
+from settings import INTEREST_RATE, MAX_CREDIT_MONTHS, \
     MAX_CREDIT_SUM
 from estatebase.wrapper import get_wrapper, APARTMENT, NEWAPART, HOUSE, STEAD, \
     OUTBUILDINGS, AGRICULTURAL, FACILITIES, APARTMENTSTEAD, LANDSCAPING, GARAGE
@@ -25,7 +25,8 @@ from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
     LayoutFeatureMapper
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,\
-    GenericRelation
+    GenericRelation    
+from estatebase.lib import get_validity_delta
 
 class ExUser(User):
     def __unicode__(self):
@@ -622,12 +623,12 @@ class Estate(ProcessDeletedModel):
         except Stead.DoesNotExist:
             return None    
     @property
-    def correct(self):
-        return self.validity_id == self.VALID and (self.history.modificated > CORRECT_DELTA)
+    def correct(self):         
+        return self.validity_id == self.VALID and (self.history.modificated > get_validity_delta())
     
     @property
-    def expired(self):
-        return self.validity_id == self.VALID and (self.history.modificated <= CORRECT_DELTA)
+    def expired(self):        
+        return self.validity_id == self.VALID and (self.history.modificated <= get_validity_delta())
     
     @property
     def basic_contact(self):
@@ -1404,8 +1405,8 @@ class EstateRegister(ProcessDeletedModel):
     class Meta:      
         ordering = ['-id']
     @property
-    def correct_estates(self):
-        return self.estates.filter(validity_id=Estate.VALID, history__modificated__gt = CORRECT_DELTA)
+    def correct_estates(self):        
+        return self.estates.filter(validity_id=Estate.VALID, history__modificated__gt = get_validity_delta())
          
 
 class LocalityType(SimpleDict):

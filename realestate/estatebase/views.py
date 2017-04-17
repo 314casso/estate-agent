@@ -24,7 +24,7 @@ from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
     ExUser, Bidg, BidEvent, BidClient, EstateFile
 from models import EstateTypeCategory
-from settings import CORRECT_DELTA, PUBLIC_MEDIA_URL, LOGIN_REDIRECT_URL
+from settings import PUBLIC_MEDIA_URL, LOGIN_REDIRECT_URL
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape, escapejs
 import urlparse
@@ -34,7 +34,7 @@ from wp_helper.models import EstateWordpressMeta,\
     WordpressTaxonomyTree
 from django.contrib.auth.decorators import user_passes_test
 import unicodecsv
-from estatebase.lib import format_phone
+from estatebase.lib import format_phone, get_validity_delta
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
@@ -43,6 +43,7 @@ from datetime import datetime
 from django.http.response import JsonResponse, HttpResponseForbidden
 import re
 from django.db.models import Q
+from django.utils import timezone
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -348,9 +349,9 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None, force_delta=
         filter_dict.update({
            'validity_id' : Estate.VALID,
         })
-    if force_delta:
+    if force_delta:        
         filter_dict.update({           
-            'history__modificated__gt' : CORRECT_DELTA,
+            'history__modificated__gt' : get_validity_delta(),
         })
     if user:
         filter_dict.update({'region__geo_group__userprofile__user__exact': user })  

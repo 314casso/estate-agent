@@ -35,7 +35,6 @@ from selectable.forms.fields import AutoCompleteSelectMultipleField, \
     AutoCompleteSelectField
 from selectable.forms.widgets import AutoComboboxSelectWidget,\
     AutoComboboxSelectMultipleWidget
-from settings import CORRECT_DELTA
 from django.utils.safestring import mark_safe
 from django.template.base import Template
 from django.core.exceptions import ValidationError
@@ -44,6 +43,7 @@ from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
     ExperienceLookup, QualityLookup, DevProfileIdLookup 
 from wp_helper.models import EstateWordpressMeta
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
+from estatebase.lib import get_validity_delta
 
 
 class EstateForm(BetterModelForm):             
@@ -524,10 +524,12 @@ class EstateFilterForm(BetterForm):
             if Estate.EXPIRED in ids:                                
                 ids.add(Estate.VALID)
             f['validity__in'] = ids
+            real_delta = get_validity_delta()  
+            print real_delta         
             if Estate.EXPIRED in ids:
-                f['history__modificated__lte'] = CORRECT_DELTA
+                f['history__modificated__lte'] = real_delta 
             elif Estate.VALID in ids:
-                f['history__modificated__gt'] = CORRECT_DELTA
+                f['history__modificated__gt'] = real_delta
         
         if cleaned_data['estates'] and self._filter_by_pk:
             f['id__in'] = [item.pk for item in cleaned_data['estates']] 

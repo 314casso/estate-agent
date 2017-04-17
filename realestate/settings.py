@@ -15,7 +15,6 @@ ADMINS = (
      ('Picasso', 'picasso75@yandex.ru'),
 )
 
-CORRECT_DELTA = datetime.datetime.now() -  datetime.timedelta(days=60)
 
 MAX_CREDIT_MONTHS = 360
 INTEREST_RATE = 9.5/100 
@@ -193,6 +192,8 @@ REQUEST_IGNORE_PATHS = (
     r'^estatebase/selectable/',
     r'^session_security/',
 )
+
+CORRECT_DELTA = datetime.timedelta(days=60)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
