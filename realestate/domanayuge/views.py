@@ -133,10 +133,11 @@ class Case(BaseEntry):
 @require_http_methods(["POST"])
 @csrf_exempt
 def send_email(request):
+    domain = request.domain_pattern if request.domain_pattern else get_current_site(request) 
     mailto = EMAIL_SETTINGS['domanayuge']    
     t = loader.get_template('domanayuge/email.txt')
     c = Context(request.POST)
-    c.update({'site': u"%s" % request.domain })    
+    c.update({'site': domain })    
     rendered = t.render(c)
     email = EmailMessage(
         force_unicode('Обращение через сайт'),
