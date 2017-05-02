@@ -136,7 +136,7 @@ def send_email(request):
     mailto = EMAIL_SETTINGS['domanayuge']    
     t = loader.get_template('domanayuge/email.txt')
     c = Context(request.POST)
-    c.update({'site': get_current_site(request)})    
+    c.update({'site': u"%s" % request.domain })    
     rendered = t.render(c)
     email = EmailMessage(
         force_unicode('Обращение через сайт'),
