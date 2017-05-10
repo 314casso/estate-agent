@@ -142,9 +142,8 @@ def send_email(request):
     email = EmailMessage(
         force_unicode('Обращение через сайт'),
         force_unicode(rendered),
-        request.POST['email'],
-        mailto,  
-        from_email='pochta@domanayuge.ru',      
+        'no-reply@domanayuge.ru',
+        mailto, 
         reply_to=[request.POST['email']],        
     )
     email.send(False)
