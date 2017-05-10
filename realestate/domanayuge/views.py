@@ -143,7 +143,8 @@ def send_email(request):
         force_unicode('Обращение через сайт'),
         force_unicode(rendered),
         request.POST['email'],
-        mailto,        
+        mailto,  
+        from_email='pochta@domanayuge.ru',      
         reply_to=[request.POST['email']],        
     )
     email.send(False)
