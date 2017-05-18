@@ -477,6 +477,7 @@ class EstateFilterForm(BetterForm):
     wp_choice = forms.ChoiceField(label=u'Сайт', widget=forms.RadioSelect, choices=WP_CHOICES, initial=3, required=False,)
     description = forms.CharField(required=False, label=_('Description'))
     comment = forms.CharField(required=False, label=_('Comment'))
+    link_text = forms.CharField(required=False, label=u'Ссылки')
     broker = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлтор', required=False)
     purposes = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=PurposeLookup, label=_('Purpose'), required=False)
     layouts = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=LayoutTypeLookup, label=_('Layout type'), required=False)
@@ -552,7 +553,8 @@ class EstateFilterForm(BetterForm):
                          'bidgs__heating__in':'heating', 'stead__cadastral_number__icontains': 'cadastral_number',
                          'client_description__icontains': 'client_description',
                          'wp_meta__status':'wp_status', 'address_state__in': 'address_state',
-                         'clients__contacts__contact_state__in':'contact_state',                       
+                         'clients__contacts__contact_state__in':'contact_state', 
+                         'links__name__icontains': 'link_text',                      
                          }
         
         for key, value in simple_filter.iteritems():
@@ -616,7 +618,7 @@ class EstateFilterForm(BetterForm):
                                            ]}),
                      ('right', {'fields': [
                                            'stead_area', 'face_area', 'shape', 'cadastral_number', 'purposes', 'electricity', 'watersupply', 
-                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 
+                                           'gassupply', 'sewerage', 'driveway', 'origin', 'marks', 'link_text',
                                            'description', 'comment', 'next', 'foto_choice',
                                           ]})
                      ]
