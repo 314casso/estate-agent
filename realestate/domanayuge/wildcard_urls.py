@@ -1,9 +1,14 @@
-from django.conf.urls import patterns, url
+from django.contrib import admin
+from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, ProjectList, Project, Blog, Article, Case, CaseList,\
     send_email
 import settings
 
+admin.autodiscover()
+
 urlpatterns = patterns('',   
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^content_edit/', include('content_edit.urls')),
     url(r'^$', DevPage.as_view() ,name='devpage'),
     url(r'^projects/(?P<key>[-\w]+)/$', ProjectList.as_view(), name='projects'),
     url(r'^projects/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Project.as_view(), name='project'),

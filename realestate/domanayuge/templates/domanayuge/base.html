@@ -16,7 +16,7 @@
     <meta name="description" content="{{ domanayuge.description }}">
     <meta name="author" content="">
     {% block extrameta %}{% endblock extrameta %}
-    <title>{{ domanayuge.name }}</title>
+    <title>{% block page_title %}{{ domanayuge.name }}{% endblock %}</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ STATIC_URL }}domanayuge/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom Fonts -->

@@ -6,6 +6,7 @@
 {% load thumbnail %}
 {% load paginator %}
 {% load hosts %}
+{% load content_edit_tags %}
 
 {% block extrameta %}
 <meta name="yandex-verification" content="e6b9344a5fb88090" />
@@ -221,7 +222,8 @@
                             <button type="submit" class="btn btn-xl">Отправить сообщение</button>
                         </div>
                     </div>
-                </form>               
+                </form>                 
+                <h3 class="text-muted text-center base-phone"><span class="glyphicon glyphicon-phone text-warning"></span>  {% cms_content 'dev_phone' %}</h3>
             </div>
         </div>           
     </div>
@@ -290,6 +292,7 @@
 </div>
 {% endfor %}
 
+{% include "content_edit/modal.html" %}
 
 {% endblock content %}
 
