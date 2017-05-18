@@ -796,12 +796,12 @@ body {
 }
 
 #blog .card-caption {
-	/* padding: 0 10px; */
+	padding: 0 5px;/
 	/* border-bottom: 1px solid #fed136; */
 }
 
 #blog .card-body {
-	/* padding: 10px;*/	
+	padding: 5px;/	
 }
 
 #blog {
