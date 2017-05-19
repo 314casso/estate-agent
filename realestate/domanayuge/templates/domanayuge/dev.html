@@ -229,6 +229,30 @@
     </div>
 </section>
 
+{% article 'devhome' as home %}
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; {{ home.summary }} {% now "Y" %}</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                    	{% for link in home.social_links %}
+                        	<li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
+                     	{% endfor %}                        
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">                    	
+                    	{% for link in home.free_links %}
+                    	<li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    	{% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 <!-- Portfolio Modals -->
 <!-- Use the modals below to showcase details about your portfolio projects! -->
