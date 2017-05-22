@@ -14,8 +14,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ domanayuge.description }}">
-    <meta name="author" content="">
-    {% block extrameta %}{% endblock extrameta %}
+    <meta name="author" content="">    
+    {% block extrameta %}
+    <meta name='wmail-verification' content='5938f08f2ee6b475d0efbe57f8e2a66c' />
+    {% endblock extrameta %}
     <title>{% block page_title %}{{ domanayuge.name }}{% endblock %}</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ STATIC_URL }}domanayuge/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

@@ -23,7 +23,7 @@ def get_file_upload_to(instance, filename):
 
 @python_2_unicode_compatible
 class Category(CategoryBase):
-    alternate_title = models.CharField(blank=True, default="", max_length=100)  
+    alternate_title = models.CharField(blank=True, default="", max_length=200)  
     description = models.TextField(blank=True, null=True)
     alternate_url = models.CharField(blank=True, max_length=200,)
     order = models.IntegerField(default=0)
