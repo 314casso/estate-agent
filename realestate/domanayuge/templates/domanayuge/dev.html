@@ -235,7 +235,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; {{ home.summary }} {% now "Y" %}</span>
+                    <span class="copyright">Copyright &copy; {{ home.summary|markdown:"safe,attr_list" }} {% now "Y" %}</span>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline social-buttons">
