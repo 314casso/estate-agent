@@ -68,7 +68,11 @@
                 <!-- #advantage1 -->
                 {% article 'advantage1' as advantage1 %}
                 <h4 class="advantage-heading">{{ entry.title }}</h4>
-                <p class="text-muted">{{ entry.content|parser:domain }}</p>
+                <p class="text-muted">
+                    {% with entry_content=entry.content|markdown:"safe,attr_list" %}
+                        {{ entry_content|parser:domain }}
+                    {% endwith %}                     
+                </p>
             </div>            	
         	{% endfor %}
         </div>
@@ -104,7 +108,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ entry.title }}</h4>
-                    <p class="text-muted">{{ entry.summary }}</p>
+                    <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
                 </div>
             </div>
         	{% endfor %}

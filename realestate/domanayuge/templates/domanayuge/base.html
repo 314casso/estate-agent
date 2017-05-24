@@ -102,7 +102,7 @@
                     <!-- #advantage1 -->
                     {% article 'advantage1' as advantage1 %}
                     <h4 class="advantage-heading">{{ entry.title }}</h4>
-                    <p class="text-muted">{{ entry.content }}</p>
+                    <p class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</p>
                 </div>            	
             	{% endfor %}
             </div>
@@ -134,7 +134,7 @@
                     </a>
                     <div class="portfolio-caption">
                         <h4>{{ entry.title }}</h4>
-                        <p class="text-muted">{{ entry.summary }}</p>
+                        <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
                     </div>
                 </div>
             	{% endfor %}
@@ -168,7 +168,7 @@
                                     <h4 class="subheading">{{ entry.summary }}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">{{ entry.content }}</p>
+                                    <p class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</p>
                                 </div>
                             </div>
                         </li>
