@@ -348,6 +348,7 @@ section h3.section-subheading {
   background-color: white;
   text-align: center;
   padding: 25px;
+  height: 110px;
 }
 #portfolio .portfolio-item .portfolio-caption h4 {
   text-transform: none;
