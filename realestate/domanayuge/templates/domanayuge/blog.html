@@ -54,7 +54,7 @@
     
     <p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
         
-    {{ article.summary }}
+    {{ article.summary|markdown:"safe,attr_list" }}
         
     
     </li>
