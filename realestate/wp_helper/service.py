@@ -271,6 +271,9 @@ class WPService(object):
         fields['region'] = estate.locality.region.wp_taxons.all()[:1].get().wp_id
         fields['rooms'] = estate.basic_bidg.room_count if estate.basic_bidg else None
         fields['status'] = estate.estate_status.wp_taxons.all()[:1].get().wp_id
+        if estate.links:            
+            first_link = estate.links.all()[:1].get()
+            fields['first_link'] = u'<a target="_blank" href="%s">%s</a>' % (first_link.url, first_link.name)
         wp_taxons = estate.estate_params.exclude(wp_taxons=None).values_list('wp_taxons__wp_postmeta_key', 'wp_taxons__wp_postmeta_value')
         for taxon in wp_taxons:             
             if taxon[0]:
