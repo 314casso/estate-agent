@@ -8,7 +8,7 @@ from realty.utils import get_url_path
 
 class RealtyPipeline(object):   
     USER_ID = 4 #Бузенкова
-    @transaction.commit_on_success 
+    @transaction.atomic() 
     def process_item(self, item, spider):
         print 'processing... %s' % item['link'] 
         if 'do_not_process' in item and item['do_not_process']:
