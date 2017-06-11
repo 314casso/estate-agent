@@ -23,9 +23,11 @@ class FeedLocality(models.Model):
 class FeedEngine(models.Model):
     AVITO = 'AVITO'     
     YANDEX = 'YANDEX'
+    WP = 'WORDPRESS'
     FEEDENGINE_CHOICES = (
         (AVITO, 'Avito'),        
         (YANDEX, 'Yandex'),
+        (WP, 'Wordpress'),
     )          
     name = models.CharField(db_index=True, max_length=15)
     engine = models.CharField(
@@ -68,6 +70,7 @@ class MarketingCampaign(models.Model):
     
 
 class BaseFeed(models.Model):
+    MIN_PRICE_LIMIT = 100000
     name = models.CharField(verbose_name=_('Name'), db_index=True, max_length=15)
     active = models.BooleanField(verbose_name=_('Active'), )    
     estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
@@ -79,8 +82,10 @@ class BaseFeed(models.Model):
     note = models.CharField(verbose_name=_('Note'), max_length=255, blank=True, null=True,)        
     use_broker = models.BooleanField(verbose_name=_('UseBroker'), default=False)
     use_possible_street = models.BooleanField(verbose_name=_('UsePossibleStreet'), default=False)
-    show_bld_number = models.BooleanField(verbose_name=_('ShowBldNumber'), default=False)    
-          
+    show_bld_number = models.BooleanField(verbose_name=_('ShowBldNumber'), default=False)
+    only_valid = models.BooleanField(verbose_name=_('OnlyValid'), default=True)    
+    min_price_limit = models.IntegerField(verbose_name=_('MinPriceLimit'), default=MIN_PRICE_LIMIT, blank=True, null=True,)
+              
     def __unicode__(self):
         return u'%s' % self.name        
     
@@ -89,13 +94,18 @@ class BaseFeed(models.Model):
             return datetime.datetime.now() - datetime.timedelta(days=self.valid_days)
     
     def get_queryset(self):
-        MIN_PRICE_LIMIT = 100000 
+        f = {}
+        q = Estate.objects.all()
         
-        f = {
-             'validity':Estate.VALID,      
-             'agency_price__gte': MIN_PRICE_LIMIT,                     
-             'estate_params__exact': self.estate_param,             
-             }
+        if self.estate_param:
+            f['estate_params__exact'] = self.estate_param
+        
+        if self.min_price_limit:
+            f['agency_price__gte'] = self.min_price_limit
+        
+        if self.only_valid:
+            f['validity'] = Estate.VALID
+            
                
         type_fifter = Q()        
         cats = list(self.estate_categories.all())       
@@ -112,9 +122,8 @@ class BaseFeed(models.Model):
                 
         delta = self.get_delta()
         if delta:
-            f['history__modificated__gte'] = delta
-              
-        q = Estate.objects.all()
+            f['history__modificated__gte'] = delta             
+        
         return self.set_filter(q, f)       
     
     def set_filter(self, q, filter_dict):
