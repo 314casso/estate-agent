@@ -27,6 +27,7 @@ class WPEngine(BaseEngine):
         el_maker = self.el_maker(offer, empty_nodes)
         el_maker("id", mapper.id)
         el_maker("state", mapper.validity_state)
+        el_maker("status", mapper.estate_status)
         el_maker("updated", mapper.last_update_date)
         
         if len(empty_nodes):
@@ -43,12 +44,19 @@ class WPMapper(BaseMapper):
     _modificated = None
     _validity_state = None
     _last_update_date = None
+    _estate_status = None
     @property    
     def validity_state(self):
         if not self._validity_state:
             self._validity_state = u'%s' % self._estate.validity_state           
         return self._validity_state    
     
+    @property    
+    def estate_status(self):
+        if not self._estate_status:
+            self._estate_status = u'%s' % self._estate.estate_status           
+        return self._estate_status    
+        
     @property
     def last_update_date(self):        
         if not self._last_update_date:
