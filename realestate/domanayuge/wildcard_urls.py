@@ -37,7 +37,7 @@ urlpatterns += patterns('',
                       }
         },
         name='django.contrib.sitemaps.views.sitemap'),        
-        url(r'^robots\.txt$', include('robots.urls')),
+        #url(r'^robots\.txt$', include('robots.urls')),
 )
 
 if settings.DEBUG:
