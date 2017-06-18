@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, ProjectList, Project, Blog, Article, Case, CaseList,\
-    send_email
+    send_email, robots_stroyka
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.sitemaps import GenericSitemap
 from domanayuge.sitemaps import StaticViewSitemap
@@ -37,7 +37,7 @@ urlpatterns += patterns('',
                       }
         },
         name='django.contrib.sitemaps.views.sitemap'),        
-        #url(r'^robots\.txt$', include('robots.urls')),
+        url(r'^robots\.txt$', robots_stroyka),
 )
 
 if settings.DEBUG:

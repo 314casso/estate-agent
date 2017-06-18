@@ -11,6 +11,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from domanayuge.models import Category, ContentEntry
 from local_settings import EMAIL_SETTINGS
+from django.shortcuts import render
 
 # Create your views here.
 
@@ -128,6 +129,10 @@ class Project(BaseEntry):
 class Case(BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
+    
+  
+def robots_stroyka(request):
+    return render(request, 'robots/robots_stroyka.txt', content_type='text/plain')
     
     
 @require_http_methods(["POST"])
