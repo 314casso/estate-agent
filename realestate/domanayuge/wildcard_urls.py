@@ -2,7 +2,11 @@ from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, ProjectList, Project, Blog, Article, Case, CaseList,\
     send_email
+from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import GenericSitemap
+from domanayuge.sitemaps import StaticViewSitemap
 import settings
+from domanayuge.models import ContentEntry
 
 admin.autodiscover()
 
@@ -17,6 +21,22 @@ urlpatterns = patterns('',
     url(r'^cases/(?P<key>[-\w]+)/$', CaseList.as_view(), name='cases'),
     url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Case.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
+)
+
+blog_dict = {
+    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__in=('строительство', 'ремонт')),
+    'date_field': 'publication_date',
+}
+
+urlpatterns += patterns('',
+        url(r'^sitemap\.xml$', sitemap,
+        {'sitemaps': {
+                        'blog': GenericSitemap(blog_dict, priority=0.6),                        
+                        'static': StaticViewSitemap 
+                      }
+        },
+        name='django.contrib.sitemaps.views.sitemap'),        
+        url(r'^robots\.txt$', include('robots.urls')),
 )
 
 if settings.DEBUG:
