@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, ProjectList, Project, Blog, Article, Case, CaseList,\
@@ -24,7 +25,7 @@ urlpatterns = patterns('',
 )
 
 blog_dict = {
-    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__in=('строительство', 'ремонт')),
+    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__in=(u'строительство', u'ремонт')),
     'date_field': 'publication_date',
 }
 
