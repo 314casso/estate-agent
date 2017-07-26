@@ -9,3 +9,13 @@ sql/estate_agent1_04122012.sql
 realestate/logfile
 spyder/realty/realty/local_settings.py
 realestate/static/
+.vscode/
+bin/
+include/
+lib/
+local/
+pip-selfcheck.json
+selenium/
+share/
+
+

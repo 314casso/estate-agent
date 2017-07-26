@@ -10,6 +10,7 @@ encoding//realestate/domanayuge/migrations/0015_auto_20170321_2252.py=utf-8
 encoding//realestate/domanayuge/models.py=utf-8
 encoding//realestate/domanayuge/templatetags/category_tags.py=utf-8
 encoding//realestate/domanayuge/views.py=utf-8
+encoding//realestate/domanayuge/wildcard_urls.py=utf-8
 encoding//realestate/estatebase/field_utils.py=utf-8
 encoding//realestate/estatebase/fields.py=utf-8
 encoding//realestate/estatebase/forms.py=utf-8

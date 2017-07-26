@@ -71,6 +71,36 @@ class DevContextMixin(ContextMixin):
 class DevPage(DevContextMixin, TemplateView):    
     template_name = 'domanayuge/dev.html'  
       
+      
+class RemontContextMixin(ContextMixin):
+    blog_slug = 'blog'
+    def get_context_data(self, **kwargs):
+        context = super(RemontContextMixin, self).get_context_data(**kwargs)   
+        remont = Category.objects.get(slug='remont')
+        remont_categiries = list(remont.get_children().filter(menu=True))
+        
+        for idx, item in enumerate(remont_categiries):
+            item.idx = idx * 100
+            
+        blog = Category.objects.get(slug=self.blog_slug)        
+        blog.idx = 250      
+        remont_categiries.append(blog)
+        remont_categiries.sort(key=lambda x:x.idx)
+                  
+        context.update({           
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+            'cases': ContentEntry.objects.filter(categories__key='portfolioremont')[:9],
+            'remont_categiries': remont_categiries,            
+        })                                   
+        context.update({          
+            'domain': self.request.domain,           
+        })             
+        return context
+
+
+class RemontPage(RemontContextMixin, TemplateView):    
+    template_name = 'domanayuge/remont.html'
+
 
 class Blog(BaseContextMixin, ListView):
     blog_slug = 'blog'

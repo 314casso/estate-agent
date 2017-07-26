@@ -1,0 +1,341 @@
+{% extends "domanayuge/base.html" %}
+{% load mptt_tags %}
+{% load category_tags %}  
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+{% load paginator %}
+{% load hosts %}
+{% load content_edit_tags %}
+
+{% block extrameta %}
+<meta name="yandex-verification" content="" />
+<meta name="google-site-verification" content="" />
+<meta name='wmail-verification' content='' />
+<meta name="wot-verification" content=""/>
+{% endblock extrameta %}
+
+<!-- Navigation -->
+    {% block navigation %}
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top" style="background: #222222;">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">{{ domanayuge.name }}</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>                   
+                    {% recursetree remont_categiries %}                    
+                    	<li>                    	
+                        	<a class="page-scroll" href="#{{ node.slug }}">{{ node.name }}</a>
+                    	</li>                  
+				    {% endrecursetree %}                    
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    {% endblock navigation %}
+    
+
+{% block content %}
+
+<!-- Header -->
+<header id="remont">
+    <div class="container">
+        <div class="intro-text">
+            <div class="intro-lead-in">{% cms_content 'welcome_to_remont' %}</div>
+            <div class="intro-heading">{% cms_content 'nice_to_meet_you_remont' %}</div>
+            <a href="#advantages" class="page-scroll btn btn-xl">Узнать больше</a>
+        </div>
+    </div>
+</header>
+
+<!-- Advantage Section -->
+{% category 'aboutremont' as about %}
+<section id="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">{{ about.name }}</h2>
+                <h3 class="section-subheading text-muted">{{ about.alternate_title }}</h3>
+            </div>
+        </div>
+        <div class="row text-center">            	
+        	{% for entry in about.active_entries %}
+        	<div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa {{ entry.summary }} fa-stack-1x fa-inverse"></i>
+                </span>
+                <!-- #advantage1 -->
+                {% article 'advantage1' as advantage1 %}
+                <h4 class="advantage-heading">{{ entry.title }}</h4>
+                <p class="text-muted">
+                    {% with entry_content=entry.content|markdown:"safe,attr_list" %}
+                        {{ entry_content|parser:domain }}
+                    {% endwith %}                     
+                </p>
+            </div>            	
+        	{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Grid Section -->    
+{% category 'portfolioremont' as services %}
+<section id="portfolio" class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">
+                    <a href="{% url 'cases' services.key %}">
+                        {{ services.name }}
+                    </a>
+                </h2>
+                <h3 class="section-subheading text-muted">{{ services.alternate_title }}</h3>
+            </div>
+        </div>
+        <div class="row">
+        	{% for entry in cases %}
+        	<div class="col-md-4 col-sm-6 portfolio-item">
+                <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-plus fa-3x"></i>
+                        </div>
+                    </div>                        
+                    {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
+					<img class="img-responsive" src="{{ im.url }}">		    
+					{% endthumbnail %}                      
+                </a>
+                <div class="portfolio-caption">
+                    <h4>{{ entry.title }}</h4>
+                    <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                </div>
+            </div>
+        	{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+{% category 'remontprices' as projects %}
+<section id="projects">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">{{ projects.name }}</h2>
+                <h3 class="section-subheading text-muted">{{ projects.alternate_title }}</h3>
+            </div>
+        </div>
+        <div class="row text-center">        	
+            {% for child in projects.get_children.all %}
+            
+            
+            <div class="col-md-4 col-sm-6 portfolio-item">
+                <a href="{% url 'projects' child.key  %}" class="portfolio-link">
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-external-link fa-3x"></i>
+                        </div>
+                    </div>                        
+                    {% thumbnail child.image "360x260" crop="center" as im %}		    
+					<img class="img-responsive" src="{{ im.url }}">		    
+					{% endthumbnail %}                      
+                </a>
+                <div class="portfolio-caption">
+                    <h4>{{ child.name }}</h4>
+                    <p class="text-muted">{{ child.alternate_title }}</p>
+                </div>
+            </div>
+        	{% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- Blog Section -->
+{% category 'blog' as blog %}
+<section id="blog" class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">                
+                <a href="{% host_url 'blog' host 'home' %}">{{ blog.name }}</a> 
+                </h2>
+                <h3 class="section-subheading text-muted">{{ blog.alternate_title }}</h3>
+            </div>
+        </div>
+        <div class="row">
+        	{% for article in articles %}
+        	<div class="col-md-4 col-sm-6 blog-item">                    
+                <div class="card-caption">
+                    <h4><a href="{% host_url 'page' article.slug host 'home' %}">{{ article.title }}</a></h4>                        
+                </div>
+                <div class="card-body">
+                	<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
+                    <p class="text-muted">{{ article.summary }}</p>
+                </div>                    
+            </div>
+        	{% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- Contact Section -->
+{% category 'contactsremont' as contact %}
+<section id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">{{ contact.name }}</h2>
+                <div class="contact-address">
+                {% if domain %}                
+                	<h3 class="section-subheading"></span><i class="fa fa-phone" aria-hidden="true"></i> {{ domain.locality.office.address_short }}</h3>
+                {% else %} 
+                	<h3 class="section-subheading">{{ contact.alternate_title }}</h3>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <form name="sentMessage" id="contactForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Ваше имя *" id="name" required data-validation-required-message="Пожалуйста, введите ваше имя.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email *" id="email" required data-validation-required-message="Пожалуйста, укажите ваш email.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" class="form-control" placeholder="Телефон *" id="phone" required data-validation-required-message="Пожалуйста, укажите ваш телефон.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Сообщение *" id="message" required data-validation-required-message="Введите сообщение."></textarea>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-lg-12 text-center">
+                            <div id="success"></div>
+                            <button type="submit" class="btn btn-xl">Отправить сообщение</button>
+                        </div>
+                    </div>
+                </form>                 
+                <h3 class="text-muted text-center base-phone"><span class="glyphicon glyphicon-phone text-warning"></span>  {% cms_content 'dev_phone' %}</h3>
+            </div>
+        </div>           
+    </div>
+</section>
+
+{% article 'remonthome' as home %}
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; {{ home.summary }} {% now "Y" %}</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                    	{% for link in home.social_links %}
+                        	<li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
+                     	{% endfor %}                        
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">                    	
+                    	{% for link in home.free_links %}
+                    	<li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    	{% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<!-- Portfolio Modals -->
+<!-- Use the modals below to showcase details about your portfolio projects! -->
+{% for entry in services.active_entries %}
+<!-- Portfolio Modal {{ entry.id }} -->
+<div class="portfolio-modal modal fade" id="portfolioModal{{ entry.slug }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <h2>{{ entry.title }}</h2>
+                            <p class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                            
+                            <!-- Carousel -->
+                            <div id="carousel-{{ entry.slug }}" class="carousel slide" data-ride="carousel">
+							 							
+							  <!-- Wrapper for slides -->								  
+							  <div class="carousel-inner" role="listbox">
+							  {% for image in entry.images %}
+							    <div class="item {% if forloop.first %}active{% endif %}">
+							    
+							    	{% thumbnail image.image "720x540" crop="center" as im %}		    
+									<img src="{{ im.url }}">		    
+									{% endthumbnail %} 
+							    								      
+							      <div class="carousel-caption">{{ image.name }}</div>
+							    </div>
+							    {% endfor %}								    
+							  </div>								  
+															
+							  <!-- Controls -->
+							  <a class="left carousel-control" href="#carousel-{{ entry.slug }}" role="button" data-slide="prev">
+							    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							    <span class="sr-only">Previous</span>
+							  </a>
+							  <a class="right carousel-control" href="#carousel-{{ entry.slug }}" role="button" data-slide="next">
+							    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							    <span class="sr-only">Next</span>
+							  </a>
+							</div>
+                            <!-- End carousel -->                    
+                            {% with entry_content=entry.content|markdown:"safe,attr_list" %}
+								{{ entry_content|parser:domain }}
+							{% endwith %}                                      
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% include "content_edit/modal.html" %}
+
+{% endblock content %}
+
+{% block counter %}
+
+{% endblock counter %}
