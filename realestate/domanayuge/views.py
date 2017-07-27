@@ -60,7 +60,7 @@ class DevContextMixin(ContextMixin):
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfoliodev')[:9],
-            'stroyka_categiries': stroyka_categiries,            
+            'categiries': stroyka_categiries,            
         })                                   
         context.update({          
             'domain': self.request.domain,           
@@ -90,7 +90,7 @@ class RemontContextMixin(ContextMixin):
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfolioremont')[:9],
-            'remont_categiries': remont_categiries,            
+            'categiries': remont_categiries,            
         })                                   
         context.update({          
             'domain': self.request.domain,           
@@ -109,8 +109,7 @@ class Blog(BaseContextMixin, ListView):
     def get_queryset(self):           
         return ContentEntry.objects.filter(categories__slug=self.blog_slug)
     
-
-class BaseList(DevContextMixin, ListView):    
+class BaseList(ListView):
     paginate_by = 9    
     def get_queryset(self):
         key = self.kwargs['key']                   
@@ -122,15 +121,23 @@ class BaseList(DevContextMixin, ListView):
             'category': Category.objects.get(key=self.kwargs['key'])                
         })
         return context    
-    
-    
-class ProjectList(BaseList):
+
+
+class DevList(DevContextMixin, BaseList):
     template_name = 'domanayuge/projects.html'
+            
+    
+class RemontList(RemontContextMixin, BaseList):    
+    template_name = 'domanayuge/projects.html'
+    
 
-
-class CaseList(BaseList):
+class CaseList(DevContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'         
     
+    
+class RemontCaseList(RemontContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'    
+
 
 class Article(BaseContextMixin, DetailView):    
     template_name = 'domanayuge/page.html'
@@ -141,7 +148,7 @@ class Article(BaseContextMixin, DetailView):
         return context    
        
 
-class BaseEntry(DevContextMixin, DetailView):    
+class BaseEntry(DetailView):    
     model = ContentEntry    
     def get_context_data(self, **kwargs):
         context = super(BaseEntry, self).get_context_data(**kwargs)
@@ -151,12 +158,22 @@ class BaseEntry(DevContextMixin, DetailView):
         return context
        
        
-class Project(BaseEntry):
+class Project(DevContextMixin, BaseEntry):
     template_name = 'domanayuge/project.html'
     context_object_name = 'project'    
 
 
-class Case(BaseEntry):
+class RemontPrice(RemontContextMixin, BaseEntry):
+    template_name = 'domanayuge/project.html'
+    context_object_name = 'project'
+
+
+class Case(DevContextMixin, BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
+
+
+class RemontCase(RemontContextMixin, BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
     

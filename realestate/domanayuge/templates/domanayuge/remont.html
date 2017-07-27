@@ -32,7 +32,7 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>                   
-                    {% recursetree remont_categiries %}                    
+                    {% recursetree categiries %}                    
                     	<li>                    	
                         	<a class="page-scroll" href="#{{ node.slug }}">{{ node.name }}</a>
                     	</li>                  
@@ -54,7 +54,7 @@
         <div class="intro-text">
             <div class="intro-lead-in">{% cms_content 'welcome_to_remont' %}</div>
             <div class="intro-heading">{% cms_content 'nice_to_meet_you_remont' %}</div>
-            <a href="#advantages" class="page-scroll btn btn-xl">Узнать больше</a>
+            <a href="#about" class="page-scroll btn btn-xl">Узнать больше</a>
         </div>
     </div>
 </header>

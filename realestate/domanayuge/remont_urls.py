@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
-from domanayuge.views import ProjectList, Project, Blog, Article, Case, CaseList,\
-    send_email, robots_stroyka, RemontPage
+from domanayuge.views import Blog, Article, \
+    send_email, robots_stroyka, RemontPage, RemontList, RemontPrice,\
+    RemontCaseList, RemontCase
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.sitemaps import GenericSitemap
 from domanayuge.sitemaps import StaticViewSitemap
@@ -15,12 +16,12 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^content_edit/', include('content_edit.urls')),
     url(r'^$', RemontPage.as_view() ,name='remontpage'),
-    url(r'^projects/(?P<key>[-\w]+)/$', ProjectList.as_view(), name='projects'),
-    url(r'^projects/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Project.as_view(), name='project'),
+    url(r'^projects/(?P<key>[-\w]+)/$', RemontList.as_view(), name='projects'),
+    url(r'^projects/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='project'),
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
-    url(r'^cases/(?P<key>[-\w]+)/$', CaseList.as_view(), name='cases'),
-    url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Case.as_view(), name='case'),
+    url(r'^cases/(?P<key>[-\w]+)/$', RemontCaseList.as_view(), name='cases'),
+    url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontCase.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
 )
 
