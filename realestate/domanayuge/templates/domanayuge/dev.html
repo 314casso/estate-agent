@@ -48,6 +48,16 @@
 
 {% block content %}
 
+<!-- Header -->
+<header id="stroyka">
+    <div class="container">
+        <div class="intro-text">
+            <div class="intro-lead-in">{% cms_content 'welcome_to_stroyka' %}</div>
+            <div class="intro-heading">{% cms_content 'nice_to_meet_you_stroyka' %}</div>
+            <a href="#about" class="page-scroll btn btn-xl">Узнать больше</a>
+        </div>
+    </div>
+</header>
 
 <!-- Advantage Section -->
 {% category 'aboutdev' as about %}
