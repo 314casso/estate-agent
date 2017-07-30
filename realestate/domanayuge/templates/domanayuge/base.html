@@ -34,7 +34,7 @@
     <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}favicon.ico"/>
     {% block extracss %}
     <style type="text/css">
-	#stroyka {
+	header {
 		{% thumbnail root.image "1920" crop="center" as im %}		    
 			background-image: url({{ im.url }});		    
 		{% endthumbnail %}		
