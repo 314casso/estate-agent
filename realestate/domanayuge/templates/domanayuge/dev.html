@@ -7,7 +7,6 @@
 {% load paginator %}
 {% load hosts %}
 {% load content_edit_tags %}
-
 {% block extrameta %}
 <meta name="yandex-verification" content="e6b9344a5fb88090" />
 <meta name="google-site-verification" content="kRVF2VbfMVmKTv1YSHeAT9i-vnGSNx7znxNVARHNQNs" />
@@ -246,29 +245,29 @@
 </section>
 
 {% article 'devhome' as home %}
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; {{ home.summary|markdown:"safe,attr_list" }} {% now "Y" %}</span>
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline social-buttons">
-                    	{% for link in home.social_links %}
-                        	<li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
-                     	{% endfor %}                        
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline quicklinks">                    	
-                    	{% for link in home.free_links %}
-                    	<li><a href="{{ link.url }}">{{ link.title }}</a></li>
-                    	{% endfor %}
-                    </ul>
-                </div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="copyright">Copyright &copy; {{ home.summary|markdown:"safe,attr_list" }} {% now "Y" %}</span>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline social-buttons">
+                	{% for link in home.social_links %}
+                    	<li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
+                 	{% endfor %}                        
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline quicklinks">                    	
+                	{% for link in home.free_links %}
+                	<li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                	{% endfor %}
+                </ul>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
 <!-- Portfolio Modals -->
 <!-- Use the modals below to showcase details about your portfolio projects! -->

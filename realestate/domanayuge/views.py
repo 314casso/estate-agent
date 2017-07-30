@@ -27,7 +27,8 @@ class BaseContextMixin(ContextMixin):
             pass
                                     
         context.update({            
-            'categiries': categiries,                      
+            'categiries': categiries, 
+            'root': domanayuge,                     
         })               
         return context
     
@@ -60,7 +61,8 @@ class DevContextMixin(ContextMixin):
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfoliodev')[:9],
-            'categiries': stroyka_categiries,            
+            'categiries': stroyka_categiries,
+            'root': stroyka,            
         })                                   
         context.update({          
             'domain': self.request.domain,           
@@ -90,7 +92,8 @@ class RemontContextMixin(ContextMixin):
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfolioremont')[:9],
-            'categiries': remont_categiries,            
+            'categiries': remont_categiries,
+            'root': remont,            
         })                                   
         context.update({          
             'domain': self.request.domain,           

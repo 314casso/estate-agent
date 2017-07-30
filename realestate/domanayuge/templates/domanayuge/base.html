@@ -30,8 +30,17 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400i&subset=cyrillic" rel="stylesheet">
     <!-- Theme CSS -->
-    <link href="{{ STATIC_URL }}domanayuge/css/agency.css?1.0.6" rel="stylesheet">
+    <link href="{{ STATIC_URL }}domanayuge/css/agency.css?1.0.7" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}favicon.ico"/>
+    {% block extracss %}
+    <style type="text/css">
+	#stroyka {
+		{% thumbnail root.image "1920" crop="center" as im %}		    
+			background-image: url({{ im.url }});		    
+		{% endthumbnail %}		
+	}
+	</style>
+    {% endblock extracss %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
