@@ -42,8 +42,9 @@ def parser(value, domain=None):
 
 
 def get_unique_localites(iterable, prop):
-    result = cache.get('unique_localites')
+    cache_key = 'unique_localites_%s' % prop
+    result = cache.get(cache_key)
     if not result:
         result = sorted(list(set([getattr(dom.locality, prop) for dom in iterable])))
-        cache.set('unique_localites', result, 3600)
+        cache.set(cache_key, result, 3600)
     return result
