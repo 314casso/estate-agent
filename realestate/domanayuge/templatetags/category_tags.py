@@ -2,6 +2,7 @@
 from django import template
 from domanayuge.models import Category, ContentEntry, LocalityDomain
 from django.template import Context, Template
+from django.core.cache import cache 
 
 
 register = template.Library()
@@ -33,13 +34,16 @@ def parser(value, domain=None):
         doms = LocalityDomain.objects.filter(active=True, in_title=True)
         sep = u', '
         c = Context({
-            "locality": sep.join([dom.locality.name for dom in doms]),
-            "locality_gent": sep.join([dom.locality.name_gent for dom in doms]),
-            "locality_loct": sep.join([dom.locality.name_loct for dom in doms]),
+            "locality": sep.join(get_unique_localites(doms, 'name')),
+            "locality_gent": sep.join(get_unique_localites(doms, 'name_gent')),
+            "locality_loct": sep.join(get_unique_localites(doms, 'name_loct')),
             })        
     return t.render(c) 
 
 
-
-
-    
+def get_unique_localites(iterable, prop):
+    result = cache.get('unique_localites')
+    if not result:
+        result = sorted(list(set([getattr(dom.locality, prop) for dom in iterable])))
+        cache.set('unique_localites', result, 3600)
+    return result
