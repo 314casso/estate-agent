@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+
+Host: stroyka.domanayuge.ru
+Sitemap: http://stroyka.domanayuge.ru/sitemap.xml

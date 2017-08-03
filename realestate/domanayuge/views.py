@@ -184,6 +184,8 @@ class RemontCase(RemontContextMixin, BaseEntry):
 def robots_stroyka(request):
     return render(request, 'robots/robots_stroyka.txt', content_type='text/plain')
     
+def robots_remont(request):
+    return render(request, 'robots/robots_remont.txt', content_type='text/plain')    
     
 @require_http_methods(["POST"])
 @csrf_exempt

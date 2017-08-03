@@ -25,7 +25,7 @@ urlpatterns = patterns('',
 )
 
 blog_dict = {
-    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=[u'строительство', u'ремонт']),
+    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=[u'строительство']),
     'date_field': 'publication_date',
 }
 

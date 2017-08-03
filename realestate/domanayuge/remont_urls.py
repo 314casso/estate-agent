@@ -2,8 +2,8 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
-    send_email, robots_stroyka, RemontPage, RemontList, RemontPrice,\
-    RemontCaseList, RemontCase
+    send_email, RemontPage, RemontList, RemontPrice,\
+    RemontCaseList, RemontCase, robots_remont
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.sitemaps import GenericSitemap
 from domanayuge.sitemaps import StaticViewSitemap
@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 )
 
 blog_dict = {
-    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=[u'строительство', u'ремонт']),
+    'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=[u'ремонт']),
     'date_field': 'publication_date',
 }
 
@@ -38,7 +38,7 @@ urlpatterns += patterns('',
                       }
         },
         name='django.contrib.sitemaps.views.sitemap'),        
-        url(r'^robots\.txt$', robots_stroyka),
+        url(r'^robots\.txt$', robots_remont),
 )
 
 if settings.DEBUG:
