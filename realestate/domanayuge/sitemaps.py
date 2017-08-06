@@ -36,11 +36,11 @@ def get_projects_dict(key):
 
 class CaseGenericSitemap(GenericSitemap):  
     def location(self, obj):
-        return reverse('case', args=[obj.categories.first().pk, obj.slug])
+        return reverse('case', args=[obj.categories.first().key, obj.slug])
     
 class ProjectGenericSitemap(GenericSitemap):
     def location(self, obj):                
-        return reverse('project', args=[obj.categories.first().pk, obj.slug])
+        return reverse('project', args=[obj.categories.first().key, obj.slug])
     
 
 def get_sitemap_dict(tags, portfolio_key, projects_key):    
