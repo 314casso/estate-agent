@@ -5,7 +5,7 @@ from domanayuge.views import DevPage, Project, Blog, Article, Case, CaseList,\
     send_email, robots_stroyka, DevList
 from django.contrib.sitemaps.views import sitemap
 import settings
-from domanayuge.sitemap_services import get_sitemap_dict
+from domanayuge.sitemaps import get_sitemap_dict
 
 
 admin.autodiscover()

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django_hosts import patterns, host
 from domanayuge.models import LocalityDomain
+from django.contrib.sites.models import Site
 
 
 def locality_callback(request, domain):
@@ -10,8 +11,12 @@ def locality_callback(request, domain):
     except LocalityDomain.DoesNotExist:
         domain_obj = None
     request.domain = domain_obj
-
-
+    try:
+        site = Site.objects.get(name=domain)
+        settings.SITE_ID = site.id
+    except Site.DoesNotExist:
+        pass
+            
 host_patterns = patterns('',
                          host(r'^$', settings.ROOT_URLCONF, name='home'),
                          host(r'(domanayuge|www)',

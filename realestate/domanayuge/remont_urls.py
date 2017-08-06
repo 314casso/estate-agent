@@ -5,11 +5,10 @@ from domanayuge.views import Blog, Article, \
     send_email, RemontPage, RemontList, RemontPrice,\
     RemontCaseList, RemontCase, robots_remont
 from django.contrib.sitemaps.views import sitemap
-from django.contrib.sitemaps import GenericSitemap
-from domanayuge.sitemaps import StaticViewSitemap
 import settings
 from domanayuge.models import ContentEntry
-from domanayuge.sitemap_services import get_sitemap_dict
+from domanayuge.sitemaps import get_sitemap_dict
+
 
 admin.autodiscover()
 
