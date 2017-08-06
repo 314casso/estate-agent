@@ -3,7 +3,7 @@ from django_hosts import patterns, host
 from domanayuge.models import LocalityDomain
 from django.contrib.sites.models import Site
 
-def base_callback(request, domain):
+def base_callback(request, domain=None):
     settings.SITE_ID = 2
 
 def locality_callback(request, domain):
