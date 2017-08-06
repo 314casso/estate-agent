@@ -3,6 +3,8 @@ from django_hosts import patterns, host
 from domanayuge.models import LocalityDomain
 from django.contrib.sites.models import Site
 
+def base_callback(request, domain):
+    settings.SITE_ID = 2
 
 def locality_callback(request, domain):
     request.domain_pattern = domain
@@ -18,9 +20,9 @@ def locality_callback(request, domain):
         pass
             
 host_patterns = patterns('',
-                         host(r'^$', settings.ROOT_URLCONF, name='home'),
+                         host(r'^$', settings.ROOT_URLCONF, name='home', callback='domanayuge.hosts.base_callback'),
                          host(r'(domanayuge|www)',
-                              settings.ROOT_URLCONF, name='www'),
+                              settings.ROOT_URLCONF, name='www', callback='domanayuge.hosts.base_callback'),
                          host(r'(?P<domain>remont|anaparemont|temrukremont|nvrskremont|gzhkremont)', 'domanayuge.remont_urls', 
                               name='remont', callback='domanayuge.hosts.locality_callback'),                    
                          host(r'(?P<domain>\w+)', 'domanayuge.wildcard_urls',
