@@ -67,8 +67,7 @@ class ContentEntry(models.Model):
     
     def get_absolute_url(self):        
         return reverse('page', args=[self.slug])
-        
-        
+                
     def baseimage(self):        
         return self.images().first()
     

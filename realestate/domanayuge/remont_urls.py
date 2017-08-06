@@ -9,6 +9,7 @@ from django.contrib.sitemaps import GenericSitemap
 from domanayuge.sitemaps import StaticViewSitemap
 import settings
 from domanayuge.models import ContentEntry
+from domanayuge.sitemap_services import get_sitemap_dict
 
 admin.autodiscover()
 
@@ -32,11 +33,7 @@ blog_dict = {
 
 urlpatterns += patterns('',
         url(r'^sitemap\.xml$', sitemap,
-        {'sitemaps': {
-                        'blog': GenericSitemap(blog_dict, priority=0.6),                        
-                        'static': StaticViewSitemap 
-                      }
-        },
+        {'sitemaps':get_sitemap_dict([u'ремонт'], 'portfolioremont', 'remontprices')},
         name='django.contrib.sitemaps.views.sitemap'),        
         url(r'^robots\.txt$', robots_remont),
 )
