@@ -8,6 +8,7 @@ from domanayuge.models import ContentEntry
 from domanayuge.sitemaps import StaticViewSitemap
 
 admin.autodiscover()
+settings.SITE_ID = 2
 
 urlpatterns = patterns('',    
     url(r'^admin/', include(admin.site.urls)),
