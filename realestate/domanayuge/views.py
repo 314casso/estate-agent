@@ -137,6 +137,10 @@ class RemontList(RemontContextMixin, BaseList):
 class CaseList(DevContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'         
     
+
+class DevPriceList(DevContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'
+
     
 class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    
@@ -159,6 +163,11 @@ class BaseEntry(DetailView):
             'category': Category.objects.get(key=self.kwargs['key'])                
         })        
         return context
+
+
+class DevPrice(DevContextMixin, BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
        
        
 class Project(DevContextMixin, BaseEntry):

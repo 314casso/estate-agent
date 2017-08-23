@@ -809,17 +809,20 @@ body {
 	background: white;
 }
 
-#projects .portfolio-item {
+#projects .portfolio-item,
+#prices .portfolio-item {
   margin: 0 0 15px;
   right: 0;
 }
-#projects .portfolio-item .portfolio-link {
+#projects .portfolio-item .portfolio-link,
+#prices .portfolio-item .portfolio-link  {
   display: block;
   position: relative;
   max-width: 400px;
   margin: 0 auto;
 }
-#projects .portfolio-item .portfolio-link .portfolio-hover {
+#projects .portfolio-item .portfolio-link .portfolio-hover,
+#prices .portfolio-item .portfolio-link .portfolio-hover {
   background: rgba(254, 209, 54, 0.9);
   position: absolute;
   width: 100%;
@@ -829,10 +832,12 @@ body {
   -webkit-transition: all ease 0.5s;
   -moz-transition: all ease 0.5s;
 }
-#projects .portfolio-item .portfolio-link .portfolio-hover:hover {
+#projects .portfolio-item .portfolio-link .portfolio-hover:hover,
+#prices .portfolio-item .portfolio-link .portfolio-hover:hover {
   opacity: 1;
 }
-#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content {
+#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content {
   position: absolute;
   width: 100%;
   height: 20px;
@@ -842,31 +847,41 @@ body {
   margin-top: -12px;
   color: white;
 }
-#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i {
+#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i {
   margin-top: -12px;
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
-#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4 {
+#projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4 {
   margin: 0;
 }
-#projects .portfolio-item .portfolio-caption {
+#projects .portfolio-item .portfolio-caption,
+#prices .portfolio-item .portfolio-caption {
   max-width: 400px;
   margin: 0 auto;
   background-color: #eeeeee;
   text-align: center;
   padding: 25px;
 }
-#projects .portfolio-item .portfolio-caption h4 {
+#projects .portfolio-item .portfolio-caption h4,
+#prices .portfolio-item .portfolio-caption h4 {
   text-transform: none;
   margin: 0;
 }
-#projects .portfolio-item .portfolio-caption p {
+#projects .portfolio-item .portfolio-caption p,
+#prices .portfolio-item .portfolio-caption p {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: italic;
   font-size: 16px;
   margin: 0;
 }
 #projects * {
+  z-index: 2;
+}
+
+#prices * {
   z-index: 2;
 }
 

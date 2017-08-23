@@ -41,12 +41,15 @@ class CaseGenericSitemap(GenericSitemap):
 class ProjectGenericSitemap(GenericSitemap):
     def location(self, obj):                
         return reverse('project', args=[obj.categories.first().key, obj.slug])
-    
 
-def get_sitemap_dict(tags, portfolio_key, projects_key):    
-    return {
+
+def get_sitemap_dict(tags, portfolio_key, projects_key, prices_key=None):    
+    result = {
       'blog': GenericSitemap(get_blog_dict(tags), priority=0.6),                        
       'static': StaticViewSitemap,
       'cases': CaseGenericSitemap(get_portfolio_dict(portfolio_key), priority=0.6, ), 
       'projects': ProjectGenericSitemap(get_projects_dict(projects_key), priority=0.6, ),
     }       
+    if prices_key:
+        result['prices'] = ProjectGenericSitemap(get_projects_dict(prices_key), priority=0.6, )        
+    return result

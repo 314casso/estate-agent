@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, Project, Blog, Article, Case, CaseList,\
-    send_email, robots_stroyka, DevList
+    send_email, robots_stroyka, DevList, DevPriceList, DevPrice
 from django.contrib.sitemaps.views import sitemap
 import settings
 from domanayuge.sitemaps import get_sitemap_dict
@@ -21,12 +21,14 @@ urlpatterns = patterns('',
     url(r'^cases/(?P<key>[-\w]+)/$', CaseList.as_view(), name='cases'),
     url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', Case.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
+    url(r'^prices/(?P<key>[-\w]+)/$', DevPriceList.as_view(), name='prices'),
+    url(r'^prices/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', DevPrice.as_view(), name='price'),
 )
   
 
 urlpatterns += patterns('',
         url(r'^sitemap\.xml$', sitemap,
-        {'sitemaps':get_sitemap_dict([u'строительство'], 'portfoliodev', 'projects')},
+        {'sitemaps':get_sitemap_dict([u'строительство'], 'portfoliodev', 'projects', 'devprices')},
         name='django.contrib.sitemaps.views.sitemap'),        
         url(r'^robots\.txt$', robots_stroyka),
 )
