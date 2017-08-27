@@ -50,11 +50,11 @@ class DevContextMixin(ContextMixin):
         stroyka = Category.objects.get(slug='stroyka')
         stroyka_categiries = list(stroyka.get_children().filter(menu=True))
         
-        for idx, item in enumerate(stroyka_categiries):
-            item.idx = idx * 100
+        for item in stroyka_categiries:
+            item.idx = item.order
             
         blog = Category.objects.get(slug=self.blog_slug)        
-        blog.idx = 250      
+        blog.idx = 350      
         stroyka_categiries.append(blog)
         stroyka_categiries.sort(key=lambda x:x.idx)
                   
@@ -81,11 +81,11 @@ class RemontContextMixin(ContextMixin):
         remont = Category.objects.get(slug='remont')
         remont_categiries = list(remont.get_children().filter(menu=True))
         
-        for idx, item in enumerate(remont_categiries):
-            item.idx = idx * 100
+        for item in remont_categiries:
+            item.idx = item.order
             
         blog = Category.objects.get(slug=self.blog_slug)        
-        blog.idx = 250      
+        blog.idx = 350      
         remont_categiries.append(blog)
         remont_categiries.sort(key=lambda x:x.idx)
                   
