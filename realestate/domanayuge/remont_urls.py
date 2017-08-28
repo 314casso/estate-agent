@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
     send_email, RemontPage, RemontList, RemontPrice,\
-    RemontCaseList, RemontCase, robots_remont
+    RemontCaseList, RemontCase, robots
 from django.contrib.sitemaps.views import sitemap
 import settings
 from domanayuge.models import ContentEntry
@@ -34,7 +34,7 @@ urlpatterns += patterns('',
         url(r'^sitemap\.xml$', sitemap,
         {'sitemaps':get_sitemap_dict([u'ремонт'], 'portfolioremont', 'remontprices')},
         name='django.contrib.sitemaps.views.sitemap'),        
-        url(r'^robots\.txt$', robots_remont),
+        url(r'^robots\.txt$', robots),
 )
 
 if settings.DEBUG:

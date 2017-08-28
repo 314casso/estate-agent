@@ -13,6 +13,7 @@ import os
 from estatebase.models import Locality
 from django.core.urlresolvers import reverse
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.sites.models import Site
 
 
 def get_file_upload_to(instance, filename): 
@@ -126,3 +127,12 @@ class LocalityDomain(models.Model):
     in_title = models.BooleanField(default=False, verbose_name=_('in_title')) 
     def __str__(self):        
         return '%s %s' % (force_text(self.locality), force_text(self.domain))    
+    
+    
+@python_2_unicode_compatible        
+class SiteMeta(models.Model):
+    site = models.OneToOneField(Site)
+    main_mirror = models.CharField(blank=True, null=True, max_length=150)     
+    def __str__(self):        
+        return '%s' % (force_text(self.site))    
+    

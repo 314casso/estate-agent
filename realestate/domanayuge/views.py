@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView, ContextMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from domanayuge.models import Category, ContentEntry
+from domanayuge.models import Category, ContentEntry, SiteMeta
 from local_settings import EMAIL_SETTINGS
 from django.shortcuts import render
 
@@ -188,13 +188,20 @@ class Case(DevContextMixin, BaseEntry):
 class RemontCase(RemontContextMixin, BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
+
     
-  
-def robots_stroyka(request):
-    return render(request, 'robots/robots_stroyka.txt', content_type='text/plain')
+def robots(request):
+    site = get_current_site(request)
+    host = site.domain 
+    try:
+        site_meta = SiteMeta.objects.get(site=site)
+        if site_meta.main_mirror: 
+            host = site_meta.main_mirror
+    except SiteMeta.DoesNotExist:
+        pass
+     
+    return render(request, 'robots/robots.txt', content_type='text/plain', context={'host': host})
     
-def robots_remont(request):
-    return render(request, 'robots/robots_remont.txt', content_type='text/plain')    
     
 @require_http_methods(["POST"])
 @csrf_exempt
