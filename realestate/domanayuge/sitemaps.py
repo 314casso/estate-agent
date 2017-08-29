@@ -18,7 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
     
 def get_blog_dict(tags):
     return {
-        'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=tags),
+        'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__overlap=tags),
         'date_field': 'publication_date',
         }
 

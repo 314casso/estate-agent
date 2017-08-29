@@ -15,8 +15,8 @@
 
 		<div class = "page-header">            
 			<h1>{{ article.title }}</h1>
-			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>			
-		</div>
+			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
+		</div>			
 				
 		{{ article.content|markdown:"safe,attr_list" }}
 			
@@ -60,6 +60,16 @@
 		</div>
 		{% endif %}
 		<!-- End carousel -->
+			
+			<p>
+			{% for tag in article.tags %}
+			<span class="label label-default tags">
+			<a href="{% url 'blog' %}?tags={{ tag }}">				
+			{{ tag }}
+			</a>
+			</span>			
+			{% endfor %}
+			</p>
 	
 	<ol class="breadcrumb">
 	  <li><a href="{% url 'blog' %}">{{ blog.name }}</a></li>	  

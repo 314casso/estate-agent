@@ -35,16 +35,18 @@ class BaseContextMixin(ContextMixin):
 
 class HomePage(BaseContextMixin, TemplateView):    
     template_name = 'domanayuge/base.html'  
+    tags = [u'недвижимость']
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)         
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],            
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],            
         })                          
         return context          
     
     
 class DevContextMixin(ContextMixin):
     blog_slug = 'blog'
+    tags = [u'стройка']
     def get_context_data(self, **kwargs):
         context = super(DevContextMixin, self).get_context_data(**kwargs)   
         stroyka = Category.objects.get(slug='stroyka')
@@ -59,7 +61,7 @@ class DevContextMixin(ContextMixin):
         stroyka_categiries.sort(key=lambda x:x.idx)
                   
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfoliodev')[:9],
             'categiries': stroyka_categiries,
             'root': stroyka,            
@@ -76,6 +78,7 @@ class DevPage(DevContextMixin, TemplateView):
       
 class RemontContextMixin(ContextMixin):
     blog_slug = 'blog'
+    tags = [u'ремонт']
     def get_context_data(self, **kwargs):
         context = super(RemontContextMixin, self).get_context_data(**kwargs)   
         remont = Category.objects.get(slug='remont')
@@ -90,7 +93,7 @@ class RemontContextMixin(ContextMixin):
         remont_categiries.sort(key=lambda x:x.idx)
                   
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug)[:6],
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],
             'cases': ContentEntry.objects.filter(categories__key='portfolioremont')[:9],
             'categiries': remont_categiries,
             'root': remont,            
@@ -109,8 +112,16 @@ class Blog(BaseContextMixin, ListView):
     blog_slug = 'blog'
     template_name = 'domanayuge/blog.html'
     paginate_by = 10
-    def get_queryset(self):           
-        return ContentEntry.objects.filter(categories__slug=self.blog_slug)
+    def get_queryset(self):
+        f = {}
+        q = ContentEntry.objects.all()
+        f['categories__slug'] = self.blog_slug
+        if 'tags' in self.request.GET:
+            tags = [t.strip() for t in self.request.GET['tags'].split(',')]
+            print tags
+            f['tags__overlap'] = tags           
+        return q.filter(**f)                       
+        
     
 class BaseList(ListView):
     paginate_by = 9    
@@ -220,4 +231,5 @@ def send_email(request):
         reply_to=[request.POST['email']],        
     )
     email.send(False)
-    return HttpResponse('SUCCESS')    
+    return HttpResponse('SUCCESS')
+    

@@ -893,3 +893,15 @@ body {
 footer a {
 	color: #8a6d3b;	
 }
+
+.tags {
+	margin: 2px 4px;
+}
+
+#blog .tags a:hover{
+	color: #ccc;
+}
+
+#blog .tags a{
+	color: white;
+}

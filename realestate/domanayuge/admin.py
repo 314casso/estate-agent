@@ -1,8 +1,9 @@
 from django.contrib import admin
 from domanayuge.models import Category, ContentEntry, MediaLink, LocalityDomain,\
-    SiteMeta
+    SiteMeta, MetaTag
 from categories.base import CategoryBaseAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
+from django.contrib.admin.options import TabularInline
 
 
 class SimpleCategoryAdmin(CategoryBaseAdmin):
@@ -12,6 +13,8 @@ class SimpleCategoryAdmin(CategoryBaseAdmin):
 class InlineLinkEnties(GenericTabularInline):
     model = MediaLink
 
+class InlineMetaTags(TabularInline):
+    model = MetaTag
 
 class ContentEntryAdmin(admin.ModelAdmin):
     list_filter = ['categories']
@@ -23,7 +26,7 @@ class LocalityDomainAdmin(admin.ModelAdmin):
     pass
 
 class SiteMetaAdmin(admin.ModelAdmin):
-    pass
+    inlines = [InlineMetaTags]
 
 
 admin.site.register(Category, SimpleCategoryAdmin)

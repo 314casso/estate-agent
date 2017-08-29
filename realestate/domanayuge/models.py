@@ -132,7 +132,16 @@ class LocalityDomain(models.Model):
 @python_2_unicode_compatible        
 class SiteMeta(models.Model):
     site = models.OneToOneField(Site)
-    main_mirror = models.CharField(blank=True, null=True, max_length=150)     
+    main_mirror = models.CharField(blank=True, null=True, max_length=150)
+    title = models.CharField(blank=True, null=True, max_length=250)      
+    description = models.TextField(blank=True, null=True)
+    keywords = models.TextField(blank=True, null=True)
     def __str__(self):        
         return '%s' % (force_text(self.site))    
+
+
+class MetaTag (models.Model):   
+    site_meta = models.ForeignKey(SiteMeta)
+    name = models.CharField(blank=True, null=True, max_length=150)
+    content = models.CharField(blank=True, null=True, max_length=250)    
     
