@@ -46,7 +46,7 @@ class HomePage(BaseContextMixin, TemplateView):
     
 class DevContextMixin(ContextMixin):
     blog_slug = 'blog'
-    tags = [u'стройка']
+    tags = [u'строительство']
     def get_context_data(self, **kwargs):
         context = super(DevContextMixin, self).get_context_data(**kwargs)   
         stroyka = Category.objects.get(slug='stroyka')
