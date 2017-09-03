@@ -41,6 +41,10 @@ class CaseGenericSitemap(GenericSitemap):
 class ProjectGenericSitemap(GenericSitemap):
     def location(self, obj):                
         return reverse('project', args=[obj.categories.first().key, obj.slug])
+    
+class PriceGenericSitemap(GenericSitemap):
+    def location(self, obj):                
+        return reverse('price', args=[obj.categories.first().key, obj.slug])    
 
 
 def get_sitemap_dict(tags, portfolio_key, projects_key, prices_key=None):    
@@ -51,5 +55,5 @@ def get_sitemap_dict(tags, portfolio_key, projects_key, prices_key=None):
       'projects': ProjectGenericSitemap(get_projects_dict(projects_key), priority=0.6, ),
     }       
     if prices_key:
-        result['prices'] = ProjectGenericSitemap(get_projects_dict(prices_key), priority=0.6, )        
+        result['prices'] = PriceGenericSitemap(get_projects_dict(prices_key), priority=0.6, )        
     return result
