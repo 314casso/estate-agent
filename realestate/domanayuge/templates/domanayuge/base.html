@@ -13,13 +13,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ domanayuge.description }}">
-    <meta name="author" content="">    
+    <title>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</title>
+    <meta name="description" content="{{ site_meta.description|default:domanayuge.description }}">
+    {% if site_meta.keywords %}
+    <meta name="keywords" content="{{ site_meta.keywords }}" />
+    {% endif %}
+    <meta name="author" content="picasso">    
     {% block extrameta %}
     <meta name='wmail-verification' content='5938f08f2ee6b475d0efbe57f8e2a66c' />
     <meta name="wot-verification" content="07b6dbc7ae75765c162c"/>
-    {% endblock extrameta %}
-    <title>{% block page_title %}{{ domanayuge.name }}{% endblock %}</title>
+    {% endblock extrameta %}    
     <!-- Bootstrap Core CSS -->
     <link href="{{ STATIC_URL }}domanayuge/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom Fonts -->

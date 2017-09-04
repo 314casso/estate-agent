@@ -17,7 +17,7 @@ from django.shortcuts import render
 
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'     
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):       
         context = super(BaseContextMixin, self).get_context_data(**kwargs)
         categiries = None        
         try:
@@ -28,7 +28,8 @@ class BaseContextMixin(ContextMixin):
                                     
         context.update({            
             'categiries': categiries, 
-            'root': domanayuge,                     
+            'root': domanayuge,                    
+            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request)) 
         })               
         return context
     
@@ -67,7 +68,8 @@ class DevContextMixin(ContextMixin):
             'root': stroyka,            
         })                                   
         context.update({          
-            'domain': self.request.domain,           
+            'domain': self.request.domain,   
+            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request))        
         })             
         return context    
 
@@ -99,7 +101,8 @@ class RemontContextMixin(ContextMixin):
             'root': remont,            
         })                                   
         context.update({          
-            'domain': self.request.domain,           
+            'domain': self.request.domain,
+            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request))           
         })             
         return context
 
