@@ -18,7 +18,7 @@
 			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
 		</div>			
 				
-		{{ article.content|markdown:"safe,attr_list" }}
+		{{ article.content|markdown:"safe,attr_list,tables" }}
 			
 		<!-- Carousel -->
 		{% if article.images %}		

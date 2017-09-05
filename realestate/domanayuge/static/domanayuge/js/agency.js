@@ -29,5 +29,7 @@
             top: 100
         }
     })
+    
+    $(".container").find("table").addClass('table');
 
 })(jQuery); // End of use strict

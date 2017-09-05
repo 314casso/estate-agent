@@ -51,7 +51,7 @@
 
             <div class="col-lg-12">
                 <p>		
-		            {% with entry_content=project.content|markdown:"safe,attr_list" %}
+		            {% with entry_content=project.content|markdown:"safe,attr_list,tables" %}
                         {{ entry_content|parser:domain }}
                     {% endwith %}                                      
 	            </p>
