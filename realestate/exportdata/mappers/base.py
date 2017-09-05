@@ -244,7 +244,7 @@ class BaseMapper(object):
             return
         region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
         location = u'%s %s' % (estate.locality.name_loct, region)
-        estate_type_name =  u'%s' % estate.estate_type.name
+        estate_type_name =  u'%s' % estate.estate_type
         result = u'Продается %s в %s' % (estate_type_name.lower(), location)             
         return result
     
