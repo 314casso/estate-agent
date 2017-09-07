@@ -47,13 +47,14 @@ class PriceGenericSitemap(GenericSitemap):
         return reverse('price', args=[obj.categories.first().key, obj.slug])    
 
 
-def get_sitemap_dict(tags, portfolio_key, projects_key, prices_key=None):    
+def get_sitemap_dict(tags, portfolio_key, projects_key=None, prices_key=None):    
     result = {
       'blog': GenericSitemap(get_blog_dict(tags), priority=0.6),                        
       'static': StaticViewSitemap,
-      'cases': CaseGenericSitemap(get_portfolio_dict(portfolio_key), priority=0.6, ), 
-      'projects': ProjectGenericSitemap(get_projects_dict(projects_key), priority=0.6, ),
+      'cases': CaseGenericSitemap(get_portfolio_dict(portfolio_key), priority=0.6, ),
     }       
+    if projects_key:
+        result['projects'] = ProjectGenericSitemap(get_projects_dict(projects_key), priority=0.6, )      
     if prices_key:
         result['prices'] = PriceGenericSitemap(get_projects_dict(prices_key), priority=0.6, )        
     return result
