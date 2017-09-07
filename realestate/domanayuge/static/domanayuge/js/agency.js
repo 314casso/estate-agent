@@ -31,7 +31,7 @@
     })
     
     $(".container").find("table").addClass('table');
-    $(".container").find("table").find('td').addClass('col-md-6');
+    $(".container").find("table").find('td:first-child').addClass('col-md-9');
     
 
 })(jQuery); // End of use strict
