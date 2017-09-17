@@ -16,8 +16,9 @@ from django.shortcuts import render
 # Create your views here.
 
 class BaseContextMixin(ContextMixin): 
-    blog_slug = 'blog'     
-    def get_context_data(self, **kwargs):       
+    blog_slug = 'blog'         
+    def get_context_data(self, **kwargs):
+        site_meta = None       
         context = super(BaseContextMixin, self).get_context_data(**kwargs)
         categiries = None        
         try:
@@ -25,11 +26,16 @@ class BaseContextMixin(ContextMixin):
             categiries = domanayuge.get_children().filter(menu=True)
         except Category.DoesNotExist:  # @UndefinedVariable
             pass
+        
+        try:                 
+            site_meta = SiteMeta.objects.get(site=get_current_site(self.request))
+        except SiteMeta.DoesNotExist:
+            pass                          
                                     
         context.update({            
             'categiries': categiries, 
             'root': domanayuge,                    
-            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request)) 
+            'site_meta': site_meta  
         })               
         return context
     

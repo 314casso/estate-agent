@@ -905,3 +905,47 @@ footer a {
 #blog .tags a{
 	color: white;
 }
+
+#widget_pica {
+	position: fixed;
+    right: 0;
+    bottom: 3%;
+    z-index: 10000;
+}
+
+#widget_pica ul>li {
+    margin: 0!important;
+    width: 100%!important;
+    background: #222;
+    color: white;
+    font-weight: 700!important;
+    list-style: none!important;
+    text-decoration: none!important;
+    border-top: 1px solid #555;
+    border-left: 1px solid #555;    
+    padding: 14px!important;
+    box-sizing: border-box!important;
+    text-transform: uppercase;    
+}
+
+#widget_pica ul>li:hover {
+	background: #555;
+}
+
+#widget_pica.roundcorner ul>li:first-child {
+    border-top-left-radius: 3px;
+}
+
+#widget_pica.roundcorner ul>li:last-child {
+    border-bottom-left-radius: 3px;
+}
+
+#widget_pica {
+	opacity: .9;
+}
+
+#widget_pica ul>li>a {
+	color: white;	
+	text-decoration: none;
+    padding: 17px 0 17px 17px;
+}
