@@ -754,6 +754,16 @@ class EstatePhoto(OrderedModel):
 def get_file_upload_to(instance, filename):    
     return os.path.join(u'files', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
 
+
+class DocumentType(SimpleDict):
+    '''
+    Типы присоединенных файлов     
+    '''
+    class Meta(SimpleDict.Meta):
+        verbose_name = _('Document type')
+        verbose_name_plural = _('Document types')
+    
+
 class EstateFile(OrderedModel):
     '''
     Файлы
@@ -764,6 +774,7 @@ class EstateFile(OrderedModel):
     name = models.CharField(_('Name'), max_length=100, blank=True, null=True,)
     note = models.CharField(_('Note'), max_length=255, blank=True, null=True,)
     file = models.FileField(verbose_name=_('File'), upload_to=get_file_upload_to)
+    document_type = models.ForeignKey(DocumentType, verbose_name=_('Document type'), blank=True, null=True, on_delete=models.SET_NULL)
     def __unicode__(self):
         return u'%s' % (self.name or self.file.name)
     class Meta(OrderedModel.Meta):
@@ -772,6 +783,7 @@ class EstateFile(OrderedModel):
     def is_image(self):
         import imghdr        
         return imghdr.what(self.file.path) is not None 
+
 
 class GenericLink(models.Model):
     '''

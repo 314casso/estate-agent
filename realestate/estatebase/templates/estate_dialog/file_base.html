@@ -5,17 +5,19 @@
 {% endblock %}
 {% block content %}
 
-<div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px;">
+<div class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px;">		
     {% for file in files %}
+    <span title="{{ file.document_type|default:file.name }}">
     	{% if not file.is_image %}   
 		    <span style="padding: 1px 2px; margin: 2px" class="ui-widget-content ui-corner-all new-state">
 		        <a href="{{ file.file.url }}">{{ file.name }}</a>
 		    </span>
 		{% else %}
-		    {% thumbnail file.file "77x80" crop="center" as im %}		    
+		    {% thumbnail file.file "77x80" crop="center" format="PNG" as im %}		    
 		    <a rel="lightbox[{{ file.object_id }}]" href="{{ file.file.url }}"><img style="border:1px solid #aaa" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>		    
 		    {% endthumbnail %}
 	 	{% endif %} 
+	</span>
     {% endfor %}
 </div>
 {% endblock %}

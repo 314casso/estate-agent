@@ -781,7 +781,7 @@ class ImageUpdateForm(ModelForm):
 class FileUpdateForm(ModelForm):
     class Meta:
         model = EstateFile   
-        fields = ('name', 'note', 'file')
+        fields = ('name', 'note', 'file', 'document_type')
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')    

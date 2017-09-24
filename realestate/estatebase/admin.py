@@ -12,7 +12,7 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
     Ceiling, Flooring, Heating, Roof, WindowType, Shape, Purpose, LocalityType,\
     Validity, EstateRegister, StreetType, LandType, YandexBuilding, DealStatus,\
     EstateFile, GenericLink, GenericSupply, Supply, SupplyState, BuildingItem,\
-    BidStatusCategory
+    BidStatusCategory, DocumentType
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
@@ -186,3 +186,4 @@ admin.site.register(Supply)
 admin.site.register(SupplyState)
 admin.site.register(BuildingItem)
 admin.site.register(BidStatusCategory)
+admin.site.register(DocumentType)
