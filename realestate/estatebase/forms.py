@@ -49,9 +49,12 @@ from estatebase.lib import get_validity_delta
 class EstateForm(BetterModelForm):             
     agency_price = LocalIntegerField(label=_('Agency price'))
     saler_price = LocalIntegerField(label=_('Saler price'))
+    do_extra_perm = False
 
     def __init__(self, *args, **kwargs):
-        super(EstateForm, self).__init__(*args, **kwargs)        
+        super(EstateForm, self).__init__(*args, **kwargs)
+        if not self.do_extra_perm:
+            return                
         exclude = ['address_state',]
         _user = self.initial.get('_user')
         su = _user and _user.is_superuser
