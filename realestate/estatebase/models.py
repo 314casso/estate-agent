@@ -329,7 +329,7 @@ class EstateType(OrderedModel):
     KOMNATA = 21 
     DACHA = 13
     name = models.CharField(_('Name'), max_length=100)
-    name_accs = models.CharField(_('Accs'), max_length=100, blank=True, null=True)
+    name_accs = models.CharField(_('Accs'), max_length=100, null=True)
     estate_type_category = models.ForeignKey(EstateTypeCategory, verbose_name=_('EstateTypeCategory'), on_delete=models.PROTECT, related_name='types')   
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
