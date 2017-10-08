@@ -50,29 +50,6 @@ class WPService(object):
                     none_animacy = item
         return none_animacy
             
-    def inflect_depricated(self, name, case):
-        import pymorphy2
-        cases = {
-            1 : 'nomn', #    именительный    Кто? Что?    хомяк ест
-            2 : 'gent', #    родительный    Кого? Чего?    у нас нет хомяка
-            3 : 'datv', #    дательный    Кому? Чему?    сказать хомяку спасибо
-            4 : 'accs', #    винительный    Кого? Что?    хомяк читает книгу
-            5 : 'ablt', #    творительный    Кем? Чем?    зерно съедено хомяком
-            6 : 'loct', #    предложный    О ком? О чём? и т.п.    хомяка несут в корзинке
-        }
-        parts = name.split()
-        result = []
-        for part in parts:                
-            p = self.get_normal_form_parser(self.morph.parse(part))
-            if p:
-                item = p.inflect({cases[case]})
-                word = item.word if item else part                     
-                result.append(pymorphy2.shapes.restore_word_case(word, part))
-            else:
-                result.append(part)
-        if result:
-            return ' '.join(result)
-        
     def get_taxonomies(self, name='category'):
         if not name in self._taxonomies:            
             self._taxonomies[name] = self.client.call(taxonomies.GetTerms(name))
@@ -306,7 +283,8 @@ class WPService(object):
     def render_post_description(self, estate):
         region = u'Краснодарского края' if estate.locality.locality_type_id == Locality.CITY else estate.locality.region.regular_name_gent
         location = u'%s %s' % (estate.locality.name_loct, region)
-        result = u'Продается %s в %s' % (estate.estate_type.lower(), location)             
+        estate_type = u'%s' % estate.estate_type
+        result = u'Продается %s в %s' % (estate_type.lower(), location)             
         return result
     
     def get_custom_field_id(self, old_custom_fields, key):
