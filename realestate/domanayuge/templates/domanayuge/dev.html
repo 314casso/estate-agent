@@ -8,15 +8,6 @@
 {% load hosts %}
 {% load content_edit_tags %}
 {% block extrameta %}
-{% if request.domain_pattern == 'beta' %}
-<meta name="yandex-verification" content="bca5adb3e5d6be03" />
-{% else %}
-<meta name="yandex-verification" content="e6b9344a5fb88090" />
-<meta name="google-site-verification" content="kRVF2VbfMVmKTv1YSHeAT9i-vnGSNx7znxNVARHNQNs" />
-<meta name='wmail-verification' content='a573d288ae4cb885f5b70a3c9dd2cdb7' />
-<meta name="wot-verification" content="c166dc78ede054d0799e"/>
-{% endif %}
-{% endblock extrameta %}
 
 <!-- Navigation -->
     {% block navigation %}

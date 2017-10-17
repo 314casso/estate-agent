@@ -20,9 +20,10 @@
     {% endif %}
     <meta name="author" content="picasso">    
     {% block extrameta %}
-    <meta name='wmail-verification' content='5938f08f2ee6b475d0efbe57f8e2a66c' />
-    <meta name="wot-verification" content="07b6dbc7ae75765c162c"/>
-    {% endblock extrameta %}    
+   		{% for metatag in site_meta.metatags.all %}
+   		<meta name="{{ metatag.name }}" content="{{ metatag.content }}">
+   		{% endfor %}
+    {% endblock extrameta extrameta %}  
     <!-- Bootstrap Core CSS -->
     <link href="{{ STATIC_URL }}domanayuge/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom Fonts -->

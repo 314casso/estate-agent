@@ -141,7 +141,7 @@ class SiteMeta(models.Model):
 
 
 class MetaTag (models.Model):   
-    site_meta = models.ForeignKey(SiteMeta)
+    site_meta = models.ForeignKey(SiteMeta, related_name='metatags')
     name = models.CharField(blank=True, null=True, max_length=150)
     content = models.CharField(blank=True, null=True, max_length=250)    
     
