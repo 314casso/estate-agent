@@ -77,11 +77,13 @@ class ExContextMixin(ContextMixin):
         
         geo_tags = self.site_meta.tags if self.site_meta else None        
         articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
+        articles_slices = 6
         if geo_tags:
             articles = articles.filter(tags__contains=geo_tags)
+            articles_slices = 3
                           
         context.update({           
-            'articles': articles[:3],
+            'articles': articles[:articles_slices],
             'cases': ContentEntry.objects.filter(categories__key=self.cases_key)[:9],
             'categiries': categiries,
             'root': root,
