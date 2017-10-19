@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.sitemaps import GenericSitemap
-from domanayuge.models import ContentEntry, Category
+from domanayuge.models import ContentEntry, Category, SiteMeta
 from django.contrib import sitemaps
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
@@ -16,9 +16,12 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def location(self, item):
         return reverse(item)
     
-def get_blog_dict(tags):
+def get_blog_dict(tags, geo_tags):
+    q = ContentEntry.objects.filter(categories__slug="blog", tags__overlap=tags)
+    if geo_tags:
+        q = q.filter(tags__contains=geo_tags)
     return {
-        'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__overlap=tags),
+        'queryset': q,
         'date_field': 'publication_date',
         }
 
@@ -47,9 +50,15 @@ class PriceGenericSitemap(GenericSitemap):
         return reverse('price', args=[obj.categories.first().key, obj.slug])    
 
 
-def get_sitemap_dict(tags, portfolio_key, projects_key=None, prices_key=None):    
+def get_sitemap_dict(tags, portfolio_key, projects_key=None, prices_key=None):
+    site_meta = None
+    try:    
+        site_meta = SiteMeta.objects.get(site=Site.objects.get_current())
+    except SiteMeta.DoesNotExist:
+        pass
+    geo_tags = site_meta.tags if site_meta else None     
     result = {
-      'blog': GenericSitemap(get_blog_dict(tags), priority=0.6),                        
+      'blog': GenericSitemap(get_blog_dict(tags, geo_tags), priority=0.6),                        
       'static': StaticViewSitemap,
       'cases': CaseGenericSitemap(get_portfolio_dict(portfolio_key), priority=0.6, ),
     }       

@@ -16,9 +16,9 @@ from django.shortcuts import render
 # Create your views here.
 
 class BaseContextMixin(ContextMixin): 
-    blog_slug = 'blog'         
-    def get_context_data(self, **kwargs):
-        site_meta = None       
+    blog_slug = 'blog'
+    site_meta = None             
+    def get_context_data(self, **kwargs):               
         context = super(BaseContextMixin, self).get_context_data(**kwargs)
         categiries = None        
         try:
@@ -28,14 +28,14 @@ class BaseContextMixin(ContextMixin):
             pass
         
         try:                 
-            site_meta = SiteMeta.objects.get(site=get_current_site(self.request))
+            self.site_meta = SiteMeta.objects.get(site=get_current_site(self.request))
         except SiteMeta.DoesNotExist:
             pass                          
                                     
         context.update({            
             'categiries': categiries, 
             'root': domanayuge,                    
-            'site_meta': site_meta  
+            'site_meta': self.site_meta  
         })               
         return context
     
@@ -51,68 +51,62 @@ class HomePage(BaseContextMixin, TemplateView):
         return context          
     
     
-class DevContextMixin(ContextMixin):
+class ExContextMixin(ContextMixin):
     blog_slug = 'blog'
-    tags = [u'строительство']
+    slug = None
+    tags = []
+    site_meta = None  
+    cases_key = None  
     def get_context_data(self, **kwargs):
-        context = super(DevContextMixin, self).get_context_data(**kwargs)   
-        stroyka = Category.objects.get(slug='stroyka')
-        stroyka_categiries = list(stroyka.get_children().filter(menu=True))
+        context = super(ExContextMixin, self).get_context_data(**kwargs)   
+        root = Category.objects.get(slug=self.slug)
+        categiries = list(root.get_children().filter(menu=True))
         
-        for item in stroyka_categiries:
+        for item in categiries:
             item.idx = item.order
             
         blog = Category.objects.get(slug=self.blog_slug)        
         blog.idx = 350      
-        stroyka_categiries.append(blog)
-        stroyka_categiries.sort(key=lambda x:x.idx)
-                  
+        categiries.append(blog)
+        categiries.sort(key=lambda x:x.idx)
+           
+        try:                 
+            self.site_meta = SiteMeta.objects.get(site=get_current_site(self.request))
+        except SiteMeta.DoesNotExist:
+            pass
+        
+        geo_tags = self.site_meta.tags if self.site_meta else None        
+        articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
+        if geo_tags:
+            articles = articles.filter(tags__contains=geo_tags)
+                          
         context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],
-            'cases': ContentEntry.objects.filter(categories__key='portfoliodev')[:9],
-            'categiries': stroyka_categiries,
-            'root': stroyka,            
-        })                                   
-        context.update({          
-            'domain': self.request.domain,   
-            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request))        
-        })             
-        return context    
-
-
+            'articles': articles[:3],
+            'cases': ContentEntry.objects.filter(categories__key=self.cases_key)[:9],
+            'categiries': categiries,
+            'root': root,
+            'domain': self.request.domain,
+            'site_meta': self.site_meta            
+        })                                 
+        return context 
+        
+    
+class DevContextMixin(ExContextMixin):    
+    tags = [u'строительство']
+    slug = 'stroyka'          
+    cases_key = 'portfoliodev'    
+    
+    
 class DevPage(DevContextMixin, TemplateView):    
     template_name = 'domanayuge/dev.html'  
       
       
-class RemontContextMixin(ContextMixin):
-    blog_slug = 'blog'
+class RemontContextMixin(ExContextMixin):    
     tags = [u'ремонт']
-    def get_context_data(self, **kwargs):
-        context = super(RemontContextMixin, self).get_context_data(**kwargs)   
-        remont = Category.objects.get(slug='remont')
-        remont_categiries = list(remont.get_children().filter(menu=True))
-        
-        for item in remont_categiries:
-            item.idx = item.order
-            
-        blog = Category.objects.get(slug=self.blog_slug)        
-        blog.idx = 350      
-        remont_categiries.append(blog)
-        remont_categiries.sort(key=lambda x:x.idx)
-                  
-        context.update({           
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],
-            'cases': ContentEntry.objects.filter(categories__key='portfolioremont')[:9],
-            'categiries': remont_categiries,
-            'root': remont,            
-        })                                   
-        context.update({          
-            'domain': self.request.domain,
-            'site_meta': SiteMeta.objects.get(site=get_current_site(self.request))           
-        })             
-        return context
-
-
+    slug = 'remont'          
+    cases_key = 'portfolioremont'
+    
+    
 class RemontPage(RemontContextMixin, TemplateView):    
     template_name = 'domanayuge/remont.html'
 
@@ -121,7 +115,7 @@ class Blog(BaseContextMixin, ListView):
     blog_slug = 'blog'
     template_name = 'domanayuge/blog.html'
     paginate_by = 10
-    def get_queryset(self):
+    def get_queryset(self):        
         f = {}
         q = ContentEntry.objects.all()
         f['categories__slug'] = self.blog_slug
@@ -129,8 +123,9 @@ class Blog(BaseContextMixin, ListView):
             tags = [t.strip() for t in self.request.GET['tags'].split(',')]
             print tags
             f['tags__overlap'] = tags           
-        return q.filter(**f)                       
-        
+        q = q.filter(**f)      
+        return q                                 
+
     
 class BaseList(ListView):
     paginate_by = 9    
