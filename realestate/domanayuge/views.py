@@ -75,16 +75,23 @@ class ExContextMixin(ContextMixin):
         except SiteMeta.DoesNotExist:
             pass
         
-        geo_tags = self.site_meta.tags if self.site_meta else None        
-        articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
+        geo_tags = self.site_meta.tags if self.site_meta else None
         articles_slices = 6
-        if geo_tags:
-            articles = articles.filter(tags__contains=geo_tags)
-            articles_slices = 3
+        case_slices = 9        
+        articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
+        cases = ContentEntry.objects.filter(categories__key=self.cases_key)                
+        if geo_tags:            
+            articles = articles.filter(tags__contains=geo_tags)           
+            cases = cases.filter(tags__contains=geo_tags)
+        else:
+            ex_tags = get_all_geo_tags()
+            if ex_tags:            
+                articles = articles.exclude(tags__overlap=ex_tags)
+                cases = cases.exclude(tags__overlap=ex_tags)
                           
         context.update({           
             'articles': articles[:articles_slices],
-            'cases': ContentEntry.objects.filter(categories__key=self.cases_key)[:9],
+            'cases': cases[:case_slices],
             'categiries': categiries,
             'root': root,
             'domain': self.request.domain,
@@ -92,6 +99,15 @@ class ExContextMixin(ContextMixin):
         })                                 
         return context 
         
+        
+def get_all_geo_tags():
+    all_metas = SiteMeta.objects.all()
+    geo_tags = []
+    for meta in all_metas:
+        if meta.tags:  
+            geo_tags.extend(meta.tags)
+    return geo_tags   
+            
     
 class DevContextMixin(ExContextMixin):    
     tags = [u'строительство']
