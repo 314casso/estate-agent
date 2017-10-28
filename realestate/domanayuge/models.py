@@ -16,6 +16,15 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.sites.models import Site
 
 
+def get_all_geo_tags():
+    all_metas = SiteMeta.objects.all()
+    geo_tags = []
+    for meta in all_metas:
+        if meta.tags:  
+            geo_tags.extend(meta.tags)
+    return geo_tags 
+
+
 def get_file_upload_to(instance, filename): 
     if hasattr(instance, 'content_type'):   
         return os.path.join('files', force_unicode(instance.content_type.id), force_unicode(instance.object_id),  force_unicode(filename))
@@ -33,7 +42,21 @@ class Category(CategoryBase):
     image = models.ImageField(verbose_name=_('Image'), upload_to=get_file_upload_to, blank=True, null=True,) 
     
     def active_entries(self):
-        return self.entries.filter(active=True)
+        q = self.entries.filter(active=True)        
+        site_meta = None
+        try:    
+            site_meta = SiteMeta.objects.get(site=Site.objects.get_current())
+        except SiteMeta.DoesNotExist:
+            pass
+        geo_tags = site_meta.tags if site_meta else None
+        
+        if geo_tags:
+            q = q.filter(tags__contains=geo_tags)        
+        else:
+            ex_tags = get_all_geo_tags
+            if ex_tags:            
+                q = q.exclude(tags__overlap=ex_tags)        
+        return q
            
     def __str__(self):
         ancestors = self.get_ancestors()

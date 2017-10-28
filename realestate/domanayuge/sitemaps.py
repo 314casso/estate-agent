@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.sitemaps import GenericSitemap
-from domanayuge.models import ContentEntry, Category, SiteMeta
+from domanayuge.models import ContentEntry, Category, SiteMeta, get_all_geo_tags
 from django.contrib import sitemaps
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
-from domanayuge.views import get_all_geo_tags
 
 
 class StaticViewSitemap(sitemaps.Sitemap):

@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView, ContextMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from domanayuge.models import Category, ContentEntry, SiteMeta
+from domanayuge.models import Category, ContentEntry, SiteMeta, get_all_geo_tags
 from local_settings import EMAIL_SETTINGS
 from django.shortcuts import render
 
@@ -84,7 +84,7 @@ class ExContextMixin(ContextMixin):
             articles = articles.filter(tags__contains=geo_tags)           
             cases = cases.filter(tags__contains=geo_tags)
         else:
-            ex_tags = get_all_geo_tags()
+            ex_tags = get_all_geo_tags
             if ex_tags:            
                 articles = articles.exclude(tags__overlap=ex_tags)
                 cases = cases.exclude(tags__overlap=ex_tags)
@@ -99,15 +99,6 @@ class ExContextMixin(ContextMixin):
         })                                 
         return context 
         
-        
-def get_all_geo_tags():
-    all_metas = SiteMeta.objects.all()
-    geo_tags = []
-    for meta in all_metas:
-        if meta.tags:  
-            geo_tags.extend(meta.tags)
-    return geo_tags   
-            
     
 class DevContextMixin(ExContextMixin):    
     tags = [u'строительство']
