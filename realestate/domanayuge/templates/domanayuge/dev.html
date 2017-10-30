@@ -77,7 +77,12 @@
                         {{ entry_content|parser:domain }}
                     {% endwith %}                     
                 </p>
-            </div>            	
+            </div>
+            
+            {% if forloop.counter == 3 %}
+            <div class="clearfix"></div> 
+            {% endif %}
+                       	
         	{% endfor %}
         </div>
     </div>
