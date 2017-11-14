@@ -28,6 +28,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation    
 from estatebase.lib import get_validity_delta
 
+
 class ExUser(User):
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
@@ -1308,10 +1309,83 @@ class Contact(models.Model):
         verbose_name_plural = _('contacts') 
         ordering = ['contact_state__id', 'contact_type__id']
 
-class Bid(ProcessDeletedModel):
+
+class BidState(models.Model):
+    '''
+    новая - добавлена офис-менеджером и не определена риэлтору, дополнительный статус - устаревшая, назначается по истечении 30 дней
+    свободная - риэлтор отдал заявку или руководитель очистил список риэлторов по заявке, либо, если пользователь делается неактивным, все его заявки становятся свободными, дополнительный статус - устаревшая, назначается по истечении 30 дней
+    в работе -  заявка закреплена за одним или несколькими риэлторами, данное состояние имеет дополнительный статус - просрочена, который назначается по дате события
+    в ожидании - заявки, которые обновлялись последний раз ранее 01.12.2015 года
+    закрыта - категория статуса заявки неактуальные
+        
+    свободный список (аукцион) = новая + свободная + просрочена
+    '''   
+    
+    FREEDAYS = 3 
+    PENDING_DATE = datetime.datetime(2015,12,1)
+           
+    NEW = 1
+    FREE = 2
+    OUTDATED = 21
+    WORKING = 3
+    EXPIRED = 31
+    PENDING = 4
+    CLOSED = 5 
+    
+    
+    STATE_CHOICES = (
+        (NEW, u'новая'),
+        (FREE, u'свободная'),        
+        (WORKING, u'в работе'),
+        (PENDING, u'в ожидании'),
+        (CLOSED, u'закрыта'),
+    )
+    
+    bid = models.OneToOneField('Bid',verbose_name=_('Bid'), related_name='state')
+    state = models.PositiveIntegerField(verbose_name=_('State'), default=NEW, choices=STATE_CHOICES)
+    event_date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)
+    
+    @staticmethod
+    def calculate_state(bid, event_date):        
+        irrelevant = bid.bid_status.filter(category=BidStatusCategory.IRRELEVANT)        
+        if irrelevant:
+            return BidState.CLOSED      
+        if event_date < BidState.PENDING_DATE:
+            return BidState.PENDING
+        if not bid.brokers:
+            return BidState.FREE         
+        return BidState.WORKING        
+    
+    @staticmethod
+    def update_state(bid):
+        if not bid:
+            return
+        try:
+            state = bid.state
+        except BidState.DoesNotExist:
+            state = None 
+        if not state:
+            state = BidState()
+            state.bid = bid 
+        
+        last_calendar_event = bid.get_last_calendar_event()
+        if last_calendar_event:
+            event_date = last_calendar_event.date
+        else:
+            event_date = bid.history.modificated + datetime.timedelta(days=BidState.FREEDAYS)
+        
+        state.state = BidState.calculate_state(bid, event_date)
+        if not state.state in (BidState.CLOSED, BidState.PENDING):
+            state.event_date = event_date 
+        
+        state.save()
+        return state
+   
+
+class Bid(ProcessDeletedModel): 
     '''
     Заявка
-    '''      
+    '''    
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='bids', blank=True, null=True, on_delete=models.SET_NULL)
     clients = models.ManyToManyField(Client, verbose_name=_('Clients'), related_name='bids_m2m', blank=True, through='BidClient')
     estate_filter = PickledObjectField(blank=True, null=True)
@@ -1330,7 +1404,7 @@ class Bid(ProcessDeletedModel):
     agency_price_max = models.IntegerField(verbose_name=_('Price max'), blank=True, null=True)
     #Конец из пикле    
     note = models.TextField(_('Note'), blank=True, null=True)
-    bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True)
+    bid_status = models.ManyToManyField('BidStatus',verbose_name=_('BidStatus'),blank=True)       
     #attachments
     files = GenericRelation('EstateFile')
     @property
@@ -1341,7 +1415,23 @@ class Bid(ProcessDeletedModel):
         result.extend(cats_no_type.values_list('types__name', flat=True).order_by('types__order'))
         result.extend(self.estate_types.values_list('name', flat=True).order_by('order'))
         return ', '.join(result)
+    
+    def update_state(self):
+        return BidState.update_state(self)    
         
+    @property
+    def state_display(self):
+        try:
+            state = self.state
+        except BidState.DoesNotExist:
+            state = self.update_state()
+        delta = datetime.datetime.now() - state.event_date   
+        if delta.days > BidState.FREEDAYS:
+            return u"просрочена"
+        return state.get_state_display()   
+        
+    def get_last_calendar_event(self):
+        return self.bid_events.filter(bid_event_category__is_calendar=True).first()   
         
     def __unicode__(self):
         return u'%s' % self.pk                                  
@@ -1357,6 +1447,7 @@ class BidStatusCategory(SimpleDict):
     '''
     Категория статусов заявки 
     '''
+    IRRELEVANT = 3
     class Meta(SimpleDict.Meta):
         verbose_name = _('Bid status category')
         verbose_name_plural = _('Bid status categories')
@@ -1374,6 +1465,7 @@ class BidEventCategory(SimpleDict):
     '''
     Категория событий по заявке 
     '''
+    is_calendar = models.BooleanField(_('Calendar'), default=False)
     class Meta(SimpleDict.Meta):
         verbose_name = _('BidEventCategory')
         verbose_name_plural = _('BidEventCategories')

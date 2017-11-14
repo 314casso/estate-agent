@@ -3,6 +3,7 @@ from django.db.models.signals import post_save, pre_save, post_delete,\
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam,\
     Layout, EntranceEstate, EstatePhoto
+from datetime import datetime    
 
 def save_estate(sender, instance, created, **kwargs):    
     if hasattr(instance.level, 'bidg'):
@@ -111,6 +112,15 @@ def update_geo(sender, instance, **kwargs):
     instance.geo_groups = geo_groups
 
 
+def update_status(sender, instance, **kwargs):    
+    instance.update_state()
+    
+#     BID_EXPIRED = datetime(2015, 12, 1)
+#     if instance.history.modificated < BID_EXPIRED:
+#         instance.state = Bid.PENDING
+#         return
+    
+
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
     post_save.connect(set_validity, sender=Estate)
@@ -122,6 +132,7 @@ def connect_signals():
     post_delete.connect(estate_client_handler, sender=EstateClient)
     post_save.connect(update_geo, sender=Bid) # @UndefinedVariable
     pre_save.connect(update_from_pickle, sender=Bid)
+    post_save.connect(update_status, sender=Bid)
     post_save.connect(bid_event_history, sender=BidEvent)
     post_save.connect(estate_wp_meta, sender=Estate)
     m2m_changed.connect(estate_param_wp_meta, sender=Estate.estate_params.through)  # @UndefinedVariable

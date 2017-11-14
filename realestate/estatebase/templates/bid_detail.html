@@ -17,6 +17,9 @@
 {% block left %}
 <fieldset class="table-form ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
     <legend style="font-size: 14px;">Информация о заявке</legend>
+<div title="Состояние заявки" class="inline-formset ui-widget ui-widget-content ui-corner-all" style="float:right">
+<strong>{{ bid.state_display }}</strong><br><small>{{ bid.state.event_date|date:"d M Y" }}</small>
+</div>    
 <table>
 	<tr>
 		<th>Код:</th>
@@ -25,7 +28,7 @@
 	<tr>
         <th>Статус:</th>
         <td>{% comma_list bid.bid_status %}</td>
-    </tr>
+    </tr>    
 	<tr>
         
         <td colspan="100%">
