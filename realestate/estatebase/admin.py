@@ -119,6 +119,11 @@ class MicrodistrictAdmin(admin.ModelAdmin):
 class BidStatusAdmin(admin.ModelAdmin):
     list_filter = ('category',)    
     
+class BidStateAdmin(admin.ModelAdmin):
+    raw_id_fields = ('bid',)
+    fields = ['bid', 'state']
+    list_display = ('bid', 'state')
+    
 admin.site.register(User, UserProfileAdmin)
 
 admin.site.register(Region, RegionAdmin)
@@ -187,5 +192,5 @@ admin.site.register(SupplyState)
 admin.site.register(BuildingItem)
 admin.site.register(BidStatusCategory)
 admin.site.register(DocumentType)
-admin.site.register(BidState)
+admin.site.register(BidState, BidStateAdmin)
 
