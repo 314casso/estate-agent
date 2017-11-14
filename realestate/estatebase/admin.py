@@ -120,8 +120,7 @@ class BidStatusAdmin(admin.ModelAdmin):
     list_filter = ('category',)    
     
 class BidStateAdmin(admin.ModelAdmin):
-    raw_id_fields = ('bid',)
-    fields = ['bid', 'state']
+    raw_id_fields = ('bid',)    
     list_display = ('bid', 'state')
     
 admin.site.register(User, UserProfileAdmin)
