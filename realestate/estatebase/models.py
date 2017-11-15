@@ -1372,7 +1372,10 @@ class BidState(models.Model):
         if last_calendar_event:
             event_date = last_calendar_event.date
         else:
-            event_date = bid.history.modificated + datetime.timedelta(days=BidState.FREEDAYS)
+            if bid.history:
+                event_date = bid.history.modificated + datetime.timedelta(days=BidState.FREEDAYS)
+            else:
+                event_date = datetime.datetime.now() + datetime.timedelta(days=BidState.FREEDAYS)
         
         state.state = BidState.calculate_state(bid, event_date)
         if not state.state in (BidState.CLOSED, BidState.PENDING) or not state.event_date:
