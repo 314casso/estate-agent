@@ -93,6 +93,9 @@ class BidAdmin(admin.ModelAdmin):
 class LocalityAdmin(admin.ModelAdmin):
     list_display = ['name', 'name_gent', 'name_loct']
     
+class BidEventCategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'is_calendar', 'do_free']
+    
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['regular_name', 'regular_name_gent']    
 
@@ -161,7 +164,7 @@ admin.site.register(Bid, BidAdmin)
 admin.site.register(ComStatus)
 admin.site.register(Office)
 admin.site.register(Appliance)
-admin.site.register(BidEventCategory)
+admin.site.register(BidEventCategory, BidEventCategoryAdmin)
 admin.site.register(RegisterCategory)
 admin.site.register(WallConstrucion)
 admin.site.register(ExteriorFinish)
