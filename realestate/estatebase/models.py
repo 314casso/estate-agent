@@ -1347,13 +1347,22 @@ class BidState(models.Model):
     
     @staticmethod
     def calculate_state(bid, event_date):        
-        irrelevant = bid.bid_status.filter(category=BidStatusCategory.IRRELEVANT)        
-        if irrelevant:
-            return BidState.CLOSED      
+        if bid.is_closed():
+            return BidState.CLOSED
+        
         if event_date < BidState.PENDING_DATE:
             return BidState.PENDING
+        
+        last_event = bid.get_last_event()
+        if last_event and last_event.is_free():
+            return BidState.FREE
+        
+        if not last_event and not bid.brokers:
+            return BidState.NEW  
+        
         if not bid.brokers:
-            return BidState.FREE         
+            return BidState.FREE
+                 
         return BidState.WORKING        
     
     @staticmethod
@@ -1371,13 +1380,15 @@ class BidState(models.Model):
         last_calendar_event = bid.get_last_calendar_event()
         if last_calendar_event:
             event_date = last_calendar_event.date
+        elif bid.history:            
+            event_date = bid.history.modificated
         else:
-            if bid.history:
-                event_date = bid.history.modificated + datetime.timedelta(days=BidState.FREEDAYS)
-            else:
-                event_date = datetime.datetime.now() + datetime.timedelta(days=BidState.FREEDAYS)
+            event_date = datetime.datetime.now()
+        
+        event_date = event_date + datetime.timedelta(days=BidState.FREEDAYS)
         
         state.state = BidState.calculate_state(bid, event_date)
+        
         if not state.state in (BidState.CLOSED, BidState.PENDING) or not state.event_date:
             state.event_date = event_date 
         
@@ -1435,6 +1446,18 @@ class Bid(ProcessDeletedModel):
         
     def get_last_calendar_event(self):
         return self.bid_events.filter(bid_event_category__is_calendar=True).first()   
+    
+    def get_last_event(self):
+        return self.bid_events.first()
+    
+    def is_closed(self):
+        return self.has_status_category(BidStatusCategory.IRRELEVANT)
+            
+    def has_status_category(self, category):
+        q = self.bid_status.filter(category=category)
+        if q:
+            return True
+        return False
         
     def __unicode__(self):
         return u'%s' % self.pk                                  
@@ -1450,7 +1473,7 @@ class BidStatusCategory(SimpleDict):
     '''
     Категория статусов заявки 
     '''
-    IRRELEVANT = 3
+    IRRELEVANT = 3    
     class Meta(SimpleDict.Meta):
         verbose_name = _('Bid status category')
         verbose_name_plural = _('Bid status categories')
@@ -1467,8 +1490,9 @@ class BidStatus(SimpleDict):
 class BidEventCategory(SimpleDict):
     '''
     Категория событий по заявке 
-    '''
+    '''    
     is_calendar = models.BooleanField(_('Calendar'), default=False)
+    do_free = models.BooleanField(_('Free'), default=False)
     class Meta(SimpleDict.Meta):
         verbose_name = _('BidEventCategory')
         verbose_name_plural = _('BidEventCategories')
@@ -1476,15 +1500,20 @@ class BidEventCategory(SimpleDict):
 class BidEvent(models.Model):
     '''
     Событие по заявке 
-    '''
+    '''    
     bid = models.ForeignKey(Bid,verbose_name=_('Bid'), related_name='bid_events')
     bid_event_category = models.ForeignKey(BidEventCategory,verbose_name=_('BidEventCategory'))
     date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)
     estates = models.ManyToManyField(Estate, verbose_name=_('Estate'), blank=True)
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     note = models.TextField(_('Note'), blank=True, null=True)
+    
     def __unicode__(self):
         return u'[%s] - %s' % (self.pk, self.bid_event_category)
+    
+    def is_free(self):
+        return self.bid_event_category.do_free
+    
     class Meta:
         verbose_name = _('bid event')
         verbose_name_plural = _('bid events')        

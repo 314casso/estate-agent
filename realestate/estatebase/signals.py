@@ -62,6 +62,7 @@ def bid_event_history(sender, instance, created, **kwargs):
         post_save.connect(bid_event_history, sender=BidEvent)
     else:
         prepare_history(instance.history, instance._user_id)
+    instance.bid.update_state()
     prepare_history(instance.bid.history, instance._user_id)
 
 def update_from_pickle(sender, instance, **kwargs):
@@ -114,11 +115,6 @@ def update_geo(sender, instance, **kwargs):
 
 def update_status(sender, instance, **kwargs):    
     instance.update_state()
-    
-#     BID_EXPIRED = datetime(2015, 12, 1)
-#     if instance.history.modificated < BID_EXPIRED:
-#         instance.state = Bid.PENDING
-#         return
     
 
 def connect_signals():
