@@ -61,6 +61,11 @@ def get_sitemap_dict(tags, portfolio_key, projects_key=None, prices_key=None):
         site_meta = SiteMeta.objects.get(site=Site.objects.get_current())
     except SiteMeta.DoesNotExist:
         pass
+    import logging
+    from django.conf import settings
+    logger = logging.getLogger('estate')
+    logger.error(settings.SITE_ID)
+
     geo_tags = site_meta.tags if site_meta else None     
     result = {
       'blog': GenericSitemap(get_blog_dict(tags, geo_tags), priority=0.6),                        
