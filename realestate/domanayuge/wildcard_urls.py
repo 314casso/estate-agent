@@ -6,7 +6,7 @@ from domanayuge.views import DevPage, Project, Blog, Article, Case, CaseList,\
 from django.contrib.sitemaps.views import sitemap
 import settings
 from domanayuge.sitemaps import get_sitemap_dict
-
+from django.views.decorators.cache import never_cache
 
 admin.autodiscover()
 
@@ -27,7 +27,7 @@ urlpatterns = patterns('',
   
 
 urlpatterns += patterns('',
-        url(r'^sitemap\.xml$', sitemap,
+        url(r'^sitemap\.xml$', never_cache(sitemap),
         {'sitemaps':get_sitemap_dict([u'строительство'], 'portfoliodev', 'projects', 'devprices')},
         name='django.contrib.sitemaps.views.sitemap'),        
         url(r'^robots\.txt$', robots),

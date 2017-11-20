@@ -6,6 +6,8 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.sitemaps import GenericSitemap
 from domanayuge.models import ContentEntry
 from domanayuge.sitemaps import StaticViewSitemap
+from django.views.decorators.cache import never_cache
+
 
 admin.autodiscover()
 
@@ -29,7 +31,7 @@ portfolio_dict = {
 }
 
 urlpatterns += patterns('',
-        url(r'^sitemap\.xml$', sitemap,
+        url(r'^sitemap\.xml$', never_cache(sitemap),
         {'sitemaps': {
                         'blog': GenericSitemap(blog_dict, priority=0.6), 
                         #'portfolio': GenericSitemap(portfolio_dict, priority=0.6),
