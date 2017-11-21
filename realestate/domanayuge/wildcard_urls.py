@@ -2,11 +2,9 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, Project, Blog, Article, Case, CaseList,\
-    send_email, robots, DevList, DevPriceList, DevPrice
-from django.contrib.sitemaps.views import sitemap
+    send_email, robots, DevList, DevPriceList, DevPrice, stroyka_sitemap
 import settings
-from domanayuge.sitemaps import get_sitemap_dict
-from django.views.decorators.cache import never_cache
+
 
 admin.autodiscover()
 
@@ -27,9 +25,7 @@ urlpatterns = patterns('',
   
 
 urlpatterns += patterns('',
-        url(r'^sitemap\.xml$', never_cache(sitemap),
-        {'sitemaps':get_sitemap_dict([u'строительство'], 'portfoliodev', 'projects', 'devprices')},
-        name='django.contrib.sitemaps.views.sitemap'),        
+        url(r'^sitemap\.xml$', stroyka_sitemap, name='domanayuge.views.stroyka_sitemap'),        
         url(r'^robots\.txt$', robots),
 )
 

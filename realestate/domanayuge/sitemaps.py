@@ -3,7 +3,6 @@ from django.contrib.sitemaps import GenericSitemap
 from domanayuge.models import ContentEntry, Category, SiteMeta, get_all_geo_tags
 from django.contrib import sitemaps
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -55,10 +54,10 @@ class PriceGenericSitemap(GenericSitemap):
         return reverse('price', args=[obj.categories.first().key, obj.slug])    
 
 
-def get_sitemap_dict(tags, portfolio_key, projects_key=None, prices_key=None):
+def get_sitemap_dict(site, tags, portfolio_key, projects_key=None, prices_key=None):
     site_meta = None
     try:    
-        site_meta = SiteMeta.objects.get(site=Site.objects.get_current())
+        site_meta = SiteMeta.objects.get(site=site)
     except SiteMeta.DoesNotExist:
         pass
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template import loader, Context
@@ -12,8 +11,77 @@ from django.views.generic.list import ListView
 from domanayuge.models import Category, ContentEntry, SiteMeta, get_all_geo_tags
 from local_settings import EMAIL_SETTINGS
 from django.shortcuts import render
+from django.contrib.sites.models import Site
+from django.contrib.sitemaps.views import x_robots_tag
+
+import datetime
+from calendar import timegm
+from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.http import Http404
+from django.template.response import TemplateResponse
+from django.utils import six
+from django.utils.http import http_date
+from domanayuge.sitemaps import get_sitemap_dict
 
 # Create your views here.
+
+
+@x_robots_tag
+def base_sitemap(request, sitemaps, section=None,
+            template_name='sitemap.xml', content_type='application/xml'):
+
+    req_protocol = request.scheme
+    req_site = get_current_site(request)
+
+    if section is not None:
+        if section not in sitemaps:
+            raise Http404("No sitemap available for section: %r" % section)
+        maps = [sitemaps[section]]
+    else:
+        maps = list(six.itervalues(sitemaps))
+    page = request.GET.get("p", 1)
+
+    urls = []
+    for site in maps:
+        try:
+            if callable(site):
+                site = site()
+            urls.extend(site.get_urls(page=page, site=req_site,
+                                      protocol=req_protocol))
+        except EmptyPage:
+            raise Http404("Page %s empty" % page)
+        except PageNotAnInteger:
+            raise Http404("No page '%s'" % page)
+    response = TemplateResponse(request, template_name, {'urlset': urls},
+                                content_type=content_type)
+    if hasattr(site, 'latest_lastmod'):
+        # if latest_lastmod is defined for site, set header so as
+        # ConditionalGetMiddleware is able to send 304 NOT MODIFIED
+        lastmod = site.latest_lastmod
+        response['Last-Modified'] = http_date(
+            timegm(
+                lastmod.utctimetuple() if isinstance(lastmod, datetime.datetime)
+                else lastmod.timetuple()
+            )
+        )
+    return response
+
+
+def get_current_site(request):
+    if hasattr(request, 'site') and request.site:
+        return request.site
+    return Site.objects.get_current()
+
+
+def remont_sitemap(request):    
+    site = get_current_site(request)
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'ремонт'], 'portfolioremont', None, 'remontprices'))
+
+
+def stroyka_sitemap(request):    
+    site = get_current_site(request)
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'строительство'], 'portfoliodev', 'projects', 'devprices'))
+
 
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'

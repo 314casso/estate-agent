@@ -4,14 +4,13 @@ from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
     send_email, RemontPage, RemontList, RemontPrice,\
     RemontCaseList, RemontCase, robots, RemontPriceList
-from django.contrib.sitemaps.views import sitemap
+from domanayuge.views import remont_sitemap
 import settings
 from domanayuge.models import ContentEntry
-from domanayuge.sitemaps import get_sitemap_dict
-from django.views.decorators.cache import never_cache
 
 
 admin.autodiscover()
+
 
 urlpatterns = patterns('',   
     url(r'^admin/', include(admin.site.urls)),
@@ -27,17 +26,18 @@ urlpatterns = patterns('',
     url(r'^sendemail/$', send_email, name='send_email'),
 )
 
+
 blog_dict = {
     'queryset': ContentEntry.objects.filter(categories__slug="blog", tags__contained_by=[u'ремонт']),
     'date_field': 'publication_date',
 }
 
+
 urlpatterns += patterns('',
-        url(r'^sitemap\.xml$', never_cache(sitemap),
-        {'sitemaps':get_sitemap_dict([u'ремонт'], 'portfolioremont', None, 'remontprices')},
-        name='django.contrib.sitemaps.views.sitemap'),        
+        url(r'^sitemap\.xml$', remont_sitemap, name='domanayuge.views.remont_sitemap'),        
         url(r'^robots\.txt$', robots),
 )
+
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
