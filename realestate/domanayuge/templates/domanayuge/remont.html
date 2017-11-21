@@ -62,8 +62,9 @@
                 <h3 class="section-subheading text-muted">{{ about.alternate_title }}</h3>
             </div>
         </div>
-        <div class="row text-center">            	
-        	{% for entry in about.active_entries %} 			       	
+        <div class="row text-center">  
+        	{% site_filtered about.active_entries request.site as about_filtered_entries  %}          	
+        	{% for entry in about_filtered_entries %} 			       	
         	<div class="col-md-4">
                 <span class="fa-stack fa-4x">
                     <i class="fa fa-circle fa-stack-2x text-primary"></i>
@@ -270,7 +271,8 @@
 
 <!-- Portfolio Modals -->
 <!-- Use the modals below to showcase details about your portfolio projects! -->
-{% for entry in services.active_entries %}
+{% site_filtered services.active_entries request.site as services_filtered_entries  %}
+{% for entry in services_filtered_entries %}
 <!-- Portfolio Modal {{ entry.id }} -->
 <div class="portfolio-modal modal fade" id="portfolioModal{{ entry.slug }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import template
-from domanayuge.models import Category, ContentEntry, LocalityDomain
+from domanayuge.models import Category, ContentEntry, LocalityDomain, SiteMeta,\
+    get_all_geo_tags
 from django.template import Context, Template
 from django.core.cache import cache 
 
@@ -39,6 +40,24 @@ def parser(value, domain=None):
             "locality_loct": sep.join(get_unique_localites(doms, 'name_loct')),
             })        
     return t.render(c) 
+
+
+@register.assignment_tag
+def site_filtered(q, site):
+    site_meta = None
+    try:    
+        site_meta = SiteMeta.objects.get(site=site)
+    except SiteMeta.DoesNotExist:
+        pass
+    geo_tags = site_meta.tags if site_meta else None
+    
+    if geo_tags:
+        q = q.filter(tags__contains=geo_tags)        
+    else:
+        ex_tags = get_all_geo_tags
+        if ex_tags:            
+            q = q.exclude(tags__overlap=ex_tags)
+    return q
 
 
 def get_unique_localites(iterable, prop):

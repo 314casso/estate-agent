@@ -42,21 +42,7 @@ class Category(CategoryBase):
     image = models.ImageField(verbose_name=_('Image'), upload_to=get_file_upload_to, blank=True, null=True,) 
     
     def active_entries(self):
-        q = self.entries.filter(active=True)        
-        site_meta = None
-        try:    
-            site_meta = SiteMeta.objects.get(site=Site.objects.get_current())
-        except SiteMeta.DoesNotExist:
-            pass
-        geo_tags = site_meta.tags if site_meta else None
-        
-        if geo_tags:
-            q = q.filter(tags__contains=geo_tags)        
-        else:
-            ex_tags = get_all_geo_tags
-            if ex_tags:            
-                q = q.exclude(tags__overlap=ex_tags)        
-        return q
+        return self.entries.filter(active=True)       
            
     def __str__(self):
         ancestors = self.get_ancestors()
