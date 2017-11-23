@@ -1378,9 +1378,9 @@ class BidState(models.Model):
             state.bid = bid 
         
         last_calendar_event = bid.get_last_calendar_event()
-        if last_calendar_event:
+        if last_calendar_event and last_calendar_event.date:
             event_date = last_calendar_event.date
-        elif bid.history:            
+        elif bid.history and bid.history.modificated:            
             event_date = bid.history.modificated
         else:
             event_date = datetime.datetime.now()
