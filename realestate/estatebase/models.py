@@ -1446,7 +1446,7 @@ class Bid(ProcessDeletedModel):
         except BidState.DoesNotExist:
             state = self.update_state()
         free_date = datetime.datetime.now() - timedelta(days=BidState.FREEDAYS)           
-        if state.event_date >= free_date and state.state == BidState.WORKING:
+        if state.event_date < free_date and state.state == BidState.WORKING:
             return u"просрочена"
         return state.get_state_display()   
         
