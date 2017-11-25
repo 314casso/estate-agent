@@ -27,6 +27,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation    
 from estatebase.lib import get_validity_delta
+from datetime import timedelta
 
 
 class ExUser(User):
@@ -1444,8 +1445,8 @@ class Bid(ProcessDeletedModel):
             state = self.state
         except BidState.DoesNotExist:
             state = self.update_state()
-        delta = datetime.datetime.now() - state.event_date   
-        if delta.days > BidState.FREEDAYS and state.state == BidState.WORKING:
+        free_date = datetime.datetime.now() - timedelta(days=BidState.FREEDAYS)           
+        if state.event_date >= free_date and state.state == BidState.WORKING:
             return u"просрочена"
         return state.get_state_display()   
         
