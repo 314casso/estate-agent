@@ -1037,13 +1037,12 @@ class BidListView(ListView):
 
 class BidFreeListView(BidListView):
     view_pk = 'bidfreelist'    
-    def extra_filter(self, q, user):
-        if not user.has_perm('estatebase.view_other_bid'): 
-            free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)
-            q = q.filter(
-                        Q(state__state__in=[BidState.WORKING], state__event_date__lt=free_date) |
-                        Q(state__state__in=[BidState.FREE,BidState.NEW])
-                        )
+    def extra_filter(self, q, user):         
+        free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)
+        q = q.filter(
+                    Q(state__state__in=[BidState.WORKING], state__event_date__lt=free_date) |
+                    Q(state__state__in=[BidState.FREE,BidState.NEW])
+                    )
         return q
                 
 
