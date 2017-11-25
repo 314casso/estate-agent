@@ -24,8 +24,16 @@
 </script>
 {% endblock js %}
 
-{% block page_header %}
-Список заявок
+{% block page_header %} 
+
+{% for k,v in available_views.items %}
+{% if view_pk == k %}
+[{{ v.title }}]
+{% else %}
+<a style="color:#ccc" href="{% url v.url %}"><small>{{ v.title }}</small></a>
+{% endif %}
+{% endfor %}
+
 {% endblock %}
 
 {% block left %}
@@ -58,7 +66,8 @@
             <th style="white-space: nowrap">{% anchor id 'Код' %}</th>
             <th style="white-space: nowrap">{% anchor history__modificated 'Обновлено' %}</th>
             <th>Риэлтор</th>
-            <th>Статус</th>
+            <th>Состояние</th>
+            <th>Статус</th>            
             <th>Вид недвижимости</th>            
             <th>Районы</th>
             <th>Населенные пункты</th>
@@ -76,7 +85,8 @@
             	{{ broker }}
             	{% endfor %}
         	</td>
-        	<td>{% comma_list bid_item.bid_status %}</td>
+        	<td>{{ bid_item.state_display }}</td>
+        	<td>{% comma_list bid_item.bid_status %}</td>        	
             <td>
             	<a title="Просмотр заявки" href="{% url 'bid_detail' bid_item.pk %}?{{ next_url }}">
             	{{ bid_item.mixed_estate_types }}

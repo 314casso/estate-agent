@@ -1342,8 +1342,13 @@ class BidState(models.Model):
     )
     
     bid = models.OneToOneField('Bid',verbose_name=_('Bid'), related_name='state')
-    state = models.PositiveIntegerField(verbose_name=_('State'), default=NEW, choices=STATE_CHOICES)
-    event_date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)
+    state = models.PositiveIntegerField(verbose_name=_('State'), default=NEW, choices=STATE_CHOICES, db_index=True)
+    event_date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True, db_index=True)
+    
+    class Meta:
+        index_together = [
+            ["state", "event_date"],
+        ]
     
     @staticmethod
     def calculate_state(bid, event_date):        
@@ -1443,6 +1448,13 @@ class Bid(ProcessDeletedModel):
         if delta.days > BidState.FREEDAYS and state.state == BidState.WORKING:
             return u"просрочена"
         return state.get_state_display()   
+        
+    def get_state(self):
+        try:
+            state = self.state
+        except BidState.DoesNotExist:
+            state = self.update_state()       
+        return state    
         
     def get_last_calendar_event(self):
         return self.bid_events.filter(bid_event_category__is_calendar=True).first()   

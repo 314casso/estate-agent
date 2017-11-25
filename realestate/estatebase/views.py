@@ -22,7 +22,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent, BidClient, EstateFile
+    ExUser, Bidg, BidEvent, BidClient, EstateFile, BidState
 from models import EstateTypeCategory
 from settings import PUBLIC_MEDIA_URL, LOGIN_REDIRECT_URL
 from django.core.exceptions import ObjectDoesNotExist
@@ -39,11 +39,12 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
 from devrep.models import Partner
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.http.response import JsonResponse, HttpResponseForbidden
 import re
 from django.db.models import Q
 from django.utils import timezone
+from collections import OrderedDict
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -865,8 +866,12 @@ class BidMixin(ModelFormMixin):
     def get(self, request, *args, **kwargs):        
         self.object = self.get_object()
         user = request.user                 
-        if self.object and user and not user.has_perm('estatebase.view_other_bid'):            
-            if not (self.object.brokers.filter(id=request.user.pk) or self.object.history.created_by==user):           
+        free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)        
+        if self.object and user and not user.has_perm('estatebase.view_other_bid'):
+            state = self.object.get_state()             
+            if not (self.object.brokers.filter(id=request.user.pk) or self.object.history.created_by==user or                    
+                (state.state in [BidState.WORKING] and state.event_date < free_date) or
+                state.state in [BidState.FREE,BidState.NEW]):                       
                 return HttpResponseForbidden()
         return super(BidMixin, self).get(self, request, *args, **kwargs)
       
@@ -927,8 +932,10 @@ class BidCreateView(BidMixin, CreateView):
                 BidClient.objects.create(client=client, bid=self.object)
         return result
 
+
 class BidUpdateView(BidMixin, UpdateView):    
     form_class = BidUpdateForm
+
 
 class BidDeleteView(DeleteMixin, BidMixin, DeleteView):
     template_name = 'confirm.html'
@@ -955,23 +962,36 @@ class BidDetailView(BidMixin, DetailView):
                 })
         return context 
 
+
 class BidListView(ListView):
+    view_pk = 'bidlist'
     filtered = False    
     template_name = 'bid_list.html'
-    paginate_by = 7   
+    paginate_by = 7 
+    _bid_count = None  
+    _filter_count = None
+    available_views = OrderedDict([('bidlist', {'title': u'Все заявки', 'url':'bid-list'}), 
+                                   ('bidfreelist', {'title': u'Свободные заявки', 'url':'bid-free-list'})])
+    
+    def extra_filter(self, q, user):
+        if not user.has_perm('estatebase.view_other_bid'):
+            self.available_views['bidlist']['title'] = u'Мои заявки'           
+            q = q.filter(Q(brokers=user) | Q(history__created_by=user))
+        return q
+    
     def get_queryset(self):
         user = self.request.user
-        q = Bid.objects.prefetch_related('history', 'brokers', 'clients', 'geo_groups')          
+        q = Bid.objects.prefetch_related('brokers', 'clients')                                          
         search_form = BidFilterForm(self.request.GET)
         filter_dict = search_form.get_filter()
         if filter_dict:
             self.filtered = True
+        
         geo_list = set(user.userprofile.geo_groups.values_list('id', flat=True))                            
         q = q.filter(geo_groups__id__in=geo_list)
         
-        if not user.has_perm('estatebase.view_other_bid'):
-            q = q.filter(Q(brokers=user) | Q(history__created_by=user))
-        
+        q = self.extra_filter(q, user)        
+                
         if len(filter_dict):
             if 'Q' in filter_dict:
                 q = q.filter(filter_dict.pop('Q'))
@@ -982,7 +1002,7 @@ class BidListView(ListView):
         if order_by:      
             q = q.order_by(','.join(order_by))            
         q = q.distinct()
-        q = q.defer('estate_filter', 'cleaned_filter', 'note')
+        q = q.defer('estate_filter', 'cleaned_filter', 'note')        
         return q
     def get_context_data(self, **kwargs):
         context = super(BidListView, self).get_context_data(**kwargs)
@@ -993,14 +1013,39 @@ class BidListView(ListView):
             del(params_no_page['page'])                                                                               
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'bid_count': Bid.objects.count(),
+            'bid_count': self.get_bid_count(),
             'bid_filter_form': bid_filter_form,
             'filtered': self.filtered,            
-            'filter_count' : self.get_queryset().count(),
+            'filter_count' : self.get_filter_count(),
             'get_params' : params.urlencode(),
             'params_no_page': params_no_page.urlencode(),
+            'view_pk': self.view_pk,
+            'available_views': self.available_views
         })        
-        return context    
+        return context
+        
+    def get_bid_count(self):
+        if self._bid_count is None:
+            self._bid_count = Bid.objects.count()        
+        return self._bid_count
+    
+    def get_filter_count(self):
+        if self._filter_count is None:
+            self._filter_count = self.get_queryset().count()        
+        return self._filter_count
+
+
+class BidFreeListView(BidListView):
+    view_pk = 'bidfreelist'    
+    def extra_filter(self, q, user):
+        if not user.has_perm('estatebase.view_other_bid'): 
+            free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)
+            q = q.filter(
+                        Q(state__state__in=[BidState.WORKING], state__event_date__lt=free_date) |
+                        Q(state__state__in=[BidState.FREE,BidState.NEW])
+                        )
+        return q
+                
 
 class ClientDetailView(DetailView):
     model = Client

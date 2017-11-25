@@ -22,7 +22,7 @@ from estatebase.views import ClientListView, \
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
-    global_search, BidReportView
+    global_search, BidReportView, BidFreeListView
     
 
 urlpatterns = patterns('',   
@@ -125,6 +125,7 @@ urlpatterns += patterns('',
     url (r'^bidupdate/(?P<pk>\d+)$', BidUpdateView.as_view(), name='bid_update'),
     url (r'^bidremove/(?P<pk>\d+)$', BidDeleteView.as_view(), name='bid_remove'),
     url (r'^bidlist/$', BidListView.as_view(), name='bid-list'),       
+    url (r'^bidfreelist/$', BidFreeListView.as_view(), name='bid-free-list'),
     url (r'^biddetail/(?P<pk>\d+)$', BidDetailView.as_view(), name='bid_detail'),
     url (r'^bideventupdate/(?P<pk>\d+)$', BidEventUpdateView.as_view(), name='bid_event_update'),
     url (r'^bideventcreate/(?P<bid>\d+)$', BidEventCreateView.as_view(), name='bid_event_create'),
