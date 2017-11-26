@@ -788,7 +788,7 @@ class FileUpdateForm(ModelForm):
 
 class BidForm(ModelForm):
     client = AutoCompleteSelectField(lookup_class=ClientLookup, label=u'Заказчик')    
-    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы')
+    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы', required=False)
     bid_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),
@@ -805,7 +805,7 @@ class BidForm(ModelForm):
         }                         
 
 class BidUpdateForm(ModelForm):
-    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы')
+    brokers = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, lookup_class=ExUserLookup, label=u'Риэлторы', required=False)
     bid_status = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=BidStatusLookup,
             label=_('BidStatus'),

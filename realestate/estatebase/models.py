@@ -1363,10 +1363,10 @@ class BidState(models.Model):
         if last_event and last_event.is_free():
             return BidState.FREE
         
-        if not last_event and not bid.brokers:
+        if not last_event and not bid.brokers.exists():
             return BidState.NEW  
         
-        if not bid.brokers:
+        if not bid.brokers.exists():
             return BidState.FREE
                  
         return BidState.WORKING        
