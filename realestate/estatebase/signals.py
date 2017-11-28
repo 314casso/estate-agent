@@ -4,6 +4,7 @@ from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam,\
     Layout, EntranceEstate, EstatePhoto
 from datetime import datetime    
+from django.contrib.auth.models import User
 
 def save_estate(sender, instance, created, **kwargs):    
     if hasattr(instance.level, 'bidg'):
@@ -135,6 +136,7 @@ def connect_signals():
     post_save.connect(update_estate_m2m, sender=EntranceEstate)  # @UndefinedVariable    
     post_save.connect(update_estate_m2m, sender=EstatePhoto)  # @UndefinedVariable
     post_save.connect(save_estate, sender=Layout)
+    
     
     
 

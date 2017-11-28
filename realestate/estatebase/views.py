@@ -869,7 +869,7 @@ class BidMixin(ModelFormMixin):
         free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)        
         if self.object and user and not user.has_perm('estatebase.view_other_bid'):
             state = self.object.get_state()             
-            if not (self.object.brokers.filter(id=request.user.pk) or self.object.history.created_by==user or                    
+            if not (self.object.brokers.filter(id=request.user.pk) or                    
                 (state.state in [BidState.WORKING] and state.event_date < free_date) or
                 state.state in [BidState.FREE,BidState.NEW]):                       
                 return HttpResponseForbidden()
@@ -976,7 +976,7 @@ class BidListView(ListView):
     def extra_filter(self, q, user):
         if not user.has_perm('estatebase.view_other_bid'):
             self.available_views['bidlist']['title'] = u'Мои заявки'           
-            q = q.filter(Q(brokers=user) | Q(history__created_by=user))
+            q = q.filter(brokers=user)
         return q
     
     def get_queryset(self):

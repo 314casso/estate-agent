@@ -1,4 +1,5 @@
-from django.contrib import admin
+# -*- coding: utf-8 -*-
+from django.contrib import admin, messages
 from models import Region, Locality, Microdistrict, Street, Estate, EstateType, EstateTypeCategory
 from django.contrib.contenttypes.models import ContentType
 from orderedmodel.admin import OrderedModelAdmin
@@ -16,6 +17,8 @@ from estatebase.models import ClientType, Client, ContactType, Origin, Contact,\
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
+
+
 
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
@@ -81,6 +84,21 @@ class UserProfileInline(admin.StackedInline):
 
 class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline,]
+    actions = ['remove_from_bid']
+    
+    def remove_from_bid(self, request, queryset):
+        for user in queryset:
+            if user.is_active:
+                self.message_user(request, u"Пользователь %s активен, исключение невозможно" % user, level=messages.WARNING)
+                return
+            bids = Bid.objects.filter(brokers=user)
+            bids_count = bids.count()
+            for bid in bids:
+                bid.brokers.remove(user)
+                bid.update_state()
+            self.message_user(request, u"Пользователь %s исключен из %s заявок" % (user, bids_count))
+
+    remove_from_bid.short_description = u"Исключить пользователя из заявок"
 
 class BidAdmin(admin.ModelAdmin):
     search_fields = ['id',]
@@ -125,6 +143,7 @@ class BidStatusAdmin(admin.ModelAdmin):
 class BidStateAdmin(admin.ModelAdmin):
     raw_id_fields = ('bid',)    
     list_display = ('bid', 'state')
+
     
 admin.site.register(User, UserProfileAdmin)
 
