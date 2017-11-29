@@ -1352,6 +1352,14 @@ class BidState(models.Model):
         index_together = [
             ["state", "event_date"],
         ]
+        
+    @staticmethod
+    def get_free_date():
+        return datetime.datetime.now()
+        
+    @property    
+    def is_expired(self):
+        return self.event_date < BidState.get_free_date() and self.state == BidState.WORKING 
     
     @staticmethod
     def calculate_state(bid, event_date):        
@@ -1446,9 +1454,8 @@ class Bid(ProcessDeletedModel):
         try:
             state = self.state
         except BidState.DoesNotExist:
-            state = self.update_state()
-        free_date = datetime.datetime.now() - timedelta(days=BidState.FREEDAYS)           
-        if state.event_date < free_date and state.state == BidState.WORKING:
+            state = self.update_state()                    
+        if state.is_expired:
             return u"просрочена"
         return state.get_state_display()   
         

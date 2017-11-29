@@ -865,13 +865,11 @@ class BidMixin(ModelFormMixin):
     
     def get(self, request, *args, **kwargs):        
         self.object = self.get_object()
-        user = request.user                 
-        free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)        
+        user = request.user                
         if self.object and user and not user.has_perm('estatebase.view_other_bid'):
             state = self.object.get_state()             
-            if not (self.object.brokers.filter(id=request.user.pk) or                    
-                (state.state in [BidState.WORKING] and state.event_date < free_date) or
-                state.state in [BidState.FREE,BidState.NEW]):                       
+            if not (self.object.brokers.filter(id=request.user.pk) or state.is_expired or
+                state.state in [BidState.FREE,BidState.NEW,BidState.OUTDATED]):                       
                 return HttpResponseForbidden()
         return super(BidMixin, self).get(self, request, *args, **kwargs)
       
@@ -1037,10 +1035,9 @@ class BidListView(ListView):
 
 class BidFreeListView(BidListView):
     view_pk = 'bidfreelist'    
-    def extra_filter(self, q, user):         
-        free_date = datetime.now() - timedelta(days=BidState.FREEDAYS)
+    def extra_filter(self, q, user):        
         q = q.filter(
-                    Q(state__state__in=[BidState.WORKING], state__event_date__lt=free_date) |
+                    Q(state__state__in=[BidState.WORKING], state__event_date__lt=BidState.get_free_date()) |
                     Q(state__state__in=[BidState.FREE,BidState.NEW])
                     )
         return q
@@ -1585,21 +1582,32 @@ class ManageEstateM2MLinks(ManageM2M):
 
 def global_search(request):    
     q = request.GET.get('q') 
-    estate_pk = re.sub(r'\D', '', q)   
+    pk = re.sub(r'\D', '', q)   
     contact_str = re.sub(r'\s', '', q)
-    result = {'estates':[], 'contacts':[], 'query': q, 'not_found': True}       
-    if estate_pk:
-        estates = Estate.objects.filter(pk=estate_pk)
+    result = {
+                'estates': [],
+                'contacts': [],
+                'bids': [], 
+                'query': q, 
+                'not_found': True,                
+             }       
+    if pk:
+        estates = Estate.objects.filter(pk=pk)
         for estate in estates:
             result['estates'].append(estate)
             result['not_found'] = False
+        bids = Bid.objects.filter(pk=pk)
+        for bid in bids:
+            result['bids'].append(bid)
+            result['not_found'] = False
+        
     if contact_str:      
         contacts = Contact.objects.filter(contact=contact_str)
         for contact in contacts:
             result['contacts'].append(contact)
             result['not_found'] = False
     result['next_url'] = request.REQUEST.get('next', '')
-    result['estate_pk'] = estate_pk
+    result['pk'] = pk    
     result['contact_str'] = contact_str    
     return render(request, 'globalsearch/result.html', result)
 
