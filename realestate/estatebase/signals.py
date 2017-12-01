@@ -69,8 +69,15 @@ def bid_event_history(sender, instance, created, **kwargs):
 def update_from_pickle(sender, instance, **kwargs):
     cleaned_data = instance.cleaned_filter    
     if cleaned_data:
-        if 'estates' in cleaned_data:
-            instance.estates = cleaned_data['estates']
+        instance.estates.clear()
+        if 'estates' in cleaned_data:            
+            for estate in cleaned_data['estates']:
+                try:
+                    e = Estate.objects.get(pk=estate.id)
+                    instance.estates.add(e)
+                except Estate.DoesNotExist:
+                    continue            
+             
         if 'estate_type' in cleaned_data:    
             instance.estate_types = cleaned_data['estate_type']
          
