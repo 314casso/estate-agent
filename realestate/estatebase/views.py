@@ -1041,7 +1041,19 @@ class BidFreeListView(BidListView):
                     Q(state__state__in=[BidState.FREE,BidState.NEW])
                     )
         return q
+    
                 
+def bid_calendar_events(request):
+    start = request.GET.get('start')
+    end = request.GET.get('end')     
+    q = BidEvent.objects.filter(bid__brokers=request.user, bid_event_category__is_calendar=True, date__range=(start, end))
+    dicts = [ obj.as_dict() for obj in q ]
+    return JsonResponse(dicts, safe=False)
+
+
+def events_calendar(request):
+    return render(request, "calendar/base.html")    
+    
 
 class ClientDetailView(DetailView):
     model = Client

@@ -22,7 +22,8 @@ from estatebase.views import ClientListView, \
     ClientPartnerRemoveView, ClientUpdateBidView, ClientBidSelectView,\
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
-    global_search, BidReportView, BidFreeListView
+    global_search, BidReportView, BidFreeListView, bid_calendar_events,\
+    events_calendar
     
 
 urlpatterns = patterns('',   
@@ -134,6 +135,9 @@ urlpatterns += patterns('',
     url (r'^clientbidunbind/(?P<pk>\d+)/(?P<bid_pk>\d+)$', ClientPartnerRemoveView.as_view(), name='client_bid_unbind'),
     url (r'^setbidbasicclient/(?P<client_pk>\d+)/(?P<bid_pk>\d+)$', view=set_bid_basic_client, name='set_bid_basic_client'),
     url (r'^bidreport/$', BidReportView.as_view(), name='bidreport'),
+    url (r'^bidcalendarevents/$', bid_calendar_events, name='bidcalendarevents'),
+    url (r'^eventscalendar/$', events_calendar, name='eventscalendar'),
+    
     
 )
 

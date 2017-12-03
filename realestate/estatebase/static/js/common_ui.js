@@ -66,7 +66,7 @@ $(document).ready(function() {
 		closeText : 'Закрыть'
 	});
 
-	$(".base-table-list").find("tr").live('mouseover mouseout', function(event) {
+	$(".base-table-list").find("tr").on('mouseover mouseout', function(event) {
 		if (event.type == 'mouseover') {
 			$(this).children("td").addClass("ui-state-hover");
 		} else {

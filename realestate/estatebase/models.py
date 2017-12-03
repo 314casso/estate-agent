@@ -1536,6 +1536,16 @@ class BidEvent(models.Model):
     def is_free(self):
         return self.bid_event_category.do_free
     
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "title": u'%s (%s)' % (self.bid_event_category.name, self.bid.pk),
+            "start": self.date,
+            #"end": self.date + datetime.timedelta(days=BidState.FREEDAYS),
+            "url": reverse('bid_detail', args=[self.bid.pk]),
+            "allDay": 'false'             
+        }
+    
     class Meta:
         verbose_name = _('bid event')
         verbose_name_plural = _('bid events')        
