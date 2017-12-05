@@ -9,6 +9,12 @@ $(document).ready(function() {
 			right: 'month,agendaWeek,agendaDay,listWeek'
 		},
     	events: '/estatebase/bidcalendarevents/',
+    	eventClick: function(event) {
+            if (event.url) {
+                window.open(event.url);
+                return false;
+            }
+        }
     })
 
 });

@@ -1,4 +1,5 @@
 {% load static %}
+{% load sitetree %}
 <!DOCTYPE html>
 <html lang="en">
   <head>  	
@@ -19,10 +20,23 @@
     <![endif]--> 
     <link href="{{ STATIC_URL }}/css/print.css?1.0.0" rel="stylesheet">   
   </head>
-  <body>    
+  <body>
     <div class="container">
     
-    	<div class="page-header">
+    	{% block header %}{% endblock %}
+    	<nav class="navbar navbar-default">    
+		<div class="container-fluid">			
+		{% if user.is_authenticated %}	    
+      		{% sitetree_menu from "maintree" include "trunk,topmenu" template "sitetree/menu_bootstrap3.html" %}
+      		              
+            {% block linkback %}{% endblock %}                    
+            {% block topbar %}{% endblock %}      		
+	    </div>  
+	   	{% endif %}
+		</nav>
+    
+    	<div class="page-header">    		                            
+    	
   			<h1>Календарь событий</h1>
 		</div>
 		
@@ -30,12 +44,13 @@
        			
 	
 	</div>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->   
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="{% static 'js/moment.min.js' %}" ></script>  	
     <script src="{% static 'fullcalendar/fullcalendar.min.js' %}" ></script>
     <script src="{% static 'fullcalendar/locale/ru.js' %}" ></script>
-    <script src="{% static 'fullcalendar/custom.js' %}" ></script>
+    <script src="{% static 'fullcalendar/custom.js?1' %}" ></script>   
+    {% include 'session_security/all.html' %}
   </body>
 </html>
