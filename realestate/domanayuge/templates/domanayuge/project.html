@@ -15,12 +15,12 @@
 			<h1>{{ project.title }}</h1>						
 		</div>
 	<p>
-		{{ project.summary|parser:domain }}
-	</p>
-	<p>	
-		{% with entry_content=project.content|markdown:"safe,attr_list,tables" %}
+		{% with entry_content=project.summary|markdown:"safe,attr_list,tables" %}
         	{{ entry_content|parser:domain }}
-        {% endwith %}
+        {% endwith %}		
+	</p>
+	<p>		
+		{{ project.content|safe }}
 	</p>			
 	
 	<ol class="breadcrumb">
