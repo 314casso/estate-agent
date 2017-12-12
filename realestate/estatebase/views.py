@@ -1054,7 +1054,7 @@ def bid_calendar_events(request):
         
     q = BidEvent.objects.filter(Q(bid__brokers__id__in=users) | Q(history__created_by__id__in=users))    
     q = q.filter(bid_event_category__is_calendar=True, date__range=(start, end))
-    q = q.exclude(state__state__in=[BidState.FREE,BidState.CLOSED])
+    q = q.exclude(bid__state__state__in=[BidState.CLOSED])
     dicts = [ obj.as_dict() for obj in q ]     
     return JsonResponse(dicts, safe=False)
 
