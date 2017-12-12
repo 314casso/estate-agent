@@ -1549,9 +1549,11 @@ class BidEvent(models.Model):
         }
         if BidEvent.objects.filter(pk__gt=self.pk, bid=self.bid, bid_event_category__is_calendar=True):
             result['color'] = historical_color
-        elif (self.bid.state.event_date - datetime.datetime.now()).days < 2:
-            result['color'] = alert_color
-            result['description'] = u"заявка %s перейдет в свободные менее, чем через два дня" % self.bid
+        else:
+            days = (self.bid.state.event_date - datetime.datetime.now()).days
+            if 0 < days < 2:
+                result['color'] = alert_color
+                result['description'] = u"заявка %s перейдет в свободные менее, чем через два дня" % self.bid
         return result              
     
     class Meta:
