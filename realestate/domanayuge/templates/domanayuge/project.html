@@ -17,8 +17,10 @@
 	<p>
 		{{ project.summary|parser:domain }}
 	</p>
-	<p>		
-		{{ project.content|safe }}
+	<p>	
+		{% with entry_content=project.content|markdown:"safe,attr_list,tables" %}
+        	{{ entry_content|parser:domain }}
+        {% endwith %}
 	</p>			
 	
 	<ol class="breadcrumb">
