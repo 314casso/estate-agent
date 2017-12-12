@@ -152,7 +152,11 @@ CACHES = {
     'default': dict(
         BACKEND = 'django.core.cache.backends.memcached.MemcachedCache',
         LOCATION = ['127.0.0.1:11211'],
-    )
+    ),
+    'select2': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
 }
 
 INSTALLED_APPS = (
@@ -166,7 +170,8 @@ INSTALLED_APPS = (
     'estatebase',
     'sitetree',
     'orderedmodel',
-    'selectable',    
+    'selectable',
+    'django_select2',    
     'django_sorting',
     'django.contrib.humanize',      
     'form_utils',  
