@@ -18,7 +18,8 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     BidForm, BidFilterForm, BidPicleForm, EstateRegisterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
-    BidEventForm, BidUpdateForm, FileUpdateForm, EntranceEstateFormSet, GenericLinkFormset 
+    BidEventForm, BidUpdateForm, FileUpdateForm, EntranceEstateFormSet, GenericLinkFormset ,\
+    UserForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -1045,14 +1046,23 @@ class BidFreeListView(BidListView):
                 
 def bid_calendar_events(request):
     start = request.GET.get('start')
-    end = request.GET.get('end')     
-    q = BidEvent.objects.filter(bid__brokers=request.user, bid_event_category__is_calendar=True, date__range=(start, end))
-    dicts = [ obj.as_dict() for obj in q ]
+    end = request.GET.get('end')
+    ids = request.GET.getlist('ids[]')
+    users = [request.user.id]
+    if ids:
+        users = [int(x) for x in ids]
+        
+    q = BidEvent.objects.filter(Q(bid__brokers__id__in=users) | Q(history__created_by__id__in=users))    
+    q = q.filter(bid_event_category__is_calendar=True, date__range=(start, end))
+    dicts = [ obj.as_dict() for obj in q ]     
     return JsonResponse(dicts, safe=False)
 
 
 def events_calendar(request):
-    return render(request, "calendar/base.html")    
+    form = None
+    if request.user.has_perm('estatebase.view_other_bid'):
+        form = UserForm()
+    return render(request, "calendar/base.html", context={'form': form})    
     
 
 class ClientDetailView(DetailView):

@@ -10,7 +10,7 @@
     <title>Календарь событий</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'fullcalendar/fullcalendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fullcalendar/fullcalendar.min.css' %}">    
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,7 +18,10 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]--> 
-    <link href="{{ STATIC_URL }}/css/print.css?1.0.0" rel="stylesheet">   
+    <link href="{{ STATIC_URL }}/css/print.css?1.0.0" rel="stylesheet">        
+    {{ form.media.css }}   
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/basic/jquery.qtip.min.css" />
   </head>
   <body>
     <div class="container">
@@ -40,6 +43,20 @@
   			<h1>Календарь событий</h1>
 		</div>
 		
+		{% if form %}
+		<div id='users_select2' class="panel panel-default">
+			<div class="panel-body">		
+			    {% csrf_token %}
+			    {{ form.non_field_errors }}
+			    <div class="fieldWrapper">
+				    {{ form.users.errors }}
+				    <label for="{{ form.users.id_for_label }}">Пользователи:</label>
+				    {{ form.users }}
+				</div>
+			</div>
+		</div>
+		{% endif %}
+				
 		<div id='calendar'></div>   
        			
 	
@@ -50,7 +67,9 @@
     <script src="{% static 'js/moment.min.js' %}" ></script>  	
     <script src="{% static 'fullcalendar/fullcalendar.min.js' %}" ></script>
     <script src="{% static 'fullcalendar/locale/ru.js' %}" ></script>
-    <script src="{% static 'fullcalendar/custom.js?1' %}" ></script>   
+    <script src="{% static 'fullcalendar/custom.js?1' %}" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/basic/jquery.qtip.min.js"></script>   
     {% include 'session_security/all.html' %}
+    {{ form.media.js }}        
   </body>
 </html>

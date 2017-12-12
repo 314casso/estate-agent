@@ -27,7 +27,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EntranceEstate,\
-    EstateFile, GenericLink, BidStatusCategory
+    EstateFile, GenericLink, BidStatusCategory, ExUser
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -44,6 +44,7 @@ from devrep.lookups import WorkTypeLookup, GoodsLookup, PartnerLookup,\
 from wp_helper.models import EstateWordpressMeta
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from estatebase.lib import get_validity_delta
+from django_select2.forms import ModelSelect2MultipleWidget
 
 
 class EstateForm(BetterModelForm):             
@@ -1074,6 +1075,14 @@ class EntranceEstateInlineForm(ModelForm):
                   'distance':TextInput(attrs={'class':'local-int-f'}), 
                    }
 
+
+class UserForm(Form):
+    users = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        queryset=ExUser.objects.all(),
+        search_fields=['username__icontains','first_name__icontains','last_name__icontains'],
+    ), queryset=ExUser.objects.all(), required=False)
+    
+    
 
 EntranceEstateFormSet = inlineformset_factory(Estate, EntranceEstate, extra=1, form=EntranceEstateInlineForm)
 
