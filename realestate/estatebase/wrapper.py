@@ -149,8 +149,12 @@ class SteadWrapper(BaseWrapper):
     def field_set(self):
         return self._field_set
     @property
-    def field_report_set(self):
+    def user_field_report_set(self):
         exclude = ('estate_type',)
+        return [x for x in self.field_set if x not in exclude]
+    @property
+    def field_report_set(self):
+        exclude = ('estate_type', 'cadastral_number')
         return [x for x in self.field_set if x not in exclude]
             
 def get_polymorph_label(template, field):            
