@@ -870,7 +870,7 @@ class BidMixin(ModelFormMixin):
         if self.object and user and not user.has_perm('estatebase.view_other_bid'):
             state = self.object.get_state()             
             if not (self.object.brokers.filter(id=request.user.pk) or state.is_expired or
-                state.state in [BidState.FREE,BidState.NEW,BidState.OUTDATED]):                       
+                state.state in [BidState.FREE,BidState.NEW,BidState.PENDING]):                       
                 return HttpResponseForbidden()
         return super(BidMixin, self).get(self, request, *args, **kwargs)
       
