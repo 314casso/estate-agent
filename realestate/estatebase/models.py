@@ -1366,7 +1366,7 @@ class BidState(models.Model):
         if bid.is_closed():
             return BidState.CLOSED
         
-        if event_date < BidState.PENDING_DATE:
+        if bid.history and bid.history.modificated < BidState.PENDING_DATE:        
             return BidState.PENDING
         
         last_event = bid.get_last_event()
