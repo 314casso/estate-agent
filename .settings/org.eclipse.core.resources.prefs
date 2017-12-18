@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//local/realestate/domanayuge/models.py=utf-8
+encoding//local/realestate/domanayuge/templatetags/category_tags.py=utf-8
+encoding//local/realestate/domanayuge/views.py=utf-8
 encoding//local/realestate/estatebase/forms.py=utf-8
 encoding//realestate/content_edit/migrations/0001_initial.py=utf-8
 encoding//realestate/content_edit/migrations/0002_auto_20160924_1543.py=utf-8

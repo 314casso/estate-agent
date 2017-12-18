@@ -152,7 +152,7 @@ class ExContextMixin(ContextMixin):
             articles = articles.filter(tags__contains=geo_tags)           
             cases = cases.filter(tags__contains=geo_tags)
         else:
-            ex_tags = get_all_geo_tags
+            ex_tags = get_all_geo_tags()
             if ex_tags:            
                 articles = articles.exclude(tags__overlap=ex_tags)
                 cases = cases.exclude(tags__overlap=ex_tags)
