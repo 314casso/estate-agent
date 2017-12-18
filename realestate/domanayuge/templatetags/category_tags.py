@@ -54,10 +54,7 @@ def site_filtered(q, site):
     if geo_tags:
         q = q.filter(tags__contains=geo_tags)        
     else:
-        ex_tags = get_all_geo_tags()
-        import logging
-        logger = logging.getLogger('estate')
-        logger.error(u"ex_tags:%s" % ",".join(ex_tags))
+        ex_tags = get_all_geo_tags()        
         if ex_tags:            
             q = q.exclude(tags__overlap=ex_tags)
     return q
