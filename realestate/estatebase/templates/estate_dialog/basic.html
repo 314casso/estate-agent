@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="ui-state-highlight ui-corner-all descr">
-	<strong title="{{ estate.estate_type }}">{{ estate.estate_type|truncatechars:33 }} [{{ estate.pk }}]</strong>
+	<strong title="{{ estate.estate_type }}">{{ estate.estate_type|truncatechars:33 }}</strong>
 	<span style="float: right; padding: 0 4px" class="ui-widget-content ui-corner-all {{ estate.state_css }}">
         <strong>{{ estate.estate_status }}</strong>
     </span>
@@ -24,6 +24,12 @@
 		<td colspan="100%">{{ estate.origin|default:'--------' }}</td>
 	</tr>
 	{% history estate.history %}
+	<tr>
+		<th title="Информация о последнем контакте с заказчиком">Контактировали:</th>
+		<td colspan="100%">
+		{{ estate.contact.updated|default:'--------' }}
+		</td>
+	</tr>
 	<tr><th class="greybgtext" title="Риэлтор" style="white-space: nowrap">Риэлтор:</th> <td class="redbgtext">{{ estate.broker|default:'--------' }}</td></tr>
 	{% if estate.com_status.status %}
     <tr><th title="Коммерческое использование" style="white-space: nowrap">Ком. статус:</th> <td>{{ estate.com_status }}</td></tr>
