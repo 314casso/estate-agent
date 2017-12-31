@@ -73,11 +73,19 @@
 {% endblock js %}
 
 {% block page_header %}
-{% if estate %}
-Просмотр лота «{{ estate.estate_type }}» [{{ estate.pk }}]
+<small>Лоты:</small>
+{% for k,v in available_views.items %}
+{% if view_pk == k %}
+[{{ v.title }}]
 {% else %}
-Список лотов
+<a style="color:#ccc" href="{% url v.url %}"><small>{{ v.title }}</small></a>
 {% endif %}
+{% endfor %}
+
+{% if estate %}
+&#8594; <small>{{ estate.estate_type }} <strong>{{ estate.pk }}</strong></small>
+{% endif %}
+
 {% endblock %}
 
 {% block topbar %}
@@ -118,14 +126,14 @@
 </div>
 <br style="clear: both"  />
 <div title="Сортировка лотов" class="ui-widget ui-widget-content ui-corner-all user-info" style="display:inline-block; float: left">
-        {% anchor id 'Код' %} {% anchor estate_category 'Категория' %} {% anchor agency_price 'Цена' %} {% anchor history__modificated 'Обновлено' %}
+        {% anchor id 'Код' %} {% anchor estate_category_id 'Категория' %} {% anchor agency_price 'Цена' %} {% anchor actualized 'Обновлено' %}
 </div>
 <br style="clear: both" />
 {% for estate_item in estate_list %}
 <fieldset class="{% selected_css estate_item.pk estate.pk %} ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px; width: 340px">
     <legend style="font-size: 12px;">
         [{{ estate_item.pk }}]
-        <a title="{{ estate_item.estate_type }}" href="{% block navlink  %}{% url 'estate_list_details' estate_item.pk %}{% endblock navlink  %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:16|default:'---------' }}</a>
+        <a title="{{ estate_item.estate_type }}" href="{% block navlink  %}{% url list_details_view estate_item.pk %}{% endblock navlink  %}?{{ request.GET.urlencode }}">{{ estate_item.estate_type|truncatechars:16|default:'---------' }}</a>
         <span title="{{ estate_item.estate_status }}" class="ui-corner-all ui-widget-content {{ estate_item.state_css }}" style="padding: 0 3px; font-size: 11px"> {{ estate_item.history.modificated|date:"d M y" }} </span>
         {% if estate_item.agency_price %}
         <span class="ui-corner-all ui-widget-content" style="padding: 0 3px; margin-left: 1px"> {{ estate_item.agency_price_1000|default_if_none:''|intcomma }} т.р. </span>

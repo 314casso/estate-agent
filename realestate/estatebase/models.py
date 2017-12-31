@@ -26,8 +26,9 @@ from exportdata.utils import EstateTypeMapper, LayoutTypeMapper,\
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation    
-from estatebase.lib import get_validity_delta
+from estatebase.lib import get_validity_delta, get_free_delta
 from datetime import timedelta
+from django.template.defaultfilters import default
 
 
 class ExUser(User):
@@ -515,6 +516,7 @@ class Estate(ProcessDeletedModel):
     contact = models.ForeignKey('Contact', verbose_name=_('Contact'), blank=True, null=True, on_delete=models.SET_NULL)  
     validity = models.ForeignKey(Validity, verbose_name=_('Validity'), blank=True, null=True, on_delete=models.SET_NULL)
     broker = models.ForeignKey(ExUser, verbose_name=_('Broker'), blank=True, null=True, on_delete=models.SET_NULL)
+    actualized = models.DateTimeField(_('Modificated'), db_index=True, default=datetime.date(2000, 1, 1))
     #attachments
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
@@ -579,8 +581,17 @@ class Estate(ProcessDeletedModel):
                 report[self.DRAFT].append(u'Площадь участка')        
         return report
     
+    def get_actual_date(self):
+        if self.contact:
+            return self.contact.updated        
+        return self.history.modificated
+        
+    def actualize(self):
+        self.actualized = self.get_actual_date()        
+        
     def set_validity(self, report):
-        self.validity_id = self.VALID        
+        self.validity_id = self.VALID
+        self.actualize()
         for key, value in report.items():
             if value:
                 self.validity_id = key
@@ -628,11 +639,15 @@ class Estate(ProcessDeletedModel):
             return None    
     @property
     def correct(self):         
-        return self.validity_id == self.VALID and (self.history.modificated > get_validity_delta())
+        return self.validity_id == self.VALID and (self.actualized > get_validity_delta())
     
     @property
     def expired(self):        
-        return self.validity_id == self.VALID and (self.history.modificated <= get_validity_delta())
+        return self.validity_id == self.VALID and (self.actualized <= get_validity_delta())
+    
+    @property
+    def is_free(self):       
+        return self.validity_id == self.VALID and (self.actualized > get_free_delta())
     
     @property
     def basic_contact(self):
@@ -706,12 +721,15 @@ class Estate(ProcessDeletedModel):
         return int(self.max_credit_sum * INTEREST_RATE / 12 / (1 - pow((1 + INTEREST_RATE / 12), -MAX_CREDIT_MONTHS)))
     def __unicode__(self):
         return u'%s' % self.pk    
+    
     def set_contact(self):
         self.contact = self.get_best_contact()
         self.set_validity(self.check_validity())
+            
     @property
     def get_not_basic_bidgs(self):
         return self.bidgs.exclude(basic__exact=True)   
+    
     @property
     def is_web_published(self):
         try:
@@ -719,9 +737,10 @@ class Estate(ProcessDeletedModel):
             return len(wp_meta.post_id) > 0
         except:
             return False
+    
     @property
     def modificated(self):
-        return self.history.modificated
+        return self.actualized 
     
     @property 
     def agency_price_1000(self):
@@ -730,6 +749,9 @@ class Estate(ProcessDeletedModel):
             
                         
     class Meta:
+        unique_together = [
+            ('id', 'agency_price', 'actualized', 'estate_category'),
+        ]
         verbose_name = _('estate')
         verbose_name_plural = _('estate')
         ordering = ['-id']    
@@ -1243,7 +1265,7 @@ class Contact(models.Model):
     client = models.ForeignKey(Client, verbose_name=_('Client'), related_name='contacts')
     contact_type = models.ForeignKey(ContactType, verbose_name=_('ContactType'), on_delete=models.PROTECT)
     contact = models.CharField(_('Contact'), max_length=255, db_index=True, unique=True)
-    updated = models.DateTimeField(_('Updated'), blank=True, null=True)   
+    updated = models.DateTimeField(_('Updated'), blank=True, null=True, db_index=True)   
     contact_state = models.ForeignKey(ContactState, verbose_name=_('Contact State'), default=NOTCHECKED, on_delete=models.PROTECT)
     user_id = None
     migration = False     

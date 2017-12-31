@@ -531,10 +531,10 @@ class EstateFilterForm(BetterForm):
             f['validity__in'] = ids
             real_delta = get_validity_delta()  
             print real_delta         
-            if Estate.EXPIRED in ids:
-                f['history__modificated__lte'] = real_delta 
+            if Estate.EXPIRED in ids:                
+                f['actualized__lte'] = real_delta 
             elif Estate.VALID in ids:
-                f['history__modificated__gt'] = real_delta
+                f['actualized__gt'] = real_delta
         
         if cleaned_data['estates'] and self._filter_by_pk:
             f['id__in'] = [item.pk for item in cleaned_data['estates']] 

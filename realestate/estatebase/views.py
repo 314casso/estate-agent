@@ -35,7 +35,7 @@ from wp_helper.models import EstateWordpressMeta,\
     WordpressTaxonomyTree
 from django.contrib.auth.decorators import user_passes_test
 import unicodecsv
-from estatebase.lib import format_phone, get_validity_delta
+from estatebase.lib import format_phone, get_validity_delta, get_free_delta
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
@@ -344,39 +344,47 @@ class EstateParamUpdateView(EstateUpdateView):
     template_name = 'estate_params.html'
     form_class = EstateParamForm
 
-def set_estate_filter(q, filter_dict, force_valid=False, user=None, force_delta=False):
+def set_estate_filter(q, filter_dict, force_valid=False, user=None, show_free=False):
     if 'Q' in filter_dict:
         q = q.filter(filter_dict.pop('Q'))
     if force_valid:
         filter_dict.update({
            'validity_id' : Estate.VALID,
-        })
-    if force_delta:        
-        filter_dict.update({           
-            'history__modificated__gt' : get_validity_delta(),
-        })
-    if user:
-        filter_dict.update({'region__geo_group__userprofile__user__exact': user })  
+        })      
+            
+    if user:        
+        filter_dict.update({ 'region__geo_group__userprofile__user__exact': user })
+        
+        if show_free:
+            q = q.filter(
+                     Q(broker__isnull=True) |
+                     Q(actualized__lte=get_free_delta())
+                    )
+        elif not user.has_perm('estatebase.change_broker'):
+                filter_dict.update({'broker__exact': user})          
+             
     if len(filter_dict):
-        q = q.filter(**filter_dict)
-        if 'images__isnull' in filter_dict:
-            if not filter_dict['images__isnull']:
-                return q.distinct('id')
-    return q.distinct()
+        q = q.filter(**filter_dict)                     
+    return q.distinct('id', 'agency_price', 'actualized', 'estate_category')
 
-class EstateListView(ListView):    
+class EstateListView(ListView):
+    view_pk = 'estatelist'
+    view_name = 'estate-list'
+    available_views = OrderedDict([('estatelist', {'title': u'Все', 'url':'estate-list'}), 
+                                   ('estatefreelist', {'title': u'Свободные', 'url':'estate-free-list'})])
+    list_details_view = 'estate_list_details'
+    show_free = False
     filtered = False
     template_name = 'estate_list.html'
     paginate_by = 25  
     filter_form = EstateFilterForm
-    def get_queryset(self):
-        #q = Estate.objects.select_related('region','locality','microdistrict','street','estate_type','history','estate_status','contact__contact_state','contact__contact_type','contact__client__client_type')
-        q = Estate.objects.select_related().prefetch_related('bidgs__estate_type__estate_type_category', 'history')        
+    def get_queryset(self):        
+        q = Estate.objects.select_related()        
         filter_form = self.filter_form(self.request.GET)
         filter_dict = filter_form.get_filter()        
         if filter_dict:
             self.filtered = True                    
-        q = set_estate_filter(q, filter_dict, user=self.request.user)
+        q = set_estate_filter(q, filter_dict, user=self.request.user, show_free=self.show_free)
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
@@ -387,32 +395,44 @@ class EstateListView(ListView):
         
         params = self.request.GET.copy()      
         get_params = params.urlencode()
+        
+        if not self.request.user.has_perm('estatebase.change_broker'):
+            self.available_views['estatelist']['title'] = u'Мои лоты'
                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'total_count': Estate.objects.count(),
             'filter_count' : self.get_queryset().count(),
             'filter_form': filter_form,
-            'filter_action': '%s?next=%s' % (reverse('estate-list'), self.request.GET.get('next','')),
+            'filter_action': '%s?next=%s' % (reverse(self.view_name), self.request.GET.get('next','')),
             'filtered' :self.filtered,
             'get_params': get_params,
+            'list_details_view': self.list_details_view,
+            'available_views': self.available_views,
+            'view_pk' : self.view_pk,
         })        
         return context
        
-class EstateListDetailsView(EstateListView):   
+class EstateListDetailsView(EstateListView): 
+    view_pk = 'estatelist'  
     paginate_by = 7 
     template_name = 'estate_list.html'
     estate = None 
     def get_context_data(self, **kwargs):        
+        user = self.request.user
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', None)
-        try:
-            if pk:
-                self.estate = self.get_queryset().filter(id=pk)[:1].get()
-        except Estate.DoesNotExist:
-            self.estate = None
+        
+        if pk:
+            q = self.get_queryset().filter(id=pk)                  
+            self.estate = q.first()    
+
+        if self.estate and not self.estate.is_free and not user.has_perm('estatebase.change_broker'):
+            if not user == self.estate.broker:
+                self.estate = None 
+        
         r = p = 0
-        if self.estate:      
+        if self.estate:        
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
             p = float(r) / (self.estate.saler_price or 1) * 100                                           
         context.update({            
@@ -457,6 +477,12 @@ class EstateSelectRegisterView(EstateListDetailsView):
             'register' : self.register,
         })
         return context
+
+class EstateFreeListDetailsView(EstateListDetailsView):
+    view_pk = 'estatefreelist'
+    view_name = 'estate-free-list'
+    list_details_view = 'estate_free_list_details'
+    show_free = True    
 
 class EstateImagesView(TemplateView): 
     template_name = 'estate_images.html'

@@ -199,6 +199,7 @@ REQUEST_IGNORE_PATHS = (
 )
 
 CORRECT_DELTA = datetime.timedelta(days=60)
+FREE_DELTA = datetime.timedelta(days=64)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

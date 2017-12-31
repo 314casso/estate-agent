@@ -25,9 +25,9 @@
 	</tr>
 	{% history estate.history %}
 	<tr>
-		<th title="Информация о последнем контакте с заказчиком">Контакт:</th>
+		<th title="Дата последнего контакта с заказчиком или дата обновления лота, если контакта не было">Контакт:</th>
 		<td colspan="100%">
-		{{ estate.contact.updated|default:'--------' }}
+		{{ estate.actualized|default:'--------' }}
 		</td>
 	</tr>
 	<tr><th class="greybgtext" title="Риэлтор" style="white-space: nowrap">Риэлтор:</th> <td class="redbgtext">{{ estate.broker|default:'--------' }}</td></tr>
