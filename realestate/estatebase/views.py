@@ -46,6 +46,8 @@ import re
 from django.db.models import Q
 from django.utils import timezone
 from collections import OrderedDict
+from exceptions import AttributeError
+
 
 class BaseMixin(object):
     def get_success_url(self):   
@@ -88,6 +90,32 @@ class AjaxMixin(ModelFormMixin):
         if not self.request.is_ajax():
             return super(AjaxMixin, self).form_invalid(form)
         return self.response_alternative(form, False)
+
+class EstateTestMixin(object):
+    def get_estate(self, **kwargs):
+        for key in ('estate', 'estate_pk'):
+            if key in kwargs:       
+                return Estate.objects.get(pk=kwargs[key])
+        try:   
+            estate = self.get_object()
+            if isinstance(estate, Estate):
+                return estate
+        except AttributeError:
+            pass
+            
+    def can_change(self, **kwargs):       
+        estate = self.get_estate(**kwargs)                            
+        user = self.request.user
+        
+        if estate and not estate.is_free and not user.has_perm('estatebase.change_broker'):
+            if estate.broker and not user == estate.broker:
+                return False
+        return True
+        
+    def dispatch(self, *args, **kwargs):        
+        if not self.can_change(**kwargs):
+            return HttpResponseForbidden()                    
+        return super(EstateTestMixin, self).dispatch(*args, **kwargs)
 
 def upload_images(request):
     if request.method == 'POST':           
@@ -232,7 +260,7 @@ class PlaceableTypeViewAjax(TemplateView):
         })        
         return context
 
-class EstateMixin(BaseMixin, ModelFormMixin):
+class EstateMixin(EstateTestMixin, BaseMixin, ModelFormMixin):
     model = Estate
     def get_initial(self):        
         initial = super(EstateMixin, self).get_initial()                    
@@ -344,7 +372,7 @@ class EstateParamUpdateView(EstateUpdateView):
     template_name = 'estate_params.html'
     form_class = EstateParamForm
 
-def set_estate_filter(q, filter_dict, force_valid=False, user=None, show_free=False):
+def set_estate_filter(q, filter_dict, force_valid=False, user=None):
     if 'Q' in filter_dict:
         q = q.filter(filter_dict.pop('Q'))
     if force_valid:
@@ -354,26 +382,14 @@ def set_estate_filter(q, filter_dict, force_valid=False, user=None, show_free=Fa
             
     if user:        
         filter_dict.update({ 'region__geo_group__userprofile__user__exact': user })
-        
-        if show_free:
-            q = q.filter(
-                     Q(broker__isnull=True) |
-                     Q(actualized__lte=get_free_delta())
-                    )
-        elif not user.has_perm('estatebase.change_broker'):
-                filter_dict.update({'broker__exact': user})          
              
     if len(filter_dict):
         q = q.filter(**filter_dict)                     
     return q.distinct('id', 'agency_price', 'actualized', 'estate_category')
 
-class EstateListView(ListView):
-    view_pk = 'estatelist'
-    view_name = 'estate-list'
-    available_views = OrderedDict([('estatelist', {'title': u'Все', 'url':'estate-list'}), 
-                                   ('estatefreelist', {'title': u'Свободные', 'url':'estate-free-list'})])
-    list_details_view = 'estate_list_details'
-    show_free = False
+class EstateListView(ListView):    
+    view_name = 'estate-list'    
+    list_details_view = 'estate_list_details'    
     filtered = False
     template_name = 'estate_list.html'
     paginate_by = 25  
@@ -384,7 +400,7 @@ class EstateListView(ListView):
         filter_dict = filter_form.get_filter()        
         if filter_dict:
             self.filtered = True                    
-        q = set_estate_filter(q, filter_dict, user=self.request.user, show_free=self.show_free)
+        q = set_estate_filter(q, filter_dict, user=self.request.user)
         order_by = self.request.fields 
         if order_by:      
             return q.order_by(','.join(order_by))
@@ -395,9 +411,6 @@ class EstateListView(ListView):
         
         params = self.request.GET.copy()      
         get_params = params.urlencode()
-        
-        if not self.request.user.has_perm('estatebase.change_broker'):
-            self.available_views['estatelist']['title'] = u'Мои лоты'
                    
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
@@ -407,29 +420,21 @@ class EstateListView(ListView):
             'filter_action': '%s?next=%s' % (reverse(self.view_name), self.request.GET.get('next','')),
             'filtered' :self.filtered,
             'get_params': get_params,
-            'list_details_view': self.list_details_view,
-            'available_views': self.available_views,
-            'view_pk' : self.view_pk,
+            'list_details_view': self.list_details_view,            
         })        
         return context
-       
-class EstateListDetailsView(EstateListView): 
-    view_pk = 'estatelist'  
-    paginate_by = 7 
-    template_name = 'estate_list.html'
+
+      
+class EstateListDetailsView(EstateListView):
+    paginate_by = 7
     estate = None 
-    def get_context_data(self, **kwargs):        
-        user = self.request.user
+    def get_context_data(self, **kwargs):       
         context = super(EstateListDetailsView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('pk', None)
         
         if pk:
             q = self.get_queryset().filter(id=pk)                  
             self.estate = q.first()    
-
-        if self.estate and not self.estate.is_free and not user.has_perm('estatebase.change_broker'):
-            if not user == self.estate.broker:
-                self.estate = None 
         
         r = p = 0
         if self.estate:        
@@ -477,15 +482,10 @@ class EstateSelectRegisterView(EstateListDetailsView):
             'register' : self.register,
         })
         return context
+   
 
-class EstateFreeListDetailsView(EstateListDetailsView):
-    view_pk = 'estatefreelist'
-    view_name = 'estate-free-list'
-    list_details_view = 'estate_free_list_details'
-    show_free = True    
-
-class EstateImagesView(TemplateView): 
-    template_name = 'estate_images.html'
+class EstateImagesView(EstateTestMixin, TemplateView): 
+    template_name = 'estate_images.html'    
     def get_context_data(self, **kwargs):
         context = super(EstateImagesView, self).get_context_data(**kwargs)        
         context.update({            
@@ -494,13 +494,16 @@ class EstateImagesView(TemplateView):
         })        
         return context      
 
+
 def get_files_model(model_key):
     model_keys = {'estate':Estate, 'bid': Bid, 'partner': Partner}
     return model_keys.get(model_key)
 
+
 def get_files_content_object(model_key, object_pk):
     files_model = get_files_model(model_key)
     return files_model.objects.get(pk=object_pk)
+
 
 class GenericFilesView(TemplateView): 
     template_name = 'generic_files.html'    
@@ -518,9 +521,10 @@ class GenericFilesView(TemplateView):
 class GenericLinksView(GenericFilesView): 
     template_name = 'generic_links.html'    
 
-class ClientUpdateEstateView(DetailView):   
+class ClientUpdateEstateView(EstateTestMixin, DetailView):   
     model = Client
     template_name = 'confirm.html'
+    
     def get_context_data(self, **kwargs):
         context = super(ClientUpdateEstateView, self).get_context_data(**kwargs)
         context.update({
@@ -551,9 +555,10 @@ class ClientRemoveEstateView(ClientUpdateEstateView):
     def update_object(self, client_pk, estate_pk):
         EstateClient.objects.get(estate_id=estate_pk, client_id=client_pk).delete()                   
         
-class ObjectMixin(ModelFormMixin):    
+class ObjectMixin(EstateTestMixin, ModelFormMixin):    
     model = Bidg    
-    continue_url = None    
+    continue_url = None   
+        
     def form_valid(self, form):
         prepare_history(self.get_estate().history, self.request.user.pk)       
         return super(ObjectMixin, self).form_valid(form)    
@@ -562,12 +567,13 @@ class ObjectMixin(ModelFormMixin):
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse(self.continue_url, args=[self.object.id]), safe_next_link(next_url)) 
         return next_url
-    def get_estate(self):
-        return self.object and self.object.estate or Estate.objects.get(pk=self.kwargs['estate'])            
+    def get_estate(self, **kwargs):
+        obj = self.get_object()
+        return obj and obj.estate or Estate.objects.get(pk=kwargs['estate'])            
     def get_context_data(self, **kwargs):
         context = super(ObjectMixin, self).get_context_data(**kwargs)        
         context.update({            
-            'estate': self.get_estate(),
+            'estate': self.get_estate(**kwargs),
         })        
         return context
 
@@ -768,20 +774,32 @@ class ContactUpdateView(ContactMixin, UpdateView):
         prepare_history(self.object.client.history, self.request.user.pk)  
         return super(ContactUpdateView, self).form_valid(form)               
         
-    
-class LevelMixin(ModelFormMixin):
+     
+class LevelMixin(EstateTestMixin, ModelFormMixin):
     template_name = 'layout_update.html'
     form_class = LevelForm
     model = Level
+    _bidg = None
+    
+    def get_estate(self, *args, **kwargs):
+        bidg = self.get_bidg(**kwargs)
+        if bidg:
+            return bidg.estate         
+    
+    def get_bidg(self, **kwargs):
+        if not self._bidg:
+            if 'bidg' in self.kwargs:
+                self._bidg = Bidg.objects.get(pk=self.kwargs['bidg'])
+            else:
+                self._bidg = self.get_object().bidg
+        return self._bidg
+    
     def get_context_data(self, **kwargs):
-        if 'bidg' in self.kwargs:
-            bidg = Bidg.objects.get(pk=self.kwargs['bidg'])
-        else:
-            bidg = self.object.bidg                
+                        
         context = super(LevelMixin, self).get_context_data(**kwargs)
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
-            'bidg': bidg,
+            'bidg': self.get_bidg(**kwargs),
         })                        
         if self.request.POST:
             context['layout_formset'] = LevelFormSet(self.request.POST, instance=self.object)            
@@ -836,7 +854,7 @@ class SteadUpdateView(ObjectMixin, UpdateView):
         form.user = self.request.user
         return form
 
-class BidgAppendView(TemplateView):    
+class BidgAppendView(EstateTestMixin, TemplateView):    
     template_name = 'confirm.html'
     dialig_title = u'Добавление строения или сооружения...'
     dialig_body = u'Добавить строение или сооружение на участок?'    

@@ -746,7 +746,6 @@ class Estate(ProcessDeletedModel):
     def agency_price_1000(self):
         if self.agency_price:
             return int(self.agency_price / 1000)
-            
                         
     class Meta:
         unique_together = [

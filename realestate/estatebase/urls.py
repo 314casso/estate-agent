@@ -23,16 +23,14 @@ from estatebase.views import ClientListView, \
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
     global_search, BidReportView, BidFreeListView, bid_calendar_events,\
-    events_calendar, EstateFreeListDetailsView
+    events_calendar
     
 
 urlpatterns = patterns('',   
-    url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),
-    url(r'^estatefreelist/$',EstateFreeListDetailsView.as_view(), name='estate-free-list'),
+    url(r'^estatelist/$',EstateListDetailsView.as_view(), name='estate-list'),    
     url(r'^estateselectlist/(?P<selected>\d+)$',EstateSelectRegisterView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
     url(r'^estateselectlist/(?P<pk>\d+)/(?P<selected>\d+)$',EstateSelectRegisterView.as_view(template_name='estate_to_register.html'), name='estate_select_list'),
-    url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),
-    url(r'^estatefreelistdetails/(?P<pk>\d+)$',EstateFreeListDetailsView.as_view(), name='estate_free_list_details'),
+    url(r'^estatelistdetails/(?P<pk>\d+)$',EstateListDetailsView.as_view(), name='estate_list_details'),    
     url(r'^selectable/', include('selectable.urls')),
     url(r'^select2/', include('django_select2.urls')),    
     url(r'^clients/$',ClientListView.as_view(), name='client-list'),

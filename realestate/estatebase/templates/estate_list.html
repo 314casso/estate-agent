@@ -73,15 +73,7 @@
 {% endblock js %}
 
 {% block page_header %}
-<small>Лоты:</small>
-{% for k,v in available_views.items %}
-{% if view_pk == k %}
-[{{ v.title }}]
-{% else %}
-<a style="color:#ccc" href="{% url v.url %}"><small>{{ v.title }}</small></a>
-{% endif %}
-{% endfor %}
-
+<small>Лоты</small>
 {% if estate %}
 &#8594; <small>{{ estate.estate_type }} <strong>{{ estate.pk }}</strong></small>
 {% endif %}
