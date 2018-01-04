@@ -647,7 +647,7 @@ class Estate(ProcessDeletedModel):
     
     @property
     def is_free(self):       
-        return self.validity_id == self.VALID and (self.actualized > get_free_delta())
+        return self.validity_id == self.VALID and (self.actualized < get_free_delta())
     
     @property
     def basic_contact(self):
