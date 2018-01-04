@@ -597,10 +597,10 @@ class EstateFilterForm(BetterForm):
                 lst.update(result)          
         f.update(lst)    
         
-        if cleaned_data['beside_type']:
+        if 'beside_type' in cleaned_data and cleaned_data['beside_type']:
             f.update({'entranceestate_set__type': cleaned_data['beside_type']})            
         
-        if cleaned_data['beside'][0]:
+        if 'beside' in cleaned_data and cleaned_data['beside'][0]:
             f.update({'%s__exact' % 'entrances' : cleaned_data['beside'][0]})
             if cleaned_data['beside'][1]:
                 num = from_to(cleaned_data['beside'][1], 'entranceestate_set__distance')
