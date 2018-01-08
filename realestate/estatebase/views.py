@@ -108,7 +108,7 @@ class EstateTestMixin(object):
         user = self.request.user
         
         if estate and not estate.is_free and not user.has_perm('estatebase.change_broker'):
-            if estate.broker and not user == estate.broker:
+            if estate.broker and estate.broker.is_active and not user == estate.broker:
                 return False
         return True
         
