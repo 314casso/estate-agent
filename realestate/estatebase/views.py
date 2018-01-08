@@ -272,6 +272,7 @@ class EstateMixin(EstateTestMixin, BaseMixin, ModelFormMixin):
         return super(EstateMixin, self).form_valid(form)
 
 class EstateCreateView(EstateMixin, CreateView):
+    MANAGER_GROUP = 2
     template_name = 'estate_create.html'       
     form_class = EstateCreateForm    
     def get_initial(self):        
@@ -279,7 +280,8 @@ class EstateCreateView(EstateMixin, CreateView):
         if 'estate_type' in self.kwargs:                  
             initial['estate_type'] = self.kwargs['estate_type']        
         initial['estate_status'] = 2
-        initial['broker'] = self.request.user           
+        if not self.request.user.is_member([self.MANAGER_GROUP]):
+            initial['broker'] = self.request.user           
         return initial
     def get_context_data(self, **kwargs):
         context = super(EstateCreateView, self).get_context_data(**kwargs)        
