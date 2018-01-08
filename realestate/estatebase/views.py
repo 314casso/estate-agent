@@ -279,8 +279,8 @@ class EstateCreateView(EstateMixin, CreateView):
         initial = super(EstateCreateView, self).get_initial()
         if 'estate_type' in self.kwargs:                  
             initial['estate_type'] = self.kwargs['estate_type']        
-        initial['estate_status'] = 2
-        if not self.request.user.is_member([self.MANAGER_GROUP]):
+        initial['estate_status'] = 2        
+        if not self.request.user.groups.filter(pk__in=[self.MANAGER_GROUP]).exists():
             initial['broker'] = self.request.user           
         return initial
     def get_context_data(self, **kwargs):

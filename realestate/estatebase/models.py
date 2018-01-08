@@ -31,7 +31,7 @@ from datetime import timedelta
 from django.template.defaultfilters import default
 
 
-class ExUser(User):
+class ExUser(User):     
     def __unicode__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
     class Meta:
