@@ -1027,6 +1027,8 @@ class BidListView(ListView):
     def extra_filter(self, q, user):
         if not user.has_perm('estatebase.view_other_bid'):
             self.available_views['bidlist']['title'] = u'Мои заявки'
+        else:
+            self.available_views['bidlist']['title'] = u'Все заявки'
         return BidListView.user_filter(user, q)
     
     def get_queryset(self):
@@ -1558,7 +1560,9 @@ def bid_list_contacts(request, contact_type_pk, view_pk):
     q = q.filter(geo_groups__id__in=geo_list)
     if len(filter_dict):
         if 'Q' in filter_dict:
-            q = q.filter(filter_dict.pop('Q'))                
+            q = q.filter(filter_dict.pop('Q'))
+        if 'E' in filter_dict:                
+            q = q.exclude(**filter_dict.pop('E'))                
         q = q.filter(**filter_dict) 
     if view_pk == BidListView.view_pk:
         q = BidListView.user_filter(request.user, q)
