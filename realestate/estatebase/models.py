@@ -1559,6 +1559,7 @@ class BidEvent(models.Model):
     
     def as_dict(self):
         historical_color = '#cccccc'
+        do_free_color = '#a09b7e'
         alert_color = '#fb5140'
         result = {
             "id": self.id,
@@ -1568,8 +1569,15 @@ class BidEvent(models.Model):
             "url": reverse('bid_detail', args=[self.bid.pk]),
             "allDay": 'false'             
         }
+        
+        last_event = BidEvent.objects.filter(bid=self.bid).first()
+        if last_event and last_event.bid_event_category.do_free:
+            result['color'] = do_free_color
+            result['description'] = u"последнее событие %s в заявке %s делает ее свободной" % (last_event, self.bid)
+            return result
+        
         if BidEvent.objects.filter(pk__gt=self.pk, bid=self.bid, bid_event_category__is_calendar=True):
-            result['color'] = historical_color
+            result['color'] = historical_color        
         else:
             days = (self.bid.state.event_date - datetime.datetime.now()).days
             if 0 < days < 2:
