@@ -1018,11 +1018,16 @@ class BidListView(ListView):
     available_views = OrderedDict([('bidlist', {'title': u'Все заявки', 'url':'bid-list'}), 
                                    ('bidfreelist', {'title': u'Свободные заявки', 'url':'bid-free-list'})])
     
-    def extra_filter(self, q, user):
-        if not user.has_perm('estatebase.view_other_bid'):
-            self.available_views['bidlist']['title'] = u'Мои заявки'           
+    @staticmethod
+    def user_filter(user, q):
+        if not user.has_perm('estatebase.view_other_bid'):                       
             q = q.filter(brokers=user)
         return q
+            
+    def extra_filter(self, q, user):
+        if not user.has_perm('estatebase.view_other_bid'):
+            self.available_views['bidlist']['title'] = u'Мои заявки'
+        return BidListView.user_filter(user, q)
     
     def get_queryset(self):
         user = self.request.user
@@ -1081,14 +1086,19 @@ class BidListView(ListView):
 
 
 class BidFreeListView(BidListView):
-    view_pk = 'bidfreelist'    
-    def extra_filter(self, q, user):        
+    view_pk = 'bidfreelist'
+    
+    @staticmethod
+    def free_filter(q):
         q = q.filter(
                     Q(state__state__in=[BidState.WORKING], state__event_date__lt=BidState.get_free_date()) |
                     Q(state__state__in=[BidState.FREE,BidState.NEW])
                     )
-        return q
-    
+        return q    
+            
+    def extra_filter(self, q, user):
+        return BidFreeListView.free_filter(q)        
+            
                 
 def bid_calendar_events(request):
     start = request.GET.get('start')
@@ -1540,7 +1550,7 @@ def incorrect_contacts(request):
     return response
 
 @user_passes_test(lambda u: u.is_staff)
-def bid_list_contacts(request, contact_type_pk):            
+def bid_list_contacts(request, contact_type_pk, view_pk):            
     q = Bid.objects.all()          
     search_form = BidFilterForm(request.GET)
     filter_dict = search_form.get_filter()    
@@ -1549,7 +1559,12 @@ def bid_list_contacts(request, contact_type_pk):
     if len(filter_dict):
         if 'Q' in filter_dict:
             q = q.filter(filter_dict.pop('Q'))                
-        q = q.filter(**filter_dict)    
+        q = q.filter(**filter_dict) 
+    if view_pk == BidListView.view_pk:
+        q = BidListView.user_filter(request.user, q)
+    elif view_pk == BidFreeListView.view_pk:
+        q = BidFreeListView.free_filter(q)
+        
     bid_ids = set(q.values_list('id',flat=True))    
     contacts = Contact.objects.filter(client__bids__id__in=bid_ids, contact_type_id=contact_type_pk, contact_state_id=Contact.AVAILABLE)    
     return contacts_csv_response(contacts, contact_type_pk)

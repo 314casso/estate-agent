@@ -155,7 +155,7 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',    
     url (r'^estatelistcontacts/(?P<contact_type_pk>\d+)$', view=estate_list_contacts, name='estate_list_contacts'),
-    url (r'^bidlistcontacts/(?P<contact_type_pk>\d+)$', view=bid_list_contacts, name='bid_list_contacts'),
+    url (r'^bidlistcontacts/(?P<contact_type_pk>\d+)/(?P<view_pk>\w+)$', view=bid_list_contacts, name='bid_list_contacts'),
     url (r'^clientlistcontacts/(?P<contact_type_pk>\d+)$', view=client_list_contacts, name='client_list_contacts'),
     url (r'^incorrectcontacts/$', view=incorrect_contacts, name='incorrect_contacts'),
 )
