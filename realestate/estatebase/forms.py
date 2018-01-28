@@ -1084,7 +1084,7 @@ class UserForm(Form):
     
     
 class GenericEventForm(ModelForm):
-    category = AutoCompleteSelectField(widget=AutoComboboxSelectWidget(BidEventCategoryLookup, attrs = {'required': None}), 
+    category = AutoCompleteSelectField(widget=AutoComboboxSelectWidget, 
             lookup_class=BidEventCategoryLookup,
             label = _('Event'),            
         )
@@ -1092,7 +1092,7 @@ class GenericEventForm(ModelForm):
         model = GenericEvent
         fields = ['category', 'date', 'note', 'object_id', 'content_type']
         widgets = {
-                  'date': DateTimeInput(attrs={'class':'date-time-input', 'required': None}, format='%d.%m.%Y %H:%M'),
+                  'date': DateTimeInput(attrs={'class':'date-time-input'}, format='%d.%m.%Y %H:%M'),
                   'object_id': HiddenInput,
                   'content_type': HiddenInput,                                     
                    }
