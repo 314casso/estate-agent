@@ -70,6 +70,8 @@
 	    });
     });  
 </script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/vue.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/apps.js"></script>
 {% endblock js %}
 
 {% block page_header %}
@@ -189,7 +191,7 @@
             {% include "estate_dialog/salers.html" %}
             {% endif %}            
             {% include "estate_dialog/file_base.html" %}
-            {% include "estate_dialog/links.html" %}
+            {% include "estate_dialog/links.html" %}            
             {% include "estate_dialog/marks.html" %}            
         </div>
         <div style="float: left; margin-left: 10px">
@@ -209,7 +211,8 @@
                 <a title="Добавление участка к лоту..." href="{% url 'stead_append' estate.pk %}?{{ next_url }}">Добавить участок</a>
             </div>
             {% endif %}
-            {% include "estate_dialog/comm.html" %}            
+            {% include "estate_dialog/comm.html" %}  
+            {% include "estate_dialog/events.html" %}          
         </div>
         <br style="clear: both" />
     </div>

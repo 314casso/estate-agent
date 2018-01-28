@@ -23,7 +23,7 @@ from estatebase.views import ClientListView, \
     set_bid_basic_client, ManageEstateM2MEntrance, upload_files,\
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
     global_search, BidReportView, BidFreeListView, bid_calendar_events,\
-    events_calendar
+    events_calendar, ManageM2MEvents, lot_events, create_generic_event
     
 
 urlpatterns = patterns('',   
@@ -66,6 +66,9 @@ urlpatterns += patterns('',
     url (r'^genericfiles/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=GenericFilesView.as_view(), name='generic_files'),
     url (r'^genericlinks/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=ManageEstateM2MLinks.as_view(), name='manage_links'),
     url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
+    url (r'^genericevents/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=ManageM2MEvents.as_view(), name='manage_events'),
+    url (r'^lotevetns/(?P<estate_pk>\d+)$', lot_events, name='lotevetns'),
+    url (r'^creategenericevent/$', create_generic_event, name='creategenericevent'),
     
 )
 

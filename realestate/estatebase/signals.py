@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save, post_delete,\
     m2m_changed
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     prepare_history, Bid, Contact, EstateClient, Client, BidEvent, EstateParam,\
-    Layout, EntranceEstate, EstatePhoto
+    Layout, EntranceEstate, EstatePhoto, GenericEvent
 from datetime import datetime    
 from django.contrib.auth.models import User
 
@@ -65,6 +65,17 @@ def bid_event_history(sender, instance, created, **kwargs):
         prepare_history(instance.history, instance._user_id)
     instance.bid.update_state()
     prepare_history(instance.bid.history, instance._user_id)
+
+
+def generic_event_history(sender, instance, created, **kwargs):
+    if created:
+        post_save.disconnect(generic_event_history, sender=GenericEvent)
+        instance.history = prepare_history(None, instance.user.id)
+        instance.save()
+        post_save.connect(generic_event_history, sender=GenericEvent)
+    else:
+        prepare_history(instance.history, instance.user.id)    
+       
 
 def update_from_pickle(sender, instance, **kwargs):
     cleaned_data = instance.cleaned_filter    
@@ -143,6 +154,7 @@ def connect_signals():
     post_save.connect(update_estate_m2m, sender=EntranceEstate)  # @UndefinedVariable    
     post_save.connect(update_estate_m2m, sender=EstatePhoto)  # @UndefinedVariable
     post_save.connect(save_estate, sender=Layout)
+    post_save.connect(generic_event_history, sender=GenericEvent)
     
     
     

@@ -19,7 +19,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
     EstateRegisterFilterForm, EstateForm, EstateCreateClientForm, EstateCreateForm, \
     ClientStatusUpdateForm, EstateCreateWizardForm, EstateFilterRegisterForm,\
     BidEventForm, BidUpdateForm, FileUpdateForm, EntranceEstateFormSet, GenericLinkFormset ,\
-    UserForm
+    UserForm, GenericEventFormset, GenericEventForm
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
@@ -47,6 +47,9 @@ from django.db.models import Q
 from django.utils import timezone
 from collections import OrderedDict
 from exceptions import AttributeError
+from django.utils.timezone import now
+from django.views.decorators.http import require_http_methods
+from django.contrib.contenttypes.models import ContentType
 
 
 class BaseMixin(object):
@@ -132,7 +135,7 @@ def upload_files(request):
     if request.method == 'POST':           
         object_pk = request.REQUEST.get('object_pk')
         model_key = request.REQUEST.get('model_key')        
-        content_object = get_files_content_object(model_key, object_pk)        
+        content_object = get_generic_content_object(model_key, object_pk)        
         for upfile in request.FILES.getlist('form_file'):                        
             estate_file = EstateFile(content_object=content_object) 
             file_content = ContentFile(upfile.read()) 
@@ -325,6 +328,7 @@ class EstateCreateClientView(EstateCreateView):
 class EstateCreateWizardView(EstateCreateClientView):
     template_name = 'estate_create.html'       
     form_class = EstateCreateWizardForm
+         
             
 class EstateDetailView(DetailView):
     template_name = 'estate_detail.html'    
@@ -341,6 +345,7 @@ class EstateDetailView(DetailView):
             'images': self.object.images.all()[:6],
         })        
         return context
+    
     
 class EstateUpdateView(EstateMixin, UpdateView):
     model = Estate
@@ -441,14 +446,17 @@ class EstateListDetailsView(EstateListView):
         r = p = 0
         if self.estate:        
             r = (self.estate.agency_price or 0) - (self.estate.saler_price or 0)        
-            p = float(r) / (self.estate.saler_price or 1) * 100                                           
+            p = float(r) / (self.estate.saler_price or 1) * 100
+            content_type = ContentType.objects.get(app_label="estatebase", model="estate")
+            context['event_form'] = GenericEventForm(initial={'date': now(), 'content_type': content_type, 'object_id': self.estate.pk})
+                                                       
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
             'margin': '%s (~%s%%)' % (intcomma(r), int(p)),
             'images': self.estate and self.estate.images.all()[:6] or None,
             'files': self.estate and self.estate.files.all()[:6] or None,
-            'links': self.estate and self.estate.links.all()[:6] or None,
-            'estate': self.estate,
+            'links': self.estate and self.estate.links.all()[:6] or None,            
+            'estate': self.estate,            
         })                
         return context        
 
@@ -497,21 +505,21 @@ class EstateImagesView(EstateTestMixin, TemplateView):
         return context      
 
 
-def get_files_model(model_key):
+def get_generic_model(model_key):
     model_keys = {'estate':Estate, 'bid': Bid, 'partner': Partner}
     return model_keys.get(model_key)
 
 
-def get_files_content_object(model_key, object_pk):
-    files_model = get_files_model(model_key)
-    return files_model.objects.get(pk=object_pk)
+def get_generic_content_object(model_key, object_pk):
+    generic_model = get_generic_model(model_key)
+    return generic_model.objects.get(pk=object_pk)
 
 
 class GenericFilesView(TemplateView): 
     template_name = 'generic_files.html'    
     def get_context_data(self, **kwargs):
         model_key = kwargs['model_key']        
-        content_object = get_files_content_object(model_key, kwargs['object_pk'])        
+        content_object = get_generic_content_object(model_key, kwargs['object_pk'])        
         context = super(GenericFilesView, self).get_context_data(**kwargs)                 
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),            
@@ -1637,9 +1645,11 @@ class ManageM2M(View):
     def get_initial(self):
         return {}
 
+
 class ManageEstateM2M(ManageM2M):          
     template = "estate_dialog/manage_m2m_estate.html"
     instance_model = Estate
+
 
 class ManageEstateM2MEntrance(ManageEstateM2M):    
     formset = EntranceEstateFormSet       
@@ -1647,13 +1657,14 @@ class ManageEstateM2MEntrance(ManageEstateM2M):
     def get_dialig_title(self):
         return u'Виды и выходы для "%s"' % self.instance    
 
+
 class ManageEstateM2MLinks(ManageM2M):
     template = "estate_dialog/manage_m2m_estate.html"
     formset = GenericLinkFormset       
     reverse_name = "manage_links"
     def dispatch(self, *args, **kwargs):         
         self.model_key = kwargs['model_key']  
-        self.instance = get_files_content_object(self.model_key, kwargs['object_pk'])     
+        self.instance = get_generic_content_object(self.model_key, kwargs['object_pk'])     
         return super(ManageM2M, self).dispatch(*args, **kwargs)
     def get_dialig_title(self):
         return u'Ссылки для "%s"' % self.instance
@@ -1667,6 +1678,30 @@ class ManageEstateM2MLinks(ManageM2M):
         if '_continue' in self.request.POST:                  
             return '%s?%s' % (reverse(self.reverse_name, args=[self.model_key, self.instance.id]), safe_next_link(next_url))
         return next_url
+    
+    
+class ManageM2MEvents(ManageM2M):
+    template = "estate_dialog/manage_m2m_estate.html"
+    formset = GenericEventFormset       
+    reverse_name = "manage_events"
+    @method_decorator(user_passes_test(lambda u: u.is_superuser, login_url=LOGOUT_URL, redirect_field_name='nonext'))
+    def dispatch(self, *args, **kwargs):         
+        self.model_key = kwargs['model_key']  
+        self.instance = get_generic_content_object(self.model_key, kwargs['object_pk'])     
+        return super(ManageM2M, self).dispatch(*args, **kwargs)
+    def get_dialig_title(self):
+        return u'События для "%s"' % self.instance
+    def get(self, request, *args, **kwargs):        
+        formset = self.formset(instance = self.instance)
+        context = self.get_context(request)
+        context['formset'] = formset
+        return render(request, self.template, context)
+    def get_success_url(self):   
+        next_url = self.request.REQUEST.get('next', '')                  
+        if '_continue' in self.request.POST:                  
+            return '%s?%s' % (reverse(self.reverse_name, args=[self.model_key, self.instance.id]), safe_next_link(next_url))
+        return next_url    
+    
 
 def global_search(request):    
     q = request.GET.get('q') 
@@ -1707,6 +1742,21 @@ def csrf_failure(request, reason=""):
         return redirect(next_url)
     return HttpResponseForbidden()
 
+
+def lot_events(request, estate_pk):
+    estate = Estate.objects.get(pk=estate_pk)
+    events = [e.as_dict() for e in estate.events.all()[:6]]    
+    return JsonResponse({ 'events': events })
+
+@require_http_methods(["POST"])
+def create_generic_event(request):    
+    form = GenericEventForm(request.POST)    
+    if form.is_valid():
+        new_event = form.save(commit=False)
+        new_event.user = request.user
+        new_event.save()                             
+        return JsonResponse(new_event.as_dict())
+    return JsonResponse({ 'errors': form.errors.as_text() })
 
 class BidReportView(BidListView):
     paginate_by = 100

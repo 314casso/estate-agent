@@ -6,7 +6,7 @@ from django.forms.forms import Form
 from django.forms.models import inlineformset_factory, \
     BaseInlineFormSet
 from django.forms.widgets import Textarea, TextInput, DateTimeInput, \
-    CheckboxInput
+    CheckboxInput, HiddenInput
 from django.utils.translation import ugettext_lazy as _
 from estatebase.field_utils import from_to_values, split_string, \
     complex_field_parser, check_value_list, history_filter, from_to
@@ -27,7 +27,7 @@ from estatebase.lookups import StreetLookup, LocalityLookup, MicrodistrictLookup
 from estatebase.models import Client, Contact, ContactHistory, Bidg, Estate, \
     Document, Layout, Level, EstatePhoto, Stead, Bid, EstateRegister, \
     EstateType, EstateClient, BidEvent, EntranceEstate,\
-    EstateFile, GenericLink, BidStatusCategory, ExUser
+    EstateFile, GenericLink, BidStatusCategory, ExUser, GenericEvent
 from estatebase.wrapper import get_polymorph_label, get_wrapper
 from form_utils.forms import BetterForm, BetterModelForm
 from selectable.forms import AutoCompleteSelectWidget
@@ -1083,7 +1083,23 @@ class UserForm(Form):
     ), queryset=ExUser.objects.all(), required=False)
     
     
+class GenericEventForm(ModelForm):
+    category = AutoCompleteSelectField(widget=AutoComboboxSelectWidget(BidEventCategoryLookup, attrs = {'required': None}), 
+            lookup_class=BidEventCategoryLookup,
+            label = _('Event'),            
+        )
+    class Meta:
+        model = GenericEvent
+        fields = ['category', 'date', 'note', 'object_id', 'content_type']
+        widgets = {
+                  'date': DateTimeInput(attrs={'class':'date-time-input', 'required': None}, format='%d.%m.%Y %H:%M'),
+                  'object_id': HiddenInput,
+                  'content_type': HiddenInput,                                     
+                   }
+        
 
 EntranceEstateFormSet = inlineformset_factory(Estate, EntranceEstate, extra=1, form=EntranceEstateInlineForm)
 
 GenericLinkFormset = generic_inlineformset_factory(GenericLink, extra=1,)
+
+GenericEventFormset = generic_inlineformset_factory(GenericEvent, form=GenericEventForm, extra=1,)

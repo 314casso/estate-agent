@@ -520,6 +520,7 @@ class Estate(ProcessDeletedModel):
     #attachments
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
+    events = GenericRelation('GenericEvent')
     
     def delete(self):
         self.deleted = True
@@ -826,6 +827,7 @@ class GenericLink(models.Model):
         verbose_name = _('GenericLink')
         verbose_name_plural = _('GenericLinks')
 
+
 class Supply(SimpleDict):
     '''
     Перечень коммуникаций    
@@ -833,6 +835,7 @@ class Supply(SimpleDict):
     class Meta(SimpleDict.Meta):
         verbose_name = _('Supply')
         verbose_name_plural = _('Supply')
+
 
 class SupplyState(SimpleDict):
     '''
@@ -1699,7 +1702,50 @@ class DealStatus(SimpleDict):
     '''      
     class Meta(SimpleDict.Meta):
         verbose_name = _('DealStatus')
-        verbose_name_plural = _('DealStatuses') 
+        verbose_name_plural = _('DealStatuses')
+        
+        
+class GenericEvent(models.Model):
+    '''
+    Событие
+    '''   
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')     
+    category = models.ForeignKey(BidEventCategory, verbose_name=_('Category'))
+    date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)    
+    history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
+    note = models.TextField(_('Note'), blank=True, null=True)
+    
+    def __unicode__(self):
+        return u'[%s] - %s' % (self.pk, self.category)
+           
+    def as_dict(self):
+        color = 'blue'
+#         historical_color = '#cccccc'
+        result = {
+            "id": self.id,
+            "category": u'%s' % (self.category.name),
+            "title": u'%s (%s)' % (self.category.name, self.content_object),
+            "start": self.date,            
+            "date": self.date.strftime('%d.%m.%y %H:%M'),
+            #"url": self.content_object.get_absolute_url(),
+            "allDay": 'false',
+            "note": self.note,
+        }
+        if self.history:
+            result.update({
+                "modificated": self.history.modificated.strftime('%d.%m.%y'),
+                "created_by": u'%s %s.' % (self.history.created_by.last_name, self.history.created_by.first_name[:1]),                
+                })
+        result['color'] = color
+        return result              
+    
+    class Meta:
+        verbose_name = _('bid event')
+        verbose_name_plural = _('bid events')        
+        ordering = ['-date']         
+   
    
 from estatebase.signals import connect_signals
 connect_signals()
