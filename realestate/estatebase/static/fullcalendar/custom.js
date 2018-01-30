@@ -1,10 +1,10 @@
 $(document).ready(function() {
 
-    // page is now ready, initialize the calendar...
 	
 	var extra = {'p': '0909'};
+	var $calendar = $('#calendar'); 
 
-    $('#calendar').fullCalendar({
+	$calendar.fullCalendar({
     	header: {
 			left: 'prev,next today',
 			center: 'title',
@@ -13,19 +13,24 @@ $(document).ready(function() {
 		
 		eventSources: [
 
-	        // your event source
 	        {
-	            url: '/estatebase/bidcalendarevents/',
+	            url: $calendar.data('bidcalendarevents'),
 	            type: 'GET',
 	            data: extra,
 	            error: function() {
 	                alert('there was an error while fetching events!');
-	            },
-	            //color: 'yellow',   // a non-ajax option
-	            //textColor: 'black' // a non-ajax option
+	            },	            
+	        },
+	        
+	        {
+	            url: $calendar.data('estatecalendarevents'),
+	            type: 'GET',
+	            data: extra,
+	            error: function() {
+	                alert('there was an error while fetching events!');
+	            },	            
 	        }
 
-	        // any other sources...
 
 	    ],
 	    

@@ -57,7 +57,9 @@
 		</div>
 		{% endif %}
 				
-		<div id='calendar'></div>   
+		<div id='calendar' data-bidcalendarevents='{% url "bidcalendarevents" %}' 
+						   data-estatecalendarevents='{% url "estatecalendarevents" %}'>
+		</div>   
        			
 	
 	</div>

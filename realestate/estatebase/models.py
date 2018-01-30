@@ -520,11 +520,14 @@ class Estate(ProcessDeletedModel):
     #attachments
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
-    events = GenericRelation('GenericEvent')
+    events = GenericRelation('GenericEvent', related_query_name='estates')
     
     def delete(self):
         self.deleted = True
         self.save()
+    
+    def get_absolute_url(self):
+        return self.detail_link     
             
     def check_contact(self):
         return self.contact and self.contact.contact_state_id in (Contact.AVAILABLE, Contact.NOTRESPONDED, Contact.NONAVAILABLE)
@@ -1720,16 +1723,20 @@ class GenericEvent(models.Model):
     def __unicode__(self):
         return u'[%s] - %s' % (self.pk, self.category)
            
+    def is_last(self):
+        last = GenericEvent.objects.filter(estates=self.content_object).first()
+        return last.date <= self.date         
+           
     def as_dict(self):
-        color = 'blue'
-#         historical_color = '#cccccc'
+        color = '#81c784'
+        historical_color = '#cccccc'
         result = {
             "id": self.id,
             "category": u'%s' % (self.category.name),
             "title": u'%s (%s)' % (self.category.name, self.content_object),
             "start": self.date,            
             "date": self.date.strftime('%d.%m.%y %H:%M'),
-            #"url": self.content_object.get_absolute_url(),
+            "url": self.content_object.get_absolute_url(),
             "allDay": 'false',
             "note": self.note,
         }
@@ -1738,12 +1745,15 @@ class GenericEvent(models.Model):
                 "modificated": self.history.modificated.strftime('%d.%m.%y'),
                 "created_by": u'%s %s.' % (self.history.created_by.last_name, self.history.created_by.first_name[:1]),                
                 })
-        result['color'] = color
+        if self.is_last():            
+            result['color'] = color
+        else:
+            result['color'] = historical_color
         return result              
     
     class Meta:
-        verbose_name = _('bid event')
-        verbose_name_plural = _('bid events')        
+        verbose_name = _('event')
+        verbose_name_plural = _('events')        
         ordering = ['-date']         
    
    

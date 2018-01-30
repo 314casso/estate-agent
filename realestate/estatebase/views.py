@@ -23,7 +23,7 @@ from estatebase.forms import ClientForm, ContactFormSet, ClientFilterForm, \
 from estatebase.helpers.functions import safe_next_link
 from estatebase.models import Estate, Client, EstateType, Contact, Level, \
     EstatePhoto, prepare_history, Stead, Bid, EstateRegister, EstateClient, YES, \
-    ExUser, Bidg, BidEvent, BidClient, EstateFile, BidState
+    ExUser, Bidg, BidEvent, BidClient, EstateFile, BidState, GenericEvent
 from models import EstateTypeCategory
 from settings import PUBLIC_MEDIA_URL, LOGIN_REDIRECT_URL
 from django.core.exceptions import ObjectDoesNotExist
@@ -1121,6 +1121,22 @@ def bid_calendar_events(request):
     q = BidEvent.objects.filter(Q(bid__brokers__id__in=users) | Q(history__created_by__id__in=users))    
     q = q.filter(bid_event_category__is_calendar=True, date__range=(start, end))
     q = q.exclude(bid__state__state__in=[BidState.CLOSED])
+    dicts = [ obj.as_dict() for obj in q.distinct() ]     
+    return JsonResponse(dicts, safe=False)
+
+
+def estate_calendar_events(request):
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    ids = request.GET.getlist('ids[]')
+    users = [request.user.id]
+    if ids:
+        users = [int(x) for x in ids]
+    
+    content_type = ContentType.objects.get(app_label="estatebase", model="estate")    
+    q = GenericEvent.objects.filter(Q(estates__broker__id__in=users) | Q(history__created_by__id__in=users))
+    q = q.filter(content_type=content_type)    
+    q = q.filter(date__range=(start, end))
     dicts = [ obj.as_dict() for obj in q.distinct() ]     
     return JsonResponse(dicts, safe=False)
 
