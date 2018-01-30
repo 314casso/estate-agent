@@ -1739,6 +1739,7 @@ class GenericEvent(models.Model):
             "url": self.content_object.get_absolute_url(),
             "allDay": 'false',
             "note": self.note,
+            "description": self.note,
         }
         if self.history:
             result.update({
