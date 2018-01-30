@@ -1737,10 +1737,16 @@ class GenericEvent(models.Model):
             "start": self.date,            
             "date": self.date.strftime('%d.%m.%y %H:%M'),
             "url": self.content_object.get_absolute_url(),
-            "allDay": 'false',
-            "note": self.note,
-            "description": self.note,
+            "allDay": 'false',            
         }
+        if self.note:
+            result.update(
+                {
+                "note": self.note,
+                "description": self.note,
+                }
+            )
+            
         if self.history:
             result.update({
                 "modificated": self.history.modificated.strftime('%d.%m.%y'),
