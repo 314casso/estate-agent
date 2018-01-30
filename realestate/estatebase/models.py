@@ -1729,6 +1729,7 @@ class GenericEvent(models.Model):
            
     def as_dict(self):
         color = '#81c784'
+        brocker_color = '#4caf50'
         historical_color = '#cccccc'
         result = {
             "id": self.id,
@@ -1753,7 +1754,7 @@ class GenericEvent(models.Model):
                 "created_by": u'%s %s.' % (self.history.created_by.last_name, self.history.created_by.first_name[:1]),                
                 })
         if self.is_last():            
-            result['color'] = color
+            result['color'] = brocker_color if self.content_object.broker else color
         else:
             result['color'] = historical_color
         return result              
