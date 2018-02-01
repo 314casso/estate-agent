@@ -1,16 +1,29 @@
+def get_request_dict(request):
+    if not request:
+        return
+    if request.method == 'GET':
+        return request.GET 
+    elif request.method == 'POST':
+        return request.POST
+    
+
 def get_fields(self):
+    request = get_request_dict(self)
     try:
-        fields = self.REQUEST['sort'].split(',')
+        fields = request['sort'].split(',')
     except (KeyError, ValueError, TypeError):
         fields = []
     direction = self.direction == 'desc' and '-' or ''
     return ['%s%s' % (direction, field) for field in fields]
 
+
 def get_direction(self):
+    request = get_request_dict(self)
     try:
-        return self.REQUEST['dir']
+        return request['dir']
     except (KeyError, ValueError, TypeError):
         return 'desc'
+
 
 class SortingMiddleware(object):
     """

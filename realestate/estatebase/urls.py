@@ -24,7 +24,7 @@ from estatebase.views import ClientListView, \
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
     global_search, BidReportView, BidFreeListView, bid_calendar_events,\
     events_calendar, ManageM2MEvents, lot_events, create_generic_event,\
-    estate_calendar_events
+    estate_calendar_events, client_events, client_calendar_events
     
 
 urlpatterns = patterns('',   
@@ -69,6 +69,7 @@ urlpatterns += patterns('',
     url (r'^estateentrances/(?P<pk>\d+)$', view=ManageEstateM2MEntrance.as_view(), name='manage_entrances'),
     url (r'^genericevents/(?P<model_key>\w+)/(?P<object_pk>\d+)$', view=ManageM2MEvents.as_view(), name='manage_events'),
     url (r'^lotevetns/(?P<estate_pk>\d+)$', lot_events, name='lotevetns'),
+    url (r'^clientevents/(?P<client_pk>\d+)$', client_events, name='clientevents'),
     url (r'^creategenericevent/$', create_generic_event, name='creategenericevent'),
     
 )
@@ -142,10 +143,8 @@ urlpatterns += patterns('',
     url (r'^bidreport/$', BidReportView.as_view(), name='bidreport'),
     url (r'^bidcalendarevents/$', bid_calendar_events, name='bidcalendarevents'),
     url (r'^estatecalendarevents/$', estate_calendar_events, name='estatecalendarevents'),
-    
+    url (r'^clientcalendarevents/$', client_calendar_events, name='clientcalendarevents'),        
     url (r'^eventscalendar/$', events_calendar, name='eventscalendar'),
-    
-    
 )
 
 urlpatterns += patterns('',    

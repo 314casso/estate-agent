@@ -750,6 +750,38 @@ class Estate(ProcessDeletedModel):
     def agency_price_1000(self):
         if self.agency_price:
             return int(self.agency_price / 1000)
+     
+    def event_dict(self, event): 
+        color = '#81c784'
+        brocker_color = '#4caf50'
+        historical_color = '#cccccc'
+        result = {
+            "id": event.id,
+            "category": u'%s' % (event.category.name),
+            "title": u'%s (%s)' % (event.category.name, event.content_object),
+            "start": event.date,            
+            "date": event.date.strftime('%d.%m.%y %H:%M'),
+            "url": event.content_object.get_absolute_url(),
+            "allDay": 'false',            
+        }
+        if event.note:
+            result.update(
+                {
+                "note": event.note,
+                "description": event.note,
+                }
+            )
+            
+        if event.history:
+            result.update({
+                "modificated": event.history.modificated.strftime('%d.%m.%y'),
+                "created_by": u'%s %s.' % (event.history.created_by.last_name, event.history.created_by.first_name[:1]),                
+                })
+        if event.is_last({ 'estates': self }):            
+            result['color'] = brocker_color if event.content_object.broker else color
+        else:
+            result['color'] = historical_color
+        return result 
                         
     class Meta:
         unique_together = [
@@ -1226,12 +1258,50 @@ class Client(ProcessDeletedModel):
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)    
     has_dev_profile = models.BooleanField(_('HasDevProfile'), default=False)
     dev_profile = models.OneToOneField('devrep.DevProfile', verbose_name=_('DevProfile'), blank=True, null=True, related_name='client', on_delete=models.SET_NULL)
-    extra_profile = models.OneToOneField('devrep.ExtraProfile', verbose_name=_('ExtraProfile'), blank=True, null=True, related_name='client', on_delete=models.SET_NULL)    
+    extra_profile = models.OneToOneField('devrep.ExtraProfile', verbose_name=_('ExtraProfile'), blank=True, null=True, related_name='client', on_delete=models.SET_NULL)
+    events = GenericRelation('GenericEvent', related_query_name='clients')    
+    
     def __unicode__(self):
         return u'%s: %s' % (self.name, ', '.join(self.contacts.all().values_list('contact', flat=True)))    
+    
     @property
     def user(self):
-        return self.history.updated_by or self.history.created_by                
+        return self.history.updated_by or self.history.created_by
+    
+    def get_absolute_url(self):            
+        return reverse('client_detail', args=[self.pk])
+
+    def event_dict(self, event): 
+        color = '#db960d'        
+        historical_color = '#cccccc'
+        result = {
+            "id": event.id,
+            "category": u'%s' % (event.category.name),
+            "title": u'%s (%s)' % (event.category.name, event.content_object),
+            "start": event.date,            
+            "date": event.date.strftime('%d.%m.%y %H:%M'),
+            "url": event.content_object.get_absolute_url(),
+            "allDay": 'false',            
+        }
+        if event.note:
+            result.update(
+                {
+                "note": event.note,
+                "description": event.note,
+                }
+            )
+            
+        if event.history:
+            result.update({
+                "modificated": event.history.modificated.strftime('%d.%m.%y'),
+                "created_by": u'%s %s.' % (event.history.created_by.last_name, event.history.created_by.first_name[:1]),                
+                })
+        if event.is_last({ 'clients': self }):            
+            result['color'] = color
+        else:
+            result['color'] = historical_color
+        return result   
+                    
     class Meta:
         verbose_name = _('client')
         verbose_name_plural = _('clients')
@@ -1723,41 +1793,12 @@ class GenericEvent(models.Model):
     def __unicode__(self):
         return u'[%s] - %s' % (self.pk, self.category)
            
-    def is_last(self):
-        last = GenericEvent.objects.filter(estates=self.content_object).first()
+    def is_last(self, filter_dict):
+        last = GenericEvent.objects.filter(**filter_dict).first()
         return last.date <= self.date         
            
     def as_dict(self):
-        color = '#81c784'
-        brocker_color = '#4caf50'
-        historical_color = '#cccccc'
-        result = {
-            "id": self.id,
-            "category": u'%s' % (self.category.name),
-            "title": u'%s (%s)' % (self.category.name, self.content_object),
-            "start": self.date,            
-            "date": self.date.strftime('%d.%m.%y %H:%M'),
-            "url": self.content_object.get_absolute_url(),
-            "allDay": 'false',            
-        }
-        if self.note:
-            result.update(
-                {
-                "note": self.note,
-                "description": self.note,
-                }
-            )
-            
-        if self.history:
-            result.update({
-                "modificated": self.history.modificated.strftime('%d.%m.%y'),
-                "created_by": u'%s %s.' % (self.history.created_by.last_name, self.history.created_by.first_name[:1]),                
-                })
-        if self.is_last():            
-            result['color'] = brocker_color if self.content_object.broker else color
-        else:
-            result['color'] = historical_color
-        return result              
+        return self.content_object.event_dict(self)             
     
     class Meta:
         verbose_name = _('event')

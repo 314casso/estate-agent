@@ -58,7 +58,9 @@
 		{% endif %}
 				
 		<div id='calendar' data-bidcalendarevents='{% url "bidcalendarevents" %}' 
-						   data-estatecalendarevents='{% url "estatecalendarevents" %}'>
+						   data-estatecalendarevents='{% url "estatecalendarevents" %}'
+						   data-clientcalendarevents='{% url "clientcalendarevents" %}'
+						   >
 		</div>   
        			
 	
@@ -69,7 +71,7 @@
     <script src="{% static 'js/moment.min.js' %}" ></script>  	
     <script src="{% static 'fullcalendar/fullcalendar.min.js' %}" ></script>
     <script src="{% static 'fullcalendar/locale/ru.js' %}" ></script>
-    <script src="{% static 'fullcalendar/custom.js?2' %}" ></script>
+    <script src="{% static 'fullcalendar/custom.js?3' %}" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/basic/jquery.qtip.min.js"></script>   
     {% include 'session_security/all.html' %}
     {{ form.media.js }}        

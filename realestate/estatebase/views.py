@@ -162,7 +162,7 @@ class SwapMixin(SingleObjectMixin, View):
             pass
         else:
             self.model.swap(item, swap_item)        
-        return HttpResponseRedirect(request.REQUEST.get('next', ''))    
+        return HttpResponseRedirect(request.GET.get('next', ''))    
 
 class SwapEstatePhotoView(SwapMixin):
     model = EstatePhoto
@@ -506,7 +506,7 @@ class EstateImagesView(EstateTestMixin, TemplateView):
 
 
 def get_generic_model(model_key):
-    model_keys = {'estate':Estate, 'bid': Bid, 'partner': Partner}
+    model_keys = {'estate':Estate, 'bid': Bid, 'partner': Partner, 'client': Client}
     return model_keys.get(model_key)
 
 
@@ -1141,6 +1141,22 @@ def estate_calendar_events(request):
     return JsonResponse(dicts, safe=False)
 
 
+def client_calendar_events(request):
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    ids = request.GET.getlist('ids[]')
+    users = [request.user.id]
+    if ids:
+        users = [int(x) for x in ids]
+    
+    content_type = ContentType.objects.get(app_label="estatebase", model="client")    
+    q = GenericEvent.objects.filter(Q(history__created_by__id__in=users))
+    q = q.filter(content_type=content_type)    
+    q = q.filter(date__range=(start, end))
+    dicts = [ obj.as_dict() for obj in q.distinct() ]     
+    return JsonResponse(dicts, safe=False)
+
+
 def events_calendar(request):
     form = None
     if request.user.has_perm('estatebase.view_other_bid'):
@@ -1151,8 +1167,12 @@ def events_calendar(request):
 class ClientDetailView(DetailView):
     model = Client
     template_name = 'clients/client_detail.html'
-    def get_context_data(self, **kwargs):
-        context = super(ClientDetailView, self).get_context_data(**kwargs)                
+    def get_context_data(self, **kwargs):       
+        context = super(ClientDetailView, self).get_context_data(**kwargs)
+        
+        content_type = ContentType.objects.get(app_label="estatebase", model="client")
+        context['event_form'] = GenericEventForm(initial={'date': now(), 'content_type': content_type, 'object_id': self.object.pk})
+                        
         context.update({            
             'next_url': safe_next_link(self.request.get_full_path()),
         })        
@@ -1763,6 +1783,13 @@ def lot_events(request, estate_pk):
     estate = Estate.objects.get(pk=estate_pk)
     events = [e.as_dict() for e in estate.events.all()[:6]]    
     return JsonResponse({ 'events': events })
+
+
+def client_events(request, client_pk):
+    client = Client.objects.get(pk=client_pk)
+    events = [e.as_dict() for e in client.events.all()[:6]]    
+    return JsonResponse({ 'events': events })
+
 
 @require_http_methods(["POST"])
 def create_generic_event(request):    

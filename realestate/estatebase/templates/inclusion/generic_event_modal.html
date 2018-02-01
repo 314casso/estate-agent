@@ -1,0 +1,12 @@
+<!--  -->
+<div class="button table-form" id='event-form'>		
+    <form action="{% url 'creategenericevent' %}" method="POST">
+    	{% csrf_token %}
+		{{ event_form.as_p }}			
+		<div class="error redbgtext"></div>						
+		<div style="float: right;">
+			<button autofocus type="submit" title="Добавить новое событие">Сохранить</button>
+		</div>	        
+    </form>   
+</div>
+<!--  -->

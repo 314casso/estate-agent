@@ -29,6 +29,15 @@ $(document).ready(function() {
 	            error: function() {
 	                alert('there was an error while fetching events!');
 	            },	            
+	        },
+	        
+	        {
+	            url: $calendar.data('clientcalendarevents'),
+	            type: 'GET',
+	            data: extra,
+	            error: function() {
+	                alert('there was an error while fetching events!');
+	            },	            
 	        }
 
 

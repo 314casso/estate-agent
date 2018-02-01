@@ -26,17 +26,6 @@
   	 	  	
 </div>
 
-<!--  -->
-	<div class="button table-form" id='event-form'>		
-	    <form action="{% url 'creategenericevent' %}" method="POST">
-	    	{% csrf_token %}
-			{{ event_form.as_p }}			
-			<div class="error redbgtext"></div>						
-			<div style="float: right;">
-				<button type="submit" title="Добавить новое событие">Сохранить</button>
-			</div>	        
-	    </form>   
-	</div>
-	<!--  -->
+{% include 'inclusion/generic_event_modal.html' %}
 
 {% endblock %}
