@@ -204,9 +204,15 @@ class ClientFilterForm(BetterForm):
             label=_('Contact'),
             required=False,
         )
+    contact_state = AutoCompleteSelectMultipleField(
+            widget=AutoComboboxSelectMultipleWidget,
+            lookup_class=ContactStateLookup,
+            label=_('Contact State'),
+            required=False,
+        )
     note = forms.CharField(required=False, label=_('Note'))
     fio = forms.CharField(required=False, label=u'Ф.И.О.')
-    next = forms.CharField(required=False, widget=forms.HiddenInput())
+    next = forms.HiddenInput()
     
     work_types = AutoCompleteSelectMultipleField(widget=AutoComboboxSelectMultipleWidget, 
             lookup_class=WorkTypeLookup,
@@ -302,6 +308,7 @@ class ClientFilterForm(BetterForm):
                           'history__created_by__in': 'created_by',
                           'history__updated_by__in': 'updated_by',
                           'contacts__in': 'contacts',
+                          'contacts__contact_state__in':'contact_state',
                           'name__icontains': 'name',
                           'client_type__in': 'client_type',
                           'origin__in': 'origin',                          
@@ -314,7 +321,7 @@ class ClientFilterForm(BetterForm):
                           'dev_profile__coverage_regions__in': 'coverage_regions', 
                           'dev_profile__coverage_localities__in': 'coverage_localities', 
                           'dev_profile__note__icontains': 'dev_note',
-                          'dev_profile__in': 'dev_profiles',
+                          'dev_profile__in': 'dev_profiles',                          
                          }
         
         two_number_fields = {'birthday':'extra_profile__birthday'}
@@ -337,7 +344,7 @@ class ClientFilterForm(BetterForm):
     class Meta:
         fieldsets = [('basic', {'fields': [
                                          'pk','created','created_by','updated','updated_by','origin','client_type',
-                                         'has_dev_profile','name','fio','birthday','address','contacts','note','next'
+                                         'has_dev_profile','name','fio','birthday','address','contacts','contact_state','note','next'
                                          ]}),
                      ('devrep', {'fields': [
                                          'dev_profiles', 'work_types','goods','partners','experience','quality','coverage_regions',
@@ -418,6 +425,7 @@ class EstateFilterForm(BetterForm):
         )    
     
     contact_state = AutoCompleteSelectMultipleField(
+            widget=AutoComboboxSelectMultipleWidget,
             lookup_class=ContactStateLookup,
             label=_('Contact State'),
             required=False,

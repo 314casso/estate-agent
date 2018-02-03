@@ -1637,6 +1637,7 @@ class BidEvent(models.Model):
         historical_color = '#cccccc'
         do_free_color = '#a09b7e'
         alert_color = '#fb5140'
+        expired_color = '#c32515'
         result = {
             "id": self.id,
             "title": u'%s (%s)' % (self.bid_event_category.name, self.bid.pk),
@@ -1659,6 +1660,8 @@ class BidEvent(models.Model):
             if 0 < days < 2:
                 result['color'] = alert_color
                 result['description'] = u"заявка %s перейдет в свободные менее, чем через два дня" % self.bid
+            elif self.bid.state.is_expired:
+                result['color'] = expired_color  
         return result              
     
     class Meta:
