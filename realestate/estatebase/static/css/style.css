@@ -625,3 +625,8 @@ span.btn {
     background: #363636;
     color: white;
 }
+
+.deactivated, .deactivated a {
+	background: #dddddd;
+    color: #888;     		
+}

@@ -41,7 +41,8 @@ from django.utils.decorators import method_decorator
 from django.conf.global_settings import LOGOUT_URL
 from devrep.models import Partner
 from datetime import datetime, timedelta
-from django.http.response import JsonResponse, HttpResponseForbidden
+from django.http.response import JsonResponse, HttpResponseForbidden,\
+    HttpResponseNotFound
 import re
 from django.db.models import Q
 from django.utils import timezone
@@ -107,13 +108,9 @@ class EstateTestMixin(object):
             pass
             
     def can_change(self, **kwargs):       
-        estate = self.get_estate(**kwargs)                            
-        user = self.request.user
-        
-        if estate and not estate.is_free and not user.has_perm('estatebase.change_broker'):
-            if estate.broker and estate.broker.is_active and not user == estate.broker:
-                return False
-        return True
+        estate = self.get_estate(**kwargs)                           
+        if estate:
+            estate.can_change(self.request.user)
         
     def dispatch(self, *args, **kwargs):        
         if not self.can_change(**kwargs):
@@ -1137,6 +1134,7 @@ def estate_calendar_events(request):
     q = GenericEvent.objects.filter(Q(estates__broker__id__in=users) | Q(history__created_by__id__in=users))
     q = q.filter(content_type=content_type)    
     q = q.filter(date__range=(start, end))
+    q = q.filter(is_active=True)
     dicts = [ obj.as_dict() for obj in q.distinct() ]     
     return JsonResponse(dicts, safe=False)
 
@@ -1153,6 +1151,7 @@ def client_calendar_events(request):
     q = GenericEvent.objects.filter(Q(history__created_by__id__in=users))
     q = q.filter(content_type=content_type)    
     q = q.filter(date__range=(start, end))
+    q = q.filter(is_active=True)
     dicts = [ obj.as_dict() for obj in q.distinct() ]     
     return JsonResponse(dicts, safe=False)
 
@@ -1770,6 +1769,7 @@ def global_search(request):
     result['contact_str'] = contact_str    
     return render(request, 'globalsearch/result.html', result)
 
+
 def csrf_failure(request, reason=""):
     if request.user.is_authenticated:
         next_url = request.REQUEST.get('next', '')
@@ -1800,6 +1800,21 @@ def create_generic_event(request):
         new_event.save()                             
         return JsonResponse(new_event.as_dict())
     return JsonResponse({ 'errors': form.errors.as_text() })
+
+
+@require_http_methods(["POST"])
+def trigger_event(request):
+    pk = request.POST.get('pk')
+    if not pk:
+        return HttpResponseNotFound()
+    event = GenericEvent.objects.get(pk=pk)
+    if not event.content_object.can_change(request.user):
+        return HttpResponseForbidden() 
+    event.user = request.user
+    event.is_active = not event.is_active 
+    event.save()                             
+    return JsonResponse(event.as_dict())
+    
 
 class BidReportView(BidListView):
     paginate_by = 100

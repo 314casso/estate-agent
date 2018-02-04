@@ -29,6 +29,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey,\
 from estatebase.lib import get_validity_delta, get_free_delta
 from datetime import timedelta
 from django.template.defaultfilters import default
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 class ExUser(User):     
@@ -351,7 +352,12 @@ class HistoryMeta(models.Model):
     created_by = models.ForeignKey(ExUser, verbose_name=_('User'), related_name='creators', on_delete=models.PROTECT)
     updated = models.DateTimeField(_('Updated'), blank=True, null=True, db_index=True)
     updated_by = models.ForeignKey(ExUser, verbose_name=_('Updated by'), blank=True, null=True, related_name='updators', on_delete=models.PROTECT)
-    modificated = models.DateTimeField(_('Modificated'), db_index=True)     
+    modificated = models.DateTimeField(_('Modificated'), db_index=True)
+    
+    @property
+    def modificated_by(self):
+        return self.updated_by if self.updated_by else self.created_by
+    
     @property
     def user_id(self):
         return self.updated_by and self.updated_by.pk or self.created_by.pk                                        
@@ -751,37 +757,22 @@ class Estate(ProcessDeletedModel):
         if self.agency_price:
             return int(self.agency_price / 1000)
      
-    def event_dict(self, event): 
+    def event_dict(self, event):
+        result = event.event_dict() 
         color = '#81c784'
         brocker_color = '#4caf50'
-        historical_color = '#cccccc'
-        result = {
-            "id": event.id,
-            "category": u'%s' % (event.category.name),
-            "title": u'%s (%s)' % (event.category.name, event.content_object),
-            "start": event.date,            
-            "date": event.date.strftime('%d.%m.%y %H:%M'),
-            "url": event.content_object.get_absolute_url(),
-            "allDay": 'false',            
-        }
-        if event.note:
-            result.update(
-                {
-                "note": event.note,
-                "description": event.note,
-                }
-            )
-            
-        if event.history:
-            result.update({
-                "modificated": event.history.modificated.strftime('%d.%m.%y'),
-                "created_by": u'%s %s.' % (event.history.created_by.last_name, event.history.created_by.first_name[:1]),                
-                })
+        historical_color = '#cccccc'        
         if event.is_last({ 'estates': self }):            
             result['color'] = brocker_color if event.content_object.broker else color
         else:
             result['color'] = historical_color
         return result 
+    
+    def can_change(self, user):
+        if not self.is_free and not user.has_perm('estatebase.change_broker'):
+            if self.broker and self.broker.is_active and not user == self.broker:
+                return False
+        return True
                         
     class Meta:
         unique_together = [
@@ -1274,33 +1265,15 @@ class Client(ProcessDeletedModel):
     def event_dict(self, event): 
         color = '#db960d'        
         historical_color = '#cccccc'
-        result = {
-            "id": event.id,
-            "category": u'%s' % (event.category.name),
-            "title": u'%s (%s)' % (event.category.name, event.content_object),
-            "start": event.date,            
-            "date": event.date.strftime('%d.%m.%y %H:%M'),
-            "url": event.content_object.get_absolute_url(),
-            "allDay": 'false',            
-        }
-        if event.note:
-            result.update(
-                {
-                "note": event.note,
-                "description": event.note,
-                }
-            )
-            
-        if event.history:
-            result.update({
-                "modificated": event.history.modificated.strftime('%d.%m.%y'),
-                "created_by": u'%s %s.' % (event.history.created_by.last_name, event.history.created_by.first_name[:1]),                
-                })
+        result = event.event_dict()        
         if event.is_last({ 'clients': self }):            
             result['color'] = color
         else:
             result['color'] = historical_color
-        return result   
+        return result
+    
+    def can_change(self, user):        
+        return True   
                     
     class Meta:
         verbose_name = _('client')
@@ -1792,6 +1765,7 @@ class GenericEvent(models.Model):
     date = models.DateTimeField(verbose_name=_('Event date'), blank=True, null=True)    
     history = models.OneToOneField(HistoryMeta, blank=True, null=True, editable=False)
     note = models.TextField(_('Note'), blank=True, null=True)
+    is_active = models.BooleanField(_('Active'), default=True) 
     
     def __unicode__(self):
         return u'[%s] - %s' % (self.pk, self.category)
@@ -1799,6 +1773,32 @@ class GenericEvent(models.Model):
     def is_last(self, filter_dict):
         last = GenericEvent.objects.filter(**filter_dict).first()
         return last.date <= self.date         
+    
+    def event_dict(self):
+        result = {
+                "id": self.id,
+                "category": u'%s' % (self.category.name),
+                "title": u'%s (%s)' % (self.category.name, self.content_object),
+                "start": self.date,            
+                "date": self.date.strftime('%d.%m.%y %H:%M'),
+                "url": self.content_object.get_absolute_url(),
+                "allDay": 'false',
+                "deactivated": not self.is_active                
+            }
+        if self.note:
+            result.update(
+                {
+                "note": self.note,
+                "description": self.note,
+                }
+            )            
+        if self.history:
+            result.update({
+                "modificated": naturaltime(self.history.modificated),
+                "modificated_by": u'%s %s.' % (self.history.modificated_by.last_name, self.history.modificated_by.first_name[:1]),
+                "history": u'Событие создано: %s %s.' % (self.history.created_by, self.history.created.strftime('%d.%m.%y %H:%M')),                                
+                })
+        return result
            
     def as_dict(self):
         return self.content_object.event_dict(self)             

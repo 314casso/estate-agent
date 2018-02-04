@@ -13,12 +13,15 @@ $(document).ready(function() {
 			
 			getUrl : function() {				
 				return $(this.$el).data('url');
-			},		
+			},
+			getTriggerUrl : function() {				
+				return $(this.$el).data('triggerevent');
+			},			
 			openDialog : function() {				
 				eventDlg.open();
 			},
 			fetchData : function() {
-				var xhr = new XMLHttpRequest()
+				var xhr = new XMLHttpRequest();
 				var self = this;
 				xhr.open('GET', this.getUrl());
 				xhr.onload = function() {
@@ -26,7 +29,24 @@ $(document).ready(function() {
 					self.events = data.events;
 				}				
 				xhr.send()				
-			}			
+			},
+			trigger : function(event) {
+				event.preventDefault();
+				var url = this.getTriggerUrl();
+				var self = this;
+				$.ajax({
+		            type: 'POST',
+		            url: url,
+		            data: {'pk': $(event.target).data('pk')},
+		            success: function(data) {
+		            	self.fetchData();
+		            },
+		            error: function (jqXHR, textStatus, errorThrown) {		            	
+		            	$('#eventerrors').text(errorThrown).show().delay(2000).fadeOut();		            	
+		            	console.log(errorThrown);
+		            }
+		          });
+			}
 		}
 	})	
 		

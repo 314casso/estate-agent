@@ -9,22 +9,7 @@
 {% endblock %}
 {% block content %}
 
-<div id="app-events" data-url="{% url 'lotevetns' estate.pk %}" class="ui-widget ui-widget-content ui-corner-all" style="padding: 4px;">
-  	<div v-for="event in events" style="margin-top:2px; padding: 2px" class="ui-widget ui-widget-content">
-  	  <% event.modificated %>   
-      <strong><% event.category %></strong>
-      <% event.date %>      
-      <% event.created_by %>
-      <br>
-      <small>
-      <% event.note %>
-      </small>    
-  	</div>  
-  	<div style="text-align: right;">	
-  		<button v-on:click="openDialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" title="Добавить новое событие" style="padding: 6px 12px; margin: 3px 0 0 0">Добавить</button>
-  	</div>
-  	 	  	
-</div>
+{% include 'inclusion/generic_event_list.html' with view_name='lotevetns' object_id=estate.pk %}
 
 {% include 'inclusion/generic_event_modal.html' %}
 

@@ -24,7 +24,7 @@ from estatebase.views import ClientListView, \
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
     global_search, BidReportView, BidFreeListView, bid_calendar_events,\
     events_calendar, ManageM2MEvents, lot_events, create_generic_event,\
-    estate_calendar_events, client_events, client_calendar_events
+    estate_calendar_events, client_events, client_calendar_events, trigger_event
     
 
 urlpatterns = patterns('',   
@@ -71,6 +71,7 @@ urlpatterns += patterns('',
     url (r'^lotevetns/(?P<estate_pk>\d+)$', lot_events, name='lotevetns'),
     url (r'^clientevents/(?P<client_pk>\d+)$', client_events, name='clientevents'),
     url (r'^creategenericevent/$', create_generic_event, name='creategenericevent'),
+    url (r'^triggerevent/$', trigger_event, name='triggerevent'),
     
 )
 
