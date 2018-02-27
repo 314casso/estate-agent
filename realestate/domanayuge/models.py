@@ -146,6 +146,11 @@ class SiteMeta(models.Model):
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, null=True)
+    links = GenericRelation('MediaLink')
+    
+    def free_links(self):
+        return self.links.filter(linktype=MediaLink.FREE)
+    
     def __str__(self):        
         return '%s' % (force_text(self.site))    
 

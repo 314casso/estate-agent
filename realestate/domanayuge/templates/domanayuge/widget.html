@@ -1,21 +1,11 @@
 <div id="widget_pica" class="bottom roundcorner visible-lg-block visible-md-block">
-   <ul>            
-      <li>
-      <i class="fa fa-wrench fa-2x"></i>
-      <a class="pica_link" href="http://remont.domanayuge.ru" target="_blank">
-	  <span>Ремонт</span></a>
-      </li>
-      
-      <li>
-      <i class="fa fa-home fa-2x"></i>
-      <a class="pica_link" href="http://stroyka.domanayuge.ru" target="_blank">
-	  <span>Строительство</span></a>
-      </li>
-      
-      <li>
-      <i class="fa fa-youtube fa-2x"></i>
-      <a class="pica_link" href="http://youtube.ru/domanayuge" target="_blank">
-	  <span>Мы на YouTube</span></a>
-      </li>      
-   </ul>    
+   <ul>
+   {% for link in site_meta.free_links %}
+   	  <li>
+	      <i class="fa {{ link.icon_class }} fa-2x"></i>
+	      <a class="pica_link" href="{{ link.url }}" target="_blank">
+		  <span>{{ link.title }}</span></a>
+      </li>   
+   {% endfor %}
+   </ul>       
 </div>

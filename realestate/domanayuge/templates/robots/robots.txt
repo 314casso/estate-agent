@@ -1,5 +1,5 @@
 User-agent: *
-Disallow:
-
+Allow: /
 Host: http://{{ host }}
+
 Sitemap: http://{{ host }}/sitemap.xml

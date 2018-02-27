@@ -12,9 +12,12 @@ class SimpleCategoryAdmin(CategoryBaseAdmin):
 
 class InlineLinkEnties(GenericTabularInline):
     model = MediaLink
+    extra = 1
 
 class InlineMetaTags(TabularInline):
     model = MetaTag
+    extra = 1
+
 
 class ContentEntryAdmin(admin.ModelAdmin):
     list_filter = ['categories']
@@ -26,7 +29,7 @@ class LocalityDomainAdmin(admin.ModelAdmin):
     pass
 
 class SiteMetaAdmin(admin.ModelAdmin):
-    inlines = [InlineMetaTags]
+    inlines = [InlineMetaTags,InlineLinkEnties]
 
 
 admin.site.register(Category, SimpleCategoryAdmin)
