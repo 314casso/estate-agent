@@ -111,6 +111,7 @@ class EstateTestMixin(object):
         estate = self.get_estate(**kwargs)                           
         if estate:
             return estate.can_change(self.request.user)
+	return True
         
     def dispatch(self, *args, **kwargs):        
         if not self.can_change(**kwargs):
