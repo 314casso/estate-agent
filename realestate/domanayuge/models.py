@@ -59,7 +59,7 @@ class Category(CategoryBase):
 @python_2_unicode_compatible    
 class ContentEntry(models.Model):     
     title = models.CharField(_('title'), max_length=255)
-    slug = models.SlugField(verbose_name=_('slug'))
+    slug = models.SlugField(verbose_name=_('slug'), unique=True)
     active = models.BooleanField(default=True, verbose_name=_('active'))    
     publication_date = models.DateTimeField(
         _('publication date'),

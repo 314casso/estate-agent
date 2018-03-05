@@ -253,12 +253,6 @@ class Article(BaseContextMixin, DetailView):
 
 class BaseEntry(DetailView):    
     model = ContentEntry
-    def get_queryset(self):
-        if self.model:
-            if 'key' in self.kwargs:                
-                return self.model._default_manager.filter(categories__key=self.kwargs['key'])
-            return super(BaseEntry, self).get_queryset()
-                
     def get_context_data(self, **kwargs):
         context = super(BaseEntry, self).get_context_data(**kwargs)
         context.update({          
