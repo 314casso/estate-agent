@@ -27,8 +27,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,\
     GenericRelation    
 from estatebase.lib import get_validity_delta, get_free_delta
-from datetime import timedelta
-from django.template.defaultfilters import default
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
@@ -104,6 +102,9 @@ class Locality(models.Model):
     name_loct = models.CharField(_('Loct'), max_length=255, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'), on_delete=models.PROTECT)
     locality_type = models.ForeignKey('LocalityType', blank=True, null=True, verbose_name=_('LocalityType'), on_delete=models.PROTECT)
+    latitude = models.DecimalField(verbose_name=_('latitude'), max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(verbose_name=_('longitude'), max_digits=9, decimal_places=6, blank=True, null=True)
+
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):

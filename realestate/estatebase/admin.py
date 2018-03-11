@@ -19,7 +19,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
 
 
-
 class StreetAdmin(admin.ModelAdmin):
     list_filter = ('locality',)
     raw_id_admin = ('locality',)
@@ -109,6 +108,7 @@ class BidAdmin(admin.ModelAdmin):
         return Bid.all_objects
 
 class LocalityAdmin(admin.ModelAdmin):
+    search_fields = ['name',]
     list_display = ['name', 'name_gent', 'name_loct']
     
 class BidEventCategoryAdmin(admin.ModelAdmin):
