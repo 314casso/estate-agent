@@ -33,6 +33,9 @@
                     <p class="text-muted">{{ project.summary|parser:domain }}</p>
                 </div>
             </div>
+                {% if forloop.counter == 3 %}
+	            <div class="clearfix"></div> 
+	            {% endif %}
 			{% empty %}
 			    <li>No projects yet.</li>			 
 			{% endfor %}			
