@@ -79,7 +79,7 @@
                     {% endwith %}                     
                 </p>
             </div>      
-	            {% if forloop.counter == 3 %}
+	            {% if forloop.counter|divisibleby:3 %}
 	            <div class="clearfix"></div> 
 	            {% endif %}
         	{% endfor %}
@@ -119,7 +119,7 @@
                     <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
                 </div>
             </div>            
-	            {% if forloop.counter == 3 %}
+	            {% if forloop.counter|divisibleby:3 %}
 	            <div class="clearfix"></div> 
 	            {% endif %}            
         	{% endfor %}
@@ -157,7 +157,7 @@
                     <p class="text-muted">{{ child.alternate_title }}</p>
                 </div>
             </div>
-            	{% if forloop.counter == 3 %}
+            	{% if forloop.counter|divisibleby:3 %}
 	            <div class="clearfix"></div> 
 	            {% endif %}
         	{% endfor %}
@@ -189,7 +189,7 @@
                     <p class="text-muted">{{ article.summary }}</p>
                 </div>                    
             </div>
-            	{% if forloop.counter == 3 %}
+            	{% if forloop.counter|divisibleby:3 %}
 	            <div class="clearfix"></div> 
 	            {% endif %}
         	{% endfor %}
