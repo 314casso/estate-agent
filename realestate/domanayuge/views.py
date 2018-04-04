@@ -125,7 +125,7 @@ class ExContextMixin(ContextMixin):
     tags = []
     site_meta = None  
     cases_key = None  
-    desing_key = None
+    design_key = None
     def get_context_data(self, **kwargs):
         context = super(ExContextMixin, self).get_context_data(**kwargs)   
         root = Category.objects.get(slug=self.slug)
@@ -149,18 +149,18 @@ class ExContextMixin(ContextMixin):
         case_slices = 6        
         articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
         cases = ContentEntry.objects.filter(categories__key=self.cases_key)        
-        desings = ContentEntry.objects.filter(categories__key=self.desing_key)
+        designs = ContentEntry.objects.filter(categories__key=self.design_key)
         if geo_tags:            
             articles = articles.filter(tags__contains=geo_tags)           
             cases = cases.filter(tags__contains=geo_tags)            
-            desings = desings.filter(tags__contains=geo_tags)
+            designs = designs.filter(tags__contains=geo_tags)
                 
         else:
             ex_tags = get_all_geo_tags()
             if ex_tags:            
                 articles = articles.exclude(tags__overlap=ex_tags)
                 cases = cases.exclude(tags__overlap=ex_tags)                
-                desings = desings.exclude(tags__overlap=ex_tags)                
+                designs = designs.exclude(tags__overlap=ex_tags)                
                           
         context.update({           
             'articles': articles[:articles_slices],
@@ -169,9 +169,8 @@ class ExContextMixin(ContextMixin):
             'root': root,
             'domain': self.request.domain,
             'site_meta': self.site_meta,
-            'desings': desings[:case_slices],            
-        }) 
-        print desings                    
+            'designs': designs[:case_slices],            
+        })                            
         return context 
         
     
@@ -189,7 +188,7 @@ class RemontContextMixin(ExContextMixin):
     tags = [u'ремонт']
     slug = 'remont'          
     cases_key = 'portfolioremont'
-    desing_key = 'designremont'
+    design_key = 'designremont'
     
     
 class RemontPage(RemontContextMixin, TemplateView):    
