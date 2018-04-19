@@ -9,19 +9,19 @@
 {% category 'domanayuge' as domanayuge %}
 {% endspaceless %}
 <html lang="ru">
-<head>
+<head>    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</title>
     <meta name="description" content="{{ site_meta.description|default:domanayuge.description }}">
     {% if site_meta.keywords %}
-    <meta name="keywords" content="{{ site_meta.keywords }}" />
+    <meta name="keywords" content="{{ site_meta.keywords }}">
     {% endif %}
     <meta name="author" content="picasso">    
     {% block extrameta %}
    		{% for metatag in site_meta.metatags.all %}
-   		<meta name="{{ metatag.name }}" content="{{ metatag.content }}">
+   		<meta name="{{ metatag.name }}" content="{{ metatag.content }}"/>
    		{% endfor %}
     {% endblock extrameta %}  
     <!-- Bootstrap Core CSS -->
