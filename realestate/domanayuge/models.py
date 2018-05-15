@@ -68,6 +68,9 @@ class ContentEntry(models.Model):
     summary = models.TextField(_('summary'), blank=True, null=True)
     content = models.TextField(_('content'), blank=True)
     categories = models.ManyToManyField(Category, related_name='entries')
+    
+    meta_title = models.CharField(blank=True, null=True, max_length=150)      
+    meta_description = models.CharField(blank=True, null=True, max_length=250)
         
     links = GenericRelation('MediaLink')
     tags = ArrayField(models.CharField(max_length=200), blank=True, null=True)    

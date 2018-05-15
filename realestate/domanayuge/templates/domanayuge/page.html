@@ -4,7 +4,11 @@
 {% load markup %}
 {% load thumbnail %}
 
-{% block page_title %}{{ article.title }}{% endblock %}
+{% block page_title %}{{ article.meta_title|default:article.title }}{% endblock %}
+
+{% block page_description %}
+    <meta name="description" content="{{ article.meta_description|default:domanayuge.description }}">
+{% endblock %}
 
 {% block content %}
 

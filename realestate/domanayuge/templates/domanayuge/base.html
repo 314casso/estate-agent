@@ -14,7 +14,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</title>
+    {% block page_description %}
     <meta name="description" content="{{ site_meta.description|default:domanayuge.description }}">
+    {% endblock %}
     {% if site_meta.keywords %}
     <meta name="keywords" content="{{ site_meta.keywords }}">
     {% endif %}
@@ -34,7 +36,7 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400i&subset=cyrillic" rel="stylesheet">
     <!-- Theme CSS -->
-    <link href="{{ STATIC_URL }}domanayuge/css/agency.css?1.0.15" rel="stylesheet">
+    <link href="{{ STATIC_URL }}domanayuge/css/agency.css?1.0.16" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}favicon.ico"/>
     {% block extracss %}
     <style type="text/css">
@@ -89,7 +91,7 @@
     <header>
         <div class="container">
             <div class="intro-text">
-                <div class="intro-lead-in">{% cms_content 'welcome_to' %}</div>
+                <div class="intro-lead-in"><h1>{% cms_content 'welcome_to' %}</h1></div>
                 <div class="intro-heading">{% cms_content 'nice_to_meet_you' %}</div>
                 <a href="#advantages" class="page-scroll btn btn-xl">Узнать больше</a>
             </div>
