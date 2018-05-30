@@ -31,9 +31,9 @@
                         <div class="item {% if forloop.first %}active{% endif %}">
 
                             {% thumbnail image.image "750x540" crop="center" as im %}
-                            <img src="{{ im.url }}"> {% endthumbnail %}
+                            <img alt="{{ image.title }}" src="{{ im.url }}"> {% endthumbnail %}
 
-                            <div class="carousel-caption">{{ image.name }}</div>
+                            <div class="carousel-caption">{{ image.title }}</div>
                         </div>
                         {% endfor %}
                     </div>

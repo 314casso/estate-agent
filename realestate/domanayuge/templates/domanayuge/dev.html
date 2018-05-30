@@ -113,7 +113,7 @@
                         </div>
                     </div>                        
                     {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
-					<img class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ entry.baseimage.title }}" class="img-responsive" src="{{ im.url }}">		    
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -151,7 +151,7 @@
                         </div>
                     </div>                        
                     {% thumbnail child.image "360x260" crop="center" as im %}		    
-					<img class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ projects.alternate_title }}. {{ child.name }}" class="img-responsive" src="{{ im.url }}">		    
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -189,7 +189,7 @@
                         </div>
                     </div>                        
                     {% thumbnail child.image "360x260" crop="center" as im %}		    
-					<img class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ projects.alternate_title }}. {{ child.name }}"  class="img-responsive" src="{{ im.url }}">		    
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -347,7 +347,7 @@
 							    <div class="item {% if forloop.first %}active{% endif %}">
 							    
 							    	{% thumbnail image.image "720x540" crop="center" as im %}		    
-									<img src="{{ im.url }}">		    
+									<img alt="{{ image.title }}" src="{{ im.url }}">		    
 									{% endthumbnail %} 
 							    								      
 							      <div class="carousel-caption">{{ image.name }}</div>

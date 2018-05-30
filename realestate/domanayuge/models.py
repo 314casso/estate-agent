@@ -150,6 +150,7 @@ class SiteMeta(models.Model):
     keywords = models.TextField(blank=True, null=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     links = GenericRelation('MediaLink')
+    flatpage = models.TextField(blank=True, null=True)
     
     def free_links(self):
         return self.links.filter(linktype=MediaLink.FREE)

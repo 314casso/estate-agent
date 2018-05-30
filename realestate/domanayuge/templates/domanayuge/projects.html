@@ -56,7 +56,7 @@
                         </div>
                     </div>                       
                     {% thumbnail project.baseimage.image "360x260" crop="center" as im %}		    
-					<img class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ project.baseimage.title }}" class="img-responsive" src="{{ im.url }}">		    
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
