@@ -243,7 +243,9 @@ class DevPriceList(DevContextMixin, BaseList):
     
 class RemontPriceList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'   
-
+    
+class RemontRenovationServices(RemontContextMixin, BaseList):
+    template_name = 'domanayuge/renovationservices.html' 
     
 class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    

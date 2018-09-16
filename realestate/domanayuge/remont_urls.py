@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
     send_email, RemontPage, RemontList, RemontPrice,\
-    RemontCaseList, RemontCase, robots, RemontPriceList
+    RemontCaseList, RemontCase, robots, RemontPriceList,\
+    RemontRenovationServices
 from domanayuge.views import remont_sitemap
 import settings
 from domanayuge.models import ContentEntry
@@ -24,6 +25,8 @@ urlpatterns = patterns('',
     url(r'^cases/(?P<key>[-\w]+)/$', RemontCaseList.as_view(), name='cases'),
     url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontCase.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
+    url(r'^renovationservices/(?P<key>[-\w]+)/$', RemontRenovationServices.as_view(), name='renovationservices'),
+    url(r'^renovationservice/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='renovationservice'),
 )
 
 
