@@ -18,7 +18,7 @@
 			 <div class="row">
 			{% for project in object_list %}				
 			    <div class="col-md-4 col-sm-6 portfolio-item">			    
-                <a href="{% url 'developservices' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
+                <a href="{% url 'developservice' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
                             <i class="fa fa-link fa-3x"></i>
