@@ -817,12 +817,14 @@ body {
 
 #projects .portfolio-item,
 #renovationservices .portfolio-item,
+#developservices .portfolio-item,
 #prices .portfolio-item {
   margin: 0 0 15px;
   right: 0;
 }
 #projects .portfolio-item .portfolio-link,
 #renovationservices .portfolio-item .portfolio-link,
+#developservices .portfolio-item .portfolio-link,
 #prices .portfolio-item .portfolio-link  {
   display: block;
   position: relative;
@@ -831,6 +833,7 @@ body {
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover,
+#developservices .portfolio-item .portfolio-link .portfolio-hover,
 #prices .portfolio-item .portfolio-link .portfolio-hover {
   background: rgba(254, 209, 54, 0.9);
   position: absolute;
@@ -843,11 +846,13 @@ body {
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover:hover,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover:hover,
+#developservices .portfolio-item .portfolio-link .portfolio-hover:hover,
 #prices .portfolio-item .portfolio-link .portfolio-hover:hover {
   opacity: 1;
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
+#developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
 #prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content {
   position: absolute;
   width: 100%;
@@ -860,6 +865,7 @@ body {
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
+#developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
 #prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i {
   margin-top: -12px;
 }
@@ -867,12 +873,15 @@ body {
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
+#developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
+#developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
 #prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
 #prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4 {
   margin: 0;
 }
 #projects .portfolio-item .portfolio-caption,
 #renovationservices .portfolio-item .portfolio-caption,
+#developservices .portfolio-item .portfolio-caption,
 #prices .portfolio-item .portfolio-caption {
   max-width: 400px;
   margin: 0 auto;
@@ -882,12 +891,14 @@ body {
 }
 #projects .portfolio-item .portfolio-caption h4,
 #renovationservices .portfolio-item .portfolio-caption h4,
+#developservices .portfolio-item .portfolio-caption h4,
 #prices .portfolio-item .portfolio-caption h4 {
   text-transform: none;
   margin: 0;
 }
 #projects .portfolio-item .portfolio-caption p,
 #renovationservices .portfolio-item .portfolio-caption p,
+#developservices .portfolio-item .portfolio-caption p,
 #prices .portfolio-item .portfolio-caption p {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: italic;
@@ -903,6 +914,10 @@ body {
 }
 
 #renovationservices * {
+  z-index: 2;
+}
+
+#developservices * {
   z-index: 2;
 }
 
