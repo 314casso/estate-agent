@@ -2,7 +2,8 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import DevPage, Project, Blog, Article, Case, CaseList,\
-    send_email, robots, DevList, DevPriceList, DevPrice, stroyka_sitemap
+    send_email, robots, DevList, DevPriceList, DevPrice, stroyka_sitemap,\
+    DevelopServices
 import settings
 
 
@@ -21,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^sendemail/$', send_email, name='send_email'),
     url(r'^prices/(?P<key>[-\w]+)/$', DevPriceList.as_view(), name='prices'),
     url(r'^prices/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', DevPrice.as_view(), name='price'),
+    url(r'^developservices/(?P<key>[-\w]+)/$', DevelopServices.as_view(), name='developservices'),
+    url(r'^developservice/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', DevPrice.as_view(), name='developservice'),
 )
   
 

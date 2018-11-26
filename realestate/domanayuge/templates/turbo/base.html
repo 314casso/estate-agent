@@ -1,0 +1,26 @@
+{% spaceless %}
+{% load content_edit_tags %}
+{% load category_tags %}
+{% load thumbnail %}
+{% category 'domanayuge' as domanayuge %}
+<rss
+{% endspaceless %}
+    xmlns:yandex="http://news.yandex.ru"
+    xmlns:media="http://search.yahoo.com/mrss/"
+    xmlns:turbo="http://turbo.yandex.ru"
+    version="2.0"
+>
+    <channel>
+        <item turbo="true">
+            <link>{{ link }}</link>
+            <turbo:content>
+                <![CDATA[
+                    <header>
+                        <h1>{% cms_content 'nice_to_meet_you' %}. {% cms_content 'welcome_to' %}</h1>
+                    </header>
+                    ...
+                ]]>
+            </turbo:content>
+        </item>
+    </channel>
+</rss>

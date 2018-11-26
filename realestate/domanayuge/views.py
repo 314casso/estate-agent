@@ -5,7 +5,7 @@ from django.template import loader, Context
 from django.utils.encoding import force_unicode
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.views.generic.base import TemplateView, ContextMixin
+from django.views.generic.base import TemplateView, ContextMixin, View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from domanayuge.models import Category, ContentEntry, SiteMeta, get_all_geo_tags
@@ -22,6 +22,7 @@ from django.template.response import TemplateResponse
 from django.utils import six
 from django.utils.http import http_date
 from domanayuge.sitemaps import get_sitemap_dict
+from domanayuge.turbo import FeedGenerator
 
 # Create your views here.
 
@@ -103,20 +104,26 @@ class BaseContextMixin(ContextMixin):
         context.update({            
             'categiries': categiries, 
             'root': domanayuge,                    
-            'site_meta': self.site_meta  
-        })               
+            'site_meta': self.site_meta,
+            'link': self.request.build_absolute_uri(self.request.path)  
+        })
+                   
         return context
     
 
-class HomePage(BaseContextMixin, TemplateView):    
-    template_name = 'domanayuge/base.html'  
+class HomePage(BaseContextMixin, TemplateView):   
     tags = [u'недвижимость']
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)         
         context.update({           
             'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],            
         })                          
-        return context          
+        return context
+    def get_template_names(self):
+        turbo = int(self.request.GET.get('turbo', 0))
+        if turbo == 1:
+            return 'turbo/base.html'
+        return 'domanayuge/base.html'             
     
     
 class ExContextMixin(ContextMixin):
@@ -180,8 +187,12 @@ class DevContextMixin(ExContextMixin):
     cases_key = 'portfoliodev'    
     
     
-class DevPage(DevContextMixin, TemplateView):    
-    template_name = 'domanayuge/dev.html'  
+class DevPage(DevContextMixin, TemplateView):  
+    def get_template_names(self):
+        turbo = int(self.request.GET.get('turbo', 0))
+        if turbo == 1:
+            return 'turbo/base.html'
+        return 'domanayuge/dev.html'  
       
       
 class RemontContextMixin(ExContextMixin):    
@@ -251,6 +262,10 @@ class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    
 
 
+class DevelopServices(DevContextMixin, BaseList):
+    template_name = 'domanayuge/renovationservices.html'
+
+
 class Article(BaseContextMixin, DetailView):    
     template_name = 'domanayuge/page.html'
     model = ContentEntry
@@ -306,6 +321,25 @@ def robots(request):
         pass
      
     return render(request, 'robots/robots.txt', content_type='text/plain', context={'host': host})
+    
+
+class TurboPage(BaseContextMixin, TemplateView):
+    def get_context_data(self, **kwargs):        
+        context = super(TurboPage, self).get_context_data(**kwargs)
+        context.update({          
+            'link': self.request.build_absolute_uri(self.request.path)                
+        })        
+        return context 
+    def get_template_names(self):
+        turbo = int(self.request.GET.get('turbo', 0))
+        if turbo == 1:
+            return 'turbo/base.html'
+        return 'robots/robots.txt'
+     
+    
+def turbo(request):
+    feed_generator = FeedGenerator()
+    return HttpResponse(feed_generator.create_rss(request))  
     
     
 @require_http_methods(["POST"])
