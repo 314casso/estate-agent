@@ -263,7 +263,7 @@ class RemontCaseList(RemontContextMixin, BaseList):
 
 
 class DevelopServices(DevContextMixin, BaseList):
-    template_name = 'domanayuge/renovationservices.html'
+    template_name = 'domanayuge/developservices.html'
 
 
 class Article(BaseContextMixin, DetailView):    
