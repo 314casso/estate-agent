@@ -179,6 +179,21 @@ class ExContextMixin(ContextMixin):
             'designs': designs[:case_slices],            
         })                            
         return context 
+    
+
+class TurboPageMixin(BaseContextMixin, TemplateView):
+    template_name = None
+    def get_context_data(self, **kwargs):        
+        context = super(TurboPageMixin, self).get_context_data(**kwargs)
+        context.update({          
+            'link': self.request.build_absolute_uri(self.request.path)                
+        })        
+        return context 
+    def get_template_names(self):
+        turbo = int(self.request.GET.get('turbo', 0))
+        if turbo == 1:
+            return 'turbo/base.html'
+        return self.template_name      
         
     
 class DevContextMixin(ExContextMixin):    
@@ -187,12 +202,8 @@ class DevContextMixin(ExContextMixin):
     cases_key = 'portfoliodev'    
     
     
-class DevPage(DevContextMixin, TemplateView):  
-    def get_template_names(self):
-        turbo = int(self.request.GET.get('turbo', 0))
-        if turbo == 1:
-            return 'turbo/base.html'
-        return 'domanayuge/dev.html'  
+class DevPage(DevContextMixin, TurboPageMixin):
+    template_name = 'domanayuge/dev.html'       
       
       
 class RemontContextMixin(ExContextMixin):    
@@ -202,7 +213,7 @@ class RemontContextMixin(ExContextMixin):
     design_key = 'designremont'
     
     
-class RemontPage(RemontContextMixin, TemplateView):    
+class RemontPage(RemontContextMixin, TurboPageMixin):    
     template_name = 'domanayuge/remont.html'
 
 
@@ -322,20 +333,7 @@ def robots(request):
      
     return render(request, 'robots/robots.txt', content_type='text/plain', context={'host': host})
     
-
-class TurboPage(BaseContextMixin, TemplateView):
-    def get_context_data(self, **kwargs):        
-        context = super(TurboPage, self).get_context_data(**kwargs)
-        context.update({          
-            'link': self.request.build_absolute_uri(self.request.path)                
-        })        
-        return context 
-    def get_template_names(self):
-        turbo = int(self.request.GET.get('turbo', 0))
-        if turbo == 1:
-            return 'turbo/base.html'
-        return 'robots/robots.txt'
-     
+   
     
 def turbo(request):
     feed_generator = FeedGenerator()

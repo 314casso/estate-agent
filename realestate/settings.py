@@ -193,6 +193,9 @@ WATERMARK_OPTIONS = {'font_scale': 0.04, 'font_path': PATH_TO_FONT, 'color': 'wh
 WATERMARK_MIN_SIZE = 50 #Minimum image size (max(height, width)) to add watermark
 WATERMARK_FORCE = 'www.domnatamani.ru'
 
+SESSION_SECURITY_WARN_AFTER = 1740
+SESSION_SECURITY_EXPIRE_AFTER = 1800
+
 REQUEST_IGNORE_PATHS = (
     r'^estatebase/selectable/',
     r'^session_security/',

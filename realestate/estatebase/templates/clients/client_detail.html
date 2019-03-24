@@ -95,7 +95,7 @@
 
 {% block right %}
 <fieldset class="ui-widget ui-widget-content ui-corner-all" style="margin-top: 2px; padding: 4px 2px 3px 2px;">
-    <legend style="font-size: 14px;">Заявки на покупку и обмен</legend>    
+    <legend style="font-size: 14px;">Заявки</legend>    
 
 <div class="topbar button">
     <a class="btn-add" href="{% url 'bid_create' client.pk %}?{{ next_url }}">Добавить новую заявку</a>          
@@ -107,7 +107,7 @@
         <tr>
             <th>Код</th>
             <th>Обновлено</th>
-            <th>Риэлтор</th>
+            <th>Менеджер</th>
             <th>Вид недвижимости</th>
             <th>Районы</th>
             <th>Населенные пункты</th>

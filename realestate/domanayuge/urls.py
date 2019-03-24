@@ -1,8 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 import settings
-from domanayuge.views import HomePage, send_email, Blog, Article, robots, turbo,\
-    TurboPage
+from domanayuge.views import HomePage, send_email, Blog, Article, robots
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.sitemaps import GenericSitemap
 from domanayuge.models import ContentEntry

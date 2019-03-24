@@ -16,9 +16,17 @@
             <turbo:content>
                 <![CDATA[
                     <header>
-                        <h1>{% cms_content 'nice_to_meet_you' %}. {% cms_content 'welcome_to' %}</h1>
+                        <h1>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</h1>                        
                     </header>
-                    ...
+                    
+                    <figure>
+                    {% thumbnail root.image "720" crop="center" as im %}		    
+                        <img src="{{ im.url }}" />
+                    {% endthumbnail %}
+                        <figcaption>{{ site_meta.description|default:domanayuge.description }}</figcaption>
+                    </figure>                 
+                    
+                    
                 ]]>
             </turbo:content>
         </item>

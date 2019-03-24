@@ -30,7 +30,7 @@
 		{{ estate.actualized|default:'--------' }}
 		</td>
 	</tr>
-	<tr><th class="greybgtext" title="Риэлтор" style="white-space: nowrap">Риэлтор:</th> <td class="redbgtext">{{ estate.broker|default:'--------' }}</td></tr>
+	<tr><th class="greybgtext" title="Менеджер" style="white-space: nowrap">Менеджер:</th> <td class="redbgtext">{{ estate.broker|default:'--------' }}</td></tr>
 	{% if estate.com_status.status %}
     <tr><th title="Коммерческое использование" style="white-space: nowrap">Ком. статус:</th> <td>{{ estate.com_status }}</td></tr>
     {% endif %}   
