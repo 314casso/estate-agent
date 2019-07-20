@@ -4,7 +4,7 @@ from estatebase.models import Estate, Microdistrict, Contact
 from django.db.models.signals import post_save
 import unicodecsv
 import os
-from settings import MEDIA_ROOT
+from settings import MEDIA_ROOT, SITE_ROOT
 
 
 class Command(BaseCommand):    
@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
     def correct_lots_export(self):     
         estates = Estate.objects.filter(validity_id=Estate.VALID)
-        file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.csv' % 'correct_lots_contacts')
+        file_name = os.path.join(SITE_ROOT, 'logs' ,'%s.csv' % 'correct_lots_contacts')
         with open(file_name, "w") as csvfile:
             writer = unicodecsv.writer(csvfile)
             writer.writerow(['estate_id',
