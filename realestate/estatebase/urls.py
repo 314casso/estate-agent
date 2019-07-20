@@ -24,8 +24,8 @@ from estatebase.views import ClientListView, \
     FileDeleteView, FileUpdateView, GenericFilesView, ManageEstateM2MLinks,\
     global_search, BidReportView, BidFreeListView, bid_calendar_events,\
     events_calendar, ManageM2MEvents, lot_events, create_generic_event,\
-    estate_calendar_events, client_events, client_calendar_events, trigger_event,\
-    correct_lots_export
+    estate_calendar_events, client_events, client_calendar_events, trigger_event
+    
     
 
 urlpatterns = patterns('',   
@@ -164,8 +164,7 @@ urlpatterns += patterns('',
     url (r'^estatelistcontacts/(?P<contact_type_pk>\d+)$', view=estate_list_contacts, name='estate_list_contacts'),
     url (r'^bidlistcontacts/(?P<contact_type_pk>\d+)/(?P<view_pk>\w+)$', view=bid_list_contacts, name='bid_list_contacts'),
     url (r'^clientlistcontacts/(?P<contact_type_pk>\d+)$', view=client_list_contacts, name='client_list_contacts'),
-    url (r'^incorrectcontacts/$', view=incorrect_contacts, name='incorrect_contacts'),
-    url (r'^correctlotsexport/$', view=correct_lots_export, name='correctlotsexport'),
+    url (r'^incorrectcontacts/$', view=incorrect_contacts, name='incorrect_contacts'),    
 )
 
 urlpatterns += patterns('',    
