@@ -945,7 +945,7 @@ footer a {
 #widget_pica {
 	position: fixed;
     /*right: 0;*/
-    left: -40;
+    left: -42px;
     bottom: 3%;
     z-index: 10000;
 }
