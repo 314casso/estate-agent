@@ -24,10 +24,12 @@ class FeedEngine(models.Model):
     AVITO = 'AVITO'     
     YANDEX = 'YANDEX'
     WP = 'WORDPRESS'
+    SITEBILL = 'SITEBILL'
     FEEDENGINE_CHOICES = (
         (AVITO, 'Avito'),        
         (YANDEX, 'Yandex'),
         (WP, 'Wordpress'),
+        (SITEBILL, 'Sitebill'),
     )          
     name = models.CharField(db_index=True, max_length=15)
     engine = models.CharField(
