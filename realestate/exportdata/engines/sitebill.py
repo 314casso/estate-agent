@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from exportdata.mappers.base import YandexMapper
 from lxml import etree
 from exportdata.engines.base import BaseEngine
