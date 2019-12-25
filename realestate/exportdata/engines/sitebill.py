@@ -45,7 +45,7 @@ class Sitebill(BaseEngine):
         el_location("country", address.country)
         el_location("region", address.region)
         el_location("district", address.district)
-        el_location("locality-name", address.locality)
+        el_location("locality-name", address.locality_with_type)
         el_location("sub-locality-name", address.sub_locality, False)
         el_location("address", address.street, not mapper.suburban if mapper._feed.use_possible_street else False)
         
@@ -175,5 +175,24 @@ class Sitebill(BaseEngine):
         
 
 class SitebillMapper(YandexMapper):    
-    pass
+    class Address(YandexMapper.Address):
+        _locality_type = None           
+        _locality_with_type = None
+        
+        @property
+        def locality_type(self):
+            if not self._locality_type:
+                if self._estate.locality and self._estate.locality.locality_type:
+                    self._locality_type = u"%s" % self._estate.locality.locality_type.name
+                    self._locality_type = self._locality_type.lower()                    
+            return self._locality_type
+        
+        @property
+        def locality_with_type(self):
+            if not self._locality_with_type:
+                self._locality_with_type = u"%s %s"(self.locality_type, self.locality)
+            return self._locality_with_type
+            
+        
+        
     
