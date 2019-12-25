@@ -190,7 +190,7 @@ class SitebillMapper(YandexMapper):
         @property
         def locality_with_type(self):
             if not self._locality_with_type:
-                self._locality_with_type = u"%s %s"(self.locality_type, self.locality)
+                self._locality_with_type = u"%s %s" % (self.locality_type, self.locality)
             return self._locality_with_type
             
         
