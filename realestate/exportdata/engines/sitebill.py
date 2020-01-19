@@ -31,9 +31,9 @@ class Sitebill(BaseEngine):
         el_maker = self.el_maker(offer, empty_nodes)
         el_maker("type", mapper.type)
         el_maker("category", mapper.category)
-        if mapper.category not in [u'коммерческая']:
+        if mapper.category not in [u'Коммерческая недвижимость']:
             el_maker("property-type", mapper.property_type)        
-        if mapper.category in [u'коммерческая']:
+        if mapper.category in [u'Коммерческая недвижимость']:
             el_maker("commercial-type", mapper.object_type)
             
         el_maker("url", mapper.url)    
@@ -66,11 +66,11 @@ class Sitebill(BaseEngine):
         
         el_maker("mortgage", mapper.mortgage, False)
                 
-        if mapper.category not in [u'земельный участок']:
-            area = mapper.living_space if mapper.category in [u'комната'] else mapper.area
+        if mapper.category not in [u'Земельные участки']:
+            area = mapper.living_space if mapper.category in [u'Комнаты'] else mapper.area
             self.square(self.el_maker(etree.SubElement(offer, 'area'), empty_nodes), area)
         
-        if mapper.category in [u'земельный участок', u'дом', u'часть дома']:
+        if mapper.category in [u'Земельные участки', u'Дома', u'Дома']:
             self.square(self.el_maker(etree.SubElement(offer, 'lot-area'), empty_nodes), mapper.land_area, True, u'сот')
             
         if mapper.rooms_space is not None:
@@ -90,26 +90,26 @@ class Sitebill(BaseEngine):
         
         el_maker("description", mapper.description)
         
-        if mapper.category in [u'земельный участок']:
+        if mapper.category in [u'Земельные участки']:
             el_maker("lot-type", mapper.lot_type)
             
         if mapper.new_flat:
             el_maker("new-flat", mapper.new_flat)    
             
-        if mapper.category in [u'дом', u'часть дома', u'квартира']:
+        if mapper.category in [u'Дома', u'Квартиры']:
             el_maker("rooms", mapper.rooms)    
             
-        if mapper.category in [u'комната']:
+        if mapper.category in [u'Комнаты']:
             el_maker("rooms-offered", mapper.rooms)
         
-        if mapper.category in [u'квартира']:
+        if mapper.category in [u'Квартиры']:
             el_maker("studio", mapper.studio, False)
             el_maker("apartments", mapper.apartments, False)
             
-        if mapper.category in [u'квартира', u'комната']:
+        if mapper.category in [u'Квартиры', u'Комнаты']:
             el_maker("floor", mapper.floor)
             
-        if mapper.category in [u'квартира', u'комната']:
+        if mapper.category in [u'Квартиры', u'Комнаты']:
             el_maker("rooms-type", mapper.rooms_type, False)
         
         el_maker("internet", mapper.internet, False)
@@ -117,20 +117,20 @@ class Sitebill(BaseEngine):
         el_maker("floor-covering", mapper.floor_covering, False)
         el_maker("window-view", mapper.window_view, False)
         
-        if mapper.category not in [u'коммерческая']:    
+        if mapper.category not in [u'Коммерческая недвижимость']:    
             el_maker("phone", mapper.phone, False)  
             el_maker("kitchen-furniture", mapper.kitchen_furniture, False)            
             el_maker("television", mapper.television, False)
             el_maker("balcony", mapper.balcony, False)
             el_maker("bathroom-unit", mapper.bathroom_unit, False)            
         
-        if mapper.category in [u'коммерческая']:
+        if mapper.category in [u'Коммерческая недвижимость']:
             el_maker("rooms", mapper.rooms, False)
             el_maker("floor", mapper.floor, False)
             el_maker("air-conditioner", mapper.air_conditioner, False)
             el_maker("ventilation", mapper.ventilation, False)
         
-        if mapper.category in [u'коммерческая', u'дом', u'часть дома']:
+        if mapper.category in [u'Коммерческая недвижимость', u'Дома']:
             el_maker("heating-supply", mapper.heating_supply, False)
             el_maker("water-supply", mapper.water_supply, False)
             el_maker("sewerage-supply", mapper.sewerage_supply, False)            
@@ -154,12 +154,11 @@ class Sitebill(BaseEngine):
         el_maker("deal-status", mapper.deal_status)
                      
         max_images = {     
-            u"квартира" : 20,
-            u"комната" : 10,
-            u"дом" : 20,
-            u"земельный участок" : 5,
-            u"часть дома" : 10,
-            u"коммерческая" : 10           
+            u'Квартиры' : 20,
+            u'Комнаты' : 10,
+            u'Дома' : 20,
+            u'Земельные участки' : 5,            
+            u'Коммерческая недвижимость' : 10           
         }
                
         images = mapper.images(max_images.get(mapper.category, 5))
