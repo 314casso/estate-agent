@@ -28,6 +28,8 @@ host_patterns = patterns('',
                               settings.ROOT_URLCONF, name='www', callback='domanayuge.hosts.base_callback'),
                          host(r'(?P<domain>remont|anaparemont|temrukremont|nvrskremont|gzhkremont)', 'domanayuge.remont_urls', 
                               name='remont', callback='domanayuge.hosts.locality_callback'),                    
+                         host(r'(?P<domain>septik|anapaseptik|temryukseptik|nvrskseptik|gzhkseptik)', 'domanayuge.septik_urls', 
+                              name='septik', callback='domanayuge.hosts.locality_callback'),
                          host(r'(?P<domain>\w+)', 'domanayuge.wildcard_urls',
                               name='wildcard', callback='domanayuge.hosts.locality_callback'),
                         )
