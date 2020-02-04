@@ -2,9 +2,9 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
-    send_email, RemontPage, RemontList, RemontPrice,\
+    send_email, RemontList, RemontPrice,\
     RemontCaseList, RemontCase, robots, RemontPriceList,\
-    RemontRenovationServices
+    RemontRenovationServices, SeptikPage
 from domanayuge.views import remont_sitemap
 import settings
 from domanayuge.models import ContentEntry
@@ -16,7 +16,7 @@ admin.autodiscover()
 urlpatterns = patterns('',   
     url(r'^admin/', include(admin.site.urls)),
     url(r'^content_edit/', include('content_edit.urls')),
-    url(r'^$', RemontPage.as_view() ,name='remontpage'),
+    url(r'^$', SeptikPage.as_view() ,name='septikpage'),
     url(r'^projects/(?P<key>[-\w]+)/$', RemontList.as_view(), name='projects'),
     url(r'^prices/(?P<key>[-\w]+)/$', RemontPriceList.as_view(), name='prices'),
     url(r'^price/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='price'),        

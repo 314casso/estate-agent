@@ -200,21 +200,32 @@ class DevContextMixin(ExContextMixin):
     tags = [u'строительство']
     slug = 'stroyka'          
     cases_key = 'portfoliodev'    
-    
-    
+
+        
 class DevPage(DevContextMixin, TurboPageMixin):
-    template_name = 'domanayuge/dev.html'       
-      
-      
+    template_name = 'domanayuge/dev.html'      
+
+            
 class RemontContextMixin(ExContextMixin):    
     tags = [u'ремонт']
     slug = 'remont'          
     cases_key = 'portfolioremont'
     design_key = 'designremont'
-    
-    
+
+
 class RemontPage(RemontContextMixin, TurboPageMixin):    
-    template_name = 'domanayuge/remont.html'
+    template_name = 'domanayuge/remont.html'    
+
+
+class SeptikContextMixin(ExContextMixin):    
+    tags = [u'септик']
+    slug = 'septik'          
+    cases_key = 'portfolioseptik'
+    design_key = 'designseptik'
+
+    
+class SeptikPage(SeptikContextMixin, TurboPageMixin):    
+    template_name = 'domanayuge/septik.html'      
 
 
 class Blog(BaseContextMixin, ListView):
