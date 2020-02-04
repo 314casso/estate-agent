@@ -44,6 +44,8 @@ def parser(value, domain=None):
 
 @register.assignment_tag
 def site_filtered(q, site):
+    if not q or isinstance(q, basestring):
+        return []     
     site_meta = None
     try:    
         site_meta = SiteMeta.objects.get(site=site)
