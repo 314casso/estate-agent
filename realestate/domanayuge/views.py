@@ -265,6 +265,8 @@ class DevList(DevContextMixin, BaseList):
 class RemontList(RemontContextMixin, BaseList):    
     template_name = 'domanayuge/projects.html'
     
+class SeptikList(SeptikContextMixin, BaseList):    
+    template_name = 'domanayuge/projects.html'
 
 class CaseList(DevContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'         
@@ -283,6 +285,8 @@ class RemontRenovationServices(RemontContextMixin, BaseList):
 class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    
 
+class SeptikCaseList(SeptikContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'
 
 class DevelopServices(DevContextMixin, BaseList):
     template_name = 'domanayuge/developservices.html'
@@ -328,6 +332,11 @@ class Case(DevContextMixin, BaseEntry):
 
 
 class RemontCase(RemontContextMixin, BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
+
+
+class SeptikCase(SeptikContextMixin, BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
 
