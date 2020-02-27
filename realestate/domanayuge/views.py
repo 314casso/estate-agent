@@ -133,6 +133,7 @@ class ExContextMixin(ContextMixin):
     site_meta = None  
     cases_key = None  
     design_key = None
+    type_key = None
     def get_context_data(self, **kwargs):
         context = super(ExContextMixin, self).get_context_data(**kwargs)   
         root = Category.objects.get(slug=self.slug)
@@ -157,17 +158,21 @@ class ExContextMixin(ContextMixin):
         articles = ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)
         cases = ContentEntry.objects.filter(categories__key=self.cases_key)        
         designs = ContentEntry.objects.filter(categories__key=self.design_key)
+        types = ContentEntry.objects.filter(categories__key=self.type_key)
+        
         if geo_tags:            
             articles = articles.filter(tags__contains=geo_tags)           
             cases = cases.filter(tags__contains=geo_tags)            
             designs = designs.filter(tags__contains=geo_tags)
-                
+            types = types.filter(tags__contains=geo_tags)
+                            
         else:
             ex_tags = get_all_geo_tags()
             if ex_tags:            
                 articles = articles.exclude(tags__overlap=ex_tags)
                 cases = cases.exclude(tags__overlap=ex_tags)                
-                designs = designs.exclude(tags__overlap=ex_tags)                
+                designs = designs.exclude(tags__overlap=ex_tags)
+                types = types.exclude(tags__overlap=ex_tags)              
                           
         context.update({           
             'articles': articles[:articles_slices],
@@ -222,6 +227,7 @@ class SeptikContextMixin(ExContextMixin):
     slug = 'septik'          
     cases_key = 'portfolioseptik'
     design_key = 'designseptik'
+    type_key = 'septiktype'
 
     
 class SeptikPage(SeptikContextMixin, TurboPageMixin):    
