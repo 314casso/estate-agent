@@ -182,6 +182,7 @@ class ExContextMixin(ContextMixin):
             'domain': self.request.domain,
             'site_meta': self.site_meta,
             'designs': designs[:case_slices],            
+            'types': types[:case_slices],
         })                            
         return context 
     
