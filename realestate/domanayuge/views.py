@@ -84,6 +84,10 @@ def stroyka_sitemap(request):
     return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'строительство'], 'portfoliodev', 'projects', 'devprices'))
 
 
+def septik_sitemap(request):    
+    site = get_current_site(request)
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'септик'], 'portfolioseptik', 'designseptik'))
+
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
     site_meta = None             
