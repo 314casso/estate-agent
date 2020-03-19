@@ -2,9 +2,9 @@
 from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
-    send_email, RemontList, RemontPrice, robots,\
-    RemontRenovationServices, SeptikPage, SeptikCase, SeptikList, SeptikCaseList
-from domanayuge.views import remont_sitemap
+    send_email, robots,\
+    SeptikPage, SeptikCase, SeptikList, SeptikCaseList,\
+    septik_sitemap
 import settings
 from domanayuge.models import ContentEntry
 
@@ -36,7 +36,7 @@ blog_dict = {
 
 
 urlpatterns += patterns('',
-        url(r'^sitemap\.xml$', remont_sitemap, name='domanayuge.views.remont_sitemap'),        
+        url(r'^sitemap\.xml$', septik_sitemap, name='domanayuge.views.septik_sitemap'),        
         url(r'^robots\.txt$', robots),
 )
 
