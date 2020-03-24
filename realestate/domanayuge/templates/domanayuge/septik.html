@@ -327,13 +327,13 @@
 
 {% site_filtered design.active_entries request.site as designs_filtered_entries  %}
 {% for entry in designs_filtered_entries %}
-<!-- Portfolio Modal {{ entry.id }} -->
+<!-- Design Modal {{ entry.id }} -->
 {% include "domanayuge/portfolio_modal.html" with entry=entry %}
 {% endfor %}
 
 {% site_filtered types.active_entries request.site as types_filtered_entries  %}
 {% for entry in types_filtered_entries %}
-<!-- Portfolio Modal {{ entry.id }} -->
+<!-- Types Modal {{ entry.id }} -->
 {% include "domanayuge/portfolio_modal.html" with entry=entry %}
 {% endfor %}
 
