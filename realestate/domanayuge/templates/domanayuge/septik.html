@@ -331,6 +331,13 @@
 {% include "domanayuge/portfolio_modal.html" with entry=entry %}
 {% endfor %}
 
+{% site_filtered types.active_entries request.site as types_filtered_entries  %}
+{% for entry in types_filtered_entries %}
+<!-- Portfolio Modal {{ entry.id }} -->
+{% include "domanayuge/portfolio_modal.html" with entry=entry %}
+{% endfor %}
+
+
 {% include "content_edit/modal.html" %}
 
 {% endblock content %}
