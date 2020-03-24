@@ -331,7 +331,7 @@
 {% include "domanayuge/portfolio_modal.html" with entry=entry %}
 {% endfor %}
 
-{% site_filtered types.active_entries request.site as types_filtered_entries  %}
+{% site_filtered septiktype.active_entries request.site as types_filtered_entries  %}
 {% for entry in types_filtered_entries %}
 <!-- Types Modal {{ entry.id }} -->
 {% include "domanayuge/portfolio_modal.html" with entry=entry %}
