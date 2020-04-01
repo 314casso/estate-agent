@@ -296,8 +296,21 @@ class RemontRenovationServices(RemontContextMixin, BaseList):
 class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    
 
+
 class SeptikCaseList(SeptikContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'
+    def get_queryset(self):        
+        geo_tags = self.site_meta.tags if self.site_meta else None        
+        key = self.kwargs['key']                   
+        cases = ContentEntry.objects.filter(categories__key=key)        
+        if geo_tags:          
+            cases = cases.filter(tags__contains=geo_tags)            
+        else:
+            ex_tags = get_all_geo_tags()
+            if ex_tags:           
+                cases = cases.exclude(tags__overlap=ex_tags)                
+        return cases
+
 
 class DevelopServices(DevContextMixin, BaseList):
     template_name = 'domanayuge/developservices.html'
