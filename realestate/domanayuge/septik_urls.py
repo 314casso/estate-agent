@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url, include
 from domanayuge.views import Blog, Article, \
     send_email, robots,\
     SeptikPage, SeptikCase, SeptikList, SeptikCaseList,\
-    septik_sitemap
+    septik_sitemap, SeptikPriceList, SeptikPrice
 import settings
 from domanayuge.models import ContentEntry
 
@@ -17,8 +17,8 @@ urlpatterns = patterns('',
     url(r'^content_edit/', include('content_edit.urls')),
     url(r'^$', SeptikPage.as_view() ,name='septikpage'),
     url(r'^projects/(?P<key>[-\w]+)/$', SeptikList.as_view(), name='projects'),
-#     url(r'^prices/(?P<key>[-\w]+)/$', RemontPriceList.as_view(), name='prices'),
-#     url(r'^price/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='price'),        
+    url(r'^prices/(?P<key>[-\w]+)/$', SeptikPriceList.as_view(), name='prices'),
+    url(r'^price/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', SeptikPrice.as_view(), name='price'),        
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
     url(r'^cases/(?P<key>[-\w]+)/$', SeptikCaseList.as_view(), name='cases'),

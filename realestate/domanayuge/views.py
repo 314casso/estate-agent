@@ -86,7 +86,7 @@ def stroyka_sitemap(request):
 
 def septik_sitemap(request):    
     site = get_current_site(request)
-    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'септик'], 'septiktype', None))
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'септик'], 'septiktype', None, 'septikprices'))
 
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
@@ -286,6 +286,10 @@ class CaseList(DevContextMixin, BaseList):
 class DevPriceList(DevContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'
     
+
+class SeptikPriceList(SeptikContextMixin, BaseList):
+    template_name = 'domanayuge/prices.html'    
+    
     
 class RemontPriceList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'   
@@ -338,6 +342,11 @@ class BaseEntry(DetailView):
 class DevPrice(DevContextMixin, BaseEntry):
     template_name = 'domanayuge/price.html'
     context_object_name = 'project'
+    
+    
+class SeptikPrice(SeptikContextMixin, BaseEntry):
+    template_name = 'domanayuge/price.html'
+    context_object_name = 'project'    
        
        
 class Project(DevContextMixin, BaseEntry):
