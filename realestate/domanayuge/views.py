@@ -303,8 +303,15 @@ class RemontCaseList(RemontContextMixin, BaseList):
 
 class SeptikCaseList(SeptikContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'
-    def get_queryset(self):        
-        geo_tags = self.site_meta.tags if self.site_meta else None        
+    def get_queryset(self):
+        
+        try:                 
+            site_meta = SiteMeta.objects.get(site=get_current_site(self.request))
+        except SiteMeta.DoesNotExist:
+            pass                
+        
+        geo_tags = site_meta.tags if site_meta else None
+                
         key = self.kwargs['key']                   
         cases = ContentEntry.objects.filter(categories__key=key)        
         if geo_tags:          
