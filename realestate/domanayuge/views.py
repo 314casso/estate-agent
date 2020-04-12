@@ -301,6 +301,10 @@ class RemontCaseList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'    
 
 
+class SeptikBaseCaseList(SeptikContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'
+    
+
 class SeptikCaseList(SeptikContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'
     def get_queryset(self):
