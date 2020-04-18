@@ -88,6 +88,12 @@ def septik_sitemap(request):
     site = get_current_site(request)
     return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'септик'], 'septiktype', None, 'septikprices'))
 
+
+def rodlex_sitemap(request):    
+    site = get_current_site(request)
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'родлекс'], 'rodlextype', None, 'rodlexprices'))
+
+
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
     site_meta = None             
@@ -234,9 +240,21 @@ class SeptikContextMixin(ExContextMixin):
     design_key = 'designseptik'
     type_key = 'septiktype'
 
+
+class RodlexContextMixin(ExContextMixin):    
+    tags = [u'родлекс']
+    slug = 'rodlex'          
+    cases_key = 'portfoliorodlex'
+    design_key = 'designrodlex'
+    type_key = 'septikrodlex'
+
     
+class RodlexPage(RodlexContextMixin, TurboPageMixin):    
+    template_name = 'domanayuge/rodlex.html'      
+    
+
 class SeptikPage(SeptikContextMixin, TurboPageMixin):    
-    template_name = 'domanayuge/septik.html'      
+    template_name = 'domanayuge/septik.html'    
 
 
 class Blog(BaseContextMixin, ListView):
@@ -278,6 +296,9 @@ class RemontList(RemontContextMixin, BaseList):
     
 class SeptikList(SeptikContextMixin, BaseList):    
     template_name = 'domanayuge/projects.html'
+    
+class RodlexList(RodlexContextMixin, BaseList):    
+    template_name = 'domanayuge/projects.html'    
 
 class CaseList(DevContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'         
@@ -290,6 +311,8 @@ class DevPriceList(DevContextMixin, BaseList):
 class SeptikPriceList(SeptikContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'    
     
+class RodlexPriceList(RodlexContextMixin, BaseList):
+    template_name = 'domanayuge/prices.html'    
     
 class RemontPriceList(RemontContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'   
@@ -327,6 +350,10 @@ class SeptikCaseList(SeptikContextMixin, BaseList):
         return cases
 
 
+class RodlexCaseList(RodlexContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'
+
+
 class DevelopServices(DevContextMixin, BaseList):
     template_name = 'domanayuge/developservices.html'
 
@@ -358,7 +385,12 @@ class DevPrice(DevContextMixin, BaseEntry):
 class SeptikPrice(SeptikContextMixin, BaseEntry):
     template_name = 'domanayuge/price.html'
     context_object_name = 'project'    
-       
+
+
+class RodlexPrice(RodlexContextMixin, BaseEntry):
+    template_name = 'domanayuge/price.html'
+    context_object_name = 'project'       
+
        
 class Project(DevContextMixin, BaseEntry):
     template_name = 'domanayuge/project.html'
@@ -381,6 +413,11 @@ class RemontCase(RemontContextMixin, BaseEntry):
 
 
 class SeptikCase(SeptikContextMixin, BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
+
+
+class RodlexCase(RodlexContextMixin, BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
 
