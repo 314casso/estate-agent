@@ -246,7 +246,7 @@ class RodlexContextMixin(ExContextMixin):
     slug = 'rodlex'          
     cases_key = 'portfoliorodlex'
     design_key = 'designrodlex'
-    type_key = 'septikrodlex'
+    type_key = 'rodlextype'
 
     
 class RodlexPage(RodlexContextMixin, TurboPageMixin):    
