@@ -94,6 +94,11 @@ def rodlex_sitemap(request):
     return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'родлекс'], 'rodlextype', None, 'rodlexprices'))
 
 
+def pogreb_sitemap(request):    
+    site = get_current_site(request)
+    return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'погреб'], 'pogrebtype', None, 'pogrebprices'))
+
+
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
     site_meta = None             
@@ -248,9 +253,21 @@ class RodlexContextMixin(ExContextMixin):
     design_key = 'designrodlex'
     type_key = 'rodlextype'
 
+
+class PogrebContextMixin(ExContextMixin):    
+    tags = [u'погреб']
+    slug = 'pogreb'          
+    cases_key = 'portfoliopogreb'
+    design_key = 'designpogreb'
+    type_key = 'pogrebtype'
+
     
 class RodlexPage(RodlexContextMixin, TurboPageMixin):    
     template_name = 'domanayuge/rodlex.html'      
+    
+
+class PogrebPage(PogrebContextMixin, TurboPageMixin):    
+    template_name = 'domanayuge/rodlex.html'    
     
 
 class SeptikPage(SeptikContextMixin, TurboPageMixin):    
@@ -299,19 +316,23 @@ class SeptikList(SeptikContextMixin, BaseList):
     
 class RodlexList(RodlexContextMixin, BaseList):    
     template_name = 'domanayuge/projects.html'    
+    
+class PogrebList(PogrebContextMixin, BaseList):    
+    template_name = 'domanayuge/projects.html'    
 
 class CaseList(DevContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'         
     
-
 class DevPriceList(DevContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'
     
-
 class SeptikPriceList(SeptikContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'    
     
 class RodlexPriceList(RodlexContextMixin, BaseList):
+    template_name = 'domanayuge/prices.html'    
+    
+class PogrebPriceList(PogrebContextMixin, BaseList):
     template_name = 'domanayuge/prices.html'    
     
 class RemontPriceList(RemontContextMixin, BaseList):
@@ -353,6 +374,8 @@ class SeptikCaseList(SeptikContextMixin, BaseList):
 class RodlexCaseList(RodlexContextMixin, BaseList):
     template_name = 'domanayuge/cases.html'
 
+class PogrebCaseList(PogrebContextMixin, BaseList):
+    template_name = 'domanayuge/cases.html'
 
 class DevelopServices(DevContextMixin, BaseList):
     template_name = 'domanayuge/developservices.html'
@@ -391,6 +414,9 @@ class RodlexPrice(RodlexContextMixin, BaseEntry):
     template_name = 'domanayuge/price.html'
     context_object_name = 'project'       
 
+class PogrebPrice(PogrebContextMixin, BaseEntry):
+    template_name = 'domanayuge/price.html'
+    context_object_name = 'project'
        
 class Project(DevContextMixin, BaseEntry):
     template_name = 'domanayuge/project.html'
@@ -421,6 +447,9 @@ class RodlexCase(RodlexContextMixin, BaseEntry):
     template_name = 'domanayuge/case.html'
     context_object_name = 'project'
 
+class PogrebCase(PogrebContextMixin, BaseEntry):
+    template_name = 'domanayuge/case.html'
+    context_object_name = 'project'
     
 def robots(request):
     site = get_current_site(request)
