@@ -267,7 +267,7 @@ class RodlexPage(RodlexContextMixin, TurboPageMixin):
     
 
 class PogrebPage(PogrebContextMixin, TurboPageMixin):    
-    template_name = 'domanayuge/rodlex.html'    
+    template_name = 'domanayuge/pogreb.html'    
     
 
 class SeptikPage(SeptikContextMixin, TurboPageMixin):    
