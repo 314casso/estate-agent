@@ -1638,6 +1638,12 @@ class BidEvent(models.Model):
                 result['color'] = expired_color  
         return result              
     
+    def save(self, *args, **kwargs):
+        return
+
+    def delete(self, *args, **kwargs):
+        return
+    
     class Meta:
         verbose_name = _('bid event')
         verbose_name_plural = _('bid events')        
