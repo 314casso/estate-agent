@@ -73,6 +73,7 @@ class MarketingCampaign(models.Model):
 
 class BaseFeed(models.Model):
     MIN_PRICE_LIMIT = 100000
+    FOTO_CHOICES = ((3, u'Все',), (0, u'Нет фото',), (1, u'Есть фото',))
     name = models.CharField(verbose_name=_('Name'), db_index=True, max_length=15)
     active = models.BooleanField(verbose_name=_('Active'), )    
     estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
@@ -86,7 +87,8 @@ class BaseFeed(models.Model):
     use_possible_street = models.BooleanField(verbose_name=_('UsePossibleStreet'), default=False)
     show_bld_number = models.BooleanField(verbose_name=_('ShowBldNumber'), default=False)
     only_valid = models.BooleanField(verbose_name=_('OnlyValid'), default=True)    
-    min_price_limit = models.IntegerField(verbose_name=_('MinPriceLimit'), default=MIN_PRICE_LIMIT, blank=True, null=True,)
+    min_price_limit = models.IntegerField(verbose_name=_('MinPriceLimit'), default=MIN_PRICE_LIMIT, blank=True, null=True,)    
+    foto_choice = models.PositiveIntegerField(verbose_name=_('EstatePhoto'), default=3, choices=FOTO_CHOICES)    
               
     def __unicode__(self):
         return u'%s' % self.name        
