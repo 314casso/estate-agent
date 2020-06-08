@@ -77,8 +77,14 @@ class BaseFeed(models.Model):
     FOTO_CHOICES = ((3, u'Все',), (0, u'Нет фото',), (1, u'Есть фото',))
     name = models.CharField(verbose_name=_('Name'), db_index=True, max_length=15)
     active = models.BooleanField(verbose_name=_('Active'), )    
-    estate_categories = models.ManyToManyField(EstateTypeCategory, verbose_name=_('EstateTypeCategory'),)
-    estate_types = models.ManyToManyField(EstateType, verbose_name=_('EstateType'), blank=True)
+    estate_categories = models.ManyToManyField(EstateTypeCategory, 
+        verbose_name=_('EstateTypeCategory'),
+        help_text=u"Указывайте категорию только в том случае, если нужно отобрать ее полностью, без разбивки по видам"
+        )
+    estate_types = models.ManyToManyField(
+        EstateType, verbose_name=_('EstateType'), blank=True,
+        help_text=u"Если вид недвижимости указан, то его категория, даже если она выбрана ранее, не будет учитываться в отборе"
+        )
     estate_param = models.ForeignKey(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True,)
     valid_days = models.IntegerField(verbose_name=_('ValidDays'), )
     feed_engine = models.ForeignKey(FeedEngine, verbose_name=_('FeedEngine'), )        
@@ -101,6 +107,9 @@ class BaseFeed(models.Model):
     def get_queryset(self):
         f = {}
         q = Estate.objects.all()
+        
+        if self.foto_choice < 3:
+            f['images__isnull'] = self.foto_choice == 0        
         
         if self.estate_param:
             f['estate_params__exact'] = self.estate_param
