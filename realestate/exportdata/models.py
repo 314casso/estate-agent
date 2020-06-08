@@ -79,11 +79,11 @@ class BaseFeed(models.Model):
     active = models.BooleanField(verbose_name=_('Active'), )    
     estate_categories = models.ManyToManyField(EstateTypeCategory, 
         verbose_name=_('EstateTypeCategory'),
-        help_text=u"Указывайте категорию только в том случае, если нужно отобрать ее полностью, без разбивки по видам"
+        help_text=u"Указывайте категорию только в том случае, если нужно отобрать ее полностью, без разбивки по видам."
         )
     estate_types = models.ManyToManyField(
         EstateType, verbose_name=_('EstateType'), blank=True,
-        help_text=u"Если вид недвижимости указан, то его категория, даже если она выбрана ранее, не будет учитываться в отборе"
+        help_text=u"Если вид недвижимости указан, то его категория, даже если она выбрана ранее, не будет учитываться в отборе."
         )
     estate_param = models.ForeignKey(EstateParam, verbose_name=_('EstateParam'), blank=True, null=True,)
     valid_days = models.IntegerField(verbose_name=_('ValidDays'), )
