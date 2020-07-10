@@ -22,8 +22,8 @@ class Command(BaseCommand):
         CACHE_TIME = 60 * 15
         SYNC_CACHE_KEY = 'SYNC_CORRECT'
         sync_cache_mark = cache.get(SYNC_CACHE_KEY)        
-        if sync_cache_mark:
-            return
+#         if sync_cache_mark:
+#             return
         cache.set(SYNC_CACHE_KEY, datetime.datetime.now(), CACHE_TIME)
         estates = Estate.objects.filter(wp_meta__status__in=[EstateWordpressMeta.XMLRPC,EstateWordpressMeta.UNKNOWN], validity=Estate.VALID)[:9]        
         total_errors = 0
