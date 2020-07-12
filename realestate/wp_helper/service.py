@@ -34,7 +34,8 @@ class SetPostMeta(AuthenticatedMethod):
 class WPService(object):
     META_KEY = 'Nomer'
     _ratio = 0.85
-    _taxonomies = {}   
+    _taxonomies = {}
+    media_items = []   
     def __init__(self, params):
         self.params = params        
         self.client = Client(**self.params)
@@ -229,9 +230,9 @@ class WPService(object):
     def render_post_images(self, estate, post_id):        
         context = {'class' : 'face-post-image'}
         template = '<a class="%(class)s" href="%(link)s"><img src="%(src)s"></a>'
-        media_items = self.get_media_items(estate, post_id)
+        self.media_items = self.get_media_items(estate, post_id)
         post_images = []
-        for item in media_items:
+        for item in self.media_items:
             context['link'] = item.link
             context['src'] = urljoin(item.link, item.metadata['sizes']['thumbnail']['file'])
             post_images.append(template % context)
@@ -330,6 +331,8 @@ class WPService(object):
                 wp_meta.save()
                 return False        
             post = self.assemble_post(estate, old_post, True)
+            if len(self.media_items) > 0:            
+                post.thumbnail = self.media_items[0].id            
             if not wp_meta.post_id:
                 wp_meta.post_id = self.client.call(NewPost(post))        
             else:
@@ -348,14 +351,15 @@ class WPService(object):
         
     def sync_status(self, estate): 
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
-        post_id = int(self.client.call(GetPostID(self.META_KEY,estate.id)))       
+        src_id = self.client.call(GetPostID(self.META_KEY,estate.id))        
+        post_id = int(src_id) 
         if post_id:                  
             wp_meta.post_id = post_id       
             try:            
                 meta_struct = {'status' : estate.estate_status.wp_taxons.all()[:1].get().wp_id}            
                 self.client.call(SetPostMeta(post_id, meta_struct))
-                wp_meta.status = EstateWordpressMeta.UPTODATE
-                wp_meta.save()                
+                wp_meta.status = EstateWordpressMeta.UPTODATE                
+                wp_meta.save()        
             except xmlrpclib.ProtocolError as err:            
                 wp_meta.error_message = prepare_err_msg(err)                
                 wp_meta.save()   
