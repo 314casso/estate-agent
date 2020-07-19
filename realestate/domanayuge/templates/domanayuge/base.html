@@ -12,8 +12,13 @@
 <head>    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    {% if site_meta.after_head %}
+    {% autoescape off %}    
+    {{ site_meta.after_head }}
+    {% endautoescape %}
+    {% endif %}
+    <title>{% block page_title %}{{ site_meta.title|default:domanayuge.name }}{% endblock %}</title>    
     {% block page_description %}
     <meta name="description" content="{{ site_meta.description|default:domanayuge.description }}">
     {% endblock %}
@@ -56,6 +61,11 @@
 </head>
 
 <body id="page-top" class="index">
+	{% if site_meta.after_body %}
+    {% autoescape off %}    
+    {{ site_meta.after_body }}
+    {% endautoescape %}
+    {% endif %}
     <!-- Navigation -->
     {% block navigation %}
     <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
