@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import requests
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template import loader, Context
@@ -487,5 +488,19 @@ def send_email(request):
         reply_to=[request.POST['email']],        
     )
     email.send(False)
+        
+    roistat_data = {
+    'roistat' : request.COOKIES.get('roistat_visit', None),
+    'key'     : 'MjI2NjU5YmVlNWM0ZWZhYjY2NTY3MzMyNGQ5ZWE0NWI6MTY2NzUy', 
+    'title'   : force_unicode('Обращение через сайт'),
+    'comment' : force_unicode(request.POST['message']),
+    'name'    : force_unicode(request.POST['name']),
+    'phone'   : force_unicode(request.POST['phone']),
+    'email'   : force_unicode(request.POST['email']),
+    'is_need_callback' : '0',
+    }  
+    
+    r = requests.get('https://cloud.roistat.com/api/proxy/1.0/leads/add', params=roistat_data)
+    
     return HttpResponse('SUCCESS')
     
