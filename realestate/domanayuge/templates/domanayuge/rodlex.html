@@ -328,7 +328,11 @@
                         </div>
                     </div>
                 </form>                 
-                <h3 class="text-muted text-center base-phone"><span class="glyphicon glyphicon-phone text-warning"></span>  {% cms_content 'rodlex_phone' %}</h3>
+                <h3 class="text-muted text-center base-phone"><span class="glyphicon glyphicon-phone text-warning"></span>  
+                <a class="phone" href="tel:{% cms_content 'rodlex_phone' %}">
+                	{% cms_content 'rodlex_phone' %}
+                </a>
+                </h3>
             </div>
         </div>           
     </div>
