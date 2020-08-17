@@ -248,7 +248,7 @@ class WPService(object):
         fields['price'] = estate.agency_price
         fields['microdistrict'] = estate.microdistrict.name
         fields['bidgarea'] = float(estate.basic_bidg.total_area) if estate.basic_bidg else None 
-        fields['steadarea'] = float(estate.basic_stead.total_area) if estate.basic_stead else None
+        fields['steadarea'] = float(estate.basic_stead.total_area_sotka) if estate.basic_stead else None
         fields['region'] = estate.locality.region.wp_taxons.all()[:1].get().wp_id
         fields['rooms'] = estate.basic_bidg.room_count if estate.basic_bidg else None
         fields['status'] = estate.estate_status.wp_taxons.all()[:1].get().wp_id
