@@ -2,6 +2,7 @@
 from django.core.management.base import BaseCommand
 from wp_helper.models import EstateWordpressMeta
 from estatebase.models import Estate
+from datetime import datetime, timedelta
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -15,7 +16,8 @@ class Command(BaseCommand):
             
     
     def set_log(self):
-        qs = Estate.objects.filter(validity__exact=Estate.VALID, wp_meta__status=EstateWordpressMeta.UPTODATE, actualized__year__gte=2019).count()
+        ago = datetime.now() - timedelta(days=365)
+        qs = Estate.objects.filter(validity__exact=Estate.VALID, wp_meta__status=EstateWordpressMeta.UPTODATE, actualized__gte=ago).count()
         print qs        
 #         for estate in qs:
 #             estate.wp_meta.status = EstateWordpressMeta.XMLRPC
