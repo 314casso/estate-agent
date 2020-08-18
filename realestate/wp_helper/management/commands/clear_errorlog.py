@@ -15,7 +15,7 @@ class Command(BaseCommand):
             
     
     def set_log(self):
-        qs = Estate.objects.filter(validity__exact=Estate.VALID, wp_meta__status=EstateWordpressMeta.UPTODATE).count()
+        qs = Estate.objects.filter(validity__exact=Estate.VALID, wp_meta__status=EstateWordpressMeta.UPTODATE, actualized__year__gte=2019).count()
         print qs        
 #         for estate in qs:
 #             estate.wp_meta.status = EstateWordpressMeta.XMLRPC
