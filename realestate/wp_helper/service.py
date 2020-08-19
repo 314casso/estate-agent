@@ -228,8 +228,8 @@ class WPService(object):
         return result
         
     def render_post_images(self, estate, post_id):        
-        context = {'class' : 'face-post-image'}
-        template = '<a class="%(class)s" href="%(link)s"><img src="%(src)s"></a>'
+        context = {'class': 'face-post-image', 'post_id': post_id}
+        template = '<a data-fancybox="gallery%(post_id)s" class="%(class)s" href="%(link)s"><img src="%(src)s"></a>'
         self.media_items = self.get_media_items(estate, post_id)
         post_images = []
         for item in self.media_items:
