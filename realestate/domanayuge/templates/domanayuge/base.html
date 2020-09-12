@@ -447,7 +447,7 @@
     <script src="{{ STATIC_URL }}domanayuge/js/contact_me.js"></script>
 
     <!-- Theme JavaScript -->
-    <script src="{{ STATIC_URL }}domanayuge/js/agency.js?v0.0.14"></script>
+    <script src="{{ STATIC_URL }}domanayuge/js/agency.js?v0.0.15"></script>
 	
 	<script type="text/javascript" src='{% static 'content_edit/content_edit.js' %}'></script>
 
@@ -478,6 +478,15 @@
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/44526706" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-22862087-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-22862087-4');
+</script>
  
     {% if site_meta.flatpage %}
     {% autoescape off %}    
