@@ -26,7 +26,8 @@ $(function() {
             event.preventDefault(); // prevent default submit behaviour
             
             try {
-               gtag('event', 'click');
+               //gtag('event', 'click');
+               ym(66555292,'reachGoal','forma');
         	}
         	catch (e) {        	   
         	   console.log(e);
