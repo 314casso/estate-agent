@@ -962,7 +962,7 @@ footer a {
     text-decoration: none!important;
     border-top: 1px solid #555;
     border-left: 1px solid #555;    
-    padding: 14px!important;
+    padding: 10px!important;
     box-sizing: border-box!important;
     text-transform: uppercase;    
 }
@@ -981,10 +981,11 @@ footer a {
 
 #widget_pica {
 	opacity: .9;
+	font-size: 10px;
 }
 
 #widget_pica ul>li>a {
 	color: white;	
 	text-decoration: none;
-    padding: 17px 0 17px 17px;
+    padding: 10px 0 10px 10px;
 }
