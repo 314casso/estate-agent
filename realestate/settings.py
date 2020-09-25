@@ -2,6 +2,7 @@ import os
 import datetime
 import socket
 
+
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FILE_UPLOAD_PERMISSIONS = 0777
 
@@ -189,7 +190,8 @@ INSTALLED_APPS = (
 )
 
 PATH_TO_FONT = os.path.join(MEDIA_ROOT, 'verdana.ttf')
-THUMBNAIL_ENGINE = 'watermarker.sorl_engine.WatermarkEngine'
+#THUMBNAIL_ENGINE = 'watermarker.sorl_engine.WatermarkEngine'
+THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.convert_engine.Engine'
 WATERMARK_OPTIONS = {'font_scale': 0.04, 'font_path': PATH_TO_FONT, 'color': 'white', 'opacity': .8} # Any other options from watermark function
 WATERMARK_MIN_SIZE = 50 #Minimum image size (max(height, width)) to add watermark
 WATERMARK_FORCE = 'www.domnatamani.ru'
