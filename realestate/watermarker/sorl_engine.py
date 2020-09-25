@@ -3,7 +3,8 @@
 
 from django.conf import settings
 from watermarker import watermark
-from sorl.thumbnail.engines.pil_engine import Engine
+#from sorl.thumbnail.engines.pil_engine import Engine
+from sorl.thumbnail.engines.convert_engine import Engine
 
 __author__ = 'zeus'
 
