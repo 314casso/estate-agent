@@ -6,8 +6,8 @@ import socket
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FILE_UPLOAD_PERMISSIONS = 0777
 
-DEBUG = True
-#DEBUG = socket.gethostname() == 'picasso-kubuntu'
+#DEBUG = True
+DEBUG = socket.gethostname() == 'picasso-kubuntu'
 THUMBNAIL_DEBUG = DEBUG
 PUBLIC_MEDIA_URL = "http://copy.domnatamani.ru"
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'db.domnatamani.ru', 'copy.domnatamani.ru']
