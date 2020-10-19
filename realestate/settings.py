@@ -8,7 +8,7 @@ FILE_UPLOAD_PERMISSIONS = 0777
 
 #DEBUG = True
 DEBUG = socket.gethostname() == 'picasso-kubuntu'
-THUMBNAIL_DEBUG = DEBUG
+THUMBNAIL_DEBUG = True
 PUBLIC_MEDIA_URL = "http://copy.domnatamani.ru"
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'db.domnatamani.ru', 'copy.domnatamani.ru']
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
