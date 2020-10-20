@@ -28,14 +28,14 @@
 	    <li class="active">{{ project.title }}</li>
 	</ol>
 	
-	       <div id="carousel-{{ article.slug }}" class="carousel slide" data-ride="carousel" style="width:1100px">
+	       <div id="carousel-{{ article.slug }}" class="carousel slide" data-ride="carousel" style="width:760px">
 		 							
 		  <!-- Wrapper for slides -->								  
 		  <div class="carousel-inner" role="listbox">
 		  {% for image in project.images %}
 		    <div class="item {% if forloop.first %}active{% endif %}">
 		    
-		    	{% thumbnail image.image "1100" as im %}		    
+		    	{% thumbnail image.image "760" as im %}		    
 				<img alt="{{ image.title }}" src="{{ im.url }}">		    
 				{% endthumbnail %} 
 		    								      
