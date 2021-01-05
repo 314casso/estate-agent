@@ -181,7 +181,7 @@ class WPService(object):
     
     def get_estate_images(self, estate):
         from sorl.thumbnail import get_thumbnail        
-        images = estate.images.all()[:4]
+        images = estate.images.all()[:12]
         if images:
             result = OrderedDict()
             for img in images:               
