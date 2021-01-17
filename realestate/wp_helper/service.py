@@ -99,6 +99,13 @@ class WPService(object):
         return cat
     
     def render_post_category(self, estate):
+        wp_cat_id = 4
+        result = []         
+        params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            # @UndefinedVariable
+        result.append(self.wrap_to_wp_category(params_taxonomy_tree))
+        return result    
+    
+    def render_post_category_depricated(self, estate):
         result = []        
         taxonomy_tree = self.get_or_create_category(estate)
         ancestors = taxonomy_tree.get_ancestors(ascending=True, include_self=True)
@@ -154,19 +161,18 @@ class WPService(object):
         locality = estate.locality  
         region = estate.locality.region
         result = set()
-        result.add(u'купить %s в %s' % (estate.estate_type_accs, locality.name_loct))
-        result.add(u'%s в %s' % (estate.estate_type, locality.name_loct))
+        result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
+        result.add(u'%s в %s' % (estate.basic_estate_type, locality.name_loct))
         for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
-            result.add(u'%s у %s' % (estate.estate_type, beside.beside.name_gent))
+            result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))
             result.add(u'недвижимость на %s' % beside.beside.name_loct)
             result.add(beside.beside.name)
-        result.add(u'%s в Краснодарском крае' % estate.estate_type)
-        #result.add(u'%s %s' % (estate.estate_type, locality.name_gent))
+        result.add(u'%s в Краснодарском крае' % estate.basic_estate_type)        
         result.add(u'недвижимость %s' % locality.name_gent)
         result.add(u'купить недвижимость в %s' % locality.name_loct)
         result.add(u'недвижимость Краснодарского края')
         result.add(u'купить недвижимость в Краснодарском крае')
-        result.add(u'купить %s в Краснодарском крае' % estate.estate_type_accs)
+        result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)
         result.add(locality.name)
         result.add(region.regular_name)
         result.add(u'недвижимость %s' % region.regular_name_gent)

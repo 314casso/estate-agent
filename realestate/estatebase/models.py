@@ -688,7 +688,15 @@ class Estate(ProcessDeletedModel):
         else:
             if self.basic_bidg:
                 return self.basic_bidg.estate_type
-    
+
+    @property
+    def basic_estate_type_accs(self):        
+        if self.estate_category.is_stead and self.basic_stead:
+            return self.basic_stead.estate_type.name_accs
+        else:
+            if self.basic_bidg:
+                return self.basic_bidg.estate_type.name_accs
+                
     @property
     def estate_type_total_area(self):
         complex_name_format = u'%s %g %s'
@@ -714,7 +722,8 @@ class Estate(ProcessDeletedModel):
             if len(result):          
                 return ', '.join(result)
             else:
-                return self.estate_category
+                return self.estate_category     
+            
     @property
     def bidg_objects(self):
         return self.bidgs.filter(estate_type__estate_type_category__independent=True) 
