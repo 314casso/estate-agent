@@ -101,7 +101,7 @@ class WPService(object):
     def render_post_category(self, estate):
         wp_cat_id = 4
         result = []         
-        params_taxonomy_tree = WordpressTaxonomyTree.objects.get(pk=wp_cat_id)            # @UndefinedVariable
+        params_taxonomy_tree = WordpressTaxonomyTree.objects.get(wp_id=wp_cat_id)            # @UndefinedVariable
         result.append(self.wrap_to_wp_category(params_taxonomy_tree))
         return result    
     
