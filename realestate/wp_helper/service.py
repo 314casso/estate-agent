@@ -155,10 +155,13 @@ class WPService(object):
         else:
             result = result % u'Краснодарского края'
         result = u'%s | %s в %s' % (result, estate.estate_type, estate.locality.name_loct)
-        return result
+        return result         
     
-    def render_post_tags(self, estate):
-        locality = estate.locality  
+    def render_post_tags(self, estate):        
+        STANICA = 5
+        AZOV_SEA = (u"Голубицкая", u"Кучугуры", u"Пересыпь", u"За Родину", u"Ильич", u"Приазовский")                 
+        locality = estate.locality
+        locality_type = estate.locality.locality_type          
         region = estate.locality.region
         result = set()
         result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
@@ -172,11 +175,15 @@ class WPService(object):
         result.add(u'купить недвижимость в %s' % locality.name_loct)
         result.add(u'недвижимость Краснодарского края')
         result.add(u'купить недвижимость в Краснодарском крае')
-        result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)
+        result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
         result.add(locality.name)
         result.add(region.regular_name)
         result.add(u'недвижимость %s' % region.regular_name_gent)
         result.add(u'Краснодарский край')
+        if locality_type.pk == STANICA:
+            result.add(u'Купить %s в станице Краснодарского края' % estate.basic_estate_type_accs)
+        if locality.name in AZOV_SEA:
+            result.add(u'Продажа домов на Азовском море') 
         return list(result)
     
     def render_post_body(self, estate, description, images):        
