@@ -168,8 +168,7 @@ class WPService(object):
         result.add(u'%s в %s' % (estate.basic_estate_type, locality.name_loct))
         for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
             result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))
-            result.add(u'недвижимость на %s' % beside.beside.name_loct)
-            result.add(beside.beside.name)
+            result.add(u'недвижимость на %s' % beside.beside.name_loct)            
         result.add(u'%s в Краснодарском крае' % estate.basic_estate_type)        
         result.add(u'недвижимость %s' % locality.name_gent)
         result.add(u'купить недвижимость в %s' % locality.name_loct)
