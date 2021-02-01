@@ -488,8 +488,10 @@ class Estate(ProcessDeletedModel):
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT, blank=True, null=True)
     microdistrict = models.ForeignKey('Microdistrict', verbose_name=_('Microdistrict'), blank=True, null=True, on_delete=models.SET_NULL)
     street = models.ForeignKey(Street, verbose_name=_('Street'), on_delete=models.PROTECT, blank=True, null=True)
+    street_fake = models.ForeignKey(Street, verbose_name=u'Поддельная улица', on_delete=models.PROTECT, related_name='fake_streets', blank=True, null=True)
     address_state = models.PositiveIntegerField(verbose_name=_('Address state'), blank=True, null=True, choices=ADDRESS_CHOICES)    
     estate_number = models.CharField(_('Estate number'), max_length=10, blank=True, null=True)
+    estate_number_fake = models.CharField(u'Поддельный номер', max_length=10, blank=True, null=True)
     clients = models.ManyToManyField('Client', verbose_name=_('Clients'), related_name='estates', through=EstateClient)
     origin = models.ForeignKey('Origin', verbose_name=_('Origin'), blank=True, null=True, on_delete=models.SET_NULL)
     beside = models.ForeignKey('Beside', verbose_name=_('Beside'), blank=True, null=True, on_delete=models.SET_NULL)
@@ -528,6 +530,9 @@ class Estate(ProcessDeletedModel):
     files = GenericRelation('EstateFile')
     links = GenericRelation('GenericLink')
     events = GenericRelation('GenericEvent', related_query_name='estates')
+    #geo
+    latitude = models.DecimalField(verbose_name=_('latitude'), max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(verbose_name=_('longitude'), max_digits=9, decimal_places=6, blank=True, null=True)
     
     def delete(self):
         self.deleted = True

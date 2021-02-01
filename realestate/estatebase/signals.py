@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db.models.signals import post_save, pre_save, post_delete,\
     m2m_changed
 from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
@@ -5,6 +6,7 @@ from estatebase.models import Bidg, Stead, YES, EstateType, Estate,\
     Layout, EntranceEstate, EstatePhoto, GenericEvent
 from datetime import datetime    
 from django.contrib.auth.models import User
+from estatebase.geocode import GeoCode
 
 def save_estate(sender, instance, created, **kwargs):    
     if hasattr(instance.level, 'bidg'):
@@ -135,6 +137,23 @@ def update_geo(sender, instance, **kwargs):
 def update_status(sender, instance, **kwargs):    
     instance.update_state()
     
+    
+def set_geodata(sender, instance, **kwargs):
+    
+    post_on_site = len(instance.estate_params.filter(pk=EstateParam.POSTONSITE)) > 0
+    if instance.correct and post_on_site \
+        and not instance.latitude and not instance.longitude\
+        and instance.estate_number_fake:
+        geo_code = GeoCode()
+        street = instance.street_fake if instance.street_fake else instance.street 
+        address = u'Россия, Краснодарский край, %s, улица %s, %s' % (
+        instance.locality, street, instance.estate_number_fake,            
+        )
+        point = geo_code.get_point(address)
+        if point: 
+            instance.latitude = point['latitude'] 
+            instance.longitude = point['longitude']        
+            
 
 def connect_signals():
     post_save.connect(prepare_estate_childs, sender=Estate)
@@ -155,8 +174,5 @@ def connect_signals():
     post_save.connect(update_estate_m2m, sender=EstatePhoto)  # @UndefinedVariable
     post_save.connect(save_estate, sender=Layout)
     post_save.connect(generic_event_history, sender=GenericEvent)
-    
-    
-    
-
-    
+    pre_save.connect(set_geodata, sender=Estate)
+        

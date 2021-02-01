@@ -83,17 +83,22 @@ class EstateForm(BetterModelForm):
     class Meta:                
         model = Estate
         fields = ('origin', 'region', 'locality', 'microdistrict', 'street', 'estate_number', 
-                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status', 'address_state')
+                  'saler_price', 'agency_price', 'estate_status', 'broker', 'com_status', 'deal_status', 'address_state',
+                  'street_fake', 'estate_number_fake',
+                  'latitude', 'longitude')
         widgets = {
             'estate_status': AutoComboboxSelectWidget(EstateStatusLookup),            
             'region': AutoComboboxSelectWidget(RegionLookup),
             'origin': AutoComboboxSelectWidget(OriginLookup),
             'street': AutoCompleteSelectWidget(StreetLookup),
+            'street_fake': AutoCompleteSelectWidget(StreetLookup),
             'locality': AutoComboboxSelectWidget(LocalityLookup),
             'microdistrict' : AutoComboboxSelectWidget(MicrodistrictLookup),
             'broker': AutoComboboxSelectWidget(ExUserLookup),
             'com_status': AutoComboboxSelectWidget(ComChoiceLookup),
-            'deal_status': AutoComboboxSelectWidget(DealStatusLookup),           
+            'deal_status': AutoComboboxSelectWidget(DealStatusLookup),
+            'latitude':TextInput(attrs={'class':'local-int-f'}),           
+            'longitude':TextInput(attrs={'class':'local-int-f'}),
         }
 
 class EstateCreateForm(EstateForm):
