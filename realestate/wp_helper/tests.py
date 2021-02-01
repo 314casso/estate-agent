@@ -8,7 +8,6 @@ Replace this with more appropriate tests for your application.
 
 from wp_helper.service import WPService
 from unittest.case import TestCase
-from estatebase.models import Estate
 from settings import WP_PARAMS
 
 class SimpleTest(TestCase):
@@ -16,20 +15,21 @@ class SimpleTest(TestCase):
         """
         Tests that 1 + 1 always equals 2.
         """
+        pass
         # estate = Estate.objects.get(pk=86606) #86606
-        wp_service = WPService(WP_PARAMS['site'])       
+#         wp_service = WPService(WP_PARAMS['site'])       
 #         for c in wp_service.render_post_category(estate):
 #             print(c.id)
 #             
 #         for c in wp_service.render_post_tags(estate):
 #             print(c)
-        estate = Estate.objects.get(pk=75723)
+#         estate = Estate.objects.get(pk=75723)
         
         
-        old_post = wp_service.get_post_by_estate(estate)
+#         old_post = wp_service.get_post_by_estate(estate)
         #print(old_post)
-        post = wp_service.assemble_post(estate, old_post)
-        print(post.content)
+#         post = wp_service.assemble_post(estate, old_post)
+#         print(post.content)
         
 #         estate = Estate.objects.get(pk=86606) #86606
 #          

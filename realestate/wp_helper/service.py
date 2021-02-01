@@ -261,6 +261,8 @@ class WPService(object):
         fields['region'] = estate.locality.region.wp_taxons.all()[:1].get().wp_id
         fields['rooms'] = estate.basic_bidg.room_count if estate.basic_bidg else None
         fields['status'] = estate.estate_status.wp_taxons.all()[:1].get().wp_id
+        fields['map_lat'] = estate.latitude
+        fields['map_lng'] = estate.longitude
         if estate.links:
             for link in estate.links.all():
                 if 'youtu' in link.url:            
