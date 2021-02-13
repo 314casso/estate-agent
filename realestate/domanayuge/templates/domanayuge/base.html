@@ -315,7 +315,7 @@
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Email *" id="email" required data-validation-required-message="Пожалуйста, укажите ваш email.">
+                                    <input type="email" class="form-control" placeholder="Email *" id="email" >
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="form-group">
@@ -325,7 +325,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <textarea class="form-control" placeholder="Сообщение *" id="message" required data-validation-required-message="Введите сообщение."></textarea>
+                                    <textarea class="form-control" placeholder="Сообщение *" id="message" ></textarea>
                                     <p class="help-block text-danger"></p>
                                 </div>
                             </div>
@@ -336,7 +336,7 @@
                             </div>
                         </div>
                     </form>                    
-                	<h3 class="text-muted text-center base-phone phone"><span class="glyphicon glyphicon-phone text-warning"></span>  {% cms_content 'base_phone' %}</h3>                 
+                    <h3 class="text-muted text-center base-phone phone"><span class="glyphicon glyphicon-phone text-warning"></span> <a href="tel:{% cms_content 'base_phone' %}"> {% cms_content 'base_phone' %}</a></h3>                 
                 </div>
             </div>           
         </div>

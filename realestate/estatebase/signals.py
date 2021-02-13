@@ -139,7 +139,10 @@ def update_status(sender, instance, **kwargs):
     
     
 def set_geodata(sender, instance, **kwargs):
-    
+   
+    if sender.objects.filter(pk=instance.pk).count() == 0:
+        return
+
     post_on_site = len(instance.estate_params.filter(pk=EstateParam.POSTONSITE)) > 0
     if instance.correct and post_on_site \
         and not instance.latitude and not instance.longitude\
