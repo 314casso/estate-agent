@@ -166,9 +166,8 @@ class ClientForm(ModelForm):
             label=_('Origin'),
             required=False,
         )  
-    class Meta:        
-#        exclude = ('created_by', 'updated', 'created', 'updated_by', 'deleted')
-        fields = ['origin','client_type', 'has_dev_profile', 'name', 'address', 'note', ]
+    class Meta:      
+        fields = ['client_type', 'has_dev_profile', 'name', 'address', 'note', ]
         
         model = Client
         widgets = {
