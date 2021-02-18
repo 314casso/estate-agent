@@ -176,6 +176,7 @@ class WPService(object):
         result.add(u'купить недвижимость в Краснодарском крае')
         result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
         result.add(u'недвижимость %s' % region.regular_name_gent)
+        result.add(u'%s %s' % (estate.basic_estate_type, region.regular_name_gent))
         if locality_type.pk == STANICA:
             result.add(u'Купить %s в станице Краснодарского края' % estate.basic_estate_type_accs)
         if locality.name in AZOV_SEA:
