@@ -34,8 +34,7 @@
 		  <div class="carousel-inner" role="listbox">
 		  {% for image in project.images %}
 		    <div class="item {% if forloop.first %}active{% endif %}">
-		    
-		    	{% thumbnail image.image "760" as im %}		    
+		    	{% thumbnail image.image "760x428" crop="center" as im %}		    			    
 				<img alt="{{ image.title }}" src="{{ im.url }}">		    
 				{% endthumbnail %} 
 		    								      
