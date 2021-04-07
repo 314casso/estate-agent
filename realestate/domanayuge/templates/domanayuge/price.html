@@ -59,10 +59,11 @@
 
         </div>
 
-        <ol class="breadcrumb">
-            <li><a href="{% url 'prices' category.key %}">{{ category.name }}</a></li>	 	  
-            <li class="active">{{ project.title }}</li>
+		<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><a itemprop="item" href="{% url 'prices' category.key %}"><span itemprop="name">{{ category.name }}</span></a><meta itemprop="position" content="1"></li>	 	  
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><span itemprop="name">{{ project.title }}</span><meta itemprop="position" content="2"></li>
         </ol>
+
 	</div>
 </section>
 

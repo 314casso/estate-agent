@@ -128,7 +128,7 @@
                     <!-- #advantage1 -->
                     {% article 'advantage1' as advantage1 %}
                     <h4 class="advantage-heading">{{ entry.title }}</h4>
-                    <p class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</p>
+                    <div class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</div>
                 </div>            	
             	{% endfor %}
             </div>
@@ -160,7 +160,7 @@
                     </a>
                     <div class="portfolio-caption">
                         <h4>{{ entry.title }}</h4>
-                        <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                        <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                     </div>
                 </div>
             	{% endfor %}
@@ -194,7 +194,7 @@
                                     <h4 class="subheading">{{ entry.summary }}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</p>
+                                    <div class="text-muted">{{ entry.content|markdown:"safe,attr_list" }}</div>
                                 </div>
                             </div>
                         </li>
@@ -228,7 +228,7 @@
 						<img class="img-responsive img-circle" alt="{{ entry.title }}" src="{{ im.url }}">		    
 						{% endthumbnail %}
                         <h4>{{ entry.title }}</h4>
-                        <p class="text-muted">{{ entry.summary }}</p>
+                        <div class="text-muted">{{ entry.summary }}</div>
                         <ul class="list-inline social-buttons">
                         	{% for link in entry.social_links %}
                         	<li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
@@ -240,9 +240,9 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <p class="large text-muted">                    
+                    <div class="large text-muted">                    
                     {{ team.description|markdown:"safe,attr_list" }}
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -287,7 +287,7 @@
                     </div>
                     <div class="card-body">
                     	<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
-                        <p class="text-muted">{{ article.summary }}</p>
+                        <div class="text-muted">{{ article.summary }}</div>
                     </div>                    
                 </div>
             	{% endfor %}
@@ -347,7 +347,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; {{ domanayuge.name }} {% now "Y" %}</span>
+                    <div class="copyright">Copyright &copy; {{ domanayuge.name }} {% now "Y" %}</div>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline social-buttons">
@@ -386,7 +386,7 @@
                             <div class="modal-body">
                                 <!-- Project Details Go Here -->
                                 <h2>{{ entry.title }}</h2>
-                                <p class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                                <div class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                                 
                                 <!-- Carousel -->
                                 <div id="carousel-{{ entry.slug }}" class="carousel slide" data-ride="carousel">
