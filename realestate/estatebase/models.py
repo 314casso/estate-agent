@@ -1738,9 +1738,10 @@ class YandexBuilding(models.Model):
         ('unfinished', u'строится'),
         ('built', u'дом построен, но не сдан'),        
         ('hand-over', u'сдан в эксплуатацию'),
-    )
+    )    
     name = models.CharField(_('Name'), db_index=True, max_length=255)
-    building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50, blank=True, null=True) 
+    building_id = models.CharField(_('Yandex building id'), db_index=True, max_length=50, blank=True, null=True)
+    cian_complex_id = models.CharField(u'ID ЖК в базе CIAN', max_length=50, blank=True, null=True) 
     ready_quarter = models.IntegerField(_('Quarter'), choices=QUARTER_CHOICES,) 
     ready_year = models.IntegerField(_('Ready year'), blank=True, null=True)
     building_state = models.CharField(_('Building state'), choices=STATE_CHOICES, max_length=15)
@@ -1756,7 +1757,7 @@ class YandexBuilding(models.Model):
     
     supplies = GenericRelation('GenericSupply')
     files = GenericRelation('EstateFile')
-    links = GenericRelation('GenericLink')    
+    links = GenericRelation('GenericLink') 
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.locality)   
     class Meta(SimpleDict.Meta):
