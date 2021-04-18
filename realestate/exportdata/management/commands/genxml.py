@@ -22,7 +22,8 @@ class Command(BaseCommand):
         use_cache = not options['nocache']
         f = {'active': True}
         if len(args) > 0:               
-            f['name'] = args[0]                        
+            f['name'] = args[0]
+            print f['name']
         for feed in BaseFeed.objects.filter(**f):         
             feed_engine = FeedEngineFactory.get_feed_engine(feed)                                     
             file_name = os.path.join(MEDIA_ROOT, 'feed' ,'%s.xml' % feed.name)                     

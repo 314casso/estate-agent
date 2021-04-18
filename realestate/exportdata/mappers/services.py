@@ -4,6 +4,7 @@ from exportdata.models import FeedEngine
 from exportdata.engines.yandex import YandexEngine
 from exportdata.engines.wp import WPEngine
 from exportdata.engines.sitebill import Sitebill
+from exportdata.engines.cian import CianEngine
 
 
 class FeedEngineFactory(object):
@@ -11,7 +12,8 @@ class FeedEngineFactory(object):
         FeedEngine.AVITO: AvitoEngine,
         FeedEngine.YANDEX: YandexEngine,
         FeedEngine.WP: WPEngine,
-        FeedEngine.SITEBILL: Sitebill
+        FeedEngine.SITEBILL: Sitebill,
+        FeedEngine.CIAN: CianEngine
     }
     
     @staticmethod
