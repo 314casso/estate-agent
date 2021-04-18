@@ -73,11 +73,11 @@
                 <!-- #advantage1 -->
                 {% article 'advantage1' as advantage1 %}
                 <h4 class="advantage-heading">{{ entry.title }}</h4>
-                <p class="text-muted">
+                <div class="text-muted">
                     {% with entry_content=entry.content|markdown:"safe,attr_list" %}
                         {{ entry_content|parser:domain }}
                     {% endwith %}                     
-                </p>
+                </div>
             </div>
             
             {% if forloop.counter|divisibleby:3 %}
@@ -117,7 +117,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ child.name }}</h4>
-                    <p class="text-muted">{{ child.alternate_title }}</p>
+                    <div class="text-muted">{{ child.alternate_title }}</div>
                 </div>
             </div>
                 {% if forloop.counter|divisibleby:3 %}
@@ -158,7 +158,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ entry.title }}</h4>
-                    <p class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                    <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                 </div>
             </div>
             	{% if forloop.counter|divisibleby:3 %}
@@ -196,7 +196,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ child.name }}</h4>
-                    <p class="text-muted">{{ child.alternate_title }}</p>
+                    <div class="text-muted">{{ child.alternate_title }}</div>
                 </div>
             </div>
                 {% if forloop.counter|divisibleby:3 %}
@@ -234,7 +234,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ child.name }}</h4>
-                    <p class="text-muted">{{ child.alternate_title }}</p>
+                    <div class="text-muted">{{ child.alternate_title }}</div>
                 </div>
             </div>
                 {% if forloop.counter|divisibleby:3 %}
@@ -266,7 +266,7 @@
                 </div>
                 <div class="card-body">
                 	<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
-                    <p class="text-muted">{{ article.summary }}</p>
+                    <div class="text-muted">{{ article.summary }}</div>
                 </div>                    
             </div>
                 {% if forloop.counter|divisibleby:3 %}
@@ -287,7 +287,7 @@
                 <h2 class="section-heading">{{ contact.name }}</h2>
                 <div class="contact-address">
                 {% if domain %}                
-                	<h3 class="section-subheading"></span><i class="fa fa-phone" aria-hidden="true"></i> {{ domain.locality.office.address_short }}</h3>
+                	<h3 class="section-subheading"><i class="fa fa-phone" aria-hidden="true"></i> {{ domain.locality.office.address_short }}</h3>
                 {% else %} 
                 	<h3 class="section-subheading">{{ contact.alternate_title }}</h3>
                 {% endif %}
@@ -336,7 +336,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <span class="copyright">Copyright &copy; {{ home.summary|markdown:"safe,attr_list" }} {% now "Y" %}</span>
+                <div class="copyright">Copyright &copy; {{ home.summary|markdown:"safe,attr_list" }} {% now "Y" %}</div>
             </div>
             <div class="col-md-4">
                 <ul class="list-inline social-buttons">
@@ -376,7 +376,7 @@
                         <div class="modal-body">
                             <!-- Project Details Go Here -->
                             <h2>{{ entry.title }}</h2>
-                            <p class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                            <div class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                             
                             <!-- Carousel -->
                             <div id="carousel-{{ entry.slug }}" class="carousel slide" data-ride="carousel">

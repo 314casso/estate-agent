@@ -30,7 +30,7 @@
                 </a>
                 <div class="portfolio-caption">
                     <h4>{{ project.title }}</h4>
-                    <p class="text-muted">{{ project.summary|parser:domain }}</p>
+                    <div class="text-muted">{{ project.summary|parser:domain }}</div>
                 </div>
             </div>
                 {% if forloop.counter|divisibleby:3 %}

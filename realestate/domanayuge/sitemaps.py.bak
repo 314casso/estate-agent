@@ -7,20 +7,14 @@ from django.core.urlresolvers import reverse
 
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.6
-    #changefreq = 'daily'
-    changefreq = 'always'
+    changefreq = 'daily'
 
     def items(self):        
-        #return ['blog',]
-        return ContentEntry.objects.all()
+        return ['blog',]
 
     def location(self, item):
-        #return reverse(item)
-        return '/blog/%s'%(item.slug)
-
-    def title(self, item):
-        return item.title
-
+        return reverse(item)
+    
 def get_base_dict(q, geo_tags):    
     if geo_tags:
         q = q.filter(tags__contains=geo_tags)        
@@ -57,7 +51,7 @@ class ProjectGenericSitemap(GenericSitemap):
     
 class PriceGenericSitemap(GenericSitemap):
     def location(self, obj):                
-        return reverse('price', args=[obj.categories.first().key, obj.slug])
+        return reverse('price', args=[obj.categories.first().key, obj.slug])    
 
 
 def get_sitemap_dict(site, tags, portfolio_key, projects_key=None, prices_key=None):

@@ -16,7 +16,7 @@
                         <div class="modal-body">
                             <!-- Project Details Go Here -->
                             <h2>{{ entry.title }}</h2>
-                            <p class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</p>
+                            <div class="item-intro text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                             
                             <!-- Carousel -->
                             <div id="carousel-{{ entry.slug }}" class="carousel slide" data-ride="carousel">

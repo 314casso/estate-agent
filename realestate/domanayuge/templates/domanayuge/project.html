@@ -23,10 +23,12 @@
 		{{ project.content|safe }}
 	</p>			
 	
-	<ol class="breadcrumb">
-		<li><a href="{% url 'projects' category.key %}">{{ category.name }}</a></li>	 	  
-	    <li class="active">{{ project.title }}</li>
-	</ol>
+	
+		<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><a itemprop="item" href="{% url 'projects' category.key %}"><span itemprop="name">{{ category.name }}</span></a><meta itemprop="position" content="1"></li>	 	  
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><span itemprop="name">{{ project.title }}</span><meta itemprop="position" content="2"></li>
+        </ol>
+
 	
 	       <div id="carousel-{{ article.slug }}" class="carousel slide" data-ride="carousel" style="max-width:760px">
 		 							
