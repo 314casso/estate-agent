@@ -37,7 +37,7 @@ class CianEngine(BaseEngine):
         address_parts = []
         for field in ['region', 'locality', 'district', 'sub_locality', 'street']:
             value = getattr(address, field)
-            if not value in address_parts:
+            if value and not value in address_parts:
                 address_parts.append(value)                                         
         el_maker("Address", u', '.join(address_parts))     
                
