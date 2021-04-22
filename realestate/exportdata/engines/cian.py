@@ -73,38 +73,36 @@ class CianEngine(BaseEngine):
             el_maker("TotalArea", area)
             el_maker("FloorNumber", mapper.floor, False)    
         
-        if mapper.new_flat:            
-            el_jk_schema = self.el_maker(etree.SubElement(offer, 'JKSchema'), empty_nodes)
-            el_jk_schema('Id', mapper.jk_schema_id)
-            el_jk_schema('Name', mapper.building_name)
-        
-        
-        if mapper.rooms_space is not None:
-            if len(mapper.rooms_space) != mapper.get_rooms():
-                warnings['rooms_space'] = u'Количество комнат %s, с указанной площадью %s' % (mapper.rooms, len(mapper.rooms_space))
-            else:
-                room_definitions = etree.SubElement(offer, 'RoomDefinitions')
-                for room_space in mapper.rooms_space:
-                    el_room = self.el_maker(etree.SubElement(room_definitions, 'Room'), empty_nodes)
-                    el_room("Area", room_space)                    
-        
-        if mapper.living_space:             
-            el_maker('LivingArea', mapper.living_space, False)
-        if mapper.kitchen_space:                   
-            el_maker('KitchenArea', mapper.kitchen_space, False)
-        
-        
-        if mapper.balcons_count:
-            el_maker('BalconiesCount', str(mapper.balcons_count), False)            
-        
-        el_building = self.el_maker(etree.SubElement(offer, 'Building'), empty_nodes)
-        el_building('FloorsCount', mapper.floors)
-        el_building('BuildYear', mapper.built_year, False)
-        el_building('MaterialType', mapper.material_type, False)
-        el_building('CeilingHeight', mapper.ceiling_height, False)
-        el_building('PassengerLiftsCount', mapper.ceiling_height, False)
-#TODO         HeatingType
-
+            if mapper.new_flat:            
+                el_jk_schema = self.el_maker(etree.SubElement(offer, 'JKSchema'), empty_nodes)
+                el_jk_schema('Id', mapper.jk_schema_id)
+                el_jk_schema('Name', mapper.building_name)
+            
+            
+            if mapper.rooms_space is not None:
+                if len(mapper.rooms_space) != mapper.get_rooms():
+                    warnings['rooms_space'] = u'Количество комнат %s, с указанной площадью %s' % (mapper.rooms, len(mapper.rooms_space))
+                else:
+                    room_definitions = etree.SubElement(offer, 'RoomDefinitions')
+                    for room_space in mapper.rooms_space:
+                        el_room = self.el_maker(etree.SubElement(room_definitions, 'Room'), empty_nodes)
+                        el_room("Area", room_space)                    
+            
+            if mapper.living_space:             
+                el_maker('LivingArea', mapper.living_space, False)
+            if mapper.kitchen_space:                   
+                el_maker('KitchenArea', mapper.kitchen_space, False)        
+            
+            if mapper.balcons_count:
+                el_maker('BalconiesCount', str(mapper.balcons_count), False)            
+            
+            el_building = self.el_maker(etree.SubElement(offer, 'Building'), empty_nodes)
+            el_building('FloorsCount', mapper.floors)
+            el_building('BuildYear', mapper.built_year, False)
+            el_building('MaterialType', mapper.material_type, False)
+            el_building('CeilingHeight', mapper.ceiling_height, False)
+            el_building('PassengerLiftsCount', mapper.ceiling_height, False)
+            #TODO         HeatingType
         
         price = mapper.price
         el_bargain_terms = self.el_maker(etree.SubElement(offer, 'BargainTerms'), empty_nodes)
@@ -142,7 +140,7 @@ class CianMapper(YandexMapper):
     
     @property        
     def balcons_count(self):
-        if not self._balcons_count:             
+        if not self._balcons_count and self._basic_bidg:             
             self._balcons_count = self._basic_bidg.get_balcons_count()                
         return self._balcons_count         
     
