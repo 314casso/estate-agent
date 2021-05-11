@@ -303,7 +303,7 @@ section h3.section-subheading {
 }
 @media (min-width: 768px) {
   section {
-    padding: 150px 0;
+    padding: 100px 0;
   }
 }
 .service-heading {
@@ -619,6 +619,18 @@ section#contact :-ms-input-placeholder {
   font-weight: 700;
   color: #eeeeee;
 }
+section#contact .form-control:focus::-webkit-input-placeholder {
+  color: #DF5611
+}
+section#contact .form-control:focus::-moz-placeholder          {
+  color: #DF5611
+}
+section#contact .form-control:focus:-moz-placeholder           {
+  color: #DF5611
+}
+section#contact .form-control:focus:-ms-input-placeholder      {
+  color: #DF5611
+}
 section#contact .text-danger {
   color: #e74c3c;
 }
@@ -681,11 +693,12 @@ ul.social-buttons li a:active {
   border: none;
   min-height: 100%;
   padding: 100px 0;
-  text-align: center;
+  text-align: justify;
 }
 .portfolio-modal .modal-content h2 {
   margin-bottom: 15px;
   font-size: 3em;
+  text-align: left;
 }
 .portfolio-modal .modal-content p {
   margin-bottom: 15px;

@@ -21,7 +21,7 @@
                 <a href="{% url 'developservice' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-link fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                       
                     {% thumbnail project.baseimage.image "360x260" crop="center" as im %}		    
@@ -29,7 +29,9 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ project.title }}</h4>
+					<a href="{% url 'developservice' category.key project.slug %}" data-toggle="modal">
+						<h4>{{ project.title }}</h4>
+					</a>
                     <div class="text-muted">{{ project.summary|parser:domain }}</div>
                 </div>
             </div>
