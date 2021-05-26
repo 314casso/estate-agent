@@ -35,7 +35,7 @@ class CianEngine(BaseEngine):
         
         address = mapper.address 
         address_parts = []
-        for field in ['region', 'locality', 'district', 'street']:
+        for field in ['region', 'district', 'locality' , 'street']:
             value = getattr(address, field)
             if value and not value in address_parts:
                 address_parts.append(value)                                         
