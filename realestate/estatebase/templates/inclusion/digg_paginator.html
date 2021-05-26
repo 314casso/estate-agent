@@ -3,7 +3,7 @@
 {% spaceless %}
 <ul class="{{ ul_class }}">
   {% if has_previous %}
-    <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ previous }}">&laquo; Сюда</a></li>
+    <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ previous }}">&laquo; Назад</a></li>
   {% endif %}
   {% if not in_leading_range %}
     {% for p in pages_outside_trailing_range %}
@@ -25,7 +25,7 @@
     {% endfor %}
   {% endif %}
   {% if has_next %}
-    <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ next }}">Туда &raquo;</a></li>
+    <li><a href="{% if get_params %}?{{ get_params }}&{% else %}?{% endif %}page={{ next }}">Далее &raquo;</a></li>
   {% endif %}
 </ul>
 {% endspaceless %}

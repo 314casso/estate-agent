@@ -108,7 +108,7 @@
                 <a href="{% url 'developservices' child.key  %}" class="portfolio-link">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-external-link fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail child.image "360x260" crop="center" as im %}		    
@@ -116,7 +116,9 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ child.name }}</h4>
+                    <a href="{% url 'developservices' child.key  %}">
+                        <h4>{{ child.name }}</h4>
+                    </a>
                     <div class="text-muted">{{ child.alternate_title }}</div>
                 </div>
             </div>
@@ -149,7 +151,7 @@
                 <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
@@ -157,7 +159,9 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ entry.title }}</h4>
+                    <a href="#portfolioModal{{ entry.slug }}" data-toggle="modal">
+                        <h4>{{ entry.title }}</h4>
+                    </a>
                     <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                 </div>
             </div>
@@ -291,6 +295,10 @@
                 {% else %} 
                 	<h3 class="section-subheading">{{ contact.alternate_title }}</h3>
                 {% endif %}
+                    <h3 class="text-muted text-center base-phone phone">
+                        <span class="glyphicon glyphicon-phone text-warning"></span>
+                        <a href="tel:{% cms_content 'dev_phone' %}">{% cms_content 'dev_phone' %}</a>
+                    </h3>
                 </div>
             </div>
         </div>
@@ -304,7 +312,7 @@
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Email *" id="email" required data-validation-required-message="Пожалуйста, укажите ваш email.">
+                                <input type="email" class="form-control" placeholder="Email *" id="email">
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
@@ -314,7 +322,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <textarea class="form-control" placeholder="Сообщение *" id="message" required data-validation-required-message="Введите сообщение."></textarea>
+                                <textarea class="form-control" placeholder="Сообщение *" id="message"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                         </div>
@@ -324,8 +332,7 @@
                             <button type="submit" class="btn btn-xl">Отправить сообщение</button>
                         </div>
                     </div>
-                </form>                 
-                <h3 class="text-muted text-center base-phone phone"><span class="glyphicon glyphicon-phone text-warning"></span>  {% cms_content 'dev_phone' %}</h3>
+                </form>
             </div>
         </div>           
     </div>

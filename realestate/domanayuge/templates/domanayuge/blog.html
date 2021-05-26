@@ -52,7 +52,9 @@
     <li>
     <h3><a href="{% url 'page' article.slug %}">{{ article.title }}</a></h3>
     
-    <p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
+    <p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{ article.publication_date|date }}</small></p>
+        <script src="https://yastatic.net/share2/share.js"></script>
+        <div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
         
     {{ article.summary|markdown:"safe,attr_list" }}
         
