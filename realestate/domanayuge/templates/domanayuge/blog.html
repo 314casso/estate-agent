@@ -35,43 +35,59 @@
         <!-- /.container-fluid -->
     </nav>
     {% endblock navigation %}
-    
 
-{% block content %}
+    {% block content %}
 
-<section id="blog">
+    <section id="blog">
         <div class="container">
             
-{% category 'blog' as blog %}
+            {% category 'blog' as blog %}
 
-<div class = "page-header">            
-	<h1>{{ blog.name }}</h1>
-</div>
-<ul class="list-unstyled">
-{% for article in object_list %}
-    <li>
-    <h3><a href="{% url 'page' article.slug %}">{{ article.title }}</a></h3>
+            <div class = "page-header">
+                <h1>{{ blog.name }}</h1>
+            </div>
+
+            <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+                <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <a itemprop="item" href="/">
+                        <span itemprop="name">Главная</span>
+                    </a>
+                    <meta itemprop="position" content="1">
+                </li>
+                <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <span itemprop="name">{{ blog.name }}</span>
+                    <meta itemprop="position" content="2">
+                </li>
+            </ol>
+
+            <ul class="list-unstyled">
+                {% for article in object_list %}
+                    <li>
+                        <h3><a href="{% url 'page' article.slug %}">{{ article.title }}</a></h3>
     
-    <p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{ article.publication_date|date }}</small></p>
-        <script src="https://yastatic.net/share2/share.js"></script>
-        <div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
+                        <p class="post-date">
+                            <small>
+                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                {{ article.publication_date|date }}
+                            </small>
+                        </p>
+                        <script src="https://yastatic.net/share2/share.js"></script>
+                        <div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
         
-    {{ article.summary|markdown:"safe,attr_list" }}
-        
-    
-    </li>
-{% empty %}
-    <li>No articles yet.</li>
-{% endfor %}
-</ul>            
+                        {{ article.summary|markdown:"safe,attr_list" }}
+
+                    </li>
+                {% empty %}
+                    <li>No articles yet.</li>
+                {% endfor %}
+            </ul>
          
-		{% if is_paginated %}
-		<nav aria-label="Page navigation">
-		    {% bootstrap_paginator %}
-		</nav>
-		{% endif %}         
-            
-            
+            {% if is_paginated %}
+            <nav aria-label="Page navigation">
+                {% bootstrap_paginator %}
+            </nav>
+            {% endif %}
+
         </div>
     </section>
 

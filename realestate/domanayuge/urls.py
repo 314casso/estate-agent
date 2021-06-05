@@ -17,7 +17,10 @@ urlpatterns = patterns('',
     url(r'^content_edit/', include('content_edit.urls')),
     url(r'^sendemail/$', send_email, name='send_email'),
     url(r'^blog/$', Blog.as_view(), name='blog'),
-    url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),    
+    url(r'^videoblog/$', VideoBlog.as_view(), name='videoblog'),
+    url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
+    url(r'^term-of-use/', views.get_terms_use),
+    url(r'^privacy-policy/', views.get_privacy_policy),
 )
 
 blog_dict = {
