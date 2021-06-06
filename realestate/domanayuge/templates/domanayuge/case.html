@@ -20,6 +20,25 @@
 
         <p class="item-intro text-muted">{{ project.summary|parser:domain }}</p>
 
+        <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <a itemprop="item" href="/">
+                    <span itemprop="name">Главная</span>
+                </a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <a itemprop="item" href="{% url 'cases' category.key %}">
+                    <span itemprop="name">{{ category.name }}</span>
+                </a>
+                <meta itemprop="position" content="2">
+            </li>
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <span itemprop="name">{{ project.title }}</span>
+                <meta itemprop="position" content="3">
+            </li>
+        </ol>
+
         <div class="row">
             <div class="col-lg-8">
 
@@ -39,14 +58,16 @@
                     </div>
 
                     <!-- Controls -->
+                    {% if project.images|length > 1 %}
                     <a class="left carousel-control" href="#carousel-{{ project.slug }}" role="button" data-slide="prev">
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
+                        <span class="sr-only">Предыдущий</span>
                     </a>
                     <a class="right carousel-control" href="#carousel-{{ project.slug }}" role="button" data-slide="next">
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
+                        <span class="sr-only">Следующий</span>
                     </a>
+                    {% endif %}
                 </div>
                 <!-- End carousel -->
             </div>
@@ -62,11 +83,6 @@
             </div>
 
         </div>
-
-        <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
-            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><a itemprop="item" href="{% url 'cases' category.key %}"><span itemprop="name">{{ category.name }}</span></a><meta itemprop="position" content="1"></li>	 	  
-            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><span itemprop="name">{{ project.title }}</span><meta itemprop="position" content="2"></li>
-        </ol>
 	</div>
 </section>
 

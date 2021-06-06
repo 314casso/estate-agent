@@ -20,11 +20,14 @@ urlpatterns = patterns('',
     url(r'^prices/(?P<key>[-\w]+)/$', RodlexPriceList.as_view(), name='prices'),
     url(r'^price/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RodlexPrice.as_view(), name='price'),        
     url(r'^blog/$', Blog.as_view(), name='blog'),
+    url(r'^videoblog/$', VideoBlog.as_view(), name='videoblog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
     url(r'^cases/(?P<key>[-\w]+)/$', RodlexCaseList.as_view(), name='cases'),
     url(r'^pictures/(?P<key>[-\w]+)/$', RodlexCaseList.as_view(), name='pictures'),
     url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RodlexCase.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
+    url(r'^term-of-use/', views.get_terms_use),
+    url(r'^privacy-policy/', views.get_privacy_policy),
 )
 
 

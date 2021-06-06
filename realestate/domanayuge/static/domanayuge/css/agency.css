@@ -203,7 +203,6 @@ fieldset[disabled] .btn-xl.active {
 }
 @media (min-width: 768px) {
   .navbar-custom {
-    background-color: transparent;
     padding: 25px 0;
     -webkit-transition: padding 0.3s;
     -moz-transition: padding 0.3s;
@@ -292,6 +291,12 @@ section h2.section-heading {
   font-size: 40px;
   margin-top: 0;
   margin-bottom: 15px;
+  color: #DF5611;
+}
+@media (max-width: 400px) {
+  section h2.section-heading {
+    font-size: 34px;
+  }
 }
 section h3.section-subheading {
   font-size: 16px;
@@ -303,7 +308,12 @@ section h3.section-subheading {
 }
 @media (min-width: 768px) {
   section {
-    padding: 100px 0;
+    padding: 70px 0;
+  }
+}
+@media (min-width: 768px) {
+  section {
+    padding: 45px 0;
   }
 }
 .service-heading {
@@ -367,7 +377,13 @@ section h3.section-subheading {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: italic;
   font-size: 16px;
+  line-height: 1.2;
   margin: 0;
+}
+@media (max-width: 400px) {
+  #portfolio .portfolio-item .portfolio-caption p {
+    line-height: 1;
+  }
 }
 #portfolio * {
   z-index: 2;
@@ -1017,4 +1033,80 @@ footer a {
 .terms-of-use {
     display: inline-block;
     margin-bottom: 15px;
+}
+
+.btn_orange {
+  background: #DF5611;
+  color: #FFF;
+}
+.btn_orange:hover {
+  background: #ff5500;
+}
+
+.navbar-phone {
+  display: inline-block;
+  float: right;
+  font-size: 18px;
+  color: #fff;
+  padding: 12px 0;
+}
+.navbar-phone-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.navbar-brand-logo {
+  height: 50px;
+}
+
+@media (min-width: 1006px) {
+  .navbar-brand-logo {
+    width: 133px;
+  }
+  .navbar-phone {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-phone {
+    display: inline-block;
+    float: initial;
+    font-size: 16px;
+    padding: 15px 0;
+  }
+}
+@media (min-width: 400px) {
+  .navbar-phone {
+    display: inline-block;
+    padding: 16px 0;
+  }
+}
+@media (min-width: 370px) {
+  .navbar-phone {
+    display: inline-block;
+    font-size: 13px;
+    padding: 17px 0;
+    margin-left: -20px;
+  }
+}
+
+#knowPrice input, #knowPrice textarea {
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.video-wrap {
+  position: relative;
+  padding-bottom: 56.25%; /* задаёт высоту контейнера для 16:9 (если 4:3 — поставьте 75%) */
+  height: 0;
+  overflow: hidden;
+}
+.video-wrap iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-width: 0;
+  outline-width: 0;
 }
