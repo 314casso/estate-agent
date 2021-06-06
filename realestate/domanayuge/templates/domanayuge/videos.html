@@ -1,0 +1,67 @@
+{% extends "domanayuge/base.html" %}
+{% load mptt_tags %}
+{% load category_tags %}
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+{% load paginator %}
+{% load hosts %}
+
+{% block content %}
+<section id="projects">
+    <div class="container">
+
+        <div class="page-header">
+            <h1>{{ category.name }}</h1>
+        </div>
+
+        <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <a itemprop="item" href="/">
+                    <span itemprop="name">Главная</span>
+                </a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <span itemprop="name">{{ category.name }}</span>
+                <meta itemprop="position" content="2">
+            </li>
+        </ol>
+
+        <div class="row">
+            {% for project in object_list %}
+            <div class="col-md-4 col-sm-6 portfolio-item">
+                <a href="videoModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
+                        </div>
+                    </div>
+                    {% thumbnail project.baseimage.image "360x260" crop="center" as im %}
+                    <img alt="{{ project.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
+                    {% endthumbnail %}
+                </a>
+                <div class="portfolio-caption">
+                    <a href="videoModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
+                        <h4>{{ project.title }}</h4>
+                    </a>
+                    <div class="text-muted">{{ project.summary|parser:domain }}</div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+            <div class="clearfix"></div>
+            {% endif %}
+            {% empty %}
+            <div>No projects yet.</div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            {% bootstrap_paginator %}
+        </nav>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock content %}

@@ -19,6 +19,10 @@ urlpatterns = patterns('',
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/karta-doma-na-yuge/$', MapPage.as_view(), name='karta-doma-na-yuge'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
+    url(r'^videoblog/$', VideoBlog.as_view(), name='videoblog'),
+    url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
+    url(r'^term-of-use/', views.get_terms_use),
+    url(r'^privacy-policy/', views.get_privacy_policy),
 )
 
 blog_dict = {

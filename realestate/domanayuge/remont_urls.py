@@ -22,12 +22,15 @@ urlpatterns = patterns('',
     url(r'^price/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='price'),        
     url(r'^blog/$', Blog.as_view(), name='blog'),
     url(r'^blog/karta-doma-na-yuge/$', MapPage.as_view(), {"sitemap_source": remont_sitemap}, name='karta-doma-na-yuge'),
+    url(r'^videoblog/$', VideoBlog.as_view(), name='videoblog'),
     url(r'^blog/(?P<slug>[-\w]+)/$', Article.as_view(), name='page'),
     url(r'^cases/(?P<key>[-\w]+)/$', RemontCaseList.as_view(), name='cases'),
     url(r'^cases/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontCase.as_view(), name='case'),
     url(r'^sendemail/$', send_email, name='send_email'),
     url(r'^renovationservices/(?P<key>[-\w]+)/$', RemontRenovationServices.as_view(), name='renovationservices'),
     url(r'^renovationservice/(?P<key>[-\w]+)/(?P<slug>[-\w]+)/$', RemontPrice.as_view(), name='renovationservice'),
+    url(r'^term-of-use/', views.get_terms_use),
+    url(r'^privacy-policy/', views.get_privacy_policy),
 )
 
 

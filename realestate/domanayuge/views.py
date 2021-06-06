@@ -104,6 +104,14 @@ def pogreb_sitemap(request):
     return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'погреб'], 'pogrebtype', None, 'pogrebprices'))
 
 
+def get_terms_use(request):
+    return render(request, 'domanayuge/terms-of-use.html')
+
+
+def get_privacy_policy(request):
+    return render(request, 'domanayuge/privacy-policy.html')
+
+
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
     site_meta = None             
@@ -302,7 +310,23 @@ class Blog(BaseContextMixin, ListView):
             print tags
             f['tags__overlap'] = tags           
         q = q.filter(**f)      
-        return q                                 
+        return q
+
+
+class VideoBlog(BaseContextMixin, ListView):
+    blog_slug = 'videoblog'
+    template_name = 'domanayuge/videos.html'
+    paginate_by = 10
+    def get_queryset(self):
+        f = {}
+        q = ContentEntry.objects.all()
+        f['categories__slug'] = self.blog_slug
+        if 'tags' in self.request.GET:
+            tags = [t.strip() for t in self.request.GET['tags'].split(',')]
+            print tags
+            f['tags__overlap'] = tags
+        q = q.filter(**f)
+        return q
 
     
 class BaseList(ListView):

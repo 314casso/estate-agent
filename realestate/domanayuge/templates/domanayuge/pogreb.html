@@ -17,7 +17,13 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">{{ domanayuge.name }}</a>
+                <a class="navbar-brand page-scroll" href="#page-top">
+                    <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
+                </a>
+                <a href="8(918)2954848" class="navbar-phone" style="">
+                    <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
+                    8 (918) 295-48-48
+                </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -47,7 +53,7 @@
         <div class="intro-text">
             <div class="intro-lead-in"><h1>{% cms_content 'welcome_to_pogreb' %}</h1></div>
             <div class="intro-heading">{% cms_content 'nice_to_meet_you_pogreb' %}</div>
-            <a href="#about" class="page-scroll btn btn-xl">Узнать больше</a>
+            <<a href="#modalMore" class="btn btn-xl" data-toggle="modal">Узнать больше</a>
         </div>
     </div>
 </header>
@@ -108,11 +114,11 @@
                 <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
-					<img alt="{{ entry.baseimage.title }}" class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ entry.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -147,11 +153,11 @@
                 <a href="{% url 'prices' child.key  %}" class="portfolio-link">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-external-link fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail child.image "360x260" crop="center" as im %}		    
-					<img alt="{{ projects.alternate_title }}. {{ child.name }}"  class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ projects.alternate_title }}. {{ child.name }}"  class="img-responsive w-100" src="{{ im.url }}">
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -188,11 +194,11 @@
                 <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
-					<img alt="{{ entry.baseimage.title }}" class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ entry.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -228,11 +234,11 @@
                 <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal">
                     <div class="portfolio-hover">
                         <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
                         </div>
                     </div>                        
                     {% thumbnail entry.baseimage.image "360x260" crop="center" as im %}		    
-					<img alt="{{ entry.baseimage.title }}" class="img-responsive" src="{{ im.url }}">		    
+					<img alt="{{ entry.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
@@ -294,6 +300,10 @@
                 {% else %} 
                 	<h3 class="section-subheading">{{ contact.alternate_title }}</h3>
                 {% endif %}
+                    <h3 class="text-muted text-center base-phone">
+                        <span class="glyphicon glyphicon-phone text-warning"></span>
+                        <a href="tel:{% cms_content 'pogreb_phone' %}">{% cms_content 'pogreb_phone' %}</a>
+                    </h3>
                 </div>
             </div>
         </div>
@@ -307,7 +317,7 @@
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Email *" id="email">
+                                <input type="email" class="form-control" placeholder="Email" id="email">
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
@@ -317,7 +327,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <textarea class="form-control" placeholder="Сообщение *" id="mообщение."></textarea>
+                                <textarea class="form-control" placeholder="Сообщение" id="message"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                         </div>
@@ -326,9 +336,13 @@
                             <div id="success"></div>
                             <button type="submit" class="btn btn-xl">Отправить сообщение</button>
                         </div>
+                        <div class="col-md-3 col-sm-2"></div>
+                        <div class="col-md-9 col-sm-8 col-12 text-center">
+                            <small class="footnote-feedback">Нажимая кнопку "Отправить сообщение" вы даёте согласние на обработку персональных данных и соглашаетесь с <a href="/privacy-policy/" target="_blank">политикой конфиденциальности</a></small>
+                        </div>
+                        <div class="col-md-3 col-sm-2"></div>
                     </div>
                 </form>                 
-                <h3 class="text-muted text-center base-phone"><span class="glyphicon glyphicon-phone text-warning"></span><a href="tel:{% cms_content 'pogreb_phone' %}">{% cms_content 'pogreb_phone' %}</a></h3>
             </div>
         </div>           
     </div>
@@ -340,6 +354,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="copyright">Copyright &copy; {{ home.summary }} {% now "Y" %}</div>
+                    <a class="terms-of-use" href="/terms-of-use/">Пользовательское соглашение</a>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline social-buttons">
@@ -349,7 +364,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <ul class="list-inline quicklinks">                    	
+                    <ul class="quicklinks">
                     	{% for link in home.free_links %}
                     	<li><a href="{{ link.url }}">{{ link.title }}</a></li>
                     	{% endfor %}
@@ -360,6 +375,7 @@
     </footer>
 
 <!-- Portfolio Modals -->
+{% include "domanayuge/form_more_modal.html" %}
 <!-- Use the modals below to showcase details about your portfolio projects! -->
 {% site_filtered services.active_entries request.site as services_filtered_entries  %}
 {% for entry in services_filtered_entries %}
