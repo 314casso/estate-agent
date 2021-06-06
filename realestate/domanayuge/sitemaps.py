@@ -4,19 +4,46 @@ from domanayuge.models import ContentEntry, Category, SiteMeta, get_all_geo_tags
 from django.contrib import sitemaps
 from django.core.urlresolvers import reverse
 
-
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.6
-    #changefreq = 'daily'
-    changefreq = 'always'
+    changefreq = 'always' # 'daily'
+    debugContent = ""
+    current_site = "" # should set from outside (in MapPage)
+    sitemap_source = None
+    linker_ce_sm = {} # reference from ContentEntry to GenericSitemap
 
-    def items(self):        
-        #return ['blog',]
-        return ContentEntry.objects.all()
+    def items(self):
+        site_meta = None
+        self.debugContent = ""
+        self.debugContent += "site=%s" % repr(self.current_site)
+        try:
+            site_meta = SiteMeta.objects.get(site=self.current_site)
+        except SiteMeta.DoesNotExist:
+            pass
+        self.debugContent += " site_meta=%s" % repr(site_meta)
+        geo_tags = site_meta.tags if site_meta else None
+        self.debugContent += " geo_tags=%s" % repr(geo_tags)
+        qs = []
+        if self.sitemap_source:
+            for one_generic in self.sitemap_source.generic_sitemap_list:
+                for one_record in one_generic.queryset:
+                    self.linker_ce_sm[one_record] = one_generic
+                    qs.append(one_record)
+            self.debugContent += " OUTSIDE WAS SET SITEMAP_SOURCE SIZE=%s" % str(len(qs))
+        else:
+            qs = ContentEntry.objects.filter(categories__slug="blog")
+            if geo_tags:
+                qs = qs.filter(tags__contains=geo_tags)
+        return qs
 
     def location(self, item):
-        #return reverse(item)
-        return '/blog/%s'%(item.slug)
+        #return '/blog/%s'%(item.slug)
+        try:
+            if self.linker_ce_sm.get(item):
+                return self.linker_ce_sm.get(item).location(item)
+        except:
+            pass
+        return item.get_absolute_url()
 
     def title(self, item):
         return item.title
@@ -70,7 +97,7 @@ def get_sitemap_dict(site, tags, portfolio_key, projects_key=None, prices_key=No
     geo_tags = site_meta.tags if site_meta else None     
     result = {
       'blog': GenericSitemap(get_blog_dict(tags, geo_tags), priority=0.6),                        
-      'static': StaticViewSitemap,
+      #'static': StaticViewSitemap,
       'cases': CaseGenericSitemap(get_portfolio_dict(portfolio_key, geo_tags), priority=0.6, ),
     }       
     if projects_key:

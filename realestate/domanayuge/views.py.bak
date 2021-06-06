@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template import loader, Context
 from django.utils.encoding import force_unicode
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods, last_modified
+from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView, ContextMixin, View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -27,9 +27,6 @@ from domanayuge.turbo import FeedGenerator
 
 # Create your views here.
 
-# single freshness indicator
-def latest_content_entry(*args, **kwargs):
-    return ContentEntry.objects.all().latest("publication_date").publication_date
 
 @x_robots_tag
 def base_sitemap(request, sitemaps, section=None,
@@ -129,28 +126,23 @@ class BaseContextMixin(ContextMixin):
         })
                    
         return context
+    
 
-
-class HomePage(BaseContextMixin, TemplateView):
+class HomePage(BaseContextMixin, TemplateView):   
     tags = [u'недвижимость']
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(HomePage, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
-        context = super(HomePage, self).get_context_data(**kwargs)
-        context.update({
-            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],
-        })
+        context = super(HomePage, self).get_context_data(**kwargs)         
+        context.update({           
+            'articles': ContentEntry.objects.filter(categories__slug=self.blog_slug, tags__overlap=self.tags)[:6],            
+        })                          
         return context
-
     def get_template_names(self):
         turbo = int(self.request.GET.get('turbo', 0))
         if turbo == 1:
             return 'turbo/base.html'
-        return 'domanayuge/base.html'
-
+        return 'domanayuge/base.html'             
+    
+    
 class ExContextMixin(ContextMixin):
     blog_slug = 'blog'
     slug = None
@@ -214,11 +206,6 @@ class ExContextMixin(ContextMixin):
 
 class TurboPageMixin(BaseContextMixin, TemplateView):
     template_name = None
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(TurboPageMixin, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):        
         context = super(TurboPageMixin, self).get_context_data(**kwargs)
         context.update({          
@@ -400,11 +387,6 @@ class Article(BaseContextMixin, DetailView):
     template_name = 'domanayuge/page.html'
     model = ContentEntry
     context_object_name = 'article'
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(Article, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(Article, self).get_context_data(**kwargs)
         return context
@@ -415,11 +397,6 @@ class MapPage(BaseContextMixin, DetailView):
     context_object_name = 'mappage'
     sitemapObject = StaticViewSitemap()
     sitemap_items = []
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(MapPage, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         self.sitemap_items = []
         self.sitemapObject.current_site = get_current_site(self.request)
