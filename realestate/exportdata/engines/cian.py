@@ -35,7 +35,7 @@ class CianEngine(BaseEngine):
         
         address = mapper.address 
         address_parts = []
-        for field in ['region', 'district', 'locality' , 'street']:
+        for field in ['region', 'locality' , 'street']:
             value = getattr(address, field)
             if value and not value in address_parts:
                 address_parts.append(value)                                         
@@ -71,7 +71,7 @@ class CianEngine(BaseEngine):
         if mapper.category not in [u'landSale']:
             area = mapper.living_space if mapper.category in [u'flatShareSale'] else mapper.area            
             el_maker("TotalArea", area)
-            el_maker("FloorNumber", mapper.floor, False)    
+            el_maker("FloorNumber", mapper.floor or mapper.floors, False)    
         
             if mapper.new_flat:            
                 el_jk_schema = self.el_maker(etree.SubElement(offer, 'JKSchema'), empty_nodes)
