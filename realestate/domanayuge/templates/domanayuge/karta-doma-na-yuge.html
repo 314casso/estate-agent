@@ -14,10 +14,10 @@
 
 {% category 'blog' as blog %}
 
-<section id="blog" alt="mappage">
+<section id="blog" alt="karta-doma-na-yuge.html">
 	<div class="container">
 
-		<div class = "page-header">            
+		<div class="page-header">            
 			<h1>{{ mappage.title }}</h1>
 			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ mappage.publication_date|date }}</small></p>
 		</div>			
@@ -31,7 +31,7 @@
 			{% endfor %}
 		</table>
 		{% endif %}
-		<!-- div class="row" alt="SITEMAP_DEBUG">DEBUG:{{ sitemap_debug }}</div //-->
+		<!-- div class="row" alt="SITEMAP_DEBUG">DEBUG:{{ sitemap_debug }}</div -->
 		<!-- Carousel -->
 		{% if mappage.images %}		
 		<div class="container">
@@ -57,6 +57,7 @@
 		  </div>								  
 										
 		  <!-- Controls -->
+			{% if mappage.images|length > 1  %}
 		  <a class="left carousel-control" href="#carousel-{{ mappage.slug }}" role="button" data-slide="prev">
 		    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 		    <span class="sr-only">Previous</span>
@@ -65,6 +66,7 @@
 		    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 		    <span class="sr-only">Next</span>
 		  </a>
+			{% endif %}
 		</div>
 		
 		</div>

@@ -35,18 +35,17 @@ class CianEngine(BaseEngine):
         
         address = mapper.address 
         address_parts = []
-        for field in ['region', 'locality' , 'street']:
+        for field in ['street', 'microdistrict', 'locality', 'district', 'region']:
             value = getattr(address, field)
             if value and not value in address_parts:
                 address_parts.append(value)                                         
         el_maker("Address", u', '.join(address_parts))     
-               
-        if mapper.coordinates and len(mapper.coordinates) == 2:
-            el_coordinates = self.el_maker(etree.SubElement(offer, 'Coordinates'), empty_nodes)
-            el_coordinates("Lat", str(mapper.coordinates[0]))               
-            el_coordinates("Lng", str(mapper.coordinates[1]))
-        
-        
+
+        #if mapper.coordinates and len(mapper.coordinates) == 2:
+        #    el_coordinates = self.el_maker(etree.SubElement(offer, 'Coordinates'), empty_nodes)
+        #    el_coordinates("Lat", str(mapper.coordinates[0]))               
+        #    el_coordinates("Lng", str(mapper.coordinates[1]))
+                
         contact = mapper.contact
         phones = etree.SubElement(offer, 'Phones')                
         el_phone_schema = self.el_maker(etree.SubElement(phones, 'PhoneSchema'), empty_nodes)        
@@ -61,12 +60,13 @@ class CianEngine(BaseEngine):
             for image in images:
                 el_photos_schema = self.el_maker(etree.SubElement(photos, 'PhotoSchema'), empty_nodes)                
                 el_photos_schema("FullUrl", image)               
-                
         
         if mapper.category in [u'flatShareSale', u'flatSale']:
             el_maker("FlatRoomsCount", mapper.rooms)            
             el_maker("IsApartments", mapper.apartments, False)
-         
+
+        if mapper.category in [u'roomSale',]:
+            el_maker("RoomArea", mapper.living_space, False)
         
         if mapper.category not in [u'landSale']:
             area = mapper.living_space if mapper.category in [u'flatShareSale'] else mapper.area            
@@ -187,5 +187,38 @@ class CianMapper(YandexMapper):
     class Price(YandexMapper.Price):      
         @property    
         def currency(self):
-            return u'rur'  
+            return u'rur' 
+ 
+    class Address(YandexMapper.Address):         
+        @property
+        def district(self):
+            mapper = {1: u'Анапа', 2: u'Геленджик', 3: u'Новороссийск', 4: u'Темрюкский район'}
+            if self._estate.region:
+                return mapper[self._estate.region.pk]
+            return ''
+
+        @property
+        def locality(self):
+            if not self._city:
+                if self._estate.locality:
+                    self._city = u'%s %s' % (self._estate.locality.name, self._estate.locality.locality_type.sort_name)
+            return self._city 
         
+        @property    
+        def microdistrict(self):
+            if not self._microdistrict:
+                microdistrict = self._estate.microdistrict
+                if microdistrict:
+                    self._microdistrict = microdistrict.name
+            if not self._estate.microdistrict.is_address:
+		return None
+            return self._microdistrict
+
+        def possible_street(self):
+            if not self._street:
+                if self._estate.street:
+                    bld_number = ''
+                    if self._feed.show_bld_number and self._estate.locality and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:   
+                        bld_number = u", %s" % self._estate.estate_number
+                    self._street = u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
+            return self._street

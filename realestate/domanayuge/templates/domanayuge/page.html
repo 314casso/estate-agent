@@ -14,85 +14,102 @@
 
 {% category 'blog' as blog %}
 
-<section id="blog">
+<section id="blog" alt="page.html">
+         <!-- DEBUG: {{ sitemap_debug }}-->
 	<div class="container">
-
-		<div class = "page-header">            
-			<h1>{{ article.title }}</h1>
-			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
-		</div>			
-				
-		{{ article.content|safe|escape }}
 
 		<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
 			<li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-				<a itemprop="item" href="/">
+				<a itemprop="item" href="/#blog">
 					<span itemprop="name">Главная</span>
 				</a>
 				<meta itemprop="position" content="1">
 			</li>
-			<li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
 				<a itemprop="item" href="{% url 'blog' %}">
 					<span itemprop="name">{{ blog.name }}</span>
 				</a>
 				<meta itemprop="position" content="2">
 			</li>
-			<li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
 				<span itemprop="name">{{ article.title }}</span>
 				<meta itemprop="position" content="3">
 			</li>
-		</ol>
-			
+        </ol>
+
+		<div class = "page-header">            
+			<h1>{{ article.title }}</h1>
+			<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
+			<script src="https://yastatic.net/share2/share.js"></script>
+			<div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
+		</div>
+				
+		{% with article.content|markdown:"safe,attr_list" as article_content %}
+		{{ article_content }}
+		{% endwith %}
 		<!-- Carousel -->
 		{% if article.images %}		
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-8">
-					<hr>
-					<div id="carousel-{{ article.slug }}" class="carousel slide" data-ride="carousel">
-		 							
-						<!-- Wrapper for slides -->
-						<div class="carousel-inner" role="listbox">
-							{% for image in article.images %}
-								<div class="item {% if forloop.first %}active{% endif %}">
-
-									{% thumbnail image.image "760x428" crop="center" as im %}
-									<img alt="{{ image.title }}" src="{{ im.url }}">
-									{% endthumbnail %}
-
-									<div class="carousel-caption">{{ image.title }}</div>
-								</div>
-							{% endfor %}
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8">
+                        <hr>
+        				<div id="carousel-{{ article.slug }}" class="carousel slide" data-ride="carousel" style="max-width:760px; margin: 0 auto">
+		  					<!-- Wrapper for slides -->
+		  					<div class="carousel-inner" role="listbox">
+		  						{% for image in article.images %}
+		    						<div class="item {% if forloop.first %}active{% endif %}">
+		    							{% thumbnail image.image "760x428" crop="center" as im %}
+											<img alt="{{ image.title }}" src="{{ im.url }}" class="img-responsive">
+										{% endthumbnail %}
+		      							<div class="carousel-caption">{{ image.title }}</div>
+		    						</div>
+		    					{% endfor %}
+		  					</div>
+										
+		  					<!-- Controls -->
+							{% if article.images|length > 1  %}
+		  					<a class="left carousel-control" href="#carousel-{{ article.slug }}" role="button" data-slide="prev">
+		    					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		    					<span class="sr-only">Previous</span>
+		  					</a>
+		  					<a class="right carousel-control" href="#carousel-{{ article.slug }}" role="button" data-slide="next">
+		    					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		    					<span class="sr-only">Next</span>
+		  					</a>
+							{% endif %}
 						</div>
-
-						{% if article.images|length %}
-						<!-- Controls -->
-						<a class="left carousel-control" href="#carousel-{{ article.slug }}" role="button" data-slide="prev">
-							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							<span class="sr-only">Предыдущий</span>
-						</a>
-						<a class="right carousel-control" href="#carousel-{{ article.slug }}" role="button" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-							<span class="sr-only">Следующий</span>
-						</a>
-						{% endif %}
 					</div>
 				</div>
 			</div>
-		</div>
 		{% endif %}
 		<!-- End carousel -->
 			
 		<p>
 			{% for tag in article.tags %}
-				<span class="label label-default tags">
-				<a href="{% url 'blog' %}?tags={{ tag }}">
-					{{ tag }}
-				</a>
-			</span>
+			<span class="label label-default tags">
+				<a href="{% url 'blog' %}?tags={{ tag }}">{{ tag }}</a>
+			</span>			
 			{% endfor %}
 		</p>
 
+		<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+			<li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<a itemprop="item" href="/#blog">
+					<span itemprop="name">Главная</span>
+				</a>
+				<meta itemprop="position" content="1">
+			</li>
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<a itemprop="item" href="{% url 'blog' %}">
+					<span itemprop="name">{{ blog.name }}</span>
+				</a>
+				<meta itemprop="position" content="2">
+			</li>
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<span itemprop="name">{{ article.title }}</span>
+				<meta itemprop="position" content="3">
+			</li>
+        </ol>
 	</div>
 </section>
 

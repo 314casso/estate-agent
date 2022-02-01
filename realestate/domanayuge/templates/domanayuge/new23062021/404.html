@@ -1,0 +1,204 @@
+{% spaceless %}
+{% load content_edit_tags %}
+{% load mptt_tags %}
+{% load category_tags %}
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+<!DOCTYPE html>
+{% category 'domanayuge' as domanayuge %}
+{% endspaceless %}
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if site_meta.after_head %}
+    {% autoescape off %}
+    {{ site_meta.after_head }}
+    {% endautoescape %}
+    {% endif %}
+    <title>Страница не найдена</title>
+    {% block page_description %}
+    <meta name="description" content="{{ site_meta.description|default:domanayuge.description }}">
+    {% endblock %}
+    {% if site_meta.keywords %}
+    <meta name="keywords" content="{{ site_meta.keywords }}">
+    {% endif %}
+    <meta name="author" content="picasso">
+    {% block extrameta %}
+    {% for metatag in site_meta.metatags.all %}
+    <meta name="{{ metatag.name }}" content="{{ metatag.content }}"/>
+    {% endfor %}
+    {% endblock extrameta %}
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ STATIC_URL }}domanayuge/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="{{ STATIC_URL }}domanayuge/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster&subset=cyrillic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=cyrillic-ext" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700&subset=cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400i&subset=cyrillic" rel="stylesheet">
+    <!-- Theme CSS -->
+    <link href="{{ STATIC_URL }}domanayuge/css/agency.css?1.0.27" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}favicon.ico"/>
+    {% block extracss %}
+    <style type="text/css">
+        header {
+        {% thumbnail root.image "1920" crop="center" as im %}
+        background-image: url({{ im.url }});
+        {% endthumbnail %}
+        }
+    </style>
+    {% endblock extracss %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body id="page-top" class="index">
+    {% if site_meta.after_body %}
+    {% autoescape off %}
+    {{ site_meta.after_body }}
+    {% endautoescape %}
+    {% endif %}
+    <!-- Navigation -->
+    {% block navigation %}
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
+                </button>
+                <div class="wrap-logo">
+                    <a class="navbar-brand page-scroll" href="#page-top">
+                        <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
+                    </a>
+                    <a href="8(918)2954848" class="navbar-phone">
+                        <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
+                        8 (918) 295-48-48
+                    </a>
+                </div>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    {% recursetree categiries %}
+                    <li>
+                        <a class="page-scroll" href="#{{ node.slug }}">{{ node.name }}</a>
+                    </li>
+                    {% endrecursetree %}
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    {% endblock navigation %}
+
+    <section>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="section-heading">Страница не найдена</h1>
+                <h3 class="section-subheading text-muted" style="font-size: 18px">Запрашиваемая Вами страница была удалена, либо ссылка введена неверно</h3>
+                <a href="/" style="font-size: 18px;" class="btn btn_orange">Вернуться на главную</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-left">
+                    <div class="copyright">Copyright &copy; {{ domanayuge.name }} {% now "Y" %}</div>
+                    <!--                    <a class="terms-of-use" href="#">Пользовательское соглашение</a>-->
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        {% for link in home.social_links %}
+                        <li><a href="{{ link.url }}"><i class="fa {{ link.icon_class }}"></i></a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="quicklinks">
+                        {% for link in home.free_links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="{{ STATIC_URL }}domanayuge/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ STATIC_URL }}domanayuge/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="{{ STATIC_URL }}domanayuge/js/jqBootstrapValidation.js"></script>
+    <script src="{{ STATIC_URL }}domanayuge/js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="{{ STATIC_URL }}domanayuge/js/agency.js?v0.0.15"></script>
+
+    <script type="text/javascript" src='{% static 'content_edit/content_edit.js' %}'></script>
+
+
+    {% block counter %}
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-22862087-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+    {% endblock counter %}
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        ym(44526706, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true,
+            ecommerce:"dataLayer"
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/44526706" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-22862087-4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-22862087-4');
+    </script>
+
+    {% if site_meta.flatpage %}
+    {% autoescape off %}
+    {{ site_meta.flatpage }}
+    {% endautoescape %}
+    {% endif %}
+
+    </body>
+</html>

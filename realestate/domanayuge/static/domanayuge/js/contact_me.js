@@ -25,13 +25,13 @@ $(function() {
         submitSuccess: function($form, event) {
             event.preventDefault(); // prevent default submit behaviour
             
-            try {
-               ym(66555292,'reachGoal','forma');
-               gtag('event', 'click');
-        	}
-        	catch (e) {        	   
-        	   console.log(e);
-        	}
+            // try {
+            //    ym(66555292,'reachGoal','forma');
+            //    gtag('event', 'click');
+        	// }
+        	// catch (e) {
+        	//    console.log(e);
+        	// }
             
             // get values from FORM
             var name = $("input#name").val();
@@ -94,13 +94,13 @@ $(function() {
         submitSuccess: function($form, event) {
             event.preventDefault(); // prevent default submit behaviour
 
-            try {
-                ym(66555292,'reachGoal','forma');
-                gtag('event', 'click');
-            }
-            catch (e) {
-                console.log(e);
-            }
+            // try {
+            //     ym(66555292,'reachGoal','forma');
+            //     gtag('event', 'click');
+            // }
+            // catch (e) {
+            //     console.log(e);
+            // }
 
             // get values from FORM
             var name = $("input#nameUser").val();
@@ -108,14 +108,15 @@ $(function() {
             var phone = $("input#phoneUser").val();
             var comment = $("textarea#commentUser").val();
 
-            var square = $('input#square').val();
-            var floors = $('input#floors').val();
-            var walls = $('input#walls').val();
-            var roof = $('input#roof').val();
+            // var square = $('input#square').val();
+            // var floors = $('input#floors').val();
+            // var walls = $('input#walls').val();
+            // var roof = $('input#roof').val();
 
             var firstName = name; // For Success/Failure Message
-            var message = 'Комментарий: '+ comment +'; Желаемая площадь дома: '+ square + ';' +
-                ' Этажность: '+ floors +'; Материал стен: '+ walls +'; Кровля: '+ roof +'.';
+            // var message = 'Комментарий: '+ comment +'; Желаемая площадь дома: '+ square + ';' +
+            //     ' Этажность: '+ floors +'; Материал стен: '+ walls +'; Кровля: '+ roof +'.';
+            var message = comment;
             var csrf_token = getCookie('csrftoken');
             // Check for white space in name for Success/Fail message
             if (firstName.indexOf(' ') >= 0) {

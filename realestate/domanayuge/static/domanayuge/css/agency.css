@@ -6,6 +6,12 @@
 body {
   overflow-x: hidden;
   font-family: "Open Sans", sans-serif;
+  padding-top: 100px;
+}
+@media (max-width: 768px) {
+  body {
+    padding-top: 53px;
+  }
 }
 .text-muted {
   color: #777777;
@@ -35,11 +41,11 @@ a:hover,
 a:focus,
 a:active,
 a.active {
-  color: #ff5500;
+  color: #ff5500 !important;
 }
-a:visited {
-  color: #777;
-}
+/*a:visited {*/
+/*  color: #777;*/
+/*}*/
 h1,
 h2,
 h3,
@@ -50,6 +56,12 @@ h6 {
   text-transform: uppercase;
   font-weight: 700;
 }
+@media (max-width: 400px) {
+  .h1, h1 {
+    font-size: 30px;
+  }
+}
+
 .img-centered {
   margin: 0 auto;
 }
@@ -119,7 +131,7 @@ fieldset[disabled] .btn-primary.active {
 .btn-xl:active,
 .btn-xl.active,
 .open .dropdown-toggle.btn-xl {
-  color: white;
+  color: white !important;
   background-color: #ff5500;
   border-color: #da4900;
 }
@@ -151,10 +163,13 @@ fieldset[disabled] .btn-xl.active {
   background-color: white;
 }
 .navbar-custom {
-  background-color: #222222;
+  /*background-color: #222222;*/
+  background-color: #494d4e;
   border-color: transparent;
+  z-index: 3;
 }
 .navbar-custom .navbar-brand {
+  display: block;
   color: #DF5611;
   font-family: "Lobster", "Helvetica Neue", Helvetica, Arial, cursive;
 }
@@ -174,6 +189,7 @@ fieldset[disabled] .btn-xl.active {
   text-transform: uppercase;
   color: white;
   font-size: 12px;
+   z-index: 3; 
 }
 .navbar-custom .navbar-toggle:hover,
 .navbar-custom .navbar-toggle:focus {
@@ -185,6 +201,8 @@ fieldset[disabled] .btn-xl.active {
   font-weight: 400;
   letter-spacing: 1px;
   color: white;
+  font-size: 13px;
+  padding: 15px 10px;
 }
 .navbar-custom .nav li a:hover,
 .navbar-custom .nav li a:focus {
@@ -198,7 +216,7 @@ fieldset[disabled] .btn-xl.active {
 }
 .navbar-custom .navbar-nav > .active > a:hover,
 .navbar-custom .navbar-nav > .active > a:focus {
-  color: white;
+  color: white !important;
   background-color: #ff5500;
 }
 @media (min-width: 768px) {
@@ -221,7 +239,7 @@ fieldset[disabled] .btn-xl.active {
 }
 @media (min-width: 768px) {
   .navbar-custom.affix {
-    background-color: #222222;
+    background-color: #494d4e;
     padding: 10px 0;
   }
   .navbar-custom.affix .navbar-brand {
@@ -286,6 +304,16 @@ header .intro-text .intro-heading {
 }
 section {
   padding: 100px 0;
+}
+@media (max-width: 767px) {
+  section {
+    padding: 75px 0;
+  }
+}
+@media (max-width: 400px) {
+  section {
+    padding: 50px 0;
+  }
 }
 section h2.section-heading {
   font-size: 40px;
@@ -380,6 +408,9 @@ section h3.section-subheading {
   line-height: 1.2;
   margin: 0;
 }
+#portfolio .portfolio-item .portfolio-caption p a {
+  color: #777 !important;
+}
 @media (max-width: 400px) {
   #portfolio .portfolio-item .portfolio-caption p {
     line-height: 1;
@@ -393,6 +424,11 @@ section h3.section-subheading {
     margin: 0 0 30px;
   }
 }
+
+.portfolio-item .img-responsive {
+  width: 100% !important;
+}
+
 .timeline {
   list-style: none;
   padding: 0;
@@ -653,6 +689,10 @@ section#contact .text-danger {
 footer {
   padding: 25px 0;
   text-align: center;
+  /*background-color: #494d4e;*/
+}
+footer .copyright {
+  /*color: #FFF;*/
 }
 footer span.copyright {
   line-height: 40px;
@@ -667,6 +707,10 @@ footer ul.quicklinks {
   text-transform: uppercase;
   text-transform: none;
   list-style-type: none;
+  text-align: right;
+}
+footer ul.quicklinks a {
+  /*color: #999999 !important;*/
 }
 ul.social-buttons {
   margin-bottom: 0;
@@ -796,6 +840,10 @@ body {
 	margin-bottom: 20px;
 }
 
+.section-heading a {
+  text-decoration: underline;
+}
+
 #blog h2, #blog h3 {
 	text-transform: none;
 }
@@ -805,13 +853,11 @@ body {
 }
 
 #blog h3 a:hover, #blog .card-caption a:hover{
-	/*color: #777;*/
     color: #DF5611;
-	text-decoration: none;
 }
 
 #blog a, #portfolio .section-heading a{
-	color: maroon;
+	color: #DF5611;
 }
 
 #blog a:hover, #portfolio .section-heading a:hover {
@@ -843,7 +889,8 @@ body {
 }
 
 #blog .card-body {
-	padding: 5px;/	
+	padding: 5px;
+    margin-bottom: 20px;
 }
 
 #blog {
@@ -853,23 +900,27 @@ body {
 #projects .portfolio-item,
 #renovationservices .portfolio-item,
 #developservices .portfolio-item,
-#prices .portfolio-item {
+#prices .portfolio-item,
+#video .portfolio-item{
   margin: 0 0 15px;
   right: 0;
 }
 #projects .portfolio-item .portfolio-link,
 #renovationservices .portfolio-item .portfolio-link,
 #developservices .portfolio-item .portfolio-link,
-#prices .portfolio-item .portfolio-link  {
+#prices .portfolio-item .portfolio-link,
+#video .portfolio-item .portfolio-link {
   display: block;
   position: relative;
   max-width: 400px;
   margin: 0 auto;
+  color: #333;
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover,
 #developservices .portfolio-item .portfolio-link .portfolio-hover,
-#prices .portfolio-item .portfolio-link .portfolio-hover {
+#prices .portfolio-item .portfolio-link .portfolio-hover,
+#video .portfolio-item .portfolio-link .portfolio-hover {
   /* background: rgba(254, 209, 54, 0.9); */
   background-color: #DF5611;
   position: absolute;
@@ -883,13 +934,15 @@ body {
 #projects .portfolio-item .portfolio-link .portfolio-hover:hover,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover:hover,
 #developservices .portfolio-item .portfolio-link .portfolio-hover:hover,
-#prices .portfolio-item .portfolio-link .portfolio-hover:hover {
+#prices .portfolio-item .portfolio-link .portfolio-hover:hover,
+#video .portfolio-item .portfolio-link .portfolio-hover:hover {
   opacity: 1;
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
 #developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
-#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content {
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content,
+#video .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content {
   position: absolute;
   width: 100%;
   height: 20px;
@@ -902,7 +955,8 @@ body {
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
 #renovationservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
 #developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
-#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i {
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i,
+#video .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content i {
   margin-top: -12px;
 }
 #projects .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
@@ -912,13 +966,16 @@ body {
 #developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
 #developservices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
 #prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
-#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4 {
+#prices .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4,
+#video .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h3,
+#video .portfolio-item .portfolio-link .portfolio-hover .portfolio-hover-content h4 {
   margin: 0;
 }
 #projects .portfolio-item .portfolio-caption,
 #renovationservices .portfolio-item .portfolio-caption,
 #developservices .portfolio-item .portfolio-caption,
-#prices .portfolio-item .portfolio-caption {
+#prices .portfolio-item .portfolio-caption,
+#video .portfolio-item .portfolio-caption {
   max-width: 400px;
   margin: 0 auto;
   background-color: #eeeeee;
@@ -928,14 +985,16 @@ body {
 #projects .portfolio-item .portfolio-caption h4,
 #renovationservices .portfolio-item .portfolio-caption h4,
 #developservices .portfolio-item .portfolio-caption h4,
-#prices .portfolio-item .portfolio-caption h4 {
+#prices .portfolio-item .portfolio-caption h4,
+#video .portfolio-item .portfolio-caption h4 {
   text-transform: none;
   margin: 0;
 }
 #projects .portfolio-item .portfolio-caption p,
 #renovationservices .portfolio-item .portfolio-caption p,
 #developservices .portfolio-item .portfolio-caption p,
-#prices .portfolio-item .portfolio-caption p {
+#prices .portfolio-item .portfolio-caption p,
+#video .portfolio-item .portfolio-caption p {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: italic;
   font-size: 16px;
@@ -954,6 +1013,10 @@ body {
 }
 
 #developservices * {
+  z-index: 2;
+}
+
+#video * {
   z-index: 2;
 }
 
@@ -1033,6 +1096,8 @@ footer a {
 .terms-of-use {
     display: inline-block;
     margin-bottom: 15px;
+    color: #8a6d3b !important;
+    /*color: #999999 !important;*/
 }
 
 .btn_orange {
@@ -1043,10 +1108,17 @@ footer a {
   background: #ff5500;
 }
 
+.navbar-logo {
+  height: 50px;
+  margin-top: -15px;
+}
+
 .navbar-phone {
-  display: inline-block;
-  float: right;
-  font-size: 18px;
+  display: block;
+  position: absolute;
+  bottom: -35px;
+  left: 5px;
+  font-size: 15px;
   color: #fff;
   padding: 12px 0;
 }
@@ -1054,39 +1126,62 @@ footer a {
   margin-right: 8px;
   font-size: 18px;
 }
+.navbar-phone a {
+  color: #fff;
+}
 
 .navbar-brand-logo {
   height: 50px;
+  margin-top: -10px;
 }
 
-@media (min-width: 1006px) {
+.white-text {
+  color: #FFF !important;
+}
+
+@media (max-width: 1006px) {
   .navbar-brand-logo {
-    width: 133px;
+    width: 150px;
   }
   .navbar-phone {
+    font-size: 14px;
+  }
+}
+@media (max-width: 768px) {
+  .navbar-phone {
+    top: 6px;
+    left: 120px;
+    font-size: 15px;
+  }
+  footer ul.quicklinks {
+    text-align: left;
+    padding-left: 0;
+  }
+}
+@media (max-width: 400px) {
+  .navbar-phone {
+    left: 140px;
+    font-size: 15px;
+  }
+}
+@media (max-width: 400px) {
+  .navbar-phone {
+    left: 90px;
+    font-size: 14px;
+  }
+  .navbar-brand-logo {
+    width: 130px;
+    margin-top: 0;
+    margin-left: -15px;
+  }
+  .navbar-phone-icon {
     display: none;
   }
 }
-@media (min-width: 768px) {
-  .navbar-phone {
-    display: inline-block;
-    float: initial;
-    font-size: 16px;
-    padding: 15px 0;
-  }
-}
-@media (min-width: 400px) {
-  .navbar-phone {
-    display: inline-block;
-    padding: 16px 0;
-  }
-}
-@media (min-width: 370px) {
-  .navbar-phone {
-    display: inline-block;
-    font-size: 13px;
-    padding: 17px 0;
-    margin-left: -20px;
+@media (min-width: 401px) and (max-width: 767px) {
+  .navbar-brand-logo {
+    width: 135px;
+    margin-top: 0;
   }
 }
 
@@ -1109,4 +1204,34 @@ footer a {
   height: 100%;
   border-width: 0;
   outline-width: 0;
+}
+
+.wrap-blog {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.wrap-icon {
+  display: inline-block;
+  margin: -30px 0;
+}
+
+.wrap-logo {
+  position: relative;
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .wrap-logo {
+    margin-bottom: 35px;
+  }
+}
+
+@media (max-width: 400px) {
+  .contactForm .btn {
+    font-size: 16px;
+  }
+}
+
+.preview-blog {
+  text-align: justify;
+  line-height: 1.5;
 }

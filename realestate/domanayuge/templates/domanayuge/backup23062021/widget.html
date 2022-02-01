@@ -1,0 +1,11 @@
+<div id="widget_pica" class="bottom roundcorner visible-lg-block visible-md-block">
+   <ul>
+   {% for link in site_meta.free_links %}
+   	  <li>
+	      <i class="fa {{ link.icon_class }} fa-2x"></i>
+	      <a class="pica_link" href="{{ link.url }}" target="_blank">
+		  <span>{{ link.title }}</span></a>
+      </li>   
+   {% endfor %}
+   </ul>       
+</div>

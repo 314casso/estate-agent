@@ -124,6 +124,7 @@ class Microdistrict(models.Model):
     '''
     name = models.CharField(_('Name'), db_index=True, max_length=255)
     locality = models.ForeignKey(Locality, verbose_name=_('Locality'), on_delete=models.PROTECT)
+    is_address = models.BooleanField(u'Включать в адрес', default=False)
     def __unicode__(self):
         return u'%s' % self.name
     def natural_key(self):

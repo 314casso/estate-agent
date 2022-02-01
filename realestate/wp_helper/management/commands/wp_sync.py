@@ -27,7 +27,7 @@ class Command(BaseCommand):
         cache.set(SYNC_CACHE_KEY, datetime.datetime.now(), CACHE_TIME)
         estates = Estate.objects.filter(wp_meta__status__in=[EstateWordpressMeta.XMLRPC,EstateWordpressMeta.UNKNOWN], validity=Estate.VALID)[:9]        
         total_errors = 0
-        for estate in estates:                        
+        for estate in estates:                       
             if not wp_service.sync_post(estate):
                 total_errors += 1
             if total_errors > MAX_ERRORS:

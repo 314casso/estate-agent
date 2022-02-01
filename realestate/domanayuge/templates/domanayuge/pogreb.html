@@ -10,20 +10,22 @@
 
 <!-- Navigation -->
     {% block navigation %}
-    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top" style="background: #222222;">
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">
-                    <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
-                </a>
-                <a href="8(918)2954848" class="navbar-phone" style="">
-                    <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
-                    8 (918) 295-48-48
-                </a>
+                <div class="wrap-logo">
+                    <a class="page-scroll" href="#page-top">
+                        <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
+                    </a>
+                    <a href="tel:8(918)2954848" class="navbar-phone">
+                        <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
+                        8 (918) 295-48-48
+                    </a>
+                </div>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -53,7 +55,7 @@
         <div class="intro-text">
             <div class="intro-lead-in"><h1>{% cms_content 'welcome_to_pogreb' %}</h1></div>
             <div class="intro-heading">{% cms_content 'nice_to_meet_you_pogreb' %}</div>
-            <<a href="#modalMore" class="btn btn-xl" data-toggle="modal">Узнать больше</a>
+            <<a href="#modalMore" class="btn btn-xl" data-toggle="modal">Узнать цену</a>
         </div>
     </div>
 </header>
@@ -94,6 +96,44 @@
 </section>
 
 
+<!-- Video Grid Section -->
+{% category 'videopogreb' as videos %}
+<section id="video">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">{{ videos.name }}</h2>
+                <h3 class="section-subheading text-muted">{{ videos.alternate_title }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            {% for entry in videos.active_entries %}
+            <div class="col-md-4 col-sm-6 portfolio-item">
+                <a href="{{ entry.content }}" class="portfolio-link" target="_blank">
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-hand-pointer-o fa-3x"></i>
+                        </div>
+                    </div>
+                    {% thumbnail entry.baseimage.image "320x180" crop="center" as im %}
+                    <img alt="{{ entry.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
+                    {% endthumbnail %}
+                </a>
+                <div class="portfolio-caption">
+                    <h4>
+                        <a href="{{ entry.content }}" class="portfolio-link" target="_blank" style="color: #333;">
+                            {{ entry.title }}
+                        </a>
+                    </h4>
+                    <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
 <!-- Septik Type Section -->    
 {% category 'pogrebtype' as pogrebtype %}
 <section id="pogrebtype" class="bg-light-gray">
@@ -122,7 +162,11 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ entry.title }}</h4>
+                    <h4>
+                        <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal" style="color: #333">
+                            {{ entry.title }}
+                        </a>
+                    </h4>
                     <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                 </div>
             </div>            
@@ -161,7 +205,11 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ child.name }}</h4>
+                    <h4>
+                        <a href="{% url 'prices' child.key  %}" class="portfolio-link" style="color: #333">
+                            {{ child.name }}
+                        </a>
+                    </h4>
                     <div class="text-muted">{{ child.alternate_title }}</div>
                 </div>
             </div>
@@ -202,7 +250,11 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ entry.title }}</h4>
+                    <h4>
+                        <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal" style="color: #333">
+                            {{ entry.title }}
+                        </a>
+                    </h4>
                     <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                 </div>
             </div>            
@@ -242,7 +294,11 @@
 					{% endthumbnail %}                      
                 </a>
                 <div class="portfolio-caption">
-                    <h4>{{ entry.title }}</h4>
+                    <h4>
+                        <a href="#portfolioModal{{ entry.slug }}" class="portfolio-link" data-toggle="modal" style="color: #333">
+                            {{ entry.title }}
+                        </a>
+                    </h4>
                     <div class="text-muted">{{ entry.summary|markdown:"safe,attr_list" }}</div>
                 </div>
             </div>            
@@ -257,7 +313,7 @@
 
 <!-- Blog Section -->
 {% category 'blog' as blog %}
-<section id="blog" class="bg-light-gray">
+<section id="blog" class="bg-light-gray" alt="pogreb.html">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -267,7 +323,7 @@
                 <h3 class="section-subheading text-muted">{{ blog.alternate_title }}</h3>
             </div>
         </div>
-        <div class="row">
+        <div class="row wrap-blog">
         	{% for article in articles %}
         	<div class="col-md-4 col-sm-6 blog-item">                    
                 <div class="card-caption">
@@ -275,7 +331,7 @@
                 </div>
                 <div class="card-body">
                 	<p class="post-date"><small><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ article.publication_date|date }}</small></p>
-                    <div class="text-muted">{{ article.summary }}</div>
+                    <div class="text-muted preview-blog">{{ article.summary }}</div>
                 </div>                    
             </div>
             	{% if forloop.counter|divisibleby:3 %}
@@ -296,9 +352,9 @@
                 <h2 class="section-heading">{{ contact.name }}</h2>
                 <div class="contact-address">
                 {% if domain %}                
-                	<h3 class="section-subheading"><i class="fa fa-phone" aria-hidden="true"></i> {{ domain.locality.office.address_short }}</h3>
+                	<h3 class="section-subheading white-text"><i class="fa fa-phone" aria-hidden="true"></i> {{ domain.locality.office.address_short }}</h3>
                 {% else %} 
-                	<h3 class="section-subheading">{{ contact.alternate_title }}</h3>
+                	<h3 class="section-subheading white-text">{{ contact.alternate_title }}</h3>
                 {% endif %}
                     <h3 class="text-muted text-center base-phone">
                         <span class="glyphicon glyphicon-phone text-warning"></span>
@@ -336,11 +392,11 @@
                             <div id="success"></div>
                             <button type="submit" class="btn btn-xl">Отправить сообщение</button>
                         </div>
-                        <div class="col-md-3 col-sm-2"></div>
+                        <div class="col-md-1 col-sm-2"></div>
                         <div class="col-md-9 col-sm-8 col-12 text-center">
                             <small class="footnote-feedback">Нажимая кнопку "Отправить сообщение" вы даёте согласние на обработку персональных данных и соглашаетесь с <a href="/privacy-policy/" target="_blank">политикой конфиденциальности</a></small>
                         </div>
-                        <div class="col-md-3 col-sm-2"></div>
+                        <div class="col-md-1 col-sm-2"></div>
                     </div>
                 </form>                 
             </div>
@@ -352,7 +408,7 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 text-left">
                     <div class="copyright">Copyright &copy; {{ home.summary }} {% now "Y" %}</div>
                     <a class="terms-of-use" href="/terms-of-use/">Пользовательское соглашение</a>
                 </div>

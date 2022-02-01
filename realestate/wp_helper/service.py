@@ -158,27 +158,24 @@ class WPService(object):
         return result         
     
     def render_post_tags(self, estate):        
-        STANICA = 5
         AZOV_SEA = (u"Голубицкая", u"Кучугуры", u"Пересыпь", u"За Родину", u"Ильич", u"Приазовский")                 
         locality = estate.locality
         locality_type = estate.locality.locality_type          
         region = estate.locality.region
         result = set()
         result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
-        result.add(u'%s в %s' % (estate.basic_estate_type, locality.name_loct))
+        #result.add(u'%s в %s' % (estate.basic_estate_type, locality.name_loct))
         for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
             result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))
             result.add(u'недвижимость на %s' % beside.beside.name_loct)            
-        result.add(u'%s в Краснодарском крае' % estate.basic_estate_type)        
-        result.add(u'недвижимость %s' % locality.name_gent)
+        #esult.add(u'%s в Краснодарском крае' % estate.basic_estate_type)        
+        #esult.add(u'недвижимость %s' % locality.name_gent)
         result.add(u'купить недвижимость в %s' % locality.name_loct)
-        result.add(u'недвижимость Краснодарского края')
+        #esult.add(u'недвижимость Краснодарского края')
         result.add(u'купить недвижимость в Краснодарском крае')
         result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
         result.add(u'недвижимость %s' % region.regular_name_gent)
         result.add(u'%s %s' % (estate.basic_estate_type, region.regular_name_gent))
-        if locality_type.pk == STANICA:
-            result.add(u'Купить %s в станице Краснодарского края' % estate.basic_estate_type_accs)
         if locality.name in AZOV_SEA:
             result.add(u'Продажа домов на Азовском море') 
         return list(result)
@@ -193,8 +190,8 @@ class WPService(object):
         from sorl.thumbnail import get_thumbnail        
         images = estate.images.all()[:12]
         if images:
-            result = OrderedDict()
-            for img in images:               
+            result = OrderedDict()            
+            for img in images:    
                 im = get_thumbnail(img.image.file, '800x600')
                 head, tail = os.path.split(im.name)  # @UnusedVariable                                
                 result[os.path.join(im.storage.location,im.name)] = {'name': tail}                  
@@ -293,7 +290,6 @@ class WPService(object):
         # read the binary file and let the XMLRPC library encode it into base64
         with open(filename, 'rb') as img:
             data['bits'] = xmlrpc_client.Binary(img.read())  # @UndefinedVariable
-
         response = self.client.call(media.UploadFile(data))
         return self.client.call(GetMediaItem(response['id']))
     def render_post_description(self, estate):
@@ -325,7 +321,7 @@ class WPService(object):
         if post_id:
             for custom_field in post.custom_fields:
                 custom_field['id'] = self.get_custom_field_id(old_post.custom_fields, custom_field.get('key'))
-            
+
         post.title = self.render_post_title(estate)
         post_images = self.render_post_images(estate, post_id)
         images = u''.join(post_images)
@@ -340,7 +336,7 @@ class WPService(object):
         try:
             wp_meta = estate.wp_meta
             old_post = self.get_post_by_estate(estate)
-            wp_meta.post_id = old_post.id if old_post else None 
+            wp_meta.post_id = old_post.id if old_post else None
             if wp_meta.post_id == -1:
                 wp_meta.status = EstateWordpressMeta.MULTIKEYS
                 wp_meta.save()
@@ -367,10 +363,14 @@ class WPService(object):
     def sync_status(self, estate): 
         wp_meta, created = EstateWordpressMeta.objects.get_or_create(estate=estate)  # @UnusedVariable
         src_id = self.client.call(GetPostID(self.META_KEY,estate.id))        
-        post_id = int(src_id) 
+        post_id = int(src_id)
+        print post_id
         if post_id:                  
             wp_meta.post_id = post_id       
-            try:            
+            try:
+                trash_metas = EstateWordpressMeta.objects.filter(post_id=post_id).exclude(pk=wp_meta.pk)
+                for tm in trash_metas:
+                    print u'tm %s %s' % (tm.post_id, wp_meta.post_id)
                 meta_struct = {'status' : estate.estate_status.wp_taxons.all()[:1].get().wp_id}            
                 self.client.call(SetPostMeta(post_id, meta_struct))
                 wp_meta.status = EstateWordpressMeta.UPTODATE                

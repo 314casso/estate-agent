@@ -19,7 +19,6 @@ if DEBUG:
 else:
     PARENT_HOST = 'domanayuge.ru'
 
-
 MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsRequestMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',                  
@@ -44,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'robots',
+	'letsencrypt',
     'django_hosts',
     'django_markwhat',
     'orderedmodel',    

@@ -27,9 +27,8 @@ from domanayuge.turbo import FeedGenerator
 
 # Create your views here.
 
-# single freshness indicator
-def latest_content_entry(*args, **kwargs):
-    return ContentEntry.objects.all().latest("publication_date").publication_date
+def latest_entry(request, *args, **kwargs):
+    return ContentEntry.objects.filter(categories__slug="blog").latest("publication_date").publication_date
 
 @x_robots_tag
 def base_sitemap(request, sitemaps, section=None,
@@ -69,7 +68,7 @@ def base_sitemap(request, sitemaps, section=None,
                 else lastmod.timetuple()
             )
         )
-    response.generic_sitemap_list = maps # save full ContentEntry content for usage on View page
+    response.generic_sitemap_list = maps
     return response
 
 
@@ -104,17 +103,13 @@ def pogreb_sitemap(request):
     return base_sitemap(request, sitemaps=get_sitemap_dict(site, [u'погреб'], 'pogrebtype', None, 'pogrebprices'))
 
 
-def get_terms_use(request):
-    return render(request, 'domanayuge/terms-of-use.html')
-
-
-def get_privacy_policy(request):
-    return render(request, 'domanayuge/privacy-policy.html')
-
+def custom_page_not_found_view(request):
+    return render(request, 'domanayuge/404.html')
 
 class BaseContextMixin(ContextMixin): 
     blog_slug = 'blog'
     site_meta = None             
+
     def get_context_data(self, **kwargs):               
         context = super(BaseContextMixin, self).get_context_data(**kwargs)
         categiries = None        
@@ -137,14 +132,10 @@ class BaseContextMixin(ContextMixin):
         })
                    
         return context
-
+    
 
 class HomePage(BaseContextMixin, TemplateView):
     tags = [u'недвижимость']
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(HomePage, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)
@@ -159,6 +150,10 @@ class HomePage(BaseContextMixin, TemplateView):
             return 'turbo/base.html'
         return 'domanayuge/base.html'
 
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(HomePage, self).get(request, *args, **kwargs)
+
 class ExContextMixin(ContextMixin):
     blog_slug = 'blog'
     slug = None
@@ -167,6 +162,7 @@ class ExContextMixin(ContextMixin):
     cases_key = None  
     design_key = None
     type_key = None
+
     def get_context_data(self, **kwargs):
         context = super(ExContextMixin, self).get_context_data(**kwargs)   
         root = Category.objects.get(slug=self.slug)
@@ -222,11 +218,6 @@ class ExContextMixin(ContextMixin):
 
 class TurboPageMixin(BaseContextMixin, TemplateView):
     template_name = None
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(TurboPageMixin, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):        
         context = super(TurboPageMixin, self).get_context_data(**kwargs)
         context.update({          
@@ -238,8 +229,12 @@ class TurboPageMixin(BaseContextMixin, TemplateView):
         if turbo == 1:
             return 'turbo/base.html'
         return self.template_name      
-        
-    
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(TurboPageMixin, self).get(request, *args, **kwargs)
+
+
 class DevContextMixin(ExContextMixin):    
     tags = [u'строительство']
     slug = 'stroyka'          
@@ -312,35 +307,27 @@ class Blog(BaseContextMixin, ListView):
         q = q.filter(**f)      
         return q
 
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(Blog, self).get(request, *args, **kwargs)
 
-class VideoBlog(BaseContextMixin, ListView):
-    blog_slug = 'videoblog'
-    template_name = 'domanayuge/videos.html'
-    paginate_by = 10
-    def get_queryset(self):
-        f = {}
-        q = ContentEntry.objects.all()
-        f['categories__slug'] = self.blog_slug
-        if 'tags' in self.request.GET:
-            tags = [t.strip() for t in self.request.GET['tags'].split(',')]
-            print tags
-            f['tags__overlap'] = tags
-        q = q.filter(**f)
-        return q
 
-    
 class BaseList(ListView):
-    paginate_by = 9    
+    paginate_by = 9
     def get_queryset(self):
         key = self.kwargs['key']                   
         return ContentEntry.objects.filter(categories__key=key)
-    
+
     def get_context_data(self, **kwargs):
         context = super(BaseList, self).get_context_data(**kwargs)
         context.update({          
             'category': Category.objects.get(key=self.kwargs['key'])                
         })
-        return context    
+        return context
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(BaseList, self).get(request, *args, **kwargs)
 
 
 class DevList(DevContextMixin, BaseList):
@@ -420,18 +407,47 @@ class DevelopServices(DevContextMixin, BaseList):
     template_name = 'domanayuge/developservices.html'
 
 
-class Article(BaseContextMixin, DetailView):    
+class Article(BaseContextMixin, DetailView):
     template_name = 'domanayuge/page.html'
     model = ContentEntry
     context_object_name = 'article'
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(Article, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(Article, self).get_context_data(**kwargs)
         return context
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(Article, self).get(request, *args, **kwargs)
+
+class TermsOfUse(BaseContextMixin, DetailView):
+    template_name = 'domanayuge/terms-of-use.html'
+    model = ContentEntry
+    context_object_name = 'termsofuse'
+    def get_context_data(self, **kwargs):
+        context = super(TermsOfUse, self).get_context_data(**kwargs)
+        return context
+
+    def get_object(self):
+        return get_object_or_404(ContentEntry, slug='terms-of-use')
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(TermsOfUse, self).get(request, *args, **kwargs)
+
+class PrivacyPolicyPage(BaseContextMixin, DetailView):
+    template_name = 'domanayuge/privacy-policy.html'
+    model = ContentEntry
+    context_object_name = 'privacy_policy'
+    def get_context_data(self, **kwargs):
+        context = super(PrivacyPolicyPage, self).get_context_data(**kwargs)
+        return context
+
+    def get_object(self):
+        return get_object_or_404(ContentEntry, slug='privacy-policy')
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(PrivacyPolicyPage, self).get(request, *args, **kwargs)
 
 class MapPage(BaseContextMixin, DetailView):
     template_name = 'domanayuge/karta-doma-na-yuge.html'
@@ -439,20 +455,16 @@ class MapPage(BaseContextMixin, DetailView):
     context_object_name = 'mappage'
     sitemapObject = StaticViewSitemap()
     sitemap_items = []
-
-    @last_modified(latest_content_entry)
-    def dispatch(self, request, *args, **kwargs):
-        return super(MapPage, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         self.sitemap_items = []
         self.sitemapObject.current_site = get_current_site(self.request)
         if self.kwargs.get("sitemap_source"):
             self.sitemapObject.sitemap_source = self.kwargs.get("sitemap_source")(self.request)
         for one_site in self.sitemapObject.items():
-            if self.sitemapObject.location(one_site) == "/blog/karta-doma-na-yuge":
+            if self.sitemapObject.location(one_site).find("karta-doma-na-yuge") > -1:
                 continue
             self.sitemap_items.append({"location": self.sitemapObject.location(one_site), "title": self.sitemapObject.title(one_site)})
+        self.sitemapObject.debugContent += "TEMPLATES: " + ", ".join(self.get_template_names())
         context = super(MapPage, self).get_context_data(**kwargs)
         context.update({"sitemap_items": self.sitemap_items})
         context.update({"sitemap_debug": self.sitemapObject.debugContent})
@@ -460,6 +472,11 @@ class MapPage(BaseContextMixin, DetailView):
 
     def get_object(self):
         return get_object_or_404(ContentEntry, slug='karta-doma-na-yuge')
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(MapPage, self).get(request, *args, **kwargs)
+
 
 class BaseEntry(DetailView):    
     model = ContentEntry
@@ -469,6 +486,10 @@ class BaseEntry(DetailView):
             'category': Category.objects.get(key=self.kwargs['key'])                
         })        
         return context
+
+    @last_modified(latest_entry)
+    def get(self, request, *args, **kwargs):
+        return super(BaseEntry, self).get(request, *args, **kwargs)
 
 
 class DevPrice(DevContextMixin, BaseEntry):

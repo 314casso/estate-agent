@@ -520,7 +520,7 @@ class YandexMapper(BaseMapper):
             if not self._street:
                 if self._estate.street:
                     bld_number = ''            
-                    if self._feed.show_bld_number and self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
+                    if self._feed.show_bld_number and self._estate.locality and self._estate.locality.locality_type_id == Locality.CITY and self._estate.estate_number and self._estate.estate_category_id == EstateTypeCategory.KVARTIRA:                
                         bld_number = u", %s" % self._estate.estate_number
                     self._street = u'%s %s%s' % (self._estate.street.name, self._estate.street.street_type or '', bld_number)
             return self._street

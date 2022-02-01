@@ -5,17 +5,26 @@
 {% load markup %}
 {% load thumbnail %}
 {% load paginator %}
+{% load hosts %}
 
 <!-- Navigation -->
     {% block navigation %}
-    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top" style="background: #222222;">
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">{{ domanayuge.name }}</a>
+                <div class="wrap-logo">
+                    <a class="page-scroll" href="#page-top">
+                        <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
+                    </a>
+                    <a href="tel:8(918)2954848" class="navbar-phone">
+                        <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
+                        8 (918) 295-48-48
+                    </a>
+                </div>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -35,58 +44,39 @@
         <!-- /.container-fluid -->
     </nav>
     {% endblock navigation %}
+    
 
     {% block content %}
-
-    <section id="blog">
+    <section id="blog" alt="blog.html">
         <div class="container">
-            
             {% category 'blog' as blog %}
-
             <div class = "page-header">
-                <h1>{{ blog.name }}</h1>
+	            <h1>{{ blog.name }}</h1>
             </div>
-
-            <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
-                <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="/">
-                        <span itemprop="name">Главная</span>
-                    </a>
-                    <meta itemprop="position" content="1">
-                </li>
-                <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <span itemprop="name">{{ blog.name }}</span>
-                    <meta itemprop="position" content="2">
-                </li>
-            </ol>
-
             <ul class="list-unstyled">
                 {% for article in object_list %}
-                    <li>
-                        <h3><a href="{% url 'page' article.slug %}">{{ article.title }}</a></h3>
-    
-                        <p class="post-date">
-                            <small>
-                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                                {{ article.publication_date|date }}
-                            </small>
-                        </p>
-                        <script src="https://yastatic.net/share2/share.js"></script>
-                        <div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
-        
-                        {{ article.summary|markdown:"safe,attr_list" }}
-
-                    </li>
+                <li>
+                    <h3><a href="{% url 'page' article.slug %}">{{ article.title }}</a></h3>
+                    <p class="post-date">
+                        <small>
+                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                            {{ article.publication_date|date }}
+                        </small>
+                    </p>
+                    <script src="https://yastatic.net/share2/share.js"></script>
+                    <div class="ya-share2" data-curtain data-shape="round" data-color-scheme="blackwhite" data-services="vkontakte,facebook,odnoklassniki"></div>
+                    {{ article.summary|markdown:"safe,attr_list" }}
+                </li>
                 {% empty %}
-                    <li>No articles yet.</li>
+                <li>No articles yet.</li>
                 {% endfor %}
             </ul>
          
-            {% if is_paginated %}
+		    {% if is_paginated %}
             <nav aria-label="Page navigation">
                 {% bootstrap_paginator %}
             </nav>
-            {% endif %}
+		    {% endif %}
 
         </div>
     </section>

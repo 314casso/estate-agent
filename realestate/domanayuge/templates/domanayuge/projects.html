@@ -9,14 +9,22 @@
 
 <!-- Navigation -->
     {% block navigation %}
-    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top" style="background: #222222;">
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Переключение навигации</span> Меню <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="/#page-top">{{ domanayuge.name }}</a>
+                <div class="wrap-logo">
+                    <a class="page-scroll" href="/#page-top">
+                        <img class="navbar-brand-logo" src="https://projects.domanayuge.ru/upload/medialibrary/55a/55afddce192433ef40d253859edf1d20.svg" style="height: 50px;">
+                    </a>
+                    <a href="tel:8(918)2954848" class="navbar-phone">
+                        <i class="fa fa-phone navbar-phone-icon" aria-hidden="true"></i>
+                        8 (918) 295-48-48
+                    </a>
+                </div>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -40,7 +48,7 @@
 
 {% block content %}
 
-<section id="projects">
+    <section id="projects" class="section-content">
         <div class="container">
 			
 			<div class = "page-header">            
@@ -49,7 +57,7 @@
 
             <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
                 <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="/">
+                    <a itemprop="item" href="/#{{ category.parent.slug }}">
                         <span itemprop="name">Главная</span>
                     </a>
                     <meta itemprop="position" content="1">
@@ -60,7 +68,7 @@
                 </li>
             </ol>
 
-            <div class="row">
+			 <div class="row">
 			{% for project in object_list %}				
 			    <div class="col-md-4 col-sm-6 portfolio-item">			    
                     <a href="{% url 'project' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
@@ -70,13 +78,15 @@
                             </div>
                         </div>
                         {% thumbnail project.baseimage.image "360x260" crop="center" as im %}
-                        <img alt="{{ project.baseimage.title }}" class="img-responsive w-100" src="{{ im.url }}">
+                        <img alt="{{ project.baseimage.title }}" class="img-responsive" src="{{ im.url }}">
                         {% endthumbnail %}
                     </a>
                     <div class="portfolio-caption">
-                        <a href="{% url 'project' category.key project.slug %}" class="portfolio-link" data-toggle="modal">
-                            <h4>{{ project.title }}</h4>
-                        </a>
+                        <h4>
+                            <a href="{% url 'project' category.key project.slug %}" class="portfolio-link" data-toggle="modal" style="color: #333">
+                                {{ project.title }}
+                            </a>
+                        </h4>
                         <div class="text-muted">{{ project.summary|parser:domain }}</div>
                     </div>
                 </div>
@@ -84,7 +94,7 @@
 	            <div class="clearfix"></div> 
 	        	{% endif %}
 			{% empty %}
-			    <div>No projects yet.</div>
+			    <li>No projects yet.</li>			 
 			{% endfor %}			
 			</div>            
 			         
@@ -93,6 +103,19 @@
 			    {% bootstrap_paginator %}
 			</nav>
 			{% endif %}
+
+            <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+                <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <a itemprop="item" href="/#{{ category.parent.slug }}">
+                        <span itemprop="name">Главная</span>
+                    </a>
+                    <meta itemprop="position" content="1">
+                </li>
+                <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <span itemprop="name">{{ category.name }}</span>
+                    <meta itemprop="position" content="2">
+                </li>
+            </ol>
 
         </div>
     </section>

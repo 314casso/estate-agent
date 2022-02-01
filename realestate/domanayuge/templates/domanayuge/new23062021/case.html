@@ -1,0 +1,89 @@
+{% extends "domanayuge/projects.html" %}
+{% load category_tags %}  
+{% load static %}
+{% load markup %}
+{% load thumbnail %}
+
+{% block page_title %}{{ project.meta_title|default:project.title }}{% endblock %}
+
+{% block page_description %}
+    <meta name="description" content="{{ project.meta_description|default:domanayuge.description }}">
+{% endblock %}
+
+{% block content %}
+
+<section id="project">
+	<div class="container">
+		<div class = "page-header">            
+			<h1>{{ project.title }}</h1>						
+		</div>
+
+        <p class="item-intro text-muted">{{ project.summary|parser:domain }}</p>
+
+        <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <a itemprop="item" href="/">
+                    <span itemprop="name">Главная</span>
+                </a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <a itemprop="item" href="{% url 'cases' category.key %}">
+                    <span itemprop="name">{{ category.name }}</span>
+                </a>
+                <meta itemprop="position" content="2">
+            </li>
+            <li class="active"  itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <span itemprop="name">{{ project.title }}</span>
+                <meta itemprop="position" content="3">
+            </li>
+        </ol>
+
+        <div class="row">
+            <div class="col-lg-8">
+
+                <!-- Carousel -->
+                <div id="carousel-{{ project.slug }}" class="carousel slide" data-ride="carousel">
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        {% for image in project.images %}
+                        <div class="item {% if forloop.first %}active{% endif %}">
+
+                            {% thumbnail image.image "750x540" crop="center" as im %}
+                            <img alt="{{ image.title }}" src="{{ im.url }}"> {% endthumbnail %}
+
+                            <div class="carousel-caption">{{ image.title }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Controls -->
+                    {% if project.images|length > 1 %}
+                    <a class="left carousel-control" href="#carousel-{{ project.slug }}" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Предыдущий</span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-{{ project.slug }}" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Следующий</span>
+                    </a>
+                    {% endif %}
+                </div>
+                <!-- End carousel -->
+            </div>
+            
+            <div class="clearfix"></div>
+
+            <div class="col-lg-12">
+                <p>		
+		            {% with entry_content=project.content|markdown:"safe,attr_list" %}
+                        {{ entry_content|parser:domain }}
+                    {% endwith %}                                      
+	            </p>
+            </div>
+
+        </div>
+	</div>
+</section>
+
+{% endblock content %}
