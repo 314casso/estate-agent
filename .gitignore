@@ -17,5 +17,5 @@ local/
 pip-selfcheck.json
 selenium/
 share/
-
+.directory
 
