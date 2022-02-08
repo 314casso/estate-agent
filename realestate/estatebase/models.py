@@ -546,6 +546,7 @@ class Estate(ProcessDeletedModel):
         return self.contact and self.contact.contact_state_id in (Contact.AVAILABLE, Contact.NOTRESPONDED, Contact.NONAVAILABLE)
      
     def check_validity(self):        
+        post_on_site = len(self.estate_params.filter(pk=EstateParam.POSTONSITE)) > 0        
         AGRICULTURAL_STEAD = self.basic_stead and self.basic_stead.estate_type.template == AGRICULTURAL
         report = OrderedDict([(self.NOTFREE, False), (self.NOCONACT, False), (self.DRAFT, [])])
         report[self.NOCONACT] = not self.check_contact() 
@@ -555,6 +556,8 @@ class Estate(ProcessDeletedModel):
             report[self.DRAFT].append(unicode(_('Street')))
         if not self.estate_number and not self.address_state in (self.NO_NUMBER, self.NO_ADDRESS) and not AGRICULTURAL_STEAD:
             report[self.DRAFT].append(unicode(_('Estate number')))    
+        if post_on_site and not self.client_description:
+            report[self.DRAFT].append(u'Описание заказчику')
 #             if not (self.basic_stead and (self.basic_stead.estate_type.template == AGRICULTURAL or self.basic_stead.estate_type_id == EstateTypeMapper.DACHNYYUCHASTOK)): 
 #                 if not (self.basic_bidg and self.basic_bidg.estate_type_id in (EstateTypeMapper.DACHA, EstateTypeMapper.GARAZH, EstateTypeMapper.LODOCHNYYGARAZH)):
         if not self.microdistrict:
@@ -596,6 +599,8 @@ class Estate(ProcessDeletedModel):
         if self.basic_stead:
             if not self.basic_stead.total_area:
                 report[self.DRAFT].append(u'Площадь участка')        
+            if not self.basic_stead.face_area:
+                report[self.DRAFT].append(u'Фасад')        
         return report
     
     def get_actual_date(self):
