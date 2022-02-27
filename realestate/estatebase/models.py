@@ -302,10 +302,12 @@ class EstateTypeCategory(OrderedModel):
     KVARTIRAU4ASTOK = 5
     COMMERCE = 6    
     name = models.CharField(_('Name'), max_length=100)
+    name_accs = models.CharField(_('Accs'), max_length=100, null=True)
     independent = models.BooleanField(_('Independent'), default=True)
     has_bidg = models.IntegerField(_('HasBidg'), choices=AVAILABILITY_CHOICES)
     has_stead = models.IntegerField(_('HasStead'), choices=AVAILABILITY_CHOICES)
     is_commerce = models.BooleanField(_('Commerce'), default=False)
+    export_mark = models.BooleanField(u'Метка', default=False)        
     @property
     def maybe_stead(self):
         return self.has_stead == MAYBE
@@ -342,6 +344,7 @@ class EstateType(OrderedModel):
     template = models.IntegerField(_('Template'), choices=TEMPLATE_CHOICES)
     note = models.CharField(_('Note'), blank=True, null=True, max_length=255)
     placeable = models.BooleanField(_('Placeable'), default=True)        
+    export_mark = models.BooleanField(u'Метка', default=True)        
     def __unicode__(self):
         return u'%s' % self.name    
     class Meta(OrderedModel.Meta):
@@ -433,7 +436,7 @@ class EntranceEstate(models.Model):
     beside = models.ForeignKey('Beside', verbose_name=_('Object'))
     estate = models.ForeignKey('Estate',related_name='entranceestate_set')   
     class Meta:
-        unique_together = ('beside', 'estate')
+        unique_together = ('beside', 'estate', 'type')
     
     def get_human_distance(self):
         if self.distance < 1000:
@@ -699,6 +702,14 @@ class Estate(ProcessDeletedModel):
         else:
             if self.basic_bidg:
                 return self.basic_bidg.estate_type
+
+    @property
+    def basic_estate_type_mark(self):        
+        if self.estate_category.is_stead and self.basic_stead:
+            return self.basic_stead.estate_type.export_mark
+        else:
+            if self.basic_bidg:
+                return self.basic_bidg.estate_type.export_mark                
 
     @property
     def basic_estate_type_accs(self):        

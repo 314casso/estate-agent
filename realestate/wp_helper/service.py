@@ -159,23 +159,26 @@ class WPService(object):
     
     def render_post_tags(self, estate):        
         AZOV_SEA = (u"Голубицкая", u"Кучугуры", u"Пересыпь", u"За Родину", u"Ильич", u"Приазовский")                 
-        locality = estate.locality
-        locality_type = estate.locality.locality_type          
+        locality = estate.locality        
         region = estate.locality.region
-        result = set()
-        result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
-        #result.add(u'%s в %s' % (estate.basic_estate_type, locality.name_loct))
+        result = set()                
         for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
-            result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))
+            if not u'море' in beside.name:
+                continue                
             result.add(u'недвижимость на %s' % beside.beside.name_loct)            
-        #esult.add(u'%s в Краснодарском крае' % estate.basic_estate_type)        
-        #esult.add(u'недвижимость %s' % locality.name_gent)
-        result.add(u'купить недвижимость в %s' % locality.name_loct)
-        #esult.add(u'недвижимость Краснодарского края')
+            if estate.basic_estate_type_mark:
+                result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))                    
+        result.add(u'купить недвижимость в %s' % locality.name_loct)        
         result.add(u'купить недвижимость в Краснодарском крае')
-        result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
-        result.add(u'недвижимость %s' % region.regular_name_gent)
-        result.add(u'%s %s' % (estate.basic_estate_type, region.regular_name_gent))
+        if estate.estate_category.export_mark:
+            result.add(u'купить %s в Краснодарском крае' % estate.estate_category.name_accs)        
+            result.add(u'купить %s в %s' % (estate.estate_category.name_accs, locality.name_loct))
+            result.add(u'%s %s' % (estate.estate_category.name, region.regular_name_gent))        
+        if estate.basic_estate_type_mark:
+            result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
+            result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
+            result.add(u'%s %s' % (estate.basic_estate_type, region.regular_name_gent))        
+        result.add(u'недвижимость %s' % region.regular_name_gent)        
         if locality.name in AZOV_SEA:
             result.add(u'Продажа домов на Азовском море') 
         return list(result)
