@@ -168,11 +168,14 @@ class WPService(object):
             result.add(u'недвижимость на %s' % beside.beside.name_loct)            
             if estate.basic_estate_type_mark:
                 result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))                    
+            if estate.estate_category.export_mark:
+                result.add(u'%s у %s' % (estate.estate_category.name, beside.beside.name_gent))
+
         result.add(u'купить недвижимость в %s' % locality.name_loct)        
         result.add(u'купить недвижимость в Краснодарском крае')
         if estate.estate_category.export_mark:
             result.add(u'купить %s в Краснодарском крае' % estate.estate_category.name_accs)        
-            result.add(u'купить %s в %s' % (estate.estate_category.name_accs, locality.name_loct))
+            # result.add(u'купить %s в %s' % (estate.estate_category.name_accs, locality.name_loct))
             result.add(u'%s %s' % (estate.estate_category.name, region.regular_name_gent))        
         if estate.basic_estate_type_mark:
             result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        

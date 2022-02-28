@@ -19,6 +19,5 @@ class Command(BaseCommand):
         estates = Estate.objects.exclude(wp_meta__status__in=exclude_statuses)        
         estates = estates.filter(estate_status_id__in=sold_items)
         for estate in estates:
-            time.sleep(10)
-            print estate.pk
+            time.sleep(10)            
             wp_service.sync_status(estate)
