@@ -163,7 +163,7 @@ class WPService(object):
         region = estate.locality.region
         result = set()                
         for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
-            if not u'море' in beside.name:
+            if not u'море' in beside.beside.name:
                 continue                
             result.add(u'недвижимость на %s' % beside.beside.name_loct)            
             if estate.basic_estate_type_mark:
