@@ -157,14 +157,11 @@ class WPService(object):
         result = u'%s | %s в %s' % (result, estate.estate_type, estate.locality.name_loct)
         return result         
     
-    def render_post_tags(self, estate):        
-        AZOV_SEA = (u"Голубицкая", u"Кучугуры", u"Пересыпь", u"За Родину", u"Ильич", u"Приазовский")                 
+    def render_post_tags(self, estate):                
         locality = estate.locality        
         region = estate.locality.region
         result = set()                
-        for beside in estate.entranceestate_set.filter(type=EntranceEstate.DISTANCE):
-            if not u'море' in beside.beside.name:
-                continue                
+        for beside in estate.entranceestate_set.filter(beside__name__icontains=u'море'):            
             result.add(u'недвижимость на %s' % beside.beside.name_loct)            
             if estate.basic_estate_type_mark:
                 result.add(u'%s у %s' % (estate.basic_estate_type, beside.beside.name_gent))                    
@@ -181,9 +178,7 @@ class WPService(object):
             result.add(u'купить %s в Краснодарском крае' % estate.basic_estate_type_accs)        
             result.add(u'купить %s в %s' % (estate.basic_estate_type_accs, locality.name_loct))
             result.add(u'%s %s' % (estate.basic_estate_type, region.regular_name_gent))        
-        result.add(u'недвижимость %s' % region.regular_name_gent)        
-        if locality.name in AZOV_SEA:
-            result.add(u'Продажа домов на Азовском море') 
+        result.add(u'недвижимость %s' % region.regular_name_gent)                
         return list(result)
     
     def render_post_body(self, estate, description, images):        
